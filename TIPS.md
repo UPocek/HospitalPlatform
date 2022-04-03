@@ -23,15 +23,15 @@
 ## Commits
 
 In commit messages use this [format](https://www.conventionalcommits.org/en/v1.0.0/):
-> <type> [scope] : <description>
+> \<type\> [scope] : \<description\>
 
-type: **fix** (bug fixes), **feat** (new feature), **breakingchange** (big changes or completly new aspects of the app), **refactor** (code refactoring), **docs** (added documentations), **test** (testing some stuff), **build** (build files), **style** (style changes) 
-scope (optional): **front** (files related to frontend), **back** (files related to backend)
-description: based on [best practices](https://cbea.ms/git-commit/)
+type -> **fix** (bug fixes), **feat** (new feature), **breakingchange** (big changes or completly new aspects of the app), **refactor** (code refactoring), **docs** (added documentations), **test** (testing some stuff), **build** (build files), **style** (style changes)  
+scope(optional) -> **front** (files related to frontend), **back** (files related to backend)  
+description -> based on [best practices](https://cbea.ms/git-commit/)  
 
 ---
 
-### Checkpoint 1 [*](https://enastava.ftninformatika.com/courses/485/discussion_topics/8982)
+### Checkpoint 1: [*](https://enastava.ftninformatika.com/courses/485/discussion_topics/8982)
 
 1. Create [Issue](https://github.com/kzi-nastava/course-project-tim-9/issues) for every item in project requirements assigned to you + Add _Assignee_ for that issue
 2. Add relevante issues to _Milestone_ Checkpoint 1
