@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APP.Models;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using Microsoft.AspNetCore.Cors;
 
 namespace APP.Controllers
 {
@@ -15,25 +18,80 @@ namespace APP.Controllers
     public class MyController : ControllerBase
     {
         private readonly MyContext _context;
+        public IMongoDatabase database;
 
         public MyController(MyContext context)
         {
             _context = context;
+
+
+            var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
+            var client = new MongoClient(settings);
+            database = client.GetDatabase("USI");
+
         }
 
-        // HOW TO : CheetSheet
+        // GET: api/My/login/u&p
+        [HttpGet("login/{email}&{password}")]
+        public IActionResult UserLogin(string email, string password)
+        {
+            var collection = database.GetCollection<BsonDocument>("Employees");
+            var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
+            var doc = collection.Find(filter).ToList();
+            // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
+            if (doc.Count() != 0)
+            {
+                var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
+                Response.StatusCode = StatusCodes.Status200OK;
+                return new JsonResult(dotNetObj);
+            }
+            else
+            {
+                collection = database.GetCollection<BsonDocument>("Patients");
+                doc = collection.Find(filter).ToList();
+                if (doc.Count() != 0 && doc[0]["active"] == "0")
+                {
+                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
+                    Response.StatusCode = StatusCodes.Status200OK;
+                    return new JsonResult(dotNetObj);
+                }
+                return NotFound();
+            }
+        }
+
+        // GET: api/My/users/id
+        [HttpGet("users/{id}")]
+        public IActionResult GetUser(int id)
+        {
+            IMongoCollection<BsonDocument> collection;
+            if (id < 900)
+            {
+                collection = database.GetCollection<BsonDocument>("Employees");
+            }
+            else
+            {
+                collection = database.GetCollection<BsonDocument>("Patients");
+            }
+            var filter = Builders<BsonDocument>.Filter.Eq("id", id);
+            var result = collection.Find(filter).First();
+            var dotNetObj = BsonTypeMapper.MapToDotNetValue(result);
+            Response.StatusCode = StatusCodes.Status200OK;
+            return new JsonResult(dotNetObj);
+        }
+
+        // HOW TO : CheetSheet (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
 
         // Run app - dotnet watch
         // Stop app - Ctrl + c
 
-        // GET: api/My
+        // // GET: api/My
         // [HttpGet]
         // public async Task<ActionResult<IEnumerable<Other>>> GetOthers()
         // {
         //     return await _context.Others.ToListAsync();
         // }
 
-        // GET: api/My
+        // // GET: api/My
         // [HttpGet]
         // public async Task<ActionResult<IEnumerable<Other>>> GetOthers()
         // {
@@ -42,9 +100,9 @@ namespace APP.Controllers
         //     return Ok();
         // }
 
-        // https://www.tutorialsteacher.com/csharp/csharp-dictionary
-        // https://www.telerik.com/blogs/return-json-result-custom-status-code-aspnet-core#altering-the-response-status-code
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+        // // https://www.tutorialsteacher.com/csharp/csharp-dictionary
+        // // https://www.telerik.com/blogs/return-json-result-custom-status-code-aspnet-core#altering-the-response-status-code
+        // // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
         // [HttpGet]
         // public IActionResult Get()
         // {
@@ -56,9 +114,80 @@ namespace APP.Controllers
         //     return new JsonResult(result);
         // }
 
+        // // GET: api/My
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<Other>>> GetOthers()
+        // {
+        //     // Connect to collection you want
+        //     var collection = database.GetCollection<BsonDocument>("My");
+
+        //     // 0 - Create
+        //     var document = new BsonDocument
+        //     {
+        //         { "student_id", 10000 },
+        //         { "scores", new BsonArray
+        //             {
+        //             new BsonDocument{ {"type", "exam"}, {"score", 88.12334193287023 } },
+        //             new BsonDocument{ {"type", "quiz"}, {"score", 74.92381029342834 } },
+        //             new BsonDocument{ {"type", "homework"}, {"score", 89.97929384290324 } },
+        //             new BsonDocument{ {"type", "homework"}, {"score", 82.12931030513218 } }
+        //             }
+        //         },
+        //         { "class_id", 480}
+        //     };
+
+        //     collection.InsertOne(document);
+        //     // await collection.InsertOneAsync(document);
+
+
+        //     // 1 - Get first result that satisfies filter
+        //     var filter = Builders<BsonDocument>.Filter.Eq("test", "test") & Builders<BsonDocument>.Filter.Eq("test", "test");
+        //     try
+        //     {
+        //         var doc = collection.Find(filter).FirstOrDefault();
+        //         Console.WriteLine(doc.ToString());
+        //     }
+        //     catch
+        //     {
+        //         Console.WriteLine("Filter nije vratio ni jedan element!");
+        //     }
+
+        //     // 2 - Get all results without filter
+        //     var documents = collection.Find(new BsonDocument()).ToList();
+
+        //     foreach (BsonDocument doc in documents)
+        //     {
+        //         Console.WriteLine(doc.ToString());
+        //     }
+
+        //     // 3 - Query
+        //     var builder = Builders<BsonDocument>.Filter;
+        //     var filter2 = builder.Gt("test", 0) & builder.Lt("test", 100);
+        //     var sort = Builders<BsonDocument>.Sort.Descending("test");
+
+        //     var docs = collection.Find(filter2).Project("{_id: 1}").Sort(sort).Skip(0).Limit(3).ToList();
+
+        //     docs.ForEach(doc =>
+        //     {
+        //         Console.WriteLine(doc);
+        //     });
+
+        //     // 4 - Delete
+
+        //     collection.DeleteOne(filter);
+
+        //     // 5 - Update
+
+        //     var filter3 = Builders<BsonDocument>.Filter.Eq("name", "Audi");
+        //     var update = Builders<BsonDocument>.Update.Set("price", 52000);
+        //     collection.UpdateOne(filter3, update);
+
+        //     return await _context.Others.ToListAsync();
+        // }
+
         // // GET: api/My/5
         // [HttpGet("{id}")]
-        // Use id? to specify that id is optional
+        // // Use id? to specify that id is optional
         // public async Task<ActionResult<Other>> GetOther(long id)
         // {
         //     Console.WriteLine(id);
