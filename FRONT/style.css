@@ -17,7 +17,7 @@ body {
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
-main {
+#first {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,35 +26,35 @@ main {
     margin: -20px 0 50px;
 }
 
-main h1 {
+#first h1 {
     font-weight: bold;
     margin: 0;
     font-size: 2.2rem;
 }
 
-main h2 {
+#first h2 {
     text-align: center;
 }
 
-main p {
+#first p {
     font-size: 1rem;
     font-weight: 100;
     letter-spacing: 0.5px;
     margin: 20px 0 30px;
 }
 
-main span {
+#first span {
     font-size: 14px;
 }
 
-main a {
+#first a {
     color: #333;
     font-size: 1rem;
     text-decoration: none;
     margin: 15px 0;
 }
 
-main button {
+.main-btn {
     border-radius: 10px;
     border: 1px solid #FF4B2B;
     background: #FF416C;
@@ -71,24 +71,24 @@ main button {
     margin: 10px 0;
 }
 
-main .ghost {
+#first .ghost {
     background: transparent !important;
 }
 
-main button:active {
+#first button:active {
     transform: scale(0.95);
 }
 
-main button:focus {
+#first button:focus {
     outline: none;
 }
 
-main button.ghost {
+#first button.ghost {
     background-color: transparent;
     border-color: #FFFFFF;
 }
 
-main form {
+#first form {
     background-color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -99,7 +99,7 @@ main form {
     text-align: center;
 }
 
-main input {
+#first input {
     background-color: #eee;
     border: none;
     padding: 12px 15px;
@@ -107,7 +107,7 @@ main input {
     width: 100%;
 }
 
-main .container {
+#first .container {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
@@ -119,31 +119,31 @@ main .container {
     min-height: 480px;
 }
 
-main .form-container {
+#first .form-container {
     position: absolute;
     top: 0;
     height: 100%;
     transition: all 0.6s ease-in-out;
 }
 
-main .sign-in-container {
+#first .sign-in-container {
     left: 0;
     width: 50%;
     z-index: 2;
 }
 
-main .container.right-panel-active .sign-in-container {
+#first .container.right-panel-active .sign-in-container {
     transform: translateX(100%);
 }
 
-main .sign-up-container {
+#first .sign-up-container {
     left: 0;
     width: 50%;
     opacity: 0;
     z-index: 1;
 }
 
-main .container.right-panel-active .sign-up-container {
+#first .container.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
@@ -165,7 +165,7 @@ main .container.right-panel-active .sign-up-container {
     }
 }
 
-main .overlay-container {
+#first .overlay-container {
     position: absolute;
     top: 0;
     left: 50%;
@@ -176,11 +176,11 @@ main .overlay-container {
     z-index: 100;
 }
 
-main .container.right-panel-active .overlay-container {
+#first .container.right-panel-active .overlay-container {
     transform: translateX(-100%);
 }
 
-main .overlay {
+#first .overlay {
     background: #FF416C;
     background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
     background: linear-gradient(to right, #FF4B2B, #FF416C);
@@ -196,11 +196,11 @@ main .overlay {
     transition: transform 0.6s ease-in-out;
 }
 
-main .container.right-panel-active .overlay {
+#first .container.right-panel-active .overlay {
     transform: translateX(50%);
 }
 
-main .overlay-panel {
+#first .overlay-panel {
     position: absolute;
     display: flex;
     align-items: center;
@@ -215,28 +215,28 @@ main .overlay-panel {
     transition: transform 0.6s ease-in-out;
 }
 
-main .overlay-left {
+#first .overlay-left {
     transform: translateX(-20%);
 }
 
-main .container.right-panel-active .overlay-left {
+#first .container.right-panel-active .overlay-left {
     transform: translateX(0);
 }
 
-main .overlay-right {
+#first .overlay-right {
     right: 0;
     transform: translateX(0);
 }
 
-main .container.right-panel-active .overlay-right {
+#first .container.right-panel-active .overlay-right {
     transform: translateX(20%);
 }
 
-main .social-container {
+#first .social-container {
     margin: 20px 0;
 }
 
-main .social-container a {
+#first .social-container a {
     border: 1px solid #DDDDDD;
     border-radius: 50%;
     display: inline-flex;
@@ -247,7 +247,7 @@ main .social-container a {
     width: 40px;
 }
 
-.main-h {
+#first .main-h {
     margin-bottom: 50px;
 }
 
@@ -278,7 +278,7 @@ main .social-container a {
     justify-content: center;
     height: 3.5rem;
     width: 5.5rem;
-    color: #6a778e;
+    color: #272727;
     transition: 250ms ease all;
 }
 
@@ -1761,6 +1761,10 @@ main .social-container a {
 footer {
     text-align: center;
 }
+
+/* Manager */
+
+
 
 /* Header */
 @media (max-width:1069px) {

@@ -25,7 +25,7 @@
 <body>
     <?php include 'header.html';?>
 
-  <main>
+  <main id="first">
       <h1 class="main-h">Medical Institution Team #9</h1>
 <div class="container" id="container">
 	<div class="form-container sign-up-container">
@@ -39,7 +39,7 @@
 			<input id="signUpName" type="text" placeholder="Name" />
 			<input id="signUpEmail" type="email" placeholder="Email" />
 			<input id="signUpPassword" type="password" placeholder="Password" />
-			<button>Sign Up</button>
+			<button class="main-btn">Sign Up</button>
 		</form>
 	</div>
 	<div class="form-container sign-in-container">
@@ -53,7 +53,7 @@
 			<input id="signInEmail" type="email" placeholder="Email" />
 			<input id="signInPassword" type="password" placeholder="Password" />
 			<a href="#">Forgot your password?</a>
-			<button>Sign In</button>
+			<button class="main-btn">Sign In</button>
 		</form>
 	</div>
 	<div class="overlay-container">
@@ -61,13 +61,13 @@
 			<div class="overlay-panel overlay-left">
             <h1>Hello, Friend!</h1>
             <p>Enter your personal details and levrage power of our app</p>
-            <button class="ghost" id="signIn">Sign In</button>
+            <button class="main-btn ghost" id="signIn">Sign In</button>
 			</div>
 			<div class="overlay-panel overlay-right">
             <h1>Welcome Back!</h1>
             <p>Enter your's personal information to login into your account</p>
             
-            <button class="ghost" id="signUp">Sign Up</button>
+            <button class="main-btn ghost" id="signUp">Sign Up</button>
 			</div>
 		</div>
 	</div>

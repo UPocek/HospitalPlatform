@@ -8,8 +8,10 @@ loginForm.addEventListener('submit', function (e) {
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                var response = JSON.parse(this.responseText);
-                console.log(response);
+                let response = JSON.parse(this.responseText);
+                if (response["role"] == "manager") {
+                    window.location.replace("manager.php" + "?id=" + response["id"]);
+                }
             }
         }
     }

@@ -49,7 +49,7 @@ namespace APP.Controllers
             {
                 collection = database.GetCollection<BsonDocument>("Patients");
                 doc = collection.Find(filter).ToList();
-                if (doc.Count() != 0)
+                if (doc.Count() != 0 && doc[0]["active"] == "0")
                 {
                     var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
                     Response.StatusCode = StatusCodes.Status200OK;
@@ -57,6 +57,26 @@ namespace APP.Controllers
                 }
                 return NotFound();
             }
+        }
+
+        // GET: api/My/users/id
+        [HttpGet("users/{id}")]
+        public IActionResult GetUser(int id)
+        {
+            IMongoCollection<BsonDocument> collection;
+            if (id < 900)
+            {
+                collection = database.GetCollection<BsonDocument>("Employees");
+            }
+            else
+            {
+                collection = database.GetCollection<BsonDocument>("Patients");
+            }
+            var filter = Builders<BsonDocument>.Filter.Eq("id", id);
+            var result = collection.Find(filter).First();
+            var dotNetObj = BsonTypeMapper.MapToDotNetValue(result);
+            Response.StatusCode = StatusCodes.Status200OK;
+            return new JsonResult(dotNetObj);
         }
 
         // HOW TO : CheetSheet (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
