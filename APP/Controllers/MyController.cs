@@ -18,7 +18,7 @@ namespace APP.Controllers
     public class MyController : ControllerBase
     {
         private readonly MyContext _context;
-        public IMongoDatabase database;
+        private IMongoDatabase database;
 
         public MyController(MyContext context)
         {
@@ -39,7 +39,7 @@ namespace APP.Controllers
             var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
             var doc = collection.Find(filter).ToList();
             // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-            if (doc.Count() != 0)
+            if (doc.Count != 0)
             {
                 var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
                 Response.StatusCode = StatusCodes.Status200OK;
@@ -49,7 +49,7 @@ namespace APP.Controllers
             {
                 collection = database.GetCollection<BsonDocument>("Patients");
                 doc = collection.Find(filter).ToList();
-                if (doc.Count() != 0 && doc[0]["active"] == "0")
+                if (doc.Count != 0 && doc[0]["active"] == "0")
                 {
                     var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
                     Response.StatusCode = StatusCodes.Status200OK;

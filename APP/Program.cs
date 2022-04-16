@@ -11,7 +11,11 @@ builder.Services.AddDbContext<MyContext>(opt =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy => { policy.WithOrigins("*"); });
+                      policy =>
+                      {
+                          policy.WithOrigins("*").AllowAnyHeader()
+                                                  .AllowAnyMethod(); ;
+                      });
 });
 
 var app = builder.Build();
