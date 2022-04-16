@@ -26,8 +26,14 @@
     <?php include 'header.html';?>
 
   <main>
+    <div>
+        <h1 id="hi">Welcome back &nbsp; </h1>
+    </div>
+  <section id="rooms" class="active">
+      <table id="roomTable">
 
-  <p>RADI</p>
+      </table>
+  </section>
       
   </main>
 

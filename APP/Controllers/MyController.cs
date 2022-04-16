@@ -18,7 +18,7 @@ namespace APP.Controllers
     public class MyController : ControllerBase
     {
         private readonly MyContext _context;
-        public IMongoDatabase database;
+        private IMongoDatabase database;
 
         public MyController(MyContext context)
         {

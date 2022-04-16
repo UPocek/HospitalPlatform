@@ -1764,7 +1764,12 @@ footer {
 
 /* Manager */
 
-
+#hi {
+    text-align: center;
+    margin: 5vh auto;
+    padding: 50px;
+    font-size: 3rem;
+}
 
 /* Header */
 @media (max-width:1069px) {

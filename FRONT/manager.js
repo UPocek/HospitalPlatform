@@ -18,6 +18,48 @@ class User {
 }
 var user;
 
+function setUpMenu() {
+    let menu = document.getElementById("mainMenu");
+    menu.innerHTML += `
+    <li class="navbar__item">
+            <a href="#" class="navbar__link"><i data-feather="log-in"></i><span>Room Management</span></a>
+        </li>
+        <li class="navbar__item">
+            <a href="#" class="navbar__link"><i data-feather="tool"></i><span>Equipment Management</span></a>
+        </li>
+        <li class="navbar__item">
+            <a href="#" class="navbar__link"><i data-feather="shield"></i><span>Drug Management</span></a>
+        </li>
+        <li class="navbar__item">
+            <a href="#" class="navbar__link"><i data-feather="file-text"></i><span>Polls</span></a>
+        </li>
+    `;
+    feather.replace();
+}
+
+function setUpRooms() {
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                console.log(response);
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.send();
+}
+
+function setUpPage() {
+    let hi = document.getElementById("hi");
+    hi.innerText += user.firstName + " " + user.lastName;
+
+    setUpRooms();
+}
+
 function getParamValue(name) {
     var location = decodeURI(window.location.toString());
     var index = location.indexOf("?") + 1;
@@ -34,7 +76,7 @@ function getParamValue(name) {
 }
 let id = getParamValue('id');
 
-document.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("load", function () {
     let request = new XMLHttpRequest();
 
     request.onreadystatechange = function () {
@@ -42,6 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (this.status == 200) {
                 let response = JSON.parse(this.responseText);
                 user = new User(response);
+                setUpMenu();
+                setUpPage();
             }
         }
     }
