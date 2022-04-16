@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="author" content="Uros Pocek">
-  <meta name="keywords" content="">
+  <meta name="description" content="USI medical institution team #9">
+  <meta name="author" content="Tamara Ilic, Uros Pocek, Tamara Dzambic, Marko Erdelji">
+  <meta name="keywords" content="usi">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- FONTS -->
@@ -18,7 +18,7 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
-  <title></title>
+  <title>USI Team #9</title>
 
 </head>
 
@@ -26,6 +26,7 @@
     <?php include 'header.html';?>
 
   <main>
+      <h1 class="main-h">Medical Institution Team #9</h1>
 <div class="container" id="container">
 	<div class="form-container sign-up-container">
 		<form id="signUpForm">
@@ -35,9 +36,9 @@
 				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
 				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
 			</div>
-			<input type="text" placeholder="Name" />
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" />
+			<input id="signUpName" type="text" placeholder="Name" />
+			<input id="signUpEmail" type="email" placeholder="Email" />
+			<input id="signUpPassword" type="password" placeholder="Password" />
 			<button>Sign Up</button>
 		</form>
 	</div>
@@ -84,8 +85,8 @@
     integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
 
   <script src="app.js">
-
   </script>
+  
   <script>
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');

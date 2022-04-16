@@ -247,6 +247,10 @@ main .social-container a {
     width: 40px;
 }
 
+.main-h {
+    margin-bottom: 50px;
+}
+
 /* NAVBAR */
 
 .navbar ul {
@@ -1750,6 +1754,12 @@ main .social-container a {
     100% {
         transform: scale(1, 1);
     }
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
 }
 
 /* Header */
