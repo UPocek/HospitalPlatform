@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using APP.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Cors;
 
 namespace APP.Controllers
 {
@@ -48,9 +49,9 @@ namespace APP.Controllers
             {
                 collection = database.GetCollection<BsonDocument>("Patients");
                 doc = collection.Find(filter).ToList();
-                var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
                 if (doc.Count() != 0)
                 {
+                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
                     Response.StatusCode = StatusCodes.Status200OK;
                     return new JsonResult(dotNetObj);
                 }
@@ -58,7 +59,7 @@ namespace APP.Controllers
             }
         }
 
-        // HOW TO : CheetSheet
+        // HOW TO : CheetSheet (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
 
         // Run app - dotnet watch
         // Stop app - Ctrl + c
