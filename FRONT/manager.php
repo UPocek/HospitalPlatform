@@ -103,14 +103,14 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation">Renovation start date:</label>
-                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)" />
+                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation">Renovation end date:</label>
-                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)" />
+                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
                     </div>
                     <div>
-                    <label for=""></label>
+                    <label for="">&nbsp;</label>
                     <button class="mainBtn">Schedule</button>
                     </div>
                     
@@ -127,14 +127,14 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation1">Renovation start date:</label>
-                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)" />
+                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation1">Renovation end date:</label>
-                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)" />
+                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
                     </div>
                     <div>
-                    <label for=""></label>
+                    <label for="">&nbsp;</label>
                     <button class="mainBtn">Schedule</button>
                     </div>
                 </form>

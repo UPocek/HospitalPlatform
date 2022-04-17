@@ -355,12 +355,14 @@ function setUpFunctionality() {
     mergeRoom2.innerHTML = "";
     for (let i in mainResponse) {
         let room = mainResponse[i];
-        let newOption = document.createElement("option");
-        newOption.setAttribute("value", room["name"]);
-        newOption.innerText = room["name"];
-        devideRoom.appendChild(newOption);
-        mergeRoom1.appendChild(newOption.cloneNode(true));
-        mergeRoom2.appendChild(newOption.cloneNode(true));
+        if (room["name"] != "Main warehouse") {
+            let newOption = document.createElement("option");
+            newOption.setAttribute("value", room["name"]);
+            newOption.innerText = room["name"];
+            devideRoom.appendChild(newOption);
+            mergeRoom1.appendChild(newOption.cloneNode(true));
+            mergeRoom2.appendChild(newOption.cloneNode(true));
+        }
     }
     let formDevide = devidePanel.querySelector("form");
     let formMerge = mergePanel.querySelector("form");
@@ -368,7 +370,7 @@ function setUpFunctionality() {
         makeDevide(e);
     });
     formMerge.addEventListener('submit', function (e) {
-        makeMerge();
+        makeMerge(e);
     });
 }
 
@@ -381,6 +383,7 @@ function makeDevide(e) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Selected room is schedule for renovation");
+                setUpRooms();
             } else {
                 alert("Error: Selected room cannot be renovated during this period");
             }
@@ -392,7 +395,7 @@ function makeDevide(e) {
     let finalTo = document.getElementById("toComplexRenovation").value;
 
     if (finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
-        devideRequest.open('POST', 'https://localhost:7291/api/manager/complexrenovations/' + finalRoom + "&" + finalFrom + "&" + finalTo);
+        devideRequest.open('POST', 'https://localhost:7291/api/manager/renovationdevide/' + finalRoom + "&" + finalFrom + "&" + finalTo);
         devideRequest.send();
     } else {
         alert("Error: Dates were not entered correctly");
@@ -408,6 +411,7 @@ function makeMerge(e) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Selected rooms are schedule for renovation");
+                setUpRooms();
             } else {
                 alert("Error: Selected rooms cannot be renovated during this period");
             }
@@ -419,10 +423,10 @@ function makeMerge(e) {
     let finalFrom = document.getElementById("fromComplexRenovation1").value;
     let finalTo = document.getElementById("toComplexRenovation1").value;
 
-    if (finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
-        mergeRequest.open('POST', 'https://localhost:7291/api/manager/complexrenovations/' + finalRoom1 + "&" + finalRoom2 + "&" + finalFrom + "&" + finalTo);
+    if (finalRoom1 != finalRoom2 && finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
+        mergeRequest.open('POST', 'https://localhost:7291/api/manager/renovationmerge/' + finalRoom1 + "&" + finalRoom2 + "&" + finalFrom + "&" + finalTo);
         mergeRequest.send();
     } else {
-        alert("Error: Dates were not entered correctly");
+        alert("Error: Informations were not entered correctly");
     }
 }
