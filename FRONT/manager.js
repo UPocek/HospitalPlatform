@@ -55,6 +55,7 @@ function showWindow(section) {
 
 var main = document.getElementsByTagName("main")[0];
 var id = getParamValue('id');
+var date = new Date();
 
 // POST - Renovation
 function renovateRoom(key) {
@@ -83,7 +84,6 @@ function renovateRoom(key) {
 
         let finalFrom = document.getElementById("fromRenovation").value;
         let finalTo = document.getElementById("toRenovation").value;
-        let date = new Date();
 
         if (finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/renovations/' + key + "&" + finalFrom + "&" + finalTo);
@@ -254,16 +254,17 @@ function setUpMenu() {
     });
 }
 
+var mainResponse;
 function setUpRooms() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                let response = JSON.parse(this.responseText);
+                mainResponse = JSON.parse(this.responseText);
                 let table = document.getElementById("roomTable");
                 table.innerHTML = "";
-                for (let i in response) {
-                    let room = response[i];
+                for (let i in mainResponse) {
+                    let room = mainResponse[i];
                     let newRow = document.createElement("tr");
 
                     let cName = document.createElement("td");
@@ -311,6 +312,7 @@ function setUpRooms() {
                     newRow.appendChild(three);
                     table.appendChild(newRow);
                     feather.replace();
+                    setUpFunctionality();
                 }
             }
         }
@@ -323,6 +325,104 @@ function setUpRooms() {
 function setUpPage() {
     let hi = document.getElementById("hi");
     hi.innerText += user.firstName + " " + user.lastName;
-
     setUpRooms();
+}
+
+// ComplexRenovations
+
+var whichRenovation = document.getElementById("complexRenovation");
+var devidePanel = document.getElementById("ifDevide");
+var mergePanel = document.getElementById("ifMerge");
+whichRenovation.addEventListener('change', function (e) {
+    if (whichRenovation.value == "") {
+        devidePanel.classList.add("off");
+        mergePanel.classList.add("off");
+    } else if (whichRenovation.value == "devide") {
+        devidePanel.classList.remove("off");
+        mergePanel.classList.add("off");
+    } else if (whichRenovation.value == "merge") {
+        mergePanel.classList.remove("off");
+        devidePanel.classList.add("off");
+    }
+});
+
+function setUpFunctionality() {
+    let devideRoom = document.getElementById("complexDevide");
+    let mergeRoom1 = document.getElementById("complexMerge1");
+    let mergeRoom2 = document.getElementById("complexMerge2");
+    devideRoom.innerHTML = "";
+    mergeRoom1.innerHTML = "";
+    mergeRoom2.innerHTML = "";
+    for (let i in mainResponse) {
+        let room = mainResponse[i];
+        let newOption = document.createElement("option");
+        newOption.setAttribute("value", room["name"]);
+        newOption.innerText = room["name"];
+        devideRoom.appendChild(newOption);
+        mergeRoom1.appendChild(newOption.cloneNode(true));
+        mergeRoom2.appendChild(newOption.cloneNode(true));
+    }
+    let formDevide = devidePanel.querySelector("form");
+    let formMerge = mergePanel.querySelector("form");
+    formDevide.addEventListener('submit', function (e) {
+        makeDevide(e);
+    });
+    formMerge.addEventListener('submit', function (e) {
+        makeMerge();
+    });
+}
+
+function makeDevide(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let devideRequest = new XMLHttpRequest();
+
+    devideRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Selected room is schedule for renovation");
+            } else {
+                alert("Error: Selected room cannot be renovated during this period");
+            }
+        }
+    }
+
+    let finalRoom = document.getElementById("complexDevide").value;
+    let finalFrom = document.getElementById("fromComplexRenovation").value;
+    let finalTo = document.getElementById("toComplexRenovation").value;
+
+    if (finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
+        devideRequest.open('POST', 'https://localhost:7291/api/manager/complexrenovations/' + finalRoom + "&" + finalFrom + "&" + finalTo);
+        devideRequest.send();
+    } else {
+        alert("Error: Dates were not entered correctly");
+    }
+}
+
+function makeMerge(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let mergeRequest = new XMLHttpRequest();
+
+    mergeRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Selected rooms are schedule for renovation");
+            } else {
+                alert("Error: Selected rooms cannot be renovated during this period");
+            }
+        }
+    }
+
+    let finalRoom1 = document.getElementById("complexMerge1").value;
+    let finalRoom2 = document.getElementById("complexMerge2").value;
+    let finalFrom = document.getElementById("fromComplexRenovation1").value;
+    let finalTo = document.getElementById("toComplexRenovation1").value;
+
+    if (finalFrom.length == 10 && finalTo.length == 10 && finalFrom >= date.toISOString().split('T')[0] && finalTo > finalFrom) {
+        mergeRequest.open('POST', 'https://localhost:7291/api/manager/complexrenovations/' + finalRoom1 + "&" + finalRoom2 + "&" + finalFrom + "&" + finalTo);
+        mergeRequest.send();
+    } else {
+        alert("Error: Dates were not entered correctly");
+    }
 }

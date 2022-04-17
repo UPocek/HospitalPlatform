@@ -21,7 +21,7 @@
     <?php include 'header.html';?>
 
     <div id="roomPrompt" class="form-container sign-in-container off prompt">
-		<form id="roomForm" class="colDir">
+		<form id="roomForm" class="colDir myForm">
 			<h1>Update room</h1>
 			<input id="roomName" type="text" placeholder="" />
             <select name="roomType" id="roomType">
@@ -35,7 +35,7 @@
 	</div>
 
     <div id="createRoomPrompt" class="form-container sign-in-container off prompt">
-		<form id="createRoomForm" class="colDir">
+		<form id="createRoomForm" class="colDir myForm">
 			<h1>Create room</h1>
 			<input id="createRoomName" type="text" placeholder="" />
             <select name="createRoomType" id="createRoomType">
@@ -49,7 +49,7 @@
 	</div>
 
     <div id="renovationPrompt" class="form-container sign-in-container off prompt">
-		<form id="renovationForm" class="colDir">
+		<form id="renovationForm" class="colDir myForm">
 			<h1>Schedule renovation</h1>
 			<input id="fromRenovation" type="text" placeholder="From (yyyy-MM-dd)" />
             <input id="toRenovation" type="text" placeholder="To (yyyy-MM-dd)" />
@@ -59,15 +59,15 @@
 
   <main>
 
-    <div>
-        <h1 id="hi">Welcome back &nbsp; </h1>
+    <div id="hi">
+        <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
-            <section id="rooms">
-                <div class="tbl-content">
+        <div id="rooms">
+            <div class="tbl-content">
                 <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr>
@@ -84,7 +84,62 @@
                 </tbody>
                 </table>
             </div>
-        </section>
+        </div>
+        <div id="complexRenovations" class="myForm">
+            <div class="box">
+            <h2>Schedule complex renovations</h2>
+            <select name="complexRenovation" id="complexRenovation">
+                <option value="">?</option>
+                <option value="devide">Devide (1 --> 2)</option>
+                <option value="merge">Merge (2 --> 1)</option>
+            </select>
+            </div>
+            <div id="ifDevide" class="off">
+                <h3>Devide 1 room into 2 (the equipment will be evenly distributed)</h3>
+                <form>
+                    <div>
+                    <label for="complexDevide">Room:</label>
+                    <select name="complexDevide" id="complexDevide"></select>
+                    </div>
+                    <div>
+                    <label for="fromComplexRenovation">Renovation start date:</label>
+                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)" />
+                    </div>
+                    <div>
+                    <label for="toComplexRenovation">Renovation end date:</label>
+                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)" />
+                    </div>
+                    <div>
+                    <label for=""></label>
+                    <button class="mainBtn">Schedule</button>
+                    </div>
+                    
+                </form>
+            </div>
+            <div id="ifMerge" class="off">
+                <h3>Merge 2 rooms into 1 (the equipment will be automatically transferred to the new room)</h3>
+                <form>
+                    <div>
+                    <label for="complexMerge1">Room 1:</label>
+                    <select name="complexMerge1" id="complexMerge1"></select><br><br>
+                    <label for="complexMerge2">Room 2:</label>
+                    <select name="complexMerge2" id="complexMerge2"></select>
+                    </div>
+                    <div>
+                    <label for="fromComplexRenovation1">Renovation start date:</label>
+                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)" />
+                    </div>
+                    <div>
+                    <label for="toComplexRenovation1">Renovation end date:</label>
+                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)" />
+                    </div>
+                    <div>
+                    <label for=""></label>
+                    <button class="mainBtn">Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </section>
 
     <section id="two">
