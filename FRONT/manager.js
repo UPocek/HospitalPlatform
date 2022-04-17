@@ -34,7 +34,7 @@ function getParamValue(name) {
     }
 }
 
-function showWindow(key) {
+function showWindow(section) {
     let s1 = document.getElementById("one");
     let s2 = document.getElementById("two");
     let s3 = document.getElementById("three");
@@ -45,7 +45,7 @@ function showWindow(key) {
     s3.classList.remove("active");
     s4.classList.remove("active");
 
-    switch (key) {
+    switch (section) {
         case 1: s1.classList.add("active"); break;
         case 2: s2.classList.add("active"); break;
         case 3: s3.classList.add("active"); break;
@@ -144,8 +144,8 @@ function deleteRoom(key) {
     deleteRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                setUpRooms();
                 alert("Selected room was successfully deleted");
+                setUpRooms();
             } else {
                 alert("Error: Selected room couldn't be deleted");
             }
@@ -163,7 +163,7 @@ createBtn.addEventListener("click", function (e) {
     prompt.classList.remove("off");
     main.classList.add("hideMain");
     let fN = document.getElementById("createRoomName");
-    fN.setAttribute("placeholder", key);
+    fN.setAttribute("placeholder", "Room 1");
 
     let form = document.getElementById("createRoomForm");
 
@@ -257,7 +257,6 @@ function setUpMenu() {
 
 function setUpRooms() {
     let request = new XMLHttpRequest();
-
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
@@ -279,7 +278,7 @@ function setUpRooms() {
                     let delBtn = document.createElement("button");
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add("delBtn");
-                    delBtn.setAttribute("key", room.name);
+                    delBtn.setAttribute("key", room["name"]);
                     delBtn.addEventListener('click', function (e) {
                         deleteRoom(this.getAttribute('key'));
                     });

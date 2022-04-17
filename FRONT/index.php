@@ -8,12 +8,7 @@
   <meta name="keywords" content="usi">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- FONTS -->
-
-
-  <!-- /FONTS -->
-
-  <link rel="icon" href="logo.png">
+  <link rel="icon" href="logo.jpeg">
 
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
@@ -39,7 +34,7 @@
 			<input id="signUpName" type="text" placeholder="Name" />
 			<input id="signUpEmail" type="email" placeholder="Email" />
 			<input id="signUpPassword" type="password" placeholder="Password" />
-			<button class="main-btn">Sign Up</button>
+			<button class="mainBtn">Sign Up</button>
 		</form>
 	</div>
 	<div class="form-container sign-in-container">
@@ -53,7 +48,7 @@
 			<input id="signInEmail" type="email" placeholder="Email" />
 			<input id="signInPassword" type="password" placeholder="Password" />
 			<a href="#">Forgot your password?</a>
-			<button class="main-btn">Sign In</button>
+			<button class="mainBtn">Sign In</button>
 		</form>
 	</div>
 	<div class="overlay-container">
@@ -61,13 +56,13 @@
 			<div class="overlay-panel overlay-left">
             <h1>Hello, Friend!</h1>
             <p>Enter your personal details and levrage power of our app</p>
-            <button class="main-btn ghost" id="signIn">Sign In</button>
+            <button class="mainBtn ghost" id="signIn">Sign In</button>
 			</div>
 			<div class="overlay-panel overlay-right">
             <h1>Welcome Back!</h1>
             <p>Enter your's personal information to login into your account</p>
             
-            <button class="main-btn ghost" id="signUp">Sign Up</button>
+            <button class="mainBtn ghost" id="signUp">Sign Up</button>
 			</div>
 		</div>
 	</div>

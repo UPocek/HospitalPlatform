@@ -8,12 +8,7 @@
   <meta name="keywords" content="usi">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- FONTS -->
-
-
-  <!-- /FONTS -->
-
-  <link rel="icon" href="logo.png">
+  <link rel="icon" href="logo.jpeg">
 
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
@@ -35,7 +30,7 @@
                 <option value="rest room">Rest room</option>
                 <option value="other">Other</option>
             </select>
-			<button class="main-btn">OK</button>
+			<button class="mainBtn">OK</button>
 		</form>
 	</div>
 
@@ -49,7 +44,7 @@
                 <option value="rest room">Rest room</option>
                 <option value="other">Other</option>
             </select>
-			<button class="main-btn">OK</button>
+			<button class="mainBtn">OK</button>
 		</form>
 	</div>
 
@@ -58,7 +53,7 @@
 			<h1>Schedule renovation</h1>
 			<input id="fromRenovation" type="text" placeholder="From (yyyy-MM-dd)" />
             <input id="toRenovation" type="text" placeholder="To (yyyy-MM-dd)" />
-			<button class="main-btn">OK</button>
+			<button class="mainBtn">OK</button>
 		</form>
 	</div>
 
