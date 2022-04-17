@@ -20,15 +20,15 @@ var user;
 
 // Helpers
 function getParamValue(name) {
-    var location = decodeURI(window.location.toString());
-    var index = location.indexOf("?") + 1;
-    var subs = location.substring(index, location.length);
-    var splitted = subs.split("&");
+    let location = decodeURI(window.location.toString());
+    let index = location.indexOf("?") + 1;
+    let subs = location.substring(index, location.length);
+    let splitted = subs.split("&");
 
-    for (var i = 0; i < splitted.length; i++) {
-        var s = splitted[i].split("=");
-        var pName = s[0];
-        var pValue = s[1];
+    for (let i = 0; i < splitted.length; i++) {
+        let s = splitted[i].split("=");
+        let pName = s[0];
+        let pValue = s[1];
         if (pName == name)
             return pValue;
     }
@@ -51,11 +51,10 @@ function showWindow(section) {
         case 3: s3.classList.add("active"); break;
         case 4: s4.classList.add("active"); break;
     }
-
 }
 
 var main = document.getElementsByTagName("main")[0];
-let id = getParamValue('id');
+var id = getParamValue('id');
 
 // POST - Renovation
 function renovateRoom(key) {
@@ -70,7 +69,7 @@ function renovateRoom(key) {
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
-        postRequest = new XMLHttpRequest();
+        let postRequest = new XMLHttpRequest();
 
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
@@ -110,7 +109,7 @@ function updateRoom(key) {
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
-        putRequest = new XMLHttpRequest();
+        let putRequest = new XMLHttpRequest();
 
         putRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
@@ -139,7 +138,7 @@ function updateRoom(key) {
 
 // DELETE - Room
 function deleteRoom(key) {
-    deleteRequest = new XMLHttpRequest();
+    let deleteRequest = new XMLHttpRequest();
 
     deleteRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -172,7 +171,7 @@ createBtn.addEventListener("click", function (e) {
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
-        postRequest = new XMLHttpRequest();
+        let postRequest = new XMLHttpRequest();
 
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
