@@ -328,6 +328,10 @@ function setUpPage() {
     setUpRooms();
 }
 
+function setUpFunctionality() {
+    setUpRenovations();
+}
+
 // ComplexRenovations
 
 var whichRenovation = document.getElementById("complexRenovation");
@@ -346,7 +350,7 @@ whichRenovation.addEventListener('change', function (e) {
     }
 });
 
-function setUpFunctionality() {
+function setUpRenovations() {
     let devideRoom = document.getElementById("complexDevide");
     let mergeRoom1 = document.getElementById("complexMerge1");
     let mergeRoom2 = document.getElementById("complexMerge2");

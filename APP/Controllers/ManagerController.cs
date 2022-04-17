@@ -39,6 +39,31 @@ namespace APP.Controllers
             return new JsonResult(dotNetObjList);
         }
 
+        // POST: api/Manager/rooms
+        [HttpPost("rooms")]
+        public async Task<IActionResult> CreateRoom(string id, Data data)
+        {
+            var collection = database.GetCollection<BsonDocument>("Rooms");
+
+            // If room with that name already exists abort action
+            if (collection.Find(Builders<BsonDocument>.Filter.Eq("name", data.name)).ToList().Count != 0)
+            {
+                return BadRequest();
+            }
+
+            var document = new BsonDocument
+            {
+                { "type", data.type },
+                { "name", data.name},
+                {"inRenovation", false},
+                { "equipment", new BsonDocument{}},
+            };
+
+            collection.InsertOne(document);
+
+            return Ok();
+        }
+
         // POST: api/Manager/renovations/1&t&t
         [HttpPost("renovations/{id}&{from}&{to}")]
         public async Task<IActionResult> CreateRenovation(string id, string from, string to)
@@ -48,6 +73,7 @@ namespace APP.Controllers
             var filter = Builders<BsonDocument>.Filter.Eq("room", id);
             var results = collection.Find(filter).ToList();
 
+            // Check if some examinations are already scheduled at that time and if so abort action 
             foreach (var el in results)
             {
                 if (el["date"] >= from && el["date"] <= to)
@@ -70,6 +96,7 @@ namespace APP.Controllers
 
             string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
+            // If renovation starts now update data in DB
             if (date == from)
             {
                 collection = database.GetCollection<BsonDocument>("Rooms");
@@ -98,7 +125,6 @@ namespace APP.Controllers
                 }
             }
 
-            // If room can be renovated in selected period first devide it and then create renovations
             collection = database.GetCollection<BsonDocument>("Rooms");
             filter = Builders<BsonDocument>.Filter.Eq("name", id);
             var result = collection.Find(filter).FirstOrDefault();
@@ -199,8 +225,6 @@ namespace APP.Controllers
                     return BadRequest();
                 }
             }
-
-            // If rooms can be renovated in selected period create renovation
             collection = database.GetCollection<BsonDocument>("Rooms");
             var filter1 = Builders<BsonDocument>.Filter.Eq("name", id1);
             var room1 = collection.Find(filter1).FirstOrDefault();
@@ -283,30 +307,6 @@ namespace APP.Controllers
             return Ok();
         }
 
-        // POST: api/Manager/rooms
-        [HttpPost("rooms")]
-        public async Task<IActionResult> CreateRoom(string id, Data data)
-        {
-            var collection = database.GetCollection<BsonDocument>("Rooms");
-
-            if (collection.Find(Builders<BsonDocument>.Filter.Eq("name", data.name)).ToList().Count != 0)
-            {
-                return BadRequest();
-            }
-
-            var document = new BsonDocument
-            {
-                { "type", data.type },
-                { "name", data.name},
-                {"inRenovation", false},
-                { "equipment", new BsonDocument{}},
-            };
-
-            collection.InsertOne(document);
-
-            return Ok();
-        }
-
         // PUT: api/Manager/rooms/1
         [HttpPut("rooms/{id}")]
         public async Task<IActionResult> UpdateRoom(string id, Data data)
@@ -320,6 +320,7 @@ namespace APP.Controllers
                 return BadRequest();
             }
 
+            // Update informations about the room wherever it is located
             var update = Builders<BsonDocument>.Update.Set("type", data.type);
             collection.UpdateOne(filter, update);
             update = Builders<BsonDocument>.Update.Set("name", data.name);
