@@ -17,14 +17,11 @@ body {
 #three,
 #four {
     display: none;
+    margin-bottom: 10vh
 }
 
 .active {
     display: block !important;
-}
-
-#one {
-    margin-bottom: 10vh
 }
 
 /* LOGIN FORM */

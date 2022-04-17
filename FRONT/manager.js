@@ -60,15 +60,16 @@ let id = getParamValue('id');
 // POST - Renovation
 function renovateRoom(key) {
     let prompt = document.getElementById("renovationPrompt");
-    prompt.classList.toggle("off");
-    main.classList.toggle("hideMain");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
 
     let form = document.getElementById("renovationForm");
 
     form.addEventListener('submit', function (e) {
-        prompt.classList.toggle("off");
-        main.classList.toggle("hideMain");
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
         e.preventDefault();
+        e.stopImmediatePropagation();
         postRequest = new XMLHttpRequest();
 
         postRequest.onreadystatechange = function () {
@@ -97,17 +98,18 @@ function renovateRoom(key) {
 // PUT - Room
 function updateRoom(key) {
     let prompt = document.getElementById("roomPrompt");
-    prompt.classList.toggle("off");
-    main.classList.toggle("hideMain");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
     let fN = document.getElementById("roomName");
     fN.setAttribute("placeholder", key);
 
     let form = document.getElementById("roomForm");
 
     form.addEventListener('submit', function (e) {
-        prompt.classList.toggle("off");
-        main.classList.toggle("hideMain");
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
         e.preventDefault();
+        e.stopImmediatePropagation();
         putRequest = new XMLHttpRequest();
 
         putRequest.onreadystatechange = function () {
@@ -158,17 +160,18 @@ function deleteRoom(key) {
 let createBtn = document.getElementById("addBtn");
 createBtn.addEventListener("click", function (e) {
     let prompt = document.getElementById("createRoomPrompt");
-    prompt.classList.toggle("off");
-    main.classList.toggle("hideMain");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
     let fN = document.getElementById("createRoomName");
     fN.setAttribute("placeholder", key);
 
     let form = document.getElementById("createRoomForm");
 
     form.addEventListener('submit', function (e) {
-        prompt.classList.toggle("off");
-        main.classList.toggle("hideMain");
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
         e.preventDefault();
+        e.stopImmediatePropagation();
         postRequest = new XMLHttpRequest();
 
         postRequest.onreadystatechange = function () {
@@ -261,8 +264,8 @@ function setUpRooms() {
                 let response = JSON.parse(this.responseText);
                 let table = document.getElementById("roomTable");
                 table.innerHTML = "";
-                for (key in response) {
-                    let room = response[key];
+                for (let i in response) {
+                    let room = response[i];
                     let newRow = document.createElement("tr");
 
                     let cName = document.createElement("td");
@@ -286,7 +289,7 @@ function setUpRooms() {
                     let putBtn = document.createElement("button");
                     putBtn.innerHTML = '<i data-feather="edit-2"></i>';
                     putBtn.classList.add("updateBtn");
-                    putBtn.setAttribute("key", room.name);
+                    putBtn.setAttribute("key", room["name"]);
                     putBtn.addEventListener('click', function (e) {
                         updateRoom(this.getAttribute('key'));
                     });
@@ -296,7 +299,7 @@ function setUpRooms() {
                     let renovateBtn = document.createElement("button");
                     renovateBtn.innerHTML = '<i data-feather="refresh-ccw"></i>';;
                     renovateBtn.classList.add("renovateBtn");
-                    renovateBtn.setAttribute("key", room.name);
+                    renovateBtn.setAttribute("key", room["name"]);
                     renovateBtn.addEventListener('click', function (e) {
                         renovateRoom(this.getAttribute('key'));
                     });

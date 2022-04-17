@@ -13,7 +13,7 @@
 
   <!-- /FONTS -->
 
-  <link rel="icon" href="black.jpg">
+  <link rel="icon" href="logo.png">
 
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>

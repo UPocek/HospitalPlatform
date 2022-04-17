@@ -69,7 +69,6 @@ namespace APP.Controllers
             collection.InsertOne(document);
 
             string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
-            Console.WriteLine(date);
 
             if (date == from)
             {
