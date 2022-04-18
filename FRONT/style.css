@@ -1963,7 +1963,7 @@ td button {
     display: flex;
     flex-direction: row;
     width: 80%;
-    margin: 2vh auto;
+    margin: 20px auto;
     justify-content: right;
     align-items: center;
 }

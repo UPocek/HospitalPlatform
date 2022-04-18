@@ -143,7 +143,45 @@
     </section>
 
     <section id="two">
-
+    <div>
+        <form id="filters" class="myForm">
+            <div>
+            <label for="filterSearch">Search:</label>
+            <input id="filterSearch" type="text" value="" placeholder="Enter search term">
+            </div>
+            <div>
+            <label for="filterRoomType">Room type:</label>
+            <select name="filterRoomType" id="filterRoomType">
+                <option value="" selected>Any</option>
+                <option value="warehouse">Warehouse</option>
+                <option value="examination room">Examination room</option>
+                <option value="operation room">Operation room</option>
+                <option value="rest room">Rest room</option>
+                <option value="other">Other</option>
+            </select>
+            </div>
+            <div>
+            <label for="filterEquipmentQuantity">Equipment quantity:</label>
+            <select name="filterEquipmentQuantity" id="filterEquipmentQuantity">
+                <option value="" selected>Any</option>
+                <option value="0">Nema na stanju</option>
+                <option value="1-10">1-10</option>
+                <option value="11-20">11-20</option>
+                <option value="20+">20+</option>
+            </select>
+            </div>
+            <div>
+            <label for="filterEquipmentType">Equipment type:</label>
+            <select name="filterEquipmentType" id="filterEquipmentType">
+                <option value="" selected>Any</option>
+                <option value="examination equipment">Examination equipment</option>
+                <option value="operation equipment">Operation equipment</option>
+                <option value="room furniture">Room furniture</option>
+                <option value="hallway equipment">Hallway equipment</option>
+            </select>
+            </div>
+        </form>
+    </div>
     <div id="equipment">
             <div class="tbl-content">
                 <table cellpadding="0" cellspacing="0" border="0">
