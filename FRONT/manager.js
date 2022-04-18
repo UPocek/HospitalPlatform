@@ -240,16 +240,16 @@ function setUpMenu() {
     let item3 = document.getElementById("option3");
     let item4 = document.getElementById("option4");
 
-    item1.addEventListener('click', function (e) {
+    item1.addEventListener('click', (e) => {
         showWindow(1);
     });
-    item2.addEventListener('click', function (e) {
+    item2.addEventListener('click', (e) => {
         showWindow(2);
     });
-    item3.addEventListener('click', function (e) {
+    item3.addEventListener('click', (e) => {
         showWindow(3);
     });
-    item4.addEventListener('click', function (e) {
+    item4.addEventListener('click', (e) => {
         showWindow(4);
     });
 }
@@ -330,6 +330,7 @@ function setUpPage() {
 
 function setUpFunctionality() {
     setUpRenovations();
+    setUpEquipment(mainResponse, "empty");
 }
 
 // ComplexRenovations
@@ -370,12 +371,8 @@ function setUpRenovations() {
     }
     let formDevide = devidePanel.querySelector("form");
     let formMerge = mergePanel.querySelector("form");
-    formDevide.addEventListener('submit', function (e) {
-        makeDevide(e);
-    });
-    formMerge.addEventListener('submit', function (e) {
-        makeMerge(e);
-    });
+    formDevide.addEventListener('submit', makeDevide);
+    formMerge.addEventListener('submit', makeMerge);
 }
 
 function makeDevide(e) {
@@ -433,4 +430,136 @@ function makeMerge(e) {
     } else {
         alert("Error: Informations were not entered correctly");
     }
+}
+
+// Equipment Managment
+
+function setUpEquipment(myFilter) {
+    let equipmentTable = document.getElementById("equipmentTable");
+    equipmentTable.innerHTML = "";
+    for (let i in mainResponse) {
+        let room = mainResponse[i];
+
+        for (let j in room["equipment"]) {
+            if (myFilter.includes("term")) {
+                let tokens = myFilter.split("&");
+                let filterValue;
+                for (let token in tokens) {
+                    if (tokens[token].includes("term")) {
+                        filterValue = tokens[token].split("|")[1];
+                        break;
+                    }
+                }
+                if (!(room["equipment"][j]["type"].includes(filterValue) || room["equipment"][j]["quantity"] == filterValue || j.includes(filterValue) || room["name"].includes(filterValue))) {
+                    continue;
+                }
+            }
+            if (myFilter.includes("room")) {
+                let tokens = myFilter.split("&");
+                let filterValue;
+                for (let token in tokens) {
+                    if (tokens[token].includes("room")) {
+                        filterValue = tokens[token].split("|")[1];
+                        break;
+                    }
+                }
+                if (room["type"] != filterValue) {
+                    continue;
+                }
+            }
+            if (myFilter.includes("equipment")) {
+                let tokens = myFilter.split("&");
+                let filterValue;
+                for (let token in tokens) {
+                    if (tokens[token].includes("equipment")) {
+                        filterValue = tokens[token].split("|")[1];
+                        break;
+                    }
+                }
+                if (room["equipment"][j]["type"] != filterValue) {
+                    continue;
+                }
+            }
+            if (myFilter.includes("quantity")) {
+                let tokens = myFilter.split("&");
+                let filterValue;
+                for (let token in tokens) {
+                    if (tokens[token].includes("quantity")) {
+                        filterValue = tokens[token].split("|")[1];
+                        break;
+                    }
+                }
+                if (filterValue.includes("-")) {
+                    let x = filterValue.split("-");
+                    if (room["equipment"][j]["quantity"] < x[0] || room["equipment"][j]["quantity"] > x[1]) {
+                        continue;
+                    }
+                } else if (filterValue.includes("+")) {
+                    let x = filterValue.split("+");
+                    if (room["equipment"][j]["quantity"] < x[0]) {
+                        continue;
+                    }
+                } else if (room["equipment"][j]["quantity"] != 0) {
+                    continue;
+                }
+            }
+
+            let newRow = document.createElement("tr");
+
+            let cName = document.createElement("td");
+            cName.innerText = j;
+            let cType = document.createElement("td");
+            cType.innerText = room["equipment"][j]["type"];
+            let cQuantity = document.createElement("td");
+            cQuantity.innerText = room["equipment"][j]["quantity"];
+            let cRoom = document.createElement("td");
+            cRoom.innerText = room["name"];
+
+            newRow.appendChild(cName);
+            newRow.appendChild(cType);
+            newRow.appendChild(cQuantity);
+            newRow.appendChild(cRoom);
+            equipmentTable.appendChild(newRow);
+        }
+    }
+}
+
+var filter0 = document.getElementById("filterSearch");
+var filter1 = document.getElementById("filterRoomType");
+var filter2 = document.getElementById("filterEquipmentQuantity");
+var filter3 = document.getElementById("filterEquipmentType");
+
+filter0.addEventListener('input', updateEquipmentTable);
+filter1.addEventListener('change', updateEquipmentTable);
+filter2.addEventListener('change', updateEquipmentTable);
+filter3.addEventListener('change', updateEquipmentTable);
+
+function updateEquipmentTable(e) {
+    e.preventDefault();
+
+    let finalFilter = "";
+    let filterValue0 = filter0.value;
+    let filterValue1 = filter1.value;
+    let filterValue2 = filter2.value;
+    let filterValue3 = filter3.value;
+
+    if (filterValue0 != "") {
+        finalFilter += "term|" + filterValue0 + "&";
+    }
+    if (filterValue1 != "") {
+        finalFilter += "room|" + filterValue1 + "&";
+    }
+    if (filterValue2 != "") {
+        finalFilter += "quantity|" + filterValue2 + "&";
+    }
+    if (filterValue3 != "") {
+        finalFilter += "equipment|" + filterValue3 + "&";
+    }
+    if (finalFilter.endsWith("&")) {
+        finalFilter = finalFilter.slice(0, -1);
+    }
+    if (finalFilter == "") {
+        finalFilter += "empty";
+    }
+    setUpEquipment(finalFilter);
 }

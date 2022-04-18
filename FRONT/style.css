@@ -1833,7 +1833,8 @@ tr:nth-child(even) {
     background-color: #F5F5F5;
 }
 
-#rooms {
+#rooms,
+#equipment {
     border: 2px solid #153B50;
     border-radius: 10px;
     width: 80%;
@@ -1956,6 +1957,20 @@ td button {
     align-items: center;
 }
 
+/* Equipment */
+
+#filters {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin: 20px auto;
+    justify-content: right;
+    align-items: center;
+}
+
+#filters div {
+    margin: 0 50px;
+}
 
 /* Header */
 @media (max-width:1069px) {
