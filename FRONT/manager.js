@@ -331,6 +331,7 @@ function setUpPage() {
 function setUpFunctionality() {
     setUpRenovations();
     setUpEquipment(mainResponse, "empty");
+    setUpTransfer();
 }
 
 // ComplexRenovations
@@ -562,4 +563,58 @@ function updateEquipmentTable(e) {
         finalFilter += "empty";
     }
     setUpEquipment(finalFilter);
+}
+
+// Transfer
+var room1 = document.getElementById("transfer1");
+var room2 = document.getElementById("transfer2");
+function setUpTransfer() {
+    room1.innerHTML = "";
+    room2.innerHTML = "";
+    for (let i in mainResponse) {
+        let room = mainResponse[i];
+        let newOption = document.createElement("option");
+        newOption.setAttribute("value", room["name"]);
+        newOption.innerText = room["name"];
+        room1.appendChild(newOption);
+        room2.appendChild(newOption.cloneNode(true));
+    }
+    showSelectedRoomEquipment();
+}
+
+room1.addEventListener('change', showSelectedRoomEquipment);
+room2.addEventListener('change', showSelectedRoomEquipment);
+
+function showSelectedRoomEquipment() {
+    let container = document.getElementById("transferOptions");
+    container.innerHTML = "";
+    let roomFrom;
+    let roomTo;
+    for (let i in mainResponse) {
+        if (mainResponse[i]["name"] == room1.value) {
+            roomFrom = mainResponse[i];
+        }
+        if (mainResponse[i]["name"] == room2.value) {
+            roomTo = mainResponse[i];
+        }
+    }
+    for (let item in roomFrom["equipment"]) {
+
+        let inRoom1 = roomFrom["equipment"][item]["quantity"];
+        let inRoom2;
+        try {
+            inRoom2 = roomTo["equipment"][item]["quantity"];
+        } catch (error) {
+            inRoom2 = 0;
+        }
+        let equipmentField = document.createElement("p");
+        equipmentField.innerText = item + (" (room1: " + inRoom1 + "| room2: " + inRoom2 + ") ");
+        equipmentField.classList.add("pushLeft");
+        let quantityField = document.createElement("input");
+        quantityField.setAttribute("type", "text");
+        quantityField.setAttribute("autocomplete", "off")
+        quantityField.setAttribute("placeholder", "Enter how much to transfer (max " + inRoom1 + " )");
+        container.appendChild(equipmentField);
+        container.appendChild(quantityField);
+    }
 }
