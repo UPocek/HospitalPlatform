@@ -1822,6 +1822,20 @@ footer {
     padding: 10px;
 }
 
+.blockBtn{
+    color: Red;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.recordBtn{
+    color: Blue;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
 .add {
     color: green;
     border: none;
@@ -1834,7 +1848,8 @@ tr:nth-child(even) {
 }
 
 #rooms,
-#equipment {
+#equipment,
+#patients {
     border: 2px solid #153B50;
     border-radius: 10px;
     width: 80%;

@@ -12,6 +12,9 @@ loginForm.addEventListener('submit', function (e) {
                 if (response["role"] == "manager") {
                     window.location.replace("manager.php" + "?id=" + response["id"]);
                 }
+                if (response["role"] == "secretary") {
+                    window.location.replace("secretary.php" + "?id=" + response["id"]);
+                }
             }
         }
     }
