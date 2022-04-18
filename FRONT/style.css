@@ -1917,6 +1917,11 @@ td button {
         0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.patientPrompt{
+    text-align: center;
+    height: 720px;
+}
+
 .colDir {
     display: flex;
     flex-direction: column;

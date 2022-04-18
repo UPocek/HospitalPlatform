@@ -19,6 +19,18 @@
 
 <body>
     <?php include 'header.html';?>
+    <div id="createPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
+		<form id="createPatientForm" class="colDir myForm">
+			<h1>Create patient</h1>
+			<input id="createPatientFirstName" type="text" placeholder="" />
+            <input id="createPatientLastName" type="text" placeholder="" />
+            <input id="createPatientEmail" type="text" placeholder="" />
+            <input id="createPatientPassword" type="text" placeholder="" />
+            <input id="createPatientHeight" type="number" max=300 min=0 placeholder="" />
+            <input id="createPatientWeight" type="number" max=600 min=0 placeholder="" />
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
     <main>
 
     <div id="hi">
@@ -33,8 +45,8 @@
                 <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Surname</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
                         <th>Password</th>
                         <th>Id</th>

@@ -50,9 +50,48 @@ namespace APP.Controllers
             return new JsonResult(dotNetObj);
         }
 
-        // GET by Id action
+        // POST: api/Secretary/patients
+        [HttpPost("patients")]
+        public async Task<IActionResult> CreatePatient(string id, Patient patient)
+        {
+            var collection = database.GetCollection<BsonDocument>("Patients");
 
-        // POST action
+            Random rnd = new Random();
+            patient.id = rnd.Next(901,10000).ToString();
+
+            // If patient with that id already exists generate another
+            do
+            {
+                patient.id = rnd.Next(901,10000).ToString();
+            }
+            while(collection.Find(Builders<BsonDocument>.Filter.Eq("id", patient.id)).ToList().Count != 0);
+
+            var document = new BsonDocument
+            {
+                {"firstName", patient.firstName },
+                {"lastName", patient.lastName},
+                {"role", "patient"},
+                {"email", patient.email},
+                {"password", patient.password},
+                {"active", patient.active},
+                {"id", patient.id},
+                {"medicalRecord", new BsonDocument{
+                        {"height", patient.medicalRecord.height},
+                        {"weight", patient.medicalRecord.weight},
+                        {"diseases", new BsonArray()},
+                        {"alergies", new BsonArray()},
+                        {"drugs", new BsonArray()},
+                        {"examinations", new BsonArray()},
+                        {"medicalInstructions", new BsonArray()}
+
+                    }
+                },
+            };
+
+            collection.InsertOne(document);
+
+            return Ok();
+        }
 
         // PUT action
 
