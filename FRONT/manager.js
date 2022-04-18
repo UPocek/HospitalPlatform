@@ -330,6 +330,7 @@ function setUpPage() {
 
 function setUpFunctionality() {
     setUpRenovations();
+    setUpEquipment(mainResponse);
 }
 
 // ComplexRenovations
@@ -432,5 +433,34 @@ function makeMerge(e) {
         mergeRequest.send();
     } else {
         alert("Error: Informations were not entered correctly");
+    }
+}
+
+// Equipment Managment
+
+function setUpEquipment(responseToUse) {
+    let equipmentTable = document.getElementById("equipmentTable");
+    equipmentTable.innerHTML = "";
+    for (let i in responseToUse) {
+        let room = responseToUse[i];
+
+        for (let j in room["equipment"]) {
+            let newRow = document.createElement("tr");
+
+            let cName = document.createElement("td");
+            cName.innerText = j;
+            let cType = document.createElement("td");
+            cType.innerText = room["equipment"][j]["type"];
+            let cQuantity = document.createElement("td");
+            cQuantity.innerText = room["equipment"][j]["quantity"];
+            let cRoom = document.createElement("td");
+            cRoom.innerText = room["name"];
+
+            newRow.appendChild(cName);
+            newRow.appendChild(cType);
+            newRow.appendChild(cQuantity);
+            newRow.appendChild(cRoom);
+            equipmentTable.appendChild(newRow);
+        }
     }
 }

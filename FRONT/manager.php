@@ -144,6 +144,24 @@
 
     <section id="two">
 
+    <div id="equipment">
+            <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>In Room</th>
+                    </tr>
+                </thead>
+                <tbody id="equipmentTable">
+
+                </tbody>
+                </table>
+            </div>
+        </div>
+
     </section>
 
     <section id="three">
