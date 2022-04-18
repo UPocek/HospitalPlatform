@@ -201,7 +201,7 @@
     </div>
     <div id="transfers">
         <h3>Transfer equipment</h3>
-        <form class="myForm">
+        <form id="transferForm" class="myForm">
             <div>
                 <div>
                 <label for="transfer1">Room 1 (From):</label>
