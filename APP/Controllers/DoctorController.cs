@@ -1,28 +1,57 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using APP.Models;
+using MongoDB.Driver;
+using Models;
 
 [ApiController]
 [Route("api/[controller]")]
 public class DoctorController : ControllerBase
 {
+    private IMongoDatabase database;
     public DoctorController()
     {
+        var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
+        var client = new MongoClient(settings);
+        database = client.GetDatabase("USI");
+    }
+    
+    [HttpGet("examinations")]
+    public async Task<List<Examination>> GetAllExaminations()
+    {
+        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => true).ToList();
     }
 
-    // GET all action
+    [HttpGet("examinations/{id}")]
+    public async Task<Examination> GetExamination(string id)
+    {
+        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => e.id == id).FirstOrDefault();
+    }
 
-    // GET by Id action
+    [HttpPost("examinations")]
+    public async Task<IActionResult> CreateExamination([FromBody] Examination examination)
+    {
+        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationCollection.InsertOne(examination);
+        return Ok();       
+    }
 
-    // POST action
+    [HttpPut("examinations/{id}")]
+    public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
+    {
+        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationCollection.ReplaceOne(e => e.id == id, examination);
+        return Ok();
+        
+    }
 
-    // PUT action
-
-    // DELETE action
+    [HttpDelete("examinations/{id}")]
+    public async Task<IActionResult> DeleteExamination(string id)
+    {
+        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationCollection.DeleteOne(e => e.id == id);
+        return Ok(); 
+    }
+    
 }
