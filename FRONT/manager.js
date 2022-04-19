@@ -614,7 +614,7 @@ function showSelectedRoomEquipment() {
         let quantityField = document.createElement("input");
         quantityField.setAttribute("type", "text");
         quantityField.setAttribute("autocomplete", "off")
-        quantityField.setAttribute("placeholder", "Enter how much to transfer (max " + inRoom1 + " )");
+        quantityField.setAttribute("placeholder", "Enter how much to transfer ( max " + inRoom1 + " )");
         container.appendChild(equipmentField);
         container.appendChild(quantityField);
     }
@@ -640,18 +640,24 @@ transferForm.addEventListener('submit', function (e) {
     let finalRoom1 = room1.value;
     let finalRoom2 = room2.value;
     let finalDate = document.getElementById("transferDate").value;
+    let ok = true;
     let arr = []
 
     let children = container.children
     for (let i = 0; i < children.length; i += 2) {
         if (children[i + 1].value) {
-            let el = {}
-            el[children[i].innerText.split(" ")[0]] = children[i + 1].value;
-            arr.push(el)
+            if (children[i + 1].getAttribute("placeholder").split(" ")[7] >= children[i + 1].value) {
+                let el = {};
+                el[children[i].innerText.split(" ")[0]] = children[i + 1].value;
+                arr.push(el);
+            } else {
+                ok = false;
+                break;
+            }
         }
     }
 
-    if (finalRoom1 != finalRoom2 && arr.length != 0 && finalDate.length == 10 && finalDate >= date.toISOString().split('T')[0]) {
+    if (ok && finalRoom1 != finalRoom2 && arr.length != 0 && finalDate.length == 10 && finalDate >= date.toISOString().split('T')[0]) {
         transferRequest.open('POST', 'https://localhost:7291/api/manager/transfer');
         transferRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         transferRequest.send(JSON.stringify({ "room1": finalRoom1, "room2": finalRoom2, "when": finalDate, "equipment": arr }));
