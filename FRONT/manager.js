@@ -331,6 +331,7 @@ function setUpPage() {
 function setUpFunctionality() {
     setUpRenovations();
     setUpEquipment(mainResponse, "empty");
+    setUpTransfer();
 }
 
 // ComplexRenovations
@@ -543,16 +544,16 @@ function updateEquipmentTable(e) {
     let filterValue2 = filter2.value;
     let filterValue3 = filter3.value;
 
-    if (filterValue0 != "") {
+    if (filterValue0) {
         finalFilter += "term|" + filterValue0 + "&";
     }
-    if (filterValue1 != "") {
+    if (filterValue1) {
         finalFilter += "room|" + filterValue1 + "&";
     }
-    if (filterValue2 != "") {
+    if (filterValue2) {
         finalFilter += "quantity|" + filterValue2 + "&";
     }
-    if (filterValue3 != "") {
+    if (filterValue3) {
         finalFilter += "equipment|" + filterValue3 + "&";
     }
     if (finalFilter.endsWith("&")) {
@@ -563,3 +564,106 @@ function updateEquipmentTable(e) {
     }
     setUpEquipment(finalFilter);
 }
+
+// Transfer
+var room1 = document.getElementById("transfer1");
+var room2 = document.getElementById("transfer2");
+var container = document.getElementById("transferOptions");
+
+function setUpTransfer() {
+    room1.innerHTML = "";
+    room2.innerHTML = "";
+    for (let i in mainResponse) {
+        let room = mainResponse[i];
+        let newOption = document.createElement("option");
+        newOption.setAttribute("value", room["name"]);
+        newOption.innerText = room["name"];
+        room1.appendChild(newOption);
+        room2.appendChild(newOption.cloneNode(true));
+    }
+    showSelectedRoomEquipment();
+}
+
+room1.addEventListener('change', showSelectedRoomEquipment);
+room2.addEventListener('change', showSelectedRoomEquipment);
+
+function showSelectedRoomEquipment() {
+    container.innerHTML = "";
+    let roomFrom;
+    let roomTo;
+    for (let i in mainResponse) {
+        if (mainResponse[i]["name"] == room1.value) {
+            roomFrom = mainResponse[i];
+        }
+        if (mainResponse[i]["name"] == room2.value) {
+            roomTo = mainResponse[i];
+        }
+    }
+    for (let item in roomFrom["equipment"]) {
+
+        let inRoom1 = roomFrom["equipment"][item]["quantity"];
+        let inRoom2;
+        try {
+            inRoom2 = roomTo["equipment"][item]["quantity"];
+        } catch (error) {
+            inRoom2 = 0;
+        }
+        let equipmentField = document.createElement("p");
+        equipmentField.innerText = item + (" (room1: " + inRoom1 + "| room2: " + inRoom2 + ") ");
+        equipmentField.classList.add("pushLeft");
+        let quantityField = document.createElement("input");
+        quantityField.setAttribute("type", "text");
+        quantityField.setAttribute("autocomplete", "off")
+        quantityField.setAttribute("placeholder", "Enter how much to transfer ( max " + inRoom1 + " )");
+        container.appendChild(equipmentField);
+        container.appendChild(quantityField);
+    }
+}
+
+var transferForm = document.getElementById("transferForm");
+transferForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let transferRequest = new XMLHttpRequest();
+
+    transferRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Transfer sucessfuly scheduled");
+                setUpRooms();
+            } else {
+                alert("Error: Entered room informations are invalid");
+            }
+        }
+    }
+
+    let finalRoom1 = room1.value;
+    let finalRoom2 = room2.value;
+    let finalDate = document.getElementById("transferDate").value;
+    let ok = true;
+    let arr = []
+
+    let children = container.children
+    for (let i = 0; i < children.length; i += 2) {
+        if (children[i + 1].value) {
+            if (children[i + 1].getAttribute("placeholder").split(" ")[7] >= children[i + 1].value) {
+                let el = {};
+                el[children[i].innerText.split(" ")[0]] = children[i + 1].value;
+                arr.push(el);
+            } else {
+                ok = false;
+                break;
+            }
+        }
+    }
+
+    if (ok && finalRoom1 != finalRoom2 && arr.length != 0 && finalDate.length == 10 && finalDate >= date.toISOString().split('T')[0]) {
+        transferRequest.open('POST', 'https://localhost:7291/api/manager/transfer');
+        transferRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        transferRequest.send(JSON.stringify({ "room1": finalRoom1, "room2": finalRoom2, "when": finalDate, "equipment": arr }));
+    } else {
+        alert("Error: Transfer informations invalide");
+    }
+
+
+});

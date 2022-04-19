@@ -183,22 +183,53 @@
         </form>
     </div>
     <div id="equipment">
-            <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Quantity</th>
-                        <th>In Room</th>
-                    </tr>
-                </thead>
-                <tbody id="equipmentTable">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>In Room</th>
+                </tr>
+            </thead>
+            <tbody id="equipmentTable">
 
-                </tbody>
-                </table>
-            </div>
+            </tbody>
+            </table>
         </div>
+    </div>
+    <div id="transfers">
+        <h3>Transfer equipment</h3>
+        <form id="transferForm" class="myForm">
+            <div>
+                <div>
+                <label for="transfer1">Room 1 (From):</label>
+                <select name="transfer1" id="transfer1"></select>
+                </div>
+                <div>
+                <label for="transfer2">Room 2 (To):</label>
+                <select name="transfer2" id="transfer2"></select>
+                </div>
+            </div>
+            <div class="spacious">
+                <div>
+                <h4>What to transfer:</h4>
+                </div>
+                <div>
+                <label for="transferDate">Transfer date:</label>
+                <input id="transferDate" type="text" placeholder="Date (yyyy-MM-dd)" autocomplete="off"/>
+                </div>
+            </div>
+            <div id="transferOptions">
+                <input id="t" type="text" autocomplete="off"/>
+                <input id="t" type="text" autocomplete="off"/>
+            </div>
+            <div id="correctPos">
+            <button class="mainBtn">Transfer</button>
+            </div>
+        </form>
+    </div>
 
     </section>
 
