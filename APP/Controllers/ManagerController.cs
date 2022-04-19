@@ -307,6 +307,44 @@ namespace APP.Controllers
             return Ok();
         }
 
+        // POST: api/Manager/transfer
+        [HttpPost("transfer")]
+        public async Task<IActionResult> CreateTransfer(Transfer transfer)
+        {
+            BsonDocument transferEquipment = new BsonDocument();
+            var collection = database.GetCollection<BsonDocument>("Rooms");
+            var filter1 = Builders<BsonDocument>.Filter.Eq("name", transfer.room1);
+            var filter2 = Builders<BsonDocument>.Filter.Eq("name", transfer.room2);
+            foreach (var el in transfer.equipment)
+            {
+                foreach (var item in el)
+                {
+                    var update = Builders<BsonDocument>.Update.Inc("equipment." + item.Key + ".quantity", -1 * Int32.Parse(item.Value));
+                    collection.UpdateOne(filter1, update);
+                    update = Builders<BsonDocument>.Update.Inc("equipment." + item.Key + ".quantity", Int32.Parse(item.Value));
+                    collection.UpdateOne(filter2, update);
+
+                    var temp = new BsonDocument { { item.Key, item.Value } };
+                    transferEquipment.AddRange(temp);
+                }
+            }
+
+            var document = new BsonDocument
+            {
+                { "date", transfer.when },
+                { "room1", transfer.room1},
+                { "room2", transfer.room2},
+                {"done", false},
+                { "equipment", transferEquipment},
+            };
+
+            collection = database.GetCollection<BsonDocument>("RelocationOfEquipment");
+            collection.InsertOne(document);
+
+            return Ok();
+        }
+
+
         // PUT: api/Manager/rooms/1
         [HttpPut("rooms/{id}")]
         public async Task<IActionResult> UpdateRoom(string id, Data data)
