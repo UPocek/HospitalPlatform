@@ -42,15 +42,18 @@
         </div>
         <div id="patients">
             <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0">
+                <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th class="smallerWidth">First Name</th>
+                        <th class="smallerWidth">Last Name</th>
                         <th>Email</th>
-                        <th>Password</th>
-                        <th>Id</th>
-                        <th>Medical Record<th>
+                        <th width = 150>Password</th>
+                        <th class="smallerWidth">Id</th>
+                        <th class="smallerWidth">Medical Record</th>
+                        <th class="smallerWidth"></th>
+                        <th class="smallerWidth"></th>
+                        <th class="smallerWidth"></th>
                     </tr>
                 </thead>
                 <tbody id="patientTable">

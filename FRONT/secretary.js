@@ -91,18 +91,21 @@ function setUpPatients() {
                     pMedRecord.appendChild(recordBtn);
 
                     let one = document.createElement("td");
+                    one.classList.add("smallerWidth");
                     let delBtn = document.createElement("button");
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add("delBtn");
                     one.appendChild(delBtn);
 
                     let two = document.createElement("td");
+                    two.classList.add("smallerWidth");
                     let putBtn = document.createElement("button");
                     putBtn.innerHTML = '<i data-feather="edit-2"></i>';
                     putBtn.classList.add("updateBtn");
                     two.appendChild(putBtn);
 
                     let three = document.createElement("td");
+                    three.classList.add("smallerWidth");
                     let blockBtn = document.createElement("button");
                     blockBtn.innerHTML = '<i data-feather="x-octagon"></i>';;
                     blockBtn.classList.add("blockBtn");
@@ -168,9 +171,10 @@ createBtn.addEventListener("click", function (e) {
                 if (this.status == 200) {
                     alert("Patient sucessfuly created");
                     setUpPatients();
-                } else {
+                }else{
                     alert("Error: Entered patient information is invalid");
                 }
+                
             }
         }
 
@@ -196,8 +200,8 @@ createBtn.addEventListener("click", function (e) {
                 "role": "patient",
                 "email": finalEmail,
                 "password": finalPassword,
-                "active" : 0,
-                "id" : "",
+                "active" : "1",
+                "id" : 0,
                 "medicalRecord":
                     {
                         "height": finalHeight,
