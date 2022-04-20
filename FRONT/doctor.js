@@ -23,8 +23,7 @@ function getParamValue(name) {
 let mainResponse;
 let doctorId = getParamValue('id');
 
-window.addEventListener("load", function () {
-
+function showExaminations(){
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -46,6 +45,7 @@ window.addEventListener("load", function () {
                     examinationType.innerText = examination["type"];
                     let isUrgent = document.createElement("td");
                     isUrgent.innerText = examination["urgent"];
+
                     let one = document.createElement("td");
                     let patientBtn = document.createElement("button");
                     patientBtn.innerHTML = '<i data-feather="user"></i>';
@@ -55,12 +55,23 @@ window.addEventListener("load", function () {
                     });
                     one.appendChild(patientBtn);
 
+                    let two = document.createElement("td");
+                    let delBtn = document.createElement("button");
+                    delBtn.innerHTML = '<i data-feather="trash"></i>';
+                    delBtn.classList.add("delBtn");
+                    delBtn.setAttribute("key", examination["id"]);
+                    delBtn.addEventListener('click', function (e) {
+                        deleteExamination(delBtn.getAttribute('key'));
+                    });
+                    two.appendChild(delBtn);
+
                     newRow.appendChild(examinationDate);
                     newRow.appendChild(examinationDone);
                     newRow.appendChild(examinationRoom);
                     newRow.appendChild(examinationType);
                     newRow.appendChild(isUrgent);
                     newRow.appendChild(one);
+                    newRow.appendChild(two);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -70,7 +81,9 @@ window.addEventListener("load", function () {
 
     request.open('GET', 'https://localhost:7291/api/doctor/examinations/doctor_id/' + doctorId);
     request.send();
-});
+}
+
+window.addEventListener("load", showExaminations);
 
 let scheduleDateButton = document.getElementById("scheduleDateBtn");
 
@@ -106,6 +119,7 @@ scheduleDateButton.addEventListener("click", function(e){
             examinationType.innerText = examination["type"];
             let isUrgent = document.createElement("td");
             isUrgent.innerText = examination["urgent"];
+
             let one = document.createElement("td");
             let patientBtn = document.createElement("button");
             patientBtn.innerHTML = '<i data-feather="user"></i>';
@@ -115,6 +129,15 @@ scheduleDateButton.addEventListener("click", function(e){
             });
             one.appendChild(patientBtn);
 
+            let two = document.createElement("td");
+            let delBtn = document.createElement("button");
+            delBtn.innerHTML = '<i data-feather="trash"></i>';
+            delBtn.classList.add("delBtn");
+            delBtn.setAttribute("key", examination["id"]);
+            delBtn.addEventListener('click', function (e) {
+                deleteExamination(delBtn.getAttribute('key'));
+            });
+            two.appendChild(delBtn);
 
             newRow.appendChild(examinationDate);
             newRow.appendChild(examinationDone);
@@ -122,10 +145,25 @@ scheduleDateButton.addEventListener("click", function(e){
             newRow.appendChild(examinationType);
             newRow.appendChild(isUrgent);
             newRow.appendChild(one);
+            newRow.appendChild(two);
             table.appendChild(newRow);
             feather.replace();
-        
         }
-
     }
 })
+
+function deleteExamination(id){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                showExaminations();
+            }
+            else {
+                alert("Error: Selected room couldn't be deleted");
+            }
+        }
+    }
+    request.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
+    request.send();
+}
