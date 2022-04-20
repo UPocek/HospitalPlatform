@@ -1833,7 +1833,7 @@ tr:nth-child(even) {
     background-color: #F5F5F5;
 }
 
-#rooms,
+#rooms, #examinations, #doctors,
 #equipment {
     border: 2px solid #153B50;
     border-radius: 10px;
