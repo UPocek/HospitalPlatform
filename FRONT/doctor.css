@@ -1829,12 +1829,19 @@ footer {
     padding: 10px;
 }
 
+.send {
+    border: none;
+    background: transparent;
+    padding: 5px;
+}
+
 tr:nth-child(even) {
     background-color: #F5F5F5;
 }
 
 #rooms,
-#equipment {
+#equipment,
+#patient_info {
     border: 2px solid #153B50;
     border-radius: 10px;
     width: 80%;
@@ -1902,6 +1909,10 @@ td button {
         0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.basic_info{
+    text-align: center;
+    overflow-x: auto;
+}
 .colDir {
     display: flex;
     flex-direction: column;
@@ -1916,13 +1927,31 @@ td button {
     display: none;
 }
 
-.plusDiv {
+.scheduleDiv{
+    display: flex;
+    justify-content: baseline;
+    margin: 10px auto;
+}
+
+.scheduleDiv > *{
+    margin: 10px auto;
+    padding: 0px 10px;
+}
+.centarInfo{
     text-align: right;
     width: 79%;
     margin: 10px auto;
 }
+.tableHeaderDiv {
+    text-align: right;
+    width: 79%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+    
+}
 
-.plusDiv button {
+.tableHeaderDiv button {
     cursor: pointer;
 }
 

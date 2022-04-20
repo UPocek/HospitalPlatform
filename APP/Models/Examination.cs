@@ -55,6 +55,4 @@ namespace Models
 
         }
     }
-
-    
 }

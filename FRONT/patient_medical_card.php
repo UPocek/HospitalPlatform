@@ -21,33 +21,22 @@
         
         <main>
             <section id="one" class="active">
-                <div class="tableHeaderDiv">
-                    <div class="scheduleDiv">
-                        <label for="scheduleDate">Schedule for date:</label>
-                        <input type="date" id="scheduleDate" name="schedule">
-                        <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
-                    </div>
-                    <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
-                </div>
-                <div id="rooms">
-                    <div class="tbl-content">
-                        <table cellpadding="0" cellspacing="0" border="0">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Done</th>
-                                    <th>Examination room</th>
-                                    <th>Urgent</th>
-                                    <th>Type</th>
-                                    <th>Patient</th>
-                                </tr>
-                            </thead>
-                            <tbody id="roomTable">
-                                <!-- this is where data from api comes -->
-                            </tbody>
-                        </table>
+                <div id="patient_info" >
+                    <div class="basic_info">
+                        <h3>Medical record</h3>
+                        <div>
+                            <p>First name:&nbsp<span id="patient_fname"></span></p>
+                            <p>Last name:&nbsp<span id="patient_lname"></span></p>
+                            <p>Height:&nbsp<span id="patient_height"></span></p>
+                            <p>Weight:&nbsp<span id="patient_weight"></span></p>
+                            <p>Blood type:&nbsp<span id="patient_blood"></span></p>
+                            <p>Diseases:&nbsp<span id="patient_diseases"></span></p>
+                            <p>Alergies:&nbsp<span id="patient_alergies"></span></p>
+                        </div>
                     </div>
                 </div>
+                
+                
             </section>
         </main>
 
@@ -59,7 +48,7 @@
         <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
             integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
 
-        <script src="doctor.js">
+        <script src="medical_card.js">
         </script>
         <script>
             $(window).on("load resize ", function() {
