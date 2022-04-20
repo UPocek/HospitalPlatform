@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using APP.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
@@ -17,14 +16,10 @@ namespace APP.Controllers
     [ApiController]
     public class MyController : ControllerBase
     {
-        private readonly MyContext _context;
         private IMongoDatabase database;
 
-        public MyController(MyContext context)
+        public MyController()
         {
-            _context = context;
-
-
             var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
             var client = new MongoClient(settings);
             database = client.GetDatabase("USI");
