@@ -138,14 +138,23 @@ function setUpExaminations() {
                     let cType = document.createElement("td");
                     cType.innerText = examination["type"];
                     let cDoctor = document.createElement("td");
+                    //OVO IZMENI ISPISUJE ID DOKTORA, A NE IME I PREZIME
                     cDoctor.innerText = examination["doctor"];
                     let cDate = document.createElement("td");
-                   // var date = new Date.parse(examination["date"])
                     cDate.innerText = examination["date"].substring(0,10) + "\n" +  examination["date"].substring(11,19);
                     let cRoom = document.createElement("td");
                     cRoom.innerText = examination["room"];
+
                     let cAnamnesis = document.createElement("td");
-                    cAnamnesis.innerText = examination["anamnesis"]
+                    let anamnesisBtn = document.createElement("button");
+                    anamnesisBtn.innerHTML = '<i data-feather="file"></i>';
+                    anamnesisBtn.classList.add("updateBtn");
+                    anamnesisBtn.setAttribute("key", examination["anamnesis"]);
+                    anamnesisBtn.addEventListener('click', function (e) {
+                    });
+                    cAnamnesis.appendChild(anamnesisBtn);
+
+
                     let cUrgen = document.createElement("td");
                     cUrgen.innerText = examination["urgent"]
 
@@ -156,7 +165,7 @@ function setUpExaminations() {
                     delBtn.classList.add("delBtn");
                     delBtn.setAttribute("key", examination["id"]);
                     delBtn.addEventListener('click', function (e) {
-                        deleteRoom(this.getAttribute('key'));
+                        deleteExamination(this.getAttribute('key'));
                     });
                     one.appendChild(delBtn);
 
@@ -166,7 +175,7 @@ function setUpExaminations() {
                     putBtn.classList.add("updateBtn");
                     putBtn.setAttribute("key", examination["id"]);
                     putBtn.addEventListener('click', function (e) {
-                        updateRoom(this.getAttribute('key'));
+                        editExamination(this.getAttribute('key'));
                     });
                     two.appendChild(putBtn);
 
@@ -193,7 +202,84 @@ function setUpExaminations() {
 //POST - Examination
 
 let createBtn = document.getElementById("addBtn");
-createBtn.addEventListener("click", function (e) {});
+createBtn.addEventListener("click", function (e) {
+    let prompt = document.getElementById("createExaminationPrompt");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
+
+    let form = document.getElementById("createExaminationForm");
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        // let postRequest = new XMLHttpRequest();
+
+        // postRequest.onreadystatechange = function () {
+        //     if (this.readyState == 4) {
+        //         if (this.status == 200) {
+        //             alert("Examination sucessfuly created");
+        //             setUpRooms();
+        //         } else {
+        //             alert("Error: Examination can't be created");
+        //         }
+        //     }
+        // }
+
+    });
+
+});
+
+
+//PUT - Examination
+function editExamination(key) {
+    let prompt = document.getElementById("editExaminationPrompt");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
+
+    let form = document.getElementById("editExaminationForm");
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        // let putRequest = new XMLHttpRequest();
+
+        // putRequest.onreadystatechange = function () {
+        //     if (this.readyState == 4) {
+        //         if (this.status == 200) {
+        //             alert("Selected examinaton was successfully edited");
+        //             setUpRooms();
+        //         } else {
+        //             alert("Error: You can't edit this examination");
+        //         }
+        //     }
+        // }
+
+    });
+}
+
+//DELETE - Examination
+function deleteExamination(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Selected examination was successfully deleted");
+                setUpRooms();
+            } else {
+                alert("Error: Selected examination couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examination/' + key)
+    deleteRequest.send();
+}
+
 
 
 //GET - Doctors
