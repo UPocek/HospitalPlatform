@@ -20,21 +20,21 @@ public class DoctorController : ControllerBase
     [HttpGet("examinations")]
     public async Task<List<Examination>> GetAllExaminations()
     {
-        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
         return examinationCollection.Find(e => true).ToList();
     }
 
-    [HttpGet("examinations/doctor_id/{id}")]
+    [HttpGet("examinations/doctorId/{id}")]
     public async Task<List<Examination>> GetDoctorsExaminationa(int id)
     {
-        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
         return examinationCollection.Find(e => e.doctorId == id).ToList();
     }
 
-    [HttpGet("examinations/patient_medical_card/{id}")]
+    [HttpGet("examinations/patientMedicalCard/{id}")]
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
-        IMongoCollection<MedicalCard> examinationCollection = database.GetCollection<MedicalCard>("Patients");
+        var examinationCollection = database.GetCollection<MedicalCard>("Patients");
         MedicalCard result = examinationCollection.Find(p => p.id == id).ToList()[0];
 
         // var drugCollection = database.GetCollection<BsonDocument>("Drugs");
@@ -57,26 +57,40 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPost("examinations")]
-    public async Task<IActionResult> CreateExamination([FromBody] Examination examination)
+    public async Task<IActionResult> CreateExamination(Examination examination)
     {
-        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.InsertOne(examination);
+        var patients = database.GetCollection<Patient>("Patients");
+        var patient = patients.Find(p => p.id == examination.patinetId);
+        Console.WriteLine(patient);
+        if (patient == null){
+            return BadRequest();
+        }
+
+        var rooms = database.GetCollection<Room>("Rooms");
+        var room = rooms.Find(r => r.name == examination.roomName);
+
+        if (room == null){
+            return BadRequest();
+        }
+
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        examinations.InsertOne(examination);
         return Ok();       
     }
 
     [HttpPut("examinations/{id}")]
     public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
     {
-        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.ReplaceOne(e => e.id == id, examination);
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationCollection.ReplaceOne(e => e._id == id, examination);
         return Ok();    
     }
 
     [HttpDelete("examinations/{id}")]
     public async Task<IActionResult> DeleteExamination(string id)
     {
-        IMongoCollection<Examination> examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.DeleteOne(e => e.id == id);
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationCollection.DeleteOne(e => e._id == id);
         return Ok(); 
     }
     

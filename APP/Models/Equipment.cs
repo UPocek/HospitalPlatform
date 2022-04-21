@@ -27,5 +27,3 @@ public class Equipment
     [JsonPropertyName("quantity")]
     public int quantity { get; set; }
 }
-
-

@@ -30,15 +30,14 @@ namespace Models
         [BsonElement("drugs")]
         [JsonPropertyName("drugs")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public List<string> _drugs {get; set;}
+        public List<Prescription> prescriptions {get; set;}
 
         [BsonElement("examinations")]
         [JsonPropertyName("examinations")]
-        public List<int> _examinations {get; set;}
+        public List<int> examinations {get; set;}
 
-        public List<Examination> patientsExaminations {get; set;} = null;
-
-        public List<string> patientsDrugs {get; set;} = null;
-
+        [BsonElement("medicalInstructioins")]
+        [JsonPropertyName("medicalInstructioins")]
+        public List<MedicalInstructioin> medicalInstructioins {get; set;} = null;
     }
 }

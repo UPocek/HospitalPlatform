@@ -20,19 +20,44 @@ function getParamValue(name) {
     }
 }
 
-var mainResponse;
+var doctorsExaminations;
 var doctorId = getParamValue('id');
 
+function setUpMenu() {
+    let menu = document.getElementById("mainMenu");
+    menu.innerHTML += `
+    <li id="option1" class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+    </li>
+    <li id="option2" class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
+    </li>
+    `;
+    feather.replace();
+
+    let item1 = document.getElementById("option1");
+    let item2 = document.getElementById("option2");
+
+    item1.addEventListener('click', (e) => {
+        
+    });
+    item2.addEventListener('click', (e) => {
+        
+    });
+    
+}
+
 function showExaminations(){
+
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
+                doctorsExaminations = JSON.parse(this.responseText);
                 let table = document.getElementById("roomTable");
                 table.innerHTML = "";
-                for (let i in mainResponse) {
-                    let examination = mainResponse[i];
+                for (let examination of doctorsExaminations) {
+
                     let newRow = document.createElement("tr");
 
                     let examinationDate = document.createElement("td");
@@ -51,7 +76,7 @@ function showExaminations(){
                     patientBtn.innerHTML = '<i data-feather="user"></i>';
                     patientBtn.setAttribute("key", examination["patient"]);
                     patientBtn.addEventListener('click', function (e) {
-                        window.location.replace("patient_medical_card.php" + "?patient_id=" + patientBtn.getAttribute("key"));
+                        window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
                     });
                     one.appendChild(patientBtn);
 
@@ -90,16 +115,20 @@ function showExaminations(){
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/doctor_id/' + doctorId);
+    request.open('GET', 'https://localhost:7291/api/doctor/examinations/doctorId/' + doctorId);
     request.send();
 }
 
-window.addEventListener("load", showExaminations);
+function setUpPage(){
+    setUpMenu();
+    showExaminations();
+}
+
+window.addEventListener("load", setUpPage);
 
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
-scheduleDateButton.addEventListener("click", function(e){
-
+function searchSchedule(){
     let inputDate = document.getElementById("scheduleDate").value;
     const convertedInputDate = new Date(inputDate);
     const lastDayInSchedule = new Date(inputDate);
@@ -111,13 +140,13 @@ scheduleDateButton.addEventListener("click", function(e){
     let table = document.getElementById("roomTable");
     removeAllChildNodes(table);
 
-    for (let i in mainResponse){
+    for (let i in doctorsExaminations){
         
-        let examinationDate = new Date(mainResponse[i]['date']);
+        let examinationDate = new Date(doctorsExaminations[i]['date']);
         
         if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule){
             
-            let examination = mainResponse[i];
+            let examination = doctorsExaminations[i];
             let newRow = document.createElement("tr");
 
             let examinationDate = document.createElement("td");
@@ -136,7 +165,7 @@ scheduleDateButton.addEventListener("click", function(e){
             patientBtn.innerHTML = '<i data-feather="user"></i>';
             patientBtn.setAttribute("key", examination["patient"]);
             patientBtn.addEventListener('click', function (e) {
-                window.location.replace("patient_medical_card.php" + "?patient_id=" + patientBtn.getAttribute("key"));
+                window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
             });
             one.appendChild(patientBtn);
 
@@ -172,17 +201,20 @@ scheduleDateButton.addEventListener("click", function(e){
             feather.replace();
         }
     }
-})
+}
+
+scheduleDateButton.addEventListener("click", searchSchedule);
 
 function deleteExamination(id){
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
+                alert("Examination has been successfully deleted");
                 showExaminations();
             }
             else {
-                alert("Error: Selected room couldn't be deleted");
+                alert("Error: Selected examination couldn't be deleted");
             }
         }
     }
@@ -192,48 +224,83 @@ function deleteExamination(id){
 
 var main = document.getElementsByTagName("main")[0];
 
-function createExaminatinon() {
-    let popUp = document.getElementById("examination_pop_up");
+function validateTimeOfExaminaion(date,duration){
+
+    let currentDate = new Date();
+    let newExaminationBegging = new Date(date);
+    let newExaminationEnding = new Date(date);
+
+    newExaminationEnding.setTime(newExaminationBegging.getTime() + 6000 * duration);
+    
+    if (currentDate > newExaminationBegging){
+        return false;
+    }
+
+    for (examination of doctorsExaminations){
+
+        let examinationBegging = new Date(examination["date"]);
+        let examinationEnding = new Date(examination["date"]);
+        examinationEnding.setTime(examinationBegging.getTime() + 6000 * examination["duration"]);
+
+        if ((newExaminationBegging >= examinationBegging && newExaminationBegging <= examinationEnding) 
+            | (newExaminationEnding >= examinationBegging && newExaminationEnding <= examinationEnding)){
+                return false;
+            }
+    }
+
+    return true;
+}
+
+function createExamination() {
+    let popUp = document.getElementById("examinationPopUp");
     popUp.classList.remove("off");
     main.classList.add("hideMain");
-    let examinationRoom = document.getElementById("examination_room");
-    examinationRoom.setAttribute("placeholder", key);
 
-    let form = document.getElementById("roomForm");
+    let form = document.getElementById("examinationForm");
 
     form.addEventListener('submit', function (e) {
-        prompt.classList.add("off");
+        popUp.classList.add("off");
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
 
-        let postRequest = new XMLHttpRequest();
+        let selectedType = document.getElementById("examinationType").value;
+        let selectedDate = document.getElementById("scheduleDate").value;
+        let selectedDuration = document.getElementById("examinationDuration").value;
 
-        postRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    alert("Room sucessfuly created");
-                    setUpRooms();
-                } else {
-                    alert("Error: Entered room informations are invalid");
+        if (selectedType == "visit" && selectedDuration != 15){
+            alert("Duration of visit can't be longer then 15 minutes");
+        }
+        if (validateTimeOfExaminaion(selectedDate, selectedDuration)){
+
+            let postRequest = new XMLHttpRequest();
+
+            postRequest.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        alert("Room sucessfuly created");
+                        showExaminations();
+                    } else {
+                        alert("Error: Entered room informations are invalid");
+                    }
                 }
-            }
-        }
+            };
 
-        let finalName = document.getElementById("createRoomName").value;
-        let finalType = document.getElementById("createRoomType").value;
-        if (finalName.length != 0 && finalType.length != 0) {
-            postRequest.open('POST', 'https://localhost:7291/api/manager/rooms');
+            let selectedRoom = document.getElementById("examinationRoom").value;
+            let selectedPatient = document.getElementById("examinationPatient").value;
+            let isUrgent = document.getElementById("urgent").value ? true : false;
 
-            // postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            // postRequest.send(JSON.stringify({ "done":false, "date": finalName, "duration": ,"room": finalType,  }));
-        } else {
-            alert("Error: Name can't be empty!")
+
+            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
+            postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
+            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
+           
         }
-        
     });
 }
 
 var createBtn = document.getElementById("addBtn");
 
-createBtn.addEventListener("click", createExaminatinon);
+createBtn.addEventListener("click", createExamination);
