@@ -18,7 +18,34 @@
     <body>
         
         <?php include 'doctor_navbar.html';?>
-        
+
+        <div id="examination_pop_up" class="form-container sign-in-container off prompt">
+            <form id="examination_form" class="colDir myForm">
+                <h1>Create examination</h1>
+                <div class="formDiv">
+                    <label for="scheduleDate">Date:</label>
+                    <input type="date" id="scheduleDate" name="schedule">
+                </div>
+                <div class="formDiv">
+                    <label for="scheduleDate">Room:</label>
+                    <input id="examination_room" type="text"/>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationType">Examination type:</label>
+                    <select name="examinationType" id="examinationType">
+                        <option value="visit" selected>Visit</option>
+                        <option value="operation">Operation</option>
+                    </select>
+                </div>
+                <div class="urgentDiv">
+                    <label for="urgent"> Urgent </label>
+                    <input type="checkbox" id="urgent" name="urgent" value="urgent">
+                    
+                </div>
+                <button class="mainBtn">OK</button>
+            </form>
+	    </div>
+
         <main>
             <section id="one" class="active">
                 <div class="tableHeaderDiv">
@@ -40,6 +67,8 @@
                                     <th>Urgent</th>
                                     <th>Type</th>
                                     <th>Patient</th>
+                                    <th>Delete</th>
+                                    <th>Update</th>
                                 </tr>
                             </thead>
                             <tbody id="roomTable">

@@ -20,8 +20,8 @@ function getParamValue(name) {
     }
 }
 
-let mainResponse;
-let doctorId = getParamValue('id');
+var mainResponse;
+var doctorId = getParamValue('id');
 
 function showExaminations(){
     let request = new XMLHttpRequest();
@@ -36,7 +36,7 @@ function showExaminations(){
                     let newRow = document.createElement("tr");
 
                     let examinationDate = document.createElement("td");
-                    examinationDate.innerText = examination["date"];
+                    examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
                     let examinationDone = document.createElement("td");
                     examinationDone.innerText = examination["done"];
                     let examinationRoom = document.createElement("td");
@@ -65,6 +65,16 @@ function showExaminations(){
                     });
                     two.appendChild(delBtn);
 
+                    let three = document.createElement("td");
+                    let updateBtn = document.createElement("button");
+                    updateBtn.innerHTML = '<i data-feather="upload"></i>';
+                    updateBtn.classList.add("updateBtn");
+                    updateBtn.setAttribute("key", examination["id"]);
+                    updateBtn.addEventListener('click', function (e) {
+                        deleteExamination(updateBtn.getAttribute('key'));
+                    });
+                    three.appendChild(updateBtn);
+
                     newRow.appendChild(examinationDate);
                     newRow.appendChild(examinationDone);
                     newRow.appendChild(examinationRoom);
@@ -72,6 +82,7 @@ function showExaminations(){
                     newRow.appendChild(isUrgent);
                     newRow.appendChild(one);
                     newRow.appendChild(two);
+                    newRow.appendChild(three);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -85,7 +96,7 @@ function showExaminations(){
 
 window.addEventListener("load", showExaminations);
 
-let scheduleDateButton = document.getElementById("scheduleDateBtn");
+var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 scheduleDateButton.addEventListener("click", function(e){
 
@@ -110,7 +121,7 @@ scheduleDateButton.addEventListener("click", function(e){
             let newRow = document.createElement("tr");
 
             let examinationDate = document.createElement("td");
-            examinationDate.innerText = examination["date"];
+            examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
             let examinationDone = document.createElement("td");
             examinationDone.innerText = examination["done"];
             let examinationRoom = document.createElement("td");
@@ -139,6 +150,16 @@ scheduleDateButton.addEventListener("click", function(e){
             });
             two.appendChild(delBtn);
 
+            let three = document.createElement("td");
+            let updateBtn = document.createElement("button");
+            updateBtn.innerHTML = '<i data-feather="upload"></i>';
+            updateBtn.classList.add("updateBtn");
+            updateBtn.setAttribute("key", examination["id"]);
+            updateBtn.addEventListener('click', function (e) {
+                updateRoom();
+            });
+            three.appendChild(updateBtn);
+
             newRow.appendChild(examinationDate);
             newRow.appendChild(examinationDone);
             newRow.appendChild(examinationRoom);
@@ -146,6 +167,7 @@ scheduleDateButton.addEventListener("click", function(e){
             newRow.appendChild(isUrgent);
             newRow.appendChild(one);
             newRow.appendChild(two);
+            newRow.appendChild(three);
             table.appendChild(newRow);
             feather.replace();
         }
@@ -166,4 +188,52 @@ function deleteExamination(id){
     }
     request.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
     request.send();
+};
+
+var main = document.getElementsByTagName("main")[0];
+
+function createExaminatinon() {
+    let popUp = document.getElementById("examination_pop_up");
+    popUp.classList.remove("off");
+    main.classList.add("hideMain");
+    let examinationRoom = document.getElementById("examination_room");
+    examinationRoom.setAttribute("placeholder", key);
+
+    let form = document.getElementById("roomForm");
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Room sucessfuly created");
+                    setUpRooms();
+                } else {
+                    alert("Error: Entered room informations are invalid");
+                }
+            }
+        }
+
+        let finalName = document.getElementById("createRoomName").value;
+        let finalType = document.getElementById("createRoomType").value;
+        if (finalName.length != 0 && finalType.length != 0) {
+            postRequest.open('POST', 'https://localhost:7291/api/manager/rooms');
+
+            // postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            // postRequest.send(JSON.stringify({ "done":false, "date": finalName, "duration": ,"room": finalType,  }));
+        } else {
+            alert("Error: Name can't be empty!")
+        }
+        
+    });
 }
+
+var createBtn = document.getElementById("addBtn");
+
+createBtn.addEventListener("click", createExaminatinon);

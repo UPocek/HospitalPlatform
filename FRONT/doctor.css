@@ -1902,11 +1902,36 @@ td button {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 500px;
-    height: 400px;
+    height: 80%;
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
         0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.formDiv{
+    display: flex;
+    justify-content: space-between;
+}
+
+#examination_form > h1{
+    text-align: center;
+}
+
+.formDiv > label{
+    margin: 10px auto 10px 0px;
+    padding: 10px 10px;
+    text-align: left;
+}
+
+.urgentDiv{
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 10px;
+}
+
+#urgent{
+    min-width: 30px;
 }
 
 .basic_info{
