@@ -81,7 +81,7 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.ReplaceOne(e => e.id == id, examination);
+        examinationCollection.ReplaceOne(e => e._id == id, examination);
         return Ok();    
     }
 
@@ -89,7 +89,7 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> DeleteExamination(string id)
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.DeleteOne(e => e.id == id);
+        examinationCollection.DeleteOne(e => e._id == id);
         return Ok(); 
     }
     

@@ -8,7 +8,12 @@ namespace Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? id {get; set;}
+        public string? _id {get; set;}
+
+        [BsonElement("id")]
+        [JsonPropertyName("id")]
+        public int id {get; set;}
+
 
         [BsonElement("done")]
         [JsonPropertyName("done")]
@@ -48,7 +53,11 @@ namespace Models
 
         [BsonElement("equipmentUsed")]
         [JsonPropertyName("equipmentUsed")]
-        public string equipmentUsed {get; set;} = "";
+        public List<string> equipmentUsed {get; set;}
+
+        [BsonElement("examinationHistory")]
+        [JsonPropertyName("examinationHistory")]
+        public List<ExaminationHistoryEntry> examinationHistory {get; set;}
 
         public Examination(){}
         // public Examination(string date, int duration, bool urgent, int patient, int doctor, string room, string type)
