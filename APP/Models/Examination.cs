@@ -44,7 +44,7 @@ public class Examination
     [JsonPropertyName("type")]
     public string typeOfExamination { get; set; }
 
-    [BsonElement("quipmentUsed")]
-    [JsonPropertyName("quipmentUsed")]
+    [BsonElement("equipmentUsed")]
+    [JsonPropertyName("equipmentUsed")]
     public string equipmentUsed { get; set; } = "";
 }
