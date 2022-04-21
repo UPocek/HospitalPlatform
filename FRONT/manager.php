@@ -103,11 +103,11 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation">Renovation start date:</label>
-                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation">Renovation end date:</label>
-                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="">&nbsp;</label>
@@ -127,11 +127,11 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation1">Renovation start date:</label>
-                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation1">Renovation end date:</label>
-                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="">&nbsp;</label>
@@ -218,12 +218,10 @@
                 </div>
                 <div>
                 <label for="transferDate">Transfer date:</label>
-                <input id="transferDate" type="text" placeholder="Date (yyyy-MM-dd)" autocomplete="off"/>
+                <input id="transferDate" type="text" placeholder="Date (yyyy-MM-dd)"/>
                 </div>
             </div>
             <div id="transferOptions">
-                <input id="t" type="text" autocomplete="off"/>
-                <input id="t" type="text" autocomplete="off"/>
             </div>
             <div id="correctPos">
             <button class="mainBtn">Transfer</button>
