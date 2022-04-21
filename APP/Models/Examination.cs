@@ -46,13 +46,21 @@ namespace Models
         [JsonPropertyName("type")]
         public string typeOfExamination {get; set;}
 
-        [BsonElement("quipmentUsed")]
-        [JsonPropertyName("quipmentUsed")]
+        [BsonElement("equipmentUsed")]
+        [JsonPropertyName("equipmentUsed")]
         public string equipmentUsed {get; set;} = "";
 
-        public Examination()
-        {
-
-        }
+        public Examination(){}
+        // public Examination(string date, int duration, bool urgent, int patient, int doctor, string room, string type)
+        // {
+        //     this.isExaminationOver = false;
+        //     this.dateAndTimeOfExamination = date;
+        //     this.durationOfExamination = duration;
+        //     this.doctorId = doctor;
+        //     this.patinetId = patient;
+        //     this.roomName = room;
+        //     this.typeOfExamination = type;
+        //     this.isUrgent = urgent;
+        // }
     }
 }

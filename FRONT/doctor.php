@@ -17,29 +17,37 @@
     </head>
     <body>
         
-        <?php include 'doctor_navbar.html';?>
+        <?php include 'header.html';?>
 
-        <div id="examination_pop_up" class="form-container sign-in-container off prompt">
-            <form id="examination_form" class="colDir myForm">
+        <div id="examinationPopUp" class="form-container sign-in-container off prompt">
+            <form id="examinationForm" class="colDir myForm">
                 <h1>Create examination</h1>
                 <div class="formDiv">
                     <label for="scheduleDate">Date:</label>
-                    <input type="date" id="scheduleDate" name="schedule">
+                    <input type="datetime-local" id="scheduleDate">
                 </div>
                 <div class="formDiv">
-                    <label for="scheduleDate">Room:</label>
-                    <input id="examination_room" type="text"/>
+                    <label for="examinationDuration">Duration:</label>
+                    <input type="number" id="examinationDuration" min="15">
+                </div>
+                <div class="formDiv">
+                    <label for="examinationRoom">Room:</label>
+                    <input id="examinationRoom" type="text"/>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationPatient">Patient id:</label>
+                    <input id="examinationPatient" type="number"/>
                 </div>
                 <div class="formDiv">
                     <label for="examinationType">Examination type:</label>
-                    <select name="examinationType" id="examinationType">
+                    <select id="examinationType">
                         <option value="visit" selected>Visit</option>
                         <option value="operation">Operation</option>
                     </select>
                 </div>
                 <div class="urgentDiv">
                     <label for="urgent"> Urgent </label>
-                    <input type="checkbox" id="urgent" name="urgent" value="urgent">
+                    <input type="checkbox" id="urgent" value="urgent">
                     
                 </div>
                 <button class="mainBtn">OK</button>
