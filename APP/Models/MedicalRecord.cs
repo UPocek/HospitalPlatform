@@ -11,7 +11,7 @@ namespace Models
         [JsonPropertyName("height")]
         public int height {get; set;}
 
-        [BsonElement("wieght")]
+        [BsonElement("weight")]
         [JsonPropertyName("weight")]
         public int weight {get; set;}
 
