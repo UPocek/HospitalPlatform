@@ -27,23 +27,25 @@
                     <input type="datetime-local" id="scheduleDate">
                 </div>
                 <div class="formDiv">
-                    <label for="examinationDuration">Duration:</label>
-                    <input type="number" id="examinationDuration" min="15">
-                </div>
-                <div class="formDiv">
-                    <label for="examinationRoom">Room:</label>
-                    <input id="examinationRoom" type="text"/>
-                </div>
-                <div class="formDiv">
-                    <label for="examinationPatient">Patient id:</label>
-                    <input id="examinationPatient" type="number"/>
-                </div>
-                <div class="formDiv">
                     <label for="examinationType">Examination type:</label>
                     <select id="examinationType">
                         <option value="visit" selected>Visit</option>
                         <option value="operation">Operation</option>
                     </select>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationDuration">Duration:</label>
+                    <input type="number" id="examinationDuration" min="15">
+                </div>
+                <div class="formDiv">
+                    <label for="examinationRoom">Room:</label>
+                    <select id="examinationRoom">
+                        <!-- get rooms from api -->
+                    </select>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationPatient">Patient id:</label>
+                    <input id="examinationPatient" type="number"/>
                 </div>
                 <div class="urgentDiv">
                     <label for="urgent"> Urgent </label>

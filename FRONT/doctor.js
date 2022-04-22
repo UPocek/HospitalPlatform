@@ -280,54 +280,102 @@ function validateTimeOfExaminationPut(date, duration, id){
     return true;
 }
 
-function createExamination() {
+function submitForm(e) {
     let popUp = document.getElementById("examinationPopUp");
-    popUp.classList.remove("off");
-    main.classList.add("hideMain");
+    popUp.classList.add("off");
+    main.classList.remove("hideMain");
+    e.preventDefault();
+    e.stopImmediatePropagation();
 
-    let form = document.getElementById("examinationForm");
-    let title = document.getElementById("examinationFormId");
-    title.innerText = "Update examination";
+    let selectedType = document.getElementById("examinationType").value;
+    let selectedDate = document.getElementById("scheduleDate").value;
+    let selectedDuration = document.getElementById("examinationDuration").value;
 
-    form.addEventListener('submit', function (e) {
-        popUp.classList.add("off");
-        main.classList.remove("hideMain");
-        e.preventDefault();
-        e.stopImmediatePropagation();
+    if (selectedType == "visit" && selectedDuration != 15){
+        alert("Duration of visit can't be longer then 15 minutes");
+    }
+    if (validateTimeOfExamination(selectedDate, selectedDuration)){
+      
+        let postRequest = new XMLHttpRequest();
 
-        let selectedType = document.getElementById("examinationType").value;
-        let selectedDate = document.getElementById("scheduleDate").value;
-        let selectedDuration = document.getElementById("examinationDuration").value;
-
-        if (selectedType == "visit" && selectedDuration != 15){
-            alert("Duration of visit can't be longer then 15 minutes");
-        }
-        if (validateTimeOfExamination(selectedDate, selectedDuration)){
-          
-            let postRequest = new XMLHttpRequest();
-
-            postRequest.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        alert("Room sucessfuly created");
-                        showExaminations();
-                    } else {
-                        alert("Error: Entered room informations are invalid");
-                    }
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Room sucessfuly created");
+                    showExaminations();
+                } else {
+                    alert("Error: Entered room informations are invalid");
                 }
-            };
+            }
+        };
 
-            let selectedRoom = document.getElementById("examinationRoom").value;
-            let selectedPatient = document.getElementById("examinationPatient").value;
-            let isUrgent = document.getElementById("urgent").checked ? true : false;
+        let selectedRoom = document.getElementById("examinationRoom").value;
+        let selectedPatient = document.getElementById("examinationPatient").value;
+        let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
-            postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
-            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+        postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
+        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
+        postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
+    }
+}
+
+var rooms;
+
+function addOptions(element, roomOptions){
+    let valueOfType = element.value;
+    if (valueOfType == "visit"){
+        for (room of rooms){
+            if (room["type"] == "examination room"){
+                let newOption = document.createElement('option');
+                newOption.setAttribute('value', room['name']);
+                newOption.innerText = room['name'];
+                roomOptions.appendChild(newOption);
+            }
         }
-    });
+    }else{
+        for (room of rooms){
+            if (room["type"] == "operation room"){
+                let newOption = document.createElement('option');
+                newOption.setAttribute('value', room['name']);
+                newOption.innerText = room['name'];
+                roomOptions.appendChild(newOption);
+            }
+        }
+    }
+}
+
+function createExamination() {
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                rooms = JSON.parse(this.responseText);
+                let popUp = document.getElementById("examinationPopUp");
+                popUp.classList.remove("off");
+                main.classList.add("hideMain");
+
+                let form = document.getElementById("examinationForm");
+                let title = document.getElementById("examinationFormId");
+                title.innerText = "Create examination";
+                     
+                let roomOptions = document.getElementById("examinationRoom");
+                let examinationType = document.getElementById("examinationType");
+                addOptions(examinationType, roomOptions);
+                examinationType.addEventListener('change', function(e){
+                    removeAllChildNodes(roomOptions);
+                    addOptions(examinationType, roomOptions);
+                })
+
+                form.addEventListener('submit', function(e){
+                    submitForm(e)
+                });
+            }
+        }
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.send();
 }
 
 function updateExamination(id){
