@@ -2,8 +2,10 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Models
+[BsonIgnoreExtraElements]
+public class MedicalRecord
 {
+
     [BsonIgnoreExtraElements]
     public class MedicalRecord
     {
@@ -39,4 +41,5 @@ namespace Models
         [JsonPropertyName("medicalInstructioins")]
         public List<MedicalInstructioin> medicalInstructioins {get; set;} = null;
     }
+
 }
