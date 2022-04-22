@@ -32,21 +32,21 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<BsonDocument>("Employees");
             var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
-            var doc = collection.Find(filter).ToList();
+            var users = collection.Find(filter).ToList();
             // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-            if (doc.Count != 0)
+            if (users.Count != 0)
             {
-                var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
+                var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
                 Response.StatusCode = StatusCodes.Status200OK;
                 return new JsonResult(dotNetObj);
             }
             else
             {
                 collection = database.GetCollection<BsonDocument>("Patients");
-                doc = collection.Find(filter).ToList();
-                if (doc.Count != 0 || doc[0]["active"] == "0")
+                users = collection.Find(filter).ToList();
+                if (users.Count != 0 && users[0]["active"] == "0")
                 {
-                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(doc[0]);
+                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
                     Response.StatusCode = StatusCodes.Status200OK;
                     return new JsonResult(dotNetObj);
                 }
@@ -69,9 +69,9 @@ namespace APP.Controllers
             }
             var filter = Builders<BsonDocument>.Filter.Eq("id", id);
             var result = collection.Find(filter).First();
-            var dotNetObj = BsonTypeMapper.MapToDotNetValue(result);
+            var wantedUser = BsonTypeMapper.MapToDotNetValue(result);
             Response.StatusCode = StatusCodes.Status200OK;
-            return new JsonResult(dotNetObj);
+            return new JsonResult(wantedUser);
         }
 
         // HOW TO : CheetSheet (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
@@ -139,8 +139,8 @@ namespace APP.Controllers
         //     var filter = Builders<BsonDocument>.Filter.Eq("test", "test") & Builders<BsonDocument>.Filter.Eq("test", "test");
         //     try
         //     {
-        //         var doc = collection.Find(filter).FirstOrDefault();
-        //         Console.WriteLine(doc.ToString());
+        //         var users = collection.Find(filter).FirstOrDefault();
+        //         Console.WriteLine(users.ToString());
         //     }
         //     catch
         //     {
@@ -150,9 +150,9 @@ namespace APP.Controllers
         //     // 2 - Get all results without filter
         //     var documents = collection.Find(new BsonDocument()).ToList();
 
-        //     foreach (BsonDocument doc in documents)
+        //     foreach (BsonDocument users in documents)
         //     {
-        //         Console.WriteLine(doc.ToString());
+        //         Console.WriteLine(users.ToString());
         //     }
 
         //     // 3 - Query
@@ -162,9 +162,9 @@ namespace APP.Controllers
 
         //     var docs = collection.Find(filter2).Project("{_id: 1}").Sort(sort).Skip(0).Limit(3).ToList();
 
-        //     docs.ForEach(doc =>
+        //     docs.ForEach(users =>
         //     {
-        //         Console.WriteLine(doc);
+        //         Console.WriteLine(users);
         //     });
 
         //     // 4 - Delete
