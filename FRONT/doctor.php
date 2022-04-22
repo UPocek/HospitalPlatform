@@ -79,8 +79,6 @@
                                     <th>Type</th>
                                     <th>Urgent</th>
                                     <th>Patient</th>
-                                    <th>Delete</th>
-                                    <th>Update</th>
                                 </tr>
                             </thead>
                             <tbody id="examinationsTable">
