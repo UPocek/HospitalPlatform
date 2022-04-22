@@ -303,7 +303,7 @@ function createExamination() {
             alert("Duration of visit can't be longer then 15 minutes");
         }
         if (validateTimeOfExamination(selectedDate, selectedDuration)){
-
+          
             let postRequest = new XMLHttpRequest();
 
             postRequest.onreadystatechange = function () {
@@ -398,6 +398,7 @@ function updateExamination(id){
             main.classList.add("hideMain");
             let title = document.getElementById("examinationFormId");
             title.innerText = "Update examination";
+
         }
     });
 }

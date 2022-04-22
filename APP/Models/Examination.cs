@@ -10,8 +10,7 @@ public class Examination
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
-
+    public int? id { get; set; }
 
     [BsonElement("done")]
     [JsonPropertyName("done")]
@@ -40,7 +39,6 @@ public class Examination
     [BsonElement("anamnesis")]
     [JsonPropertyName("anamnesis")]
     public string? anamnesis {get; set;} = "";
-
 
     [BsonElement("urgent")]
     [JsonPropertyName("urgent")]
