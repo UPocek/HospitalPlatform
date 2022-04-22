@@ -70,7 +70,17 @@ namespace APP.Controllers
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
             var patientCollection = database.GetCollection<Patient>("Patients");
-            patientCollection.ReplaceOne(p => p.id == id, patient);
+            Patient updatedPatient = patientCollection.Find(p=> p.id == id).ToList()[0];
+
+            updatedPatient.firstName = patient.firstName;
+            updatedPatient.dateAndlastName = patient.dateAndlastName;
+            updatedPatient.email = patient.email;
+            updatedPatient.password = patient.password;
+            updatedPatient.medicalRecord.weight = patient.medicalRecord.weight;
+            updatedPatient.medicalRecord.height = patient.medicalRecord.height;
+            updatedPatient.medicalRecord.bloodType = patient.medicalRecord.bloodType;
+
+            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
             return Ok();   
         }
 

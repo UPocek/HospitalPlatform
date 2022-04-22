@@ -168,77 +168,94 @@ function updatePatient(key) {
     let prompt = document.getElementById("createPatientPrompt");
     prompt.classList.remove("off");
     main.classList.add("hideMain");
-
-    let fFirstName = document.getElementById("createPatientFirstName");
-    fFirstName.setAttribute("placeholder", "First Name");
-    let fLastName = document.getElementById("createPatientLastName");
-    fLastName.setAttribute("placeholder", "Last Name");
-    let fEmail = document.getElementById("createPatientEmail");
-    fEmail.setAttribute("placeholder", "Email");
-    let fPassword = document.getElementById("createPatientPassword");
-    fPassword.setAttribute("placeholder", "Password");
-    let fHeight = document.getElementById("createPatientHeight");
-    fHeight.setAttribute("placeholder", "Height");
-    let fWeight = document.getElementById("createPatientWeight");
-    fWeight.setAttribute("placeholder", "Weight");
-
-    let form = document.getElementById("createPatientForm");
-
-    form.addEventListener('submit', function (e) {
-        prompt.classList.add("off");
-        main.classList.remove("hideMain");
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        let postRequest = new XMLHttpRequest();
-
-        postRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    alert("Patient sucessfuly created");
-                    setUpPatients();
-                }else{
-                    alert("Error: Entered patient information is invalid");
-                }
+    let request = new XMLHttpRequest();
+    let patient;
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                patient = JSON.parse(this.responseText);
                 
+                let fFirstName = document.getElementById("createPatientFirstName");
+                fFirstName.value = patient['firstName'];
+                let fLastName = document.getElementById("createPatientLastName");
+                fLastName.value = patient['lastName'];
+                let fEmail = document.getElementById("createPatientEmail");
+                fEmail.value = patient['email'];
+                let fPassword = document.getElementById("createPatientPassword");
+                fPassword.value = patient['password'];
+                let fHeight = document.getElementById("createPatientHeight");
+
+                let medRecord = patient['medicalRecord'];
+                fHeight.value = medRecord['height'];
+                let fWeight = document.getElementById("createPatientWeight");
+                fWeight.value = medRecord['weight'];
+                let fBloodType = document.getElementById("createPatientBloodType");
+                fBloodType.value = medRecord['bloodType'];
+
+                let form = document.getElementById("createPatientForm");
+
+                form.addEventListener('submit', function (e) {
+                    prompt.classList.add("off");
+                    main.classList.remove("hideMain");
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    let postRequest = new XMLHttpRequest();
+
+                    postRequest.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                alert("Patient sucessfuly updated");
+                                setUpPatients();
+                            }else{
+                                alert("Error: Entered patient information is invalid");
+                            }
+                            
+                        }
+                    }
+
+                    let finalName = document.getElementById("createPatientFirstName").value;
+                    let finalLastName = document.getElementById("createPatientLastName").value;
+                    let finalEmail = document.getElementById("createPatientEmail").value;
+                    let finalPassword = document.getElementById("createPatientPassword").value;
+                    let finalHeight = document.getElementById("createPatientHeight").value;
+                    let finalWeight = document.getElementById("createPatientWeight").value;
+                    let finalBloodType = document.getElementById("createPatientBloodType").value
+
+                    if (finalName.length == 0 || finalLastName.length == 0) {
+                        alert("Error: Name can't be empty!");
+                    } else if(/\S+@\S+\.\S+/.test(toString(finalEmail))) {
+                        alert("Error: Email in wrong format! (example:markomarkovic@gmail.com)");
+                    } else if(finalPassword.length == 0){
+                        alert("Error: Password can't be empty!");
+                    } else {
+                        postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/'+key);
+                        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                        postRequest.send(JSON.stringify(
+                            { 
+                            "firstName": finalName, 
+                            "lastName": finalLastName,
+                            "role": "patient",
+                            "email": finalEmail,
+                            "password": finalPassword,
+                            "active" : "0",
+                            "id" : 0,
+                            "medicalRecord":
+                                {
+                                    "height": finalHeight,
+                                    "weight": finalWeight,
+                                    "bloodType": finalBloodType,
+                                },
+                            }
+                        ));
+                    }
+                });
             }
         }
+    }
+    request.open('GET', 'https://localhost:7291/api/secretary/patients/'+key);
+    request.send();
 
-        let finalName = document.getElementById("createPatientFirstName").value;
-        let finalLastName = document.getElementById("createPatientLastName").value;
-        let finalEmail = document.getElementById("createPatientEmail").value;
-        let finalPassword = document.getElementById("createPatientPassword").value;
-        let finalHeight = document.getElementById("createPatientHeight").value;
-        let finalWeight = document.getElementById("createPatientWeight").value;
-        let finalBloodType = document.getElementById("createPatientBloodType").value
-
-        if (finalName.length == 0 || finalLastName.length == 0) {
-            alert("Error: Name can't be empty!");
-        } else if(/\S+@\S+\.\S+/.test(toString(finalEmail))) {
-            alert("Error: Email in wrong format! (example:markomarkovic@gmail.com)");
-        } else if(finalPassword.length == 0){
-            alert("Error: Password can't be empty!");
-        } else {
-            postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/'+key);
-            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            postRequest.send(JSON.stringify(
-                { 
-                "firstName": finalName, 
-                "lastName": finalLastName,
-                "role": "patient",
-                "email": finalEmail,
-                "password": finalPassword,
-                "active" : "0",
-                "id" : 0,
-                "medicalRecord":
-                    {
-                        "height": finalHeight,
-                        "weight": finalWeight,
-                        "bloodType": finalBloodType,
-                    },
-                }
-            ));
-        }
-    });
+    
     
 }
 
