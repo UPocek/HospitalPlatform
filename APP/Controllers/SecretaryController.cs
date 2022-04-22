@@ -81,9 +81,10 @@ namespace APP.Controllers
         {
             var patientCollection = database.GetCollection<Patient>("Patients");
             patientCollection.DeleteOne(p => p.id == id);
-
+            
             var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-            examinationCollection.DeleteMany(e => e.patinetId == id && DateTime.Parse(e.dateAndTimeOfExamination) >= DateTime.Now);
+            examinationCollection.Find(e => (e.patinetId == id && DateTime.Parse(e.dateAndTimeOfExamination) >= DateTime.Now));
+
             return Ok(); 
         }
 
