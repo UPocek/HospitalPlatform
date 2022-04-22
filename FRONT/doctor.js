@@ -22,6 +22,7 @@ function getParamValue(name) {
 
 var doctorsExaminations;
 var doctorId = getParamValue('id');
+var nextId = 0;
 
 function setUpMenu() {
     let menu = document.getElementById("mainMenu");
@@ -119,9 +120,26 @@ function showExaminations(){
     request.send();
 }
 
+function findNextExaminationId(){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                nextId = response["id"] + 1;
+                console.log(nextId);
+            }
+        }
+    }
+    request.open('GET', 'https://localhost:7291/api/doctor/examinations/nextIndex');
+    request.send();
+    
+}
+
 function setUpPage(){
     setUpMenu();
     showExaminations();
+    findNextExaminationId();
 }
 
 window.addEventListener("load", setUpPage);
@@ -224,7 +242,7 @@ function deleteExamination(id){
 
 var main = document.getElementsByTagName("main")[0];
 
-function validateTimeOfExaminaion(date,duration){
+function validateTimeOfExamination(date,duration){
 
     let currentDate = new Date();
     let newExaminationBegging = new Date(date);
@@ -268,10 +286,8 @@ function createExamination() {
         let selectedDate = document.getElementById("scheduleDate").value;
         let selectedDuration = document.getElementById("examinationDuration").value;
 
-        if (selectedType == "visit" && selectedDuration != 15){
-            alert("Duration of visit can't be longer then 15 minutes");
-        }
-        if (validateTimeOfExaminaion(selectedDate, selectedDuration)){
+        if (validateTimeOfExamination(selectedDate, selectedDuration)
+        && !(selectedType == "visit" && selectedDuration != 15)){
 
             let postRequest = new XMLHttpRequest();
 
@@ -291,11 +307,12 @@ function createExamination() {
             let isUrgent = document.getElementById("urgent").value ? true : false;
 
 
-            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
+            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType}));
             postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
+            postRequest.send(JSON.stringify({ "id": nextId, "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType}));
+            nextId++;
            
         }
     });

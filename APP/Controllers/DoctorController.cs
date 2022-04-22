@@ -23,6 +23,13 @@ public class DoctorController : ControllerBase
         return examinationCollection.Find(e => true).ToList();
     }
 
+    [HttpGet("examinations/nextIndex")]
+    public async Task<Examination> GetNextExaminationsIndex()
+    {
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => true).SortByDescending(e => e.id).First();
+    }
+
     [HttpGet("examinations/doctorId/{id}")]
     public async Task<List<Examination>> GetDoctorsExaminationa(int id)
     {
