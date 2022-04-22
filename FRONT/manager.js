@@ -39,21 +39,21 @@ function isDateFormatOk(testDate) {
 }
 
 function showWindow(section) {
-    let s1 = document.getElementById('one');
-    let s2 = document.getElementById('two');
-    let s3 = document.getElementById('three');
-    let s4 = document.getElementById('four');
+    let sectionOne = document.getElementById('one');
+    let sectionTwo = document.getElementById('two');
+    let sectionThree = document.getElementById('three');
+    let sectionFour = document.getElementById('four');
 
-    s1.classList.remove('active');
-    s2.classList.remove('active');
-    s3.classList.remove('active');
-    s4.classList.remove('active');
+    sectionOne.classList.remove('active');
+    sectionTwo.classList.remove('active');
+    sectionThree.classList.remove('active');
+    sectionFour.classList.remove('active');
 
     switch (section) {
-        case 1: s1.classList.add('active'); break;
-        case 2: s2.classList.add('active'); break;
-        case 3: s3.classList.add('active'); break;
-        case 4: s4.classList.add('active'); break;
+        case 1: sectionOne.classList.add('active'); break;
+        case 2: sectionTwo.classList.add('active'); break;
+        case 3: sectionThree.classList.add('active'); break;
+        case 4: sectionFour.classList.add('active'); break;
     }
 }
 
@@ -67,8 +67,8 @@ createBtn.addEventListener('click', function (e) {
     let prompt = document.getElementById('createRoomPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
-    let fN = document.getElementById('createRoomName');
-    fN.setAttribute('placeholder', 'Room 1');
+    let inputForName = document.getElementById('createRoomName');
+    inputForName.setAttribute('placeholder', 'Room 1');
 
     let form = document.getElementById('createRoomForm');
 
@@ -145,8 +145,8 @@ function updateRoom(key) {
     let prompt = document.getElementById('roomPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
-    let fN = document.getElementById('roomName');
-    fN.setAttribute('placeholder', key);
+    let inputForName = document.getElementById('roomName');
+    inputForName.setAttribute('placeholder', key);
 
     let form = document.getElementById('roomForm');
 
@@ -239,21 +239,21 @@ function setUpMenu() {
     `;
     feather.replace();
 
-    let item1 = document.getElementById('option1');
-    let item2 = document.getElementById('option2');
-    let item3 = document.getElementById('option3');
-    let item4 = document.getElementById('option4');
+    let menuItem1 = document.getElementById('option1');
+    let menuItem2 = document.getElementById('option2');
+    let menuItem3 = document.getElementById('option3');
+    let menuItem4 = document.getElementById('option4');
 
-    item1.addEventListener('click', (e) => {
+    menuItem1.addEventListener('click', (e) => {
         showWindow(1);
     });
-    item2.addEventListener('click', (e) => {
+    menuItem2.addEventListener('click', (e) => {
         showWindow(2);
     });
-    item3.addEventListener('click', (e) => {
+    menuItem3.addEventListener('click', (e) => {
         showWindow(3);
     });
-    item4.addEventListener('click', (e) => {
+    menuItem4.addEventListener('click', (e) => {
         showWindow(4);
     });
 }
@@ -333,7 +333,7 @@ function setUpPage() {
 
 function setUpFunctionality() {
     setUpRenovations();
-    setUpEquipment(mainResponse, 'empty');
+    setUpEquipment('empty');
     setUpTransfer();
 }
 
@@ -356,20 +356,20 @@ whichRenovation.addEventListener('change', function (e) {
 });
 
 function setUpRenovations() {
-    let devideRoom = document.getElementById('complexDevide');
-    let mergeRoom1 = document.getElementById('complexMerge1');
-    let mergeRoom2 = document.getElementById('complexMerge2');
-    devideRoom.innerHTML = '';
-    mergeRoom1.innerHTML = '';
-    mergeRoom2.innerHTML = '';
+    let devideRoomSelect = document.getElementById('complexDevide');
+    let mergeRoom1Select = document.getElementById('complexMerge1');
+    let mergeRoom2Select = document.getElementById('complexMerge2');
+    devideRoomSelect.innerHTML = '';
+    mergeRoom1Select.innerHTML = '';
+    mergeRoom2Select.innerHTML = '';
     for (let room of mainResponse) {
         if (room['name'] != 'Main warehouse') {
             let newOption = document.createElement('option');
             newOption.setAttribute('value', room['name']);
             newOption.innerText = room['name'];
-            devideRoom.appendChild(newOption);
-            mergeRoom1.appendChild(newOption.cloneNode(true));
-            mergeRoom2.appendChild(newOption.cloneNode(true));
+            devideRoomSelect.appendChild(newOption);
+            mergeRoom1Select.appendChild(newOption.cloneNode(true));
+            mergeRoom2Select.appendChild(newOption.cloneNode(true));
         }
     }
     let formDevide = devidePanel.querySelector('form');
@@ -527,36 +527,36 @@ function setUpEquipment(myFilter) {
     }
 }
 
-var filter0 = document.getElementById('filterSearch');
-var filter1 = document.getElementById('filterRoomType');
-var filter2 = document.getElementById('filterEquipmentQuantity');
-var filter3 = document.getElementById('filterEquipmentType');
+var equipmentSearchFilter = document.getElementById('filterSearch');
+var equipmentRoomTypeFilter = document.getElementById('filterRoomType');
+var equipmentQuantityFilter = document.getElementById('filterEquipmentQuantity');
+var equipmentTypeFilter = document.getElementById('filterEquipmentType');
 
-filter0.addEventListener('input', updateEquipmentTable);
-filter1.addEventListener('change', updateEquipmentTable);
-filter2.addEventListener('change', updateEquipmentTable);
-filter3.addEventListener('change', updateEquipmentTable);
+equipmentSearchFilter.addEventListener('input', updateEquipmentTable);
+equipmentRoomTypeFilter.addEventListener('change', updateEquipmentTable);
+equipmentQuantityFilter.addEventListener('change', updateEquipmentTable);
+equipmentTypeFilter.addEventListener('change', updateEquipmentTable);
 
 function updateEquipmentTable(e) {
     e.preventDefault();
 
     let finalFilter = '';
-    let filterValue0 = filter0.value;
-    let filterValue1 = filter1.value;
-    let filterValue2 = filter2.value;
-    let filterValue3 = filter3.value;
+    let filter0 = equipmentSearchFilter.value;
+    let filter1 = equipmentRoomTypeFilter.value;
+    let filter2 = equipmentQuantityFilter.value;
+    let filter3 = equipmentTypeFilter.value;
 
-    if (filterValue0) {
-        finalFilter += `term|${filterValue0}&`;
+    if (filter0) {
+        finalFilter += `term|${filter0}&`;
     }
-    if (filterValue1) {
-        finalFilter += `space|${filterValue1}&`;
+    if (filter1) {
+        finalFilter += `space|${filter1}&`;
     }
-    if (filterValue2) {
-        finalFilter += `quantity|${filterValue2}&`;
+    if (filter2) {
+        finalFilter += `quantity|${filter2}&`;
     }
-    if (filterValue3) {
-        finalFilter += `equipment|${filterValue3}&`;
+    if (filter3) {
+        finalFilter += `equipment|${filter3}&`;
     }
     if (finalFilter.endsWith('&')) {
         finalFilter = finalFilter.slice(0, -1);
@@ -570,7 +570,7 @@ function updateEquipmentTable(e) {
 // Transfer
 var room1 = document.getElementById('transfer1');
 var room2 = document.getElementById('transfer2');
-var container = document.getElementById('transferOptions');
+var transferContainer = document.getElementById('transferOptions');
 
 function setUpTransfer() {
     room1.innerHTML = '';
@@ -589,7 +589,7 @@ room1.addEventListener('change', showSelectedRoomEquipment);
 room2.addEventListener('change', showSelectedRoomEquipment);
 
 function showSelectedRoomEquipment() {
-    container.innerHTML = '';
+    transferContainer.innerHTML = '';
     let roomFrom;
     let roomTo;
     for (let room of mainResponse) {
@@ -623,8 +623,8 @@ function showSelectedRoomEquipment() {
         quantityField.setAttribute('type', 'text');
         quantityField.setAttribute('autocomplete', 'off')
         quantityField.setAttribute('placeholder', 'Enter how much to transfer ( max ' + inRoom1 + ' )');
-        container.appendChild(equipmentField);
-        container.appendChild(quantityField);
+        transferContainer.appendChild(equipmentField);
+        transferContainer.appendChild(quantityField);
     }
 }
 
@@ -651,7 +651,7 @@ transferForm.addEventListener('submit', function (e) {
     let ok = true;
     let arr = []
 
-    let children = container.children
+    let children = transferContainer.children
     for (let i = 0; i < children.length; i += 2) {
         if (children[i + 1].value) {
             if (+children[i + 1].getAttribute('placeholder').split(' ')[7] >= +children[i + 1].value) {
