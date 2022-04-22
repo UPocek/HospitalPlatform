@@ -54,7 +54,7 @@ function showExaminations(){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 doctorsExaminations = JSON.parse(this.responseText);
-                let table = document.getElementById("roomTable");
+                let table = document.getElementById("examinationsTable");
                 table.innerHTML = "";
                 for (let examination of doctorsExaminations) {
 
@@ -85,9 +85,9 @@ function showExaminations(){
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add("delBtn");
                     delBtn.setAttribute("key", examination["id"]);
-                    delBtn.addEventListener('click', function (e) {
+                    delBtn.addEventListener('click', function(e){
                         deleteExamination(delBtn.getAttribute('key'));
-                    });
+                     });
                     two.appendChild(delBtn);
 
                     let three = document.createElement("td");
@@ -95,8 +95,8 @@ function showExaminations(){
                     updateBtn.innerHTML = '<i data-feather="upload"></i>';
                     updateBtn.classList.add("updateBtn");
                     updateBtn.setAttribute("key", examination["id"]);
-                    updateBtn.addEventListener('click', function (e) {
-                        deleteExamination(updateBtn.getAttribute('key'));
+                    updateBtn.addEventListener('click', function(e){ 
+                        updateExamination(updateBtn.getAttribute("key"));
                     });
                     three.appendChild(updateBtn);
 
@@ -130,14 +130,14 @@ var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule(){
     let inputDate = document.getElementById("scheduleDate").value;
+
     const convertedInputDate = new Date(inputDate);
     const lastDayInSchedule = new Date(inputDate);
-
     lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
     convertedInputDate.setHours(7,0,0);
     lastDayInSchedule.setHours(23,0,0);
 
-    let table = document.getElementById("roomTable");
+    let table = document.getElementById("examinationsTable");
     removeAllChildNodes(table);
 
     for (let i in doctorsExaminations){
@@ -174,8 +174,8 @@ function searchSchedule(){
             delBtn.innerHTML = '<i data-feather="trash"></i>';
             delBtn.classList.add("delBtn");
             delBtn.setAttribute("key", examination["id"]);
-            delBtn.addEventListener('click', function (e) {
-                deleteExamination(delBtn.getAttribute('key'));
+            delBtn.addEventListener('click', function(e){
+               deleteExamination(delBtn.getAttribute('key'))
             });
             two.appendChild(delBtn);
 
@@ -184,8 +184,8 @@ function searchSchedule(){
             updateBtn.innerHTML = '<i data-feather="upload"></i>';
             updateBtn.classList.add("updateBtn");
             updateBtn.setAttribute("key", examination["id"]);
-            updateBtn.addEventListener('click', function (e) {
-                updateRoom();
+            updateBtn.addEventListener('click', function(e){ 
+                updateExamination(updateBtn.getAttribute("key"));
             });
             three.appendChild(updateBtn);
 
@@ -224,7 +224,7 @@ function deleteExamination(id){
 
 var main = document.getElementsByTagName("main")[0];
 
-function validateTimeOfExaminaion(date,duration){
+function validateTimeOfExamination(date,duration){
 
     let currentDate = new Date();
     let newExaminationBegging = new Date(date);
@@ -251,12 +251,43 @@ function validateTimeOfExaminaion(date,duration){
     return true;
 }
 
+function validateTimeOfExaminationPut(date, duration, id){
+
+    let currentDate = new Date();
+    let newExaminationBegging = new Date(date);
+    let newExaminationEnding = new Date(date);
+
+    newExaminationEnding.setTime(newExaminationBegging.getTime() + 6000 * duration);
+    
+    if (currentDate > newExaminationBegging){
+        return false;
+    }
+
+    for (examination of doctorsExaminations){
+        if (examination["id"] != id){
+
+            let examinationBegging = new Date(examination["date"]);
+            let examinationEnding = new Date(examination["date"]);
+            examinationEnding.setTime(examinationBegging.getTime() + 6000 * examination["duration"]);
+
+            if ((newExaminationBegging >= examinationBegging && newExaminationBegging <= examinationEnding) 
+                | (newExaminationEnding >= examinationBegging && newExaminationEnding <= examinationEnding)){
+                    return false;
+                }
+            }
+    }
+
+    return true;
+}
+
 function createExamination() {
     let popUp = document.getElementById("examinationPopUp");
     popUp.classList.remove("off");
     main.classList.add("hideMain");
 
     let form = document.getElementById("examinationForm");
+    let title = document.getElementById("examinationFormId");
+    title.innerText = "Update examination";
 
     form.addEventListener('submit', function (e) {
         popUp.classList.add("off");
@@ -271,7 +302,7 @@ function createExamination() {
         if (selectedType == "visit" && selectedDuration != 15){
             alert("Duration of visit can't be longer then 15 minutes");
         }
-        if (validateTimeOfExaminaion(selectedDate, selectedDuration)){
+        if (validateTimeOfExamination(selectedDate, selectedDuration)){
 
             let postRequest = new XMLHttpRequest();
 
@@ -288,15 +319,85 @@ function createExamination() {
 
             let selectedRoom = document.getElementById("examinationRoom").value;
             let selectedPatient = document.getElementById("examinationPatient").value;
-            let isUrgent = document.getElementById("urgent").value ? true : false;
+            let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-
-            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
+            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
             postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":"", "equipmentUsed":"" }));
-           
+            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
+        }
+    });
+}
+
+function updateExamination(id){
+    let updatedExamination;
+    for (examination of doctorsExaminations){
+        if (examination.id == id){
+            updatedExamination = examination;
+            break
+        }
+    }
+
+    let popUp = document.getElementById("examinationPopUp");
+    popUp.classList.remove("off");
+    main.classList.add("hideMain");
+    let title = document.getElementById("examinationFormId");
+    title.innerText = "Update examination";
+
+    let form = document.getElementById("examinationForm");
+    document.getElementById("scheduleDate").value = updatedExamination["date"];
+    document.getElementById("examinationDuration").value = updatedExamination["duration"];
+    document.getElementById("examinationRoom"). value = updatedExamination["room"];
+    document.getElementById("examinationPatient").value = updatedExamination["patient"];
+    document.getElementById("examinationType").value = updatedExamination["type"];
+    document.getElementById("urgent").checked = false;
+    if (updatedExamination["urgent"]){
+        document.getElementById("urgent").checked = true;
+    }
+
+    form.addEventListener('submit', function (e) {
+        popUp.classList.add("off");
+        main.classList.remove("hideMain");
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let selectedType = document.getElementById("examinationType").value;
+        let selectedDate = document.getElementById("scheduleDate").value;
+        let selectedDuration = document.getElementById("examinationDuration").value;
+        
+        if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
+            && !(selectedType == "visit" && selectedDuration != 15)){
+
+            let postRequest = new XMLHttpRequest();
+
+            postRequest.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        alert("Examination sucessfuly created");
+                        showExaminations();
+                    } else {
+                        alert("Error: Entered examination informations are invalid");
+                    }
+                }
+            };
+
+            let selectedRoom = document.getElementById("examinationRoom").value;
+            let selectedPatient = document.getElementById("examinationPatient").value;
+            let isUrgent = document.getElementById("urgent").checked ? true : false;
+
+            console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+            postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
+            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+        }
+        else{
+            alert("Error: Entered examination informations are invalid");
+            popUp.classList.remove("off");
+            main.classList.add("hideMain");
+            let title = document.getElementById("examinationFormId");
+            title.innerText = "Update examination";
         }
     });
 }
