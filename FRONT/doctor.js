@@ -313,10 +313,8 @@ function submitForm(e) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
         postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
         postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
     }
 }
@@ -378,77 +376,97 @@ function createExamination() {
     getRequest.send();
 }
 
+function submitUpdate(updatedExamination, id, popUp){
+    popUp.classList.add("off");
+    main.classList.remove("hideMain");
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let selectedType = document.getElementById("examinationType").value;
+    let selectedDate = document.getElementById("scheduleDate").value;
+    let selectedDuration = document.getElementById("examinationDuration").value;
+    
+    if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
+        && !(selectedType == "visit" && selectedDuration != 15)){
+
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Examination sucessfuly created");
+                    showExaminations();
+                } else {
+                    alert("Error: Entered examination informations are invalid");
+                }
+            }
+        };
+
+        let selectedRoom = document.getElementById("examinationRoom").value;
+        let selectedPatient = document.getElementById("examinationPatient").value;
+        let isUrgent = document.getElementById("urgent").checked ? true : false;
+
+        console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+        postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
+        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+    }
+    else{
+        alert("Error: Entered examination informations are invalid");
+        popUp.classList.remove("off");
+        main.classList.add("hideMain");
+        let title = document.getElementById("examinationFormId");
+        title.innerText = "Update examination"
+    }
+}
+
 function updateExamination(id){
-    let updatedExamination;
-    for (examination of doctorsExaminations){
-        if (examination.id == id){
-            updatedExamination = examination;
-            break
-        }
-    }
-
-    let popUp = document.getElementById("examinationPopUp");
-    popUp.classList.remove("off");
-    main.classList.add("hideMain");
-    let title = document.getElementById("examinationFormId");
-    title.innerText = "Update examination";
-
-    let form = document.getElementById("examinationForm");
-    document.getElementById("scheduleDate").value = updatedExamination["date"];
-    document.getElementById("examinationDuration").value = updatedExamination["duration"];
-    document.getElementById("examinationRoom"). value = updatedExamination["room"];
-    document.getElementById("examinationPatient").value = updatedExamination["patient"];
-    document.getElementById("examinationType").value = updatedExamination["type"];
-    document.getElementById("urgent").checked = false;
-    if (updatedExamination["urgent"]){
-        document.getElementById("urgent").checked = true;
-    }
-
-    form.addEventListener('submit', function (e) {
-        popUp.classList.add("off");
-        main.classList.remove("hideMain");
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        let selectedType = document.getElementById("examinationType").value;
-        let selectedDate = document.getElementById("scheduleDate").value;
-        let selectedDuration = document.getElementById("examinationDuration").value;
-        
-        if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
-            && !(selectedType == "visit" && selectedDuration != 15)){
-
-            let postRequest = new XMLHttpRequest();
-
-            postRequest.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        alert("Examination sucessfuly created");
-                        showExaminations();
-                    } else {
-                        alert("Error: Entered examination informations are invalid");
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                rooms = JSON.parse(this.responseText);
+                let updatedExamination;
+                for (examination of doctorsExaminations){
+                    if (examination.id == id){
+                        updatedExamination = examination;
+                        break
                     }
                 }
-            };
 
-            let selectedRoom = document.getElementById("examinationRoom").value;
-            let selectedPatient = document.getElementById("examinationPatient").value;
-            let isUrgent = document.getElementById("urgent").checked ? true : false;
+                let popUp = document.getElementById("examinationPopUp");
+                popUp.classList.remove("off");
+                main.classList.add("hideMain");
+                let title = document.getElementById("examinationFormId");
+                title.innerText = "Update examination";
 
-            console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
-            postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
-            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                let form = document.getElementById("examinationForm");
+                document.getElementById("scheduleDate").value = updatedExamination["date"];
+                document.getElementById("examinationDuration").value = updatedExamination["duration"];
+                document.getElementById("examinationPatient").value = updatedExamination["patient"];
+                document.getElementById("examinationType").value = updatedExamination["type"];
+                document.getElementById("urgent").checked = false;
+                if (updatedExamination["urgent"]){
+                    document.getElementById("urgent").checked = true;
+                }
+                     
+                let roomOptions = document.getElementById("examinationRoom");
+                let examinationType = document.getElementById("examinationType");
+                addOptions(examinationType, roomOptions);
+                examinationType.addEventListener('change', function(e){
+                    removeAllChildNodes(roomOptions);
+                    addOptions(examinationType, roomOptions);
+                })
 
-            postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+                form.addEventListener('submit', function (e) {
+                    submitUpdate(updateExamination, id, popUp);
+                });
+            }
         }
-        else{
-            alert("Error: Entered examination informations are invalid");
-            popUp.classList.remove("off");
-            main.classList.add("hideMain");
-            let title = document.getElementById("examinationFormId");
-            title.innerText = "Update examination";
-
-        }
-    });
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.send();
 }
 
 var createBtn = document.getElementById("addBtn");
