@@ -55,9 +55,12 @@
 	    </div>
 
         <main>
+            <div id="hi">
+                <h1>Welcome back &nbsp; </h1>
+            </div>
             <section id="one" class="active">
                 <div class="tableHeaderDiv">
-                    <div class="scheduleDiv">
+                    <div id="scheduleOption" class="hideMain">
                         <label for="scheduleDate">Schedule for date:</label>
                         <input type="date" id="scheduleDate" name="schedule">
                         <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
@@ -70,6 +73,7 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
+                                    <th>Duration</th>
                                     <th>Done</th>
                                     <th>Examination room</th>
                                     <th>Type</th>

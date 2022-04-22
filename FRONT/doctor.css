@@ -1972,13 +1972,13 @@ td button {
     width: 79%;
     margin: 10px auto;
     display: flex;
-    justify-content: space-between;
-    
+    justify-content: flex-end; 
 }
 
 .tableHeaderDiv button {
     cursor: pointer;
 }
+
 
 /* Complex Renovations */
 

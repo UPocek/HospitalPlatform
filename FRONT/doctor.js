@@ -1,3 +1,21 @@
+class User {
+    constructor(data) {
+        this.id = data['id']
+        this.firstName = data['firstName'];
+        this.lastName = data['lastName'];
+        this.email = data['email'];
+        this.role = data['role'];
+        if (this.role == 'doctor') {
+            this.specialization = data['specialization'];
+            this.score = data['score'];
+            this.freeDays = data['freeDays'];
+            this.examinations = data['examinations'];
+        } else if (this.role == 'patient') {
+            this.medicalRecord = data['medicalRecord'];
+        }
+    }
+}
+
 //*helper functions
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
@@ -22,14 +40,35 @@ function getParamValue(name) {
 
 var doctorsExaminations;
 var doctorId = getParamValue('id');
+var user;
+
+function getDoctor(){
+    let getUserRequest = new XMLHttpRequest();
+    getUserRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let doctor = JSON.parse(this.responseText);
+                console.log(doctor);
+                doctorFirstName = doctor['firstName'];
+                doctorLastName = doctor['lastName'];
+            }
+        }
+    }
+    getUserRequest.open('GET', 'https://localhost:7291/api/my/users/' + doctorId);
+    getUserRequest.send();
+}
 
 function setUpMenu() {
+    
     let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+        <a href="#" class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
     </li>
     <li id="option2" class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+    </li>
+    <li id="option3" class="navbar__item">
         <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
@@ -39,10 +78,12 @@ function setUpMenu() {
     let item2 = document.getElementById("option2");
 
     item1.addEventListener('click', (e) => {
-        
+        document.getElementById("scheduleOption").classList.remove("scheduleDiv");
+        document.getElementById("scheduleOption").classList.add("hideMain");
     });
     item2.addEventListener('click', (e) => {
-        
+        document.getElementById("scheduleOption").classList.remove("hideMain");
+        document.getElementById("scheduleOption").classList.add("scheduleDiv");
     });
     
 }
@@ -64,6 +105,8 @@ function showExaminations(){
                     examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
                     let examinationDone = document.createElement("td");
                     examinationDone.innerText = examination["done"];
+                    let examinationDuration = document.createElement("td");
+                    examinationDuration.innerText = examination["duration"];
                     let examinationRoom = document.createElement("td");
                     examinationRoom.innerText = examination["room"];
                     let examinationType = document.createElement("td");
@@ -101,6 +144,7 @@ function showExaminations(){
                     three.appendChild(updateBtn);
 
                     newRow.appendChild(examinationDate);
+                    newRow.appendChild(examinationDuration);
                     newRow.appendChild(examinationDone);
                     newRow.appendChild(examinationRoom);
                     newRow.appendChild(examinationType);
@@ -120,11 +164,28 @@ function showExaminations(){
 }
 
 function setUpPage(){
+    let hi = document.querySelector('#hi h1');
+    hi.innerText += `${user.firstName} ${user.lastName}`;
     setUpMenu();
     showExaminations();
 }
 
-window.addEventListener("load", setUpPage);
+document.addEventListener('DOMContentLoaded', function () {
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                user = new User(response);
+                setUpPage();
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/my/users/' + doctorId);
+    request.send();
+});
 
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
@@ -151,6 +212,8 @@ function searchSchedule(){
 
             let examinationDate = document.createElement("td");
             examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
+            let examinationDuration = document.createElement("td");
+            examinationDuration.innerText = examination["duration"];
             let examinationDone = document.createElement("td");
             examinationDone.innerText = examination["done"];
             let examinationRoom = document.createElement("td");
@@ -190,6 +253,7 @@ function searchSchedule(){
             three.appendChild(updateBtn);
 
             newRow.appendChild(examinationDate);
+            newRow.appendChild(examinationDuration);
             newRow.appendChild(examinationDone);
             newRow.appendChild(examinationRoom);
             newRow.appendChild(examinationType);
