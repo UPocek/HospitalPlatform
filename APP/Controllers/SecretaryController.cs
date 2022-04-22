@@ -74,7 +74,15 @@ namespace APP.Controllers
             return Ok();   
         }
 
-        // DELETE action
+        // DELETE: api/Secretary/patients/901
+
+        [HttpDelete("patients/{id}")]
+        public async Task<IActionResult> DeletePatient(int id)
+        {
+            var examinationCollection = database.GetCollection<Patient>("Patients");
+            examinationCollection.DeleteOne(p => p.id == id);
+            return Ok(); 
+        }
 
     }
 }
