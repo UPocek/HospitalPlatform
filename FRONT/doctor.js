@@ -291,20 +291,18 @@ function submitForm(e) {
     let selectedDate = document.getElementById("scheduleDate").value;
     let selectedDuration = document.getElementById("examinationDuration").value;
 
-    if (selectedType == "visit" && selectedDuration != 15){
-        alert("Duration of visit can't be longer then 15 minutes");
-    }
-    if (validateTimeOfExamination(selectedDate, selectedDuration)){
+    if (validateTimeOfExamination(selectedDate, selectedDuration)
+    && !(selectedType == "visit" && selectedDuration != 15)){
       
         let postRequest = new XMLHttpRequest();
 
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    alert("Room sucessfuly created");
+                    alert("Examination sucessfuly created");
                     showExaminations();
                 } else {
-                    alert("Error: Entered room informations are invalid");
+                    alert("Error: Entered examination informations are invalid");
                 }
             }
         };
