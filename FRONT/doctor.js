@@ -133,7 +133,6 @@ function searchSchedule(){
 
     const convertedInputDate = new Date(inputDate);
     const lastDayInSchedule = new Date(inputDate);
-    console.log(inputDate);
     lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
     convertedInputDate.setHours(7,0,0);
     lastDayInSchedule.setHours(23,0,0);
@@ -144,9 +143,7 @@ function searchSchedule(){
     for (let i in doctorsExaminations){
         
         let examinationDate = new Date(doctorsExaminations[i]['date']);
-        console.log(examinationDate);
-        console.log(convertedInputDate);
-        console.log(lastDayInSchedule);
+        
         if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule){
             
             let examination = doctorsExaminations[i];
@@ -267,7 +264,6 @@ function validateTimeOfExaminationPut(date, duration, id){
     }
 
     for (examination of doctorsExaminations){
-        
         if (examination["id"] != id){
 
             let examinationBegging = new Date(examination["date"]);
@@ -344,7 +340,6 @@ function updateExamination(id){
             break
         }
     }
-    console.log(updatedExamination);
 
     let popUp = document.getElementById("examinationPopUp");
     popUp.classList.remove("off");
@@ -354,7 +349,6 @@ function updateExamination(id){
 
     let form = document.getElementById("examinationForm");
     document.getElementById("scheduleDate").value = updatedExamination["date"];
-    console.log(document.getElementById("scheduleDate").value.type);
     document.getElementById("examinationDuration").value = updatedExamination["duration"];
     document.getElementById("examinationRoom"). value = updatedExamination["room"];
     document.getElementById("examinationPatient").value = updatedExamination["patient"];
@@ -374,15 +368,12 @@ function updateExamination(id){
         let selectedDate = document.getElementById("scheduleDate").value;
         let selectedDuration = document.getElementById("examinationDuration").value;
         
-        if (selectedType == "visit" && selectedDuration != 15){
-            alert("Duration of visit can't be longer then 15 minutes");
-        }
-        if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)){
+        if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
+            && !(selectedType == "visit" && selectedDuration != 15)){
 
             let postRequest = new XMLHttpRequest();
 
             postRequest.onreadystatechange = function () {
-                console.log(this.response.toString());
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         alert("Examination sucessfuly created");
@@ -396,7 +387,6 @@ function updateExamination(id){
             let selectedRoom = document.getElementById("examinationRoom").value;
             let selectedPatient = document.getElementById("examinationPatient").value;
             let isUrgent = document.getElementById("urgent").checked ? true : false;
-            console.log(isUrgent);
 
             console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
             postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
@@ -404,6 +394,13 @@ function updateExamination(id){
 
             postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
            
+        }
+        else{
+            alert("Error: Entered examination informations are invalid");
+            popUp.classList.remove("off");
+            main.classList.add("hideMain");
+            let title = document.getElementById("examinationFormId");
+            title.innerText = "Update examination";
         }
     });
 }

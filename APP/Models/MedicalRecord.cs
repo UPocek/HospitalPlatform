@@ -29,7 +29,6 @@ namespace Models
 
         [BsonElement("drugs")]
         [JsonPropertyName("drugs")]
-        [BsonRepresentation(BsonType.ObjectId)]
         public List<Prescription> prescriptions {get; set;}
 
         [BsonElement("examinations")]

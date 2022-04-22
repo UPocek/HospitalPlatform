@@ -81,6 +81,20 @@ public class DoctorController : ControllerBase
     [HttpPut("examinations/{id}")]
     public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
+        var patients = database.GetCollection<Patient>("Patients");
+        var patient = patients.Find(p => p.id == examination.patinetId).First();
+        Console.WriteLine(patient);
+        if (patient == null){
+            return BadRequest();
+        }
+
+        var rooms = database.GetCollection<Room>("Rooms");
+        var room = rooms.Find(r => r.name == examination.roomName).First();
+        Console.WriteLine(room);
+        if (room == null){
+            return BadRequest();
+        }
+
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
         examinationCollection.ReplaceOne(e => e.id == id, examination);
         return Ok();    

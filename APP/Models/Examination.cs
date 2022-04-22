@@ -54,9 +54,5 @@ public class Examination
     [JsonPropertyName("equipmentUsed")]
     public List<string>? equipmentUsed {get; set;} = new List<string>();
 
-    [BsonElement("examinationHistory")]
-    [JsonPropertyName("examinationHistory")]
-    public List<ExaminationHistoryEntry>? examinationHistory {get; set;} = new List<ExaminationHistoryEntry>();
-
 }
 
