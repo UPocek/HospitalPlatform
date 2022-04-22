@@ -22,7 +22,6 @@ function getParamValue(name) {
 
 var doctorsExaminations;
 var doctorId = getParamValue('id');
-var nextId = 0;
 
 function setUpMenu() {
     let menu = document.getElementById("mainMenu");
@@ -120,25 +119,9 @@ function showExaminations(){
     request.send();
 }
 
-function findNextExaminationId(){
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                let response = JSON.parse(this.responseText);
-                nextId = response["id"] + 1;
-            }
-        }
-    }
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/nextIndex');
-    request.send();
-    
-}
-
 function setUpPage(){
     setUpMenu();
     showExaminations();
-    findNextExaminationId();
 }
 
 window.addEventListener("load", setUpPage);
@@ -308,9 +291,8 @@ function createExamination() {
             postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            postRequest.send(JSON.stringify({ "id": nextId, "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType}));
-            nextId++;
-           
+            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType}));
+        
         }
     });
 }

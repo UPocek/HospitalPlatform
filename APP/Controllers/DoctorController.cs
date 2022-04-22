@@ -80,6 +80,8 @@ public class DoctorController : ControllerBase
         }
 
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        var id = examinations.Find(e => true).SortByDescending(e => e.id).First().id;
+        examination.id = id + 1;
         examinations.InsertOne(examination);
         return Ok();       
     }
