@@ -119,7 +119,7 @@ function setUpPage() {
 
 
 function setUpFunctionality() {
-    getDoctors();
+    setUpDoctors();
 }
 
 var mainResponse;
@@ -233,7 +233,7 @@ createBtn.addEventListener("click", function (e) {
 
 
 //PUT - Examination
-function editExamination(key) {
+function updateExamination(key) {
     let prompt = document.getElementById("editExaminationPrompt");
     prompt.classList.remove("off");
     main.classList.add("hideMain");
@@ -283,7 +283,7 @@ function deleteExamination(key) {
 
 
 //GET - Doctors
-function getDoctors() {
+function setUpDoctors() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {

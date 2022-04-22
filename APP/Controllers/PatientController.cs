@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
+using Models;
 
 
 namespace APP.Controllers{
@@ -29,7 +30,7 @@ public class PatientController : ControllerBase
     // GET: api/Patient/doctors
     [HttpGet("doctors")]
 
-    public IActionResult GetDoctors(){
+    public IActionResult GetAllDoctors(){
             var collection = database.GetCollection<BsonDocument>("Employees");
 
             var filter = Builders<BsonDocument>.Filter.Eq("role", "doctor");
@@ -45,20 +46,53 @@ public class PatientController : ControllerBase
     // GET: api/Patient/examinations/id
     [HttpGet("examinations/{id}")]
 
-    public IActionResult GetExaminations(string id){
-            var collection = database.GetCollection<BsonDocument>("MedicalExaminations");
-
-            var filter = Builders<BsonDocument>.Filter.Eq("patient", Int64.Parse(id));
-            var results = collection.Find(filter).ToList();
-            var dotNetObjList = results.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-            Response.StatusCode = StatusCodes.Status200OK;
-            return new JsonResult(dotNetObjList);
-    }
+    public async  Task<List<Examination>> GetPatientsExaminations(int id){
+          var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => e.patinetId == id).ToList();
+  }
 
     // POST action
 
+    [HttpPost("examinations")]
+    public async Task<IActionResult> CreateExamination(Examination examination)
+    {
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        // If examination already exists abort action
+        if (examinations.Find(item => item.id == examination.id).ToList().Count != 0)
+        {
+            return BadRequest();
+        }
+        
+        examinations.InsertOne(examination);
+        return Ok();       
+    }
+
     // PUT action
+    [HttpPut("examinations/{id}")]
+        public async Task<IActionResult> UpdateExamination(Examination examination)
+    {
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        // If examination doesn't exists abort action
+        if (examinations.Find(item => item.id == examination.id).ToList().Count == 0)
+        {
+            return BadRequest();
+        }
+        
+        var update = Builders<Examination>.Update.Set("date", examination.dateAndTimeOfExamination);
+        var filter = Builders<Examination>.Filter.Eq("id", examination.id);
+        examinations.UpdateOne(filter, update);
+        return Ok();       
+    }
 
     // DELETE action
+    [HttpDelete("examinations/{id}")]
+        public async Task<IActionResult> DeleteExamination(string id)
+        {
+            var examinations = database.GetCollection<Examination>("Examination");
+            //izbrisi iz liste pregleda kod pacijenta i dodaj u iztoriju izmena
+            examinations.DeleteOne(item => item.id == int.Parse(id));
+            return Ok();
+        }
+
 }
 }
