@@ -127,7 +127,6 @@ function findNextExaminationId(){
             if (this.status == 200) {
                 let response = JSON.parse(this.responseText);
                 nextId = response["id"] + 1;
-                console.log(nextId);
             }
         }
     }
@@ -306,8 +305,6 @@ function createExamination() {
             let selectedPatient = document.getElementById("examinationPatient").value;
             let isUrgent = document.getElementById("urgent").value ? true : false;
 
-
-            console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType}));
             postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 

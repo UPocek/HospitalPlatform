@@ -41,7 +41,6 @@ public class Examination
     [JsonPropertyName("anamnesis")]
     public string? anamnesis {get; set;} = "";
 
-
     [BsonElement("urgent")]
     [JsonPropertyName("urgent")]
     public bool isUrgent { get; set; }
