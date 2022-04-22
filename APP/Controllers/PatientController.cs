@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using APP.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
