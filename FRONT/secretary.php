@@ -20,17 +20,31 @@
 <body>
     <?php include 'header.html';?>
     <div id="createPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
-		<form id="createPatientForm" class="colDir myForm">
-			<h1>Create patient</h1>
+		<form id="createPatientForm" class="colDir myForm patientForm">
+			<h1 class="createPatientHeader">Create patient</h1>
 			<input id="createPatientFirstName" type="text" placeholder="" />
-            <input id="createPatientLastName" type="text" placeholder="" />
-            <input id="createPatientEmail" type="text" placeholder="" />
-            <input id="createPatientPassword" type="text" placeholder="" />
-            <input id="createPatientHeight" type="number" max=300 min=0 placeholder="" />
-            <input id="createPatientWeight" type="number" max=600 min=0 placeholder="" />
+      <input id="createPatientLastName" type="text" placeholder="" />
+      <input id="createPatientEmail" type="text" placeholder="" />
+      <input id="createPatientPassword" type="text" placeholder="" />
+      <input id="createPatientHeight" type="number" max=300 min=0 placeholder="" />
+      <input id="createPatientWeight" type="number" max=600 min=0 placeholder="" />
+      <select name="createPatientBloodType" id="filterEquipmentType">
+        <option value="A">A</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B">B</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="AB">AB</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+        <option value="O">O</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+      </select>
 			<button class="mainBtn">OK</button>
 		</form>
-	</div>
+	  </div>
     <main>
 
     <div id="hi">

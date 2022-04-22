@@ -3,23 +3,11 @@
     box-sizing: border-box;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-
-:root {
-    --mainColor: #153B50;
-    --backgroundColor: #fcfcfc;
-    --accentColor1: #FF416C;
-    --accentColor2: #FF4B2B;
-    --whiteSmoke: #F5F5F5;
-    --boxShadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-        0 10px 10px rgba(0, 0, 0, 0.22);
-}
-
 body {
-    background-color: var(--backgroundColor);
+    background-color: #fcfcfc;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
-    color: var(--mainColor);
+    color: #153B50;
     margin: 0;
     overflow-x: hidden;
 }
@@ -43,8 +31,8 @@ body {
 .myForm select {
     background-color: #eee;
     border: none;
-    padding: 0.75rem 1.125rem;
-    margin: 0.5rem 0;
+    padding: 12px 18px;
+    margin: 8px 0;
     border-radius: 4px;
     font-size: 0.9rem;
     min-width: 280px;
@@ -59,6 +47,8 @@ body {
 .myForm label {
     display: block;
 }
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
 #first {
     display: flex;
@@ -87,14 +77,14 @@ body {
 }
 
 #first span {
-    font-size: 0.9rem;
+    font-size: 14px;
 }
 
 #first a {
-    color: var(--mainColor);
+    color: #153B50;
     font-size: 1rem;
     text-decoration: none;
-    margin: 1rem 0;
+    margin: 15px 0;
 }
 
 #first input {
@@ -103,19 +93,19 @@ body {
 
 .mainBtn {
     border-radius: 10px;
-    border: 1px solid var(--accentColor2);
-    background: var(--accentColor1);
-    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
-    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
-    color: var(--backgroundColor);
-    font-size: 0.9rem;
+    border: 1px solid #FF4B2B;
+    background: #FF416C;
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
+    color: #fcfcfc;
+    font-size: 14px;
     font-weight: bold;
-    padding: 0.75rem 2.8rem;
+    padding: 12px 45px;
     letter-spacing: 1px;
     text-transform: uppercase;
     transition: transform 80ms ease-in;
     cursor: pointer;
-    margin: 0.625rem 0;
+    margin: 10px 0;
 }
 
 #first .ghost {
@@ -132,11 +122,11 @@ body {
 
 #first button.ghost {
     background-color: transparent;
-    border-color: var(--backgroundColor);
+    border-color: #fcfcfc;
 }
 
 #first form {
-    background-color: var(--backgroundColor);
+    background-color: #fcfcfc;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,9 +137,10 @@ body {
 }
 
 #first .container {
-    background-color: var(--backgroundColor);
+    background-color: #fcfcfc;
     border-radius: 10px;
-    box-shadow: var(--boxShadow);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+        0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
     width: 768px;
@@ -219,13 +210,13 @@ body {
 }
 
 #first .overlay {
-    background: var(--accentColor1);
-    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
-    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: #FF416C;
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;
-    color: var(--backgroundColor);
+    color: #fcfcfc;
     position: relative;
     left: -100%;
     height: 100%;
@@ -271,22 +262,22 @@ body {
 }
 
 #first .social-container {
-    margin: 1.25rem 0;
+    margin: 20px 0;
 }
 
 #first .social-container a {
-    border: 1px solid var(--backgroundColor);
+    border: 1px solid #fcfcfc;
     border-radius: 50%;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0.4rem;
-    height: 2.5rem;
-    width: 2.5rem;
+    margin: 0 5px;
+    height: 40px;
+    width: 40px;
 }
 
 #first .mainH {
-    margin-bottom: 3rem;
+    margin-bottom: 50px;
 }
 
 /* NAVBAR */
@@ -299,12 +290,13 @@ body {
     position: fixed;
     top: 1rem;
     left: 1rem;
-    background: var(--backgroundColor);
+    background: #fcfcfc;
     border-radius: 10px;
     padding: 1rem 0;
-    box-shadow: var(--boxShadow);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+        0 10px 10px rgba(0, 0, 0, 0.22);
     height: calc(100vh - 2rem);
-    font-size: 1.25rem;
+    font-size: 20px;
     z-index: 10;
 }
 
@@ -315,7 +307,7 @@ body {
     justify-content: center;
     height: 3.5rem;
     width: 5.5rem;
-    color: var(--mainColor);
+    color: #153B50;
     transition: 250ms ease all;
 }
 
@@ -326,15 +318,15 @@ body {
     margin-left: 1rem;
     opacity: 0;
     pointer-events: none;
-    color: var(--accentColor1);
-    /* background: var(--backgroundColor); */
+    color: #FF416C;
+    /* background: #fcfcfc; */
     padding: 0.75rem;
     transition: 250ms ease all;
     border-radius: 17.5px;
 }
 
 .navbar__link:hover {
-    color: var(--backgroundColor);
+    color: #fcfcfc;
 }
 
 .navbar:not(:hover) .navbar__link:focus span,
@@ -357,8 +349,8 @@ body {
     left: 1rem;
     width: 3.5rem;
     height: 3.5rem;
-    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
-    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
     border-radius: 17.5px;
     transition: 250ms cubic-bezier(1, 0.2, 0.1, 1.2) all;
 }
@@ -1798,83 +1790,59 @@ body {
 footer {
     text-align: center;
 }
-/* Patient */
-
-.blockBtn{
-    color: Red;
-    border: none;
-    background: transparent;
-    padding: 10px;
-}
-
-.recordBtn{
-    color: Blue;
-    border: none;
-    background: transparent;
-    padding: 10px;
-}
-
-.patientTable{
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-.createPatientHeader{
-    margin: 0%;
-}
 
 /* Manager */
 
 #hi {
     text-align: center;
-    margin: 8vh auto;
-    padding: 1rem;
-}
-
-#hi h1 {
-    border-bottom: 1px solid var(--accentColor1);
+    margin: 5vh auto;
+    padding: 50px;
     font-size: 3rem;
     font-weight: bold;
-    max-width: 768px;
-    margin: auto;
 }
 
 .delBtn {
     color: red;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 10px;
 }
 
 .updateBtn {
     color: blue;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 10px;
 }
 
 .renovateBtn {
     color: purple;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 10px;
 }
 
 .add {
     color: green;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 10px;
+}
+
+.send {
+    border: none;
+    background: transparent;
+    padding: 5px;
 }
 
 tr:nth-child(even) {
-    background-color: var(--whiteSmoke);
+    background-color: #F5F5F5;
 }
 
 #rooms,
 #equipment,
-#patients {
-    border: 2px solid var(--mainColor);
+#patient_info {
+    border: 2px solid #153B50;
     border-radius: 10px;
     width: 80%;
     margin: auto;
@@ -1893,7 +1861,7 @@ table {
 }
 
 th {
-    padding: 1.25rem 1rem;
+    padding: 20px 15px;
     font-weight: 500;
     font-size: 1.2rem;
     text-transform: uppercase;
@@ -1901,15 +1869,11 @@ th {
 }
 
 td {
-    padding: 1rem;
+    padding: 15px;
     vertical-align: middle;
     font-weight: 300;
     font-size: 1rem;
     border-bottom: solid 1px rgba(255, 255, 255, 0.2);
-}
-
-.smallerWidth{
-    width:120px;
 }
 
 td button {
@@ -1937,25 +1901,47 @@ td button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 500px;
-    min-height: 400px;
+    width: 500px;
+    height: 80%;
     padding: 1rem;
     border-radius: 10px;
-    box-shadow: var(--boxShadow);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+        0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
-.patientPrompt{
+.formDiv{
+    display: flex;
+    justify-content: space-between;
+}
+
+#examination_form > h1{
     text-align: center;
 }
 
-.patientForm input,.patientForm select{
-    margin:0.1rem;
+.formDiv > label{
+    margin: 10px auto 10px 0px;
+    padding: 10px 10px;
+    text-align: left;
 }
 
+.urgentDiv{
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 10px;
+}
+
+#urgent{
+    min-width: 30px;
+}
+
+.basic_info{
+    text-align: center;
+    overflow-x: auto;
+}
 .colDir {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 30px;
 }
 
 .off {
@@ -1966,13 +1952,31 @@ td button {
     display: none;
 }
 
-.plusDiv {
-    text-align: right;
-    max-width: 79%;
-    margin: 0.625rem auto;
+.scheduleDiv{
+    display: flex;
+    justify-content: baseline;
+    margin: 10px auto;
 }
 
-.plusDiv button {
+.scheduleDiv > *{
+    margin: 10px auto;
+    padding: 0px 10px;
+}
+.centarInfo{
+    text-align: right;
+    width: 79%;
+    margin: 10px auto;
+}
+.tableHeaderDiv {
+    text-align: right;
+    width: 79%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.tableHeaderDiv button {
     cursor: pointer;
 }
 
@@ -2013,13 +2017,13 @@ td button {
     display: flex;
     flex-direction: row;
     width: 80%;
-    margin: 1.25rem auto;
+    margin: 20px auto;
     justify-content: right;
     align-items: center;
 }
 
 #filters div {
-    margin: 0 3rem;
+    margin: 0 50px;
 }
 
 /* Transfers */
@@ -2028,7 +2032,7 @@ td button {
     display: flex;
     flex-direction: column;
     width: 80%;
-    margin: 1.25rem auto;
+    margin: 20px auto;
     justify-content: right;
     align-items: center;
 }
@@ -2039,12 +2043,12 @@ td button {
     justify-content: center;
     align-items: center;
     justify-items: center;
-    column-gap: 3rem;
+    column-gap: 50px;
 }
 
 .spacious {
-    margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--mainColor);
+    margin-bottom: 20px;
+    border-bottom: 1px solid #153B50;
 }
 
 #correctPos {
@@ -2058,7 +2062,7 @@ td button {
 }
 
 #transfers button {
-    margin-top: 2.5rem;
+    margin-top: 40px;
 }
 
 #transfers h4 {

@@ -103,11 +103,11 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation">Renovation start date:</label>
-                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="fromComplexRenovation" type="text" placeholder="From (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation">Renovation end date:</label>
-                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="toComplexRenovation" type="text" placeholder="To (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="">&nbsp;</label>
@@ -127,11 +127,11 @@
                     </div>
                     <div>
                     <label for="fromComplexRenovation1">Renovation start date:</label>
-                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="fromComplexRenovation1" type="text" placeholder="From (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="toComplexRenovation1">Renovation end date:</label>
-                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)" autocomplete="off"/>
+                    <input id="toComplexRenovation1" type="text" placeholder="To (yyyy-MM-dd)"/>
                     </div>
                     <div>
                     <label for="">&nbsp;</label>
@@ -183,22 +183,51 @@
         </form>
     </div>
     <div id="equipment">
-            <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Quantity</th>
-                        <th>In Room</th>
-                    </tr>
-                </thead>
-                <tbody id="equipmentTable">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>In Room</th>
+                </tr>
+            </thead>
+            <tbody id="equipmentTable">
 
-                </tbody>
-                </table>
-            </div>
+            </tbody>
+            </table>
         </div>
+    </div>
+    <div id="transfers">
+        <h3>Transfer equipment</h3>
+        <form id="transferForm" class="myForm">
+            <div>
+                <div>
+                <label for="transfer1">Room 1 (From):</label>
+                <select name="transfer1" id="transfer1"></select>
+                </div>
+                <div>
+                <label for="transfer2">Room 2 (To):</label>
+                <select name="transfer2" id="transfer2"></select>
+                </div>
+            </div>
+            <div class="spacious">
+                <div>
+                <h4>What to transfer:</h4>
+                </div>
+                <div>
+                <label for="transferDate">Transfer date:</label>
+                <input id="transferDate" type="text" placeholder="Date (yyyy-MM-dd)"/>
+                </div>
+            </div>
+            <div id="transferOptions">
+            </div>
+            <div id="correctPos">
+            <button class="mainBtn">Transfer</button>
+            </div>
+        </form>
+    </div>
 
     </section>
 
