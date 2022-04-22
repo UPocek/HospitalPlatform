@@ -33,6 +33,15 @@ namespace APP.Controllers
             return collection.Find(item => true).ToList();
         }
 
+        // GET: api/Manager/drugs
+        [HttpGet("drugs")]
+        public async Task<List<Drug>> GetDrugs()
+        {
+            var collection = database.GetCollection<Drug>("Drugs");
+
+            return collection.Find(item => true).ToList();
+        }
+
         // POST: api/Manager/rooms
         [HttpPost("rooms")]
         public async Task<IActionResult> CreateRoom(Room data)

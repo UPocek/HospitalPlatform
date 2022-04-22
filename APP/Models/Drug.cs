@@ -2,8 +2,12 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-public class Drugs
+public class Drug
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? id { get; set; }
+
     [BsonElement("name")]
     [JsonPropertyName("name")]
     public string name { get; set; }
