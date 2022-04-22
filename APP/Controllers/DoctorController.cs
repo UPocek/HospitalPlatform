@@ -79,10 +79,10 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPut("examinations/{id}")]
-    public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
+    public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.ReplaceOne(e => e._id == id, examination);
+        examinationCollection.ReplaceOne(e => e.id == id, examination);
         return Ok();    
     }
 

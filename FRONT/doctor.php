@@ -21,7 +21,7 @@
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">
-                <h1>Create examination</h1>
+                <h1 id="examinationFormId" >Create examination</h1>
                 <div class="formDiv">
                     <label for="scheduleDate">Date:</label>
                     <input type="datetime-local" id="scheduleDate">
@@ -72,14 +72,14 @@
                                     <th>Date</th>
                                     <th>Done</th>
                                     <th>Examination room</th>
-                                    <th>Urgent</th>
                                     <th>Type</th>
+                                    <th>Urgent</th>
                                     <th>Patient</th>
                                     <th>Delete</th>
                                     <th>Update</th>
                                 </tr>
                             </thead>
-                            <tbody id="roomTable">
+                            <tbody id="examinationsTable">
                                 <!-- this is where data from api comes -->
                             </tbody>
                         </table>

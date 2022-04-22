@@ -40,7 +40,7 @@ public class Examination
 
     [BsonElement("anamnesis")]
     [JsonPropertyName("anamnesis")]
-    public string anamnesis {get; set;} = "";
+    public string? anamnesis {get; set;} = "";
 
     [BsonElement("urgent")]
     [JsonPropertyName("urgent")]
@@ -52,11 +52,11 @@ public class Examination
 
     [BsonElement("equipmentUsed")]
     [JsonPropertyName("equipmentUsed")]
-    public List<string> equipmentUsed {get; set;}
+    public List<string>? equipmentUsed {get; set;} = new List<string>();
 
     [BsonElement("examinationHistory")]
     [JsonPropertyName("examinationHistory")]
-    public List<ExaminationHistoryEntry> examinationHistory {get; set;}
+    public List<ExaminationHistoryEntry>? examinationHistory {get; set;} = new List<ExaminationHistoryEntry>();
 
 }
 
