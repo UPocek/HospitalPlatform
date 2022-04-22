@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
@@ -32,7 +31,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Patient>("Patients");
 
-            return collection.Find(item => true).ToList();
+            return collection.Find(item => item.active == "0").ToList();
         }
 
         // GET by Id: api/Secretary/patients/901
@@ -41,7 +40,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Patient>("Patients");
             
-            return collection.Find(item => item.id == id).ToList()[0];
+            return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
         }
 
         // POST: api/Secretary/patients
