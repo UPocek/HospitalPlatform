@@ -321,13 +321,11 @@ function createExamination() {
             let selectedPatient = document.getElementById("examinationPatient").value;
             let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-
             console.log(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
             postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
-           
+            postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
         }
     });
 }
@@ -393,7 +391,6 @@ function updateExamination(id){
             postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
             postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
-           
         }
         else{
             alert("Error: Entered examination informations are invalid");
