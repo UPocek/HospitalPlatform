@@ -21,22 +21,22 @@ namespace Models
 
         [BsonElement("diseases")]
         [JsonPropertyName("diseases")]
-        public List<string> diseases {get; set;}
+        public List<string> diseases {get; set;} = new List<string>();
 
         [BsonElement("alergies")]
         [JsonPropertyName("alergies")]
-        public List<string> alergies {get; set;}
+        public List<string> alergies {get; set;} = new List<string>();
 
         [BsonElement("drugs")]
         [JsonPropertyName("drugs")]
-        public List<Prescription> prescriptions {get; set;}
+        public List<Prescription>? prescriptions {get; set;} = new List<Prescription>();
 
         [BsonElement("examinations")]
         [JsonPropertyName("examinations")]
-        public List<int> examinations {get; set;}
+        public List<int>? examinations {get; set;} = new List<int>();
 
         [BsonElement("medicalInstructioins")]
         [JsonPropertyName("medicalInstructioins")]
-        public List<MedicalInstruction> medicalInstructioins {get; set;} = null;
+        public List<MedicalInstruction>? medicalInstructioins {get; set;} = new List<MedicalInstruction>();
     }
 }

@@ -95,6 +95,10 @@ function setUpPatients() {
                     let delBtn = document.createElement("button");
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add("delBtn");
+                    delBtn.setAttribute('key', patient['id']);
+                    delBtn.addEventListener('click', function (e) {
+                        deletePatient(this.getAttribute('key'));
+                    });
                     one.appendChild(delBtn);
 
                     let two = document.createElement("td");
@@ -102,6 +106,10 @@ function setUpPatients() {
                     let putBtn = document.createElement("button");
                     putBtn.innerHTML = '<i data-feather="edit-2"></i>';
                     putBtn.classList.add("updateBtn");
+                    putBtn.setAttribute('key', patient['id']);
+                    putBtn.addEventListener('click', function (e) {
+                        updatePatient(this.getAttribute('key'));
+                    });
                     two.appendChild(putBtn);
 
                     let three = document.createElement("td");
@@ -136,6 +144,104 @@ function setUpPage() {
     hi.innerText += user.firstName + " " + user.lastName;
     setUpPatients();
 }
+
+function deletePatient(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected patient was successfully deleted');
+                setUpPatients();
+            } else {
+                alert("Error: Selected patient couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/secretary/patients/' + key)
+    deleteRequest.send();
+}
+
+
+function updatePatient(key) {
+    let prompt = document.getElementById("createPatientPrompt");
+    prompt.classList.remove("off");
+    main.classList.add("hideMain");
+
+    let fFirstName = document.getElementById("createPatientFirstName");
+    fFirstName.setAttribute("placeholder", "First Name");
+    let fLastName = document.getElementById("createPatientLastName");
+    fLastName.setAttribute("placeholder", "Last Name");
+    let fEmail = document.getElementById("createPatientEmail");
+    fEmail.setAttribute("placeholder", "Email");
+    let fPassword = document.getElementById("createPatientPassword");
+    fPassword.setAttribute("placeholder", "Password");
+    let fHeight = document.getElementById("createPatientHeight");
+    fHeight.setAttribute("placeholder", "Height");
+    let fWeight = document.getElementById("createPatientWeight");
+    fWeight.setAttribute("placeholder", "Weight");
+
+    let form = document.getElementById("createPatientForm");
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add("off");
+        main.classList.remove("hideMain");
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Patient sucessfuly created");
+                    setUpPatients();
+                }else{
+                    alert("Error: Entered patient information is invalid");
+                }
+                
+            }
+        }
+
+        let finalName = document.getElementById("createPatientFirstName").value;
+        let finalLastName = document.getElementById("createPatientLastName").value;
+        let finalEmail = document.getElementById("createPatientEmail").value;
+        let finalPassword = document.getElementById("createPatientPassword").value;
+        let finalHeight = document.getElementById("createPatientHeight").value;
+        let finalWeight = document.getElementById("createPatientWeight").value;
+        let finalBloodType = document.getElementById("createPatientBloodType").value
+
+        if (finalName.length == 0 || finalLastName.length == 0) {
+            alert("Error: Name can't be empty!");
+        } else if(/\S+@\S+\.\S+/.test(toString(finalEmail))) {
+            alert("Error: Email in wrong format! (example:markomarkovic@gmail.com)");
+        } else if(finalPassword.length == 0){
+            alert("Error: Password can't be empty!");
+        } else {
+            postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/'+key);
+            postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            postRequest.send(JSON.stringify(
+                { 
+                "firstName": finalName, 
+                "lastName": finalLastName,
+                "role": "patient",
+                "email": finalEmail,
+                "password": finalPassword,
+                "active" : "0",
+                "id" : 0,
+                "medicalRecord":
+                    {
+                        "height": finalHeight,
+                        "weight": finalWeight,
+                        "bloodType": finalBloodType,
+                    },
+                }
+            ));
+        }
+    });
+    
+}
+
 
 //POST Patient
 let createBtn = document.getElementById("addBtn");
@@ -209,13 +315,7 @@ createBtn.addEventListener("click", function (e) {
                         "height": finalHeight,
                         "weight": finalWeight,
                         "bloodType": finalBloodType,
-                        "diseases": [],
-                        "alergies": [],
-                        "drugs": [],
-                        "examinations": [],
-                        "medicalInstructions":[]
                     },
-                "examinationHistory":[]
                 }
             ));
         }

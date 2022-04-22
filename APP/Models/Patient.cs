@@ -8,18 +8,6 @@ namespace Models
     public class Patient
     {
 
-         public Patient(string firstName, string lastName, string role, string email, string password, string active, int id, MedicalRecord medicalRecord)
-        {
-        this.firstName = firstName;
-        this.dateAndlastName = lastName;
-        this.role = role;
-        this.email = email;
-        this.password = password;
-        this.active = active;
-        this.id = id;
-        this.medicalRecord = medicalRecord;
-        }
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? _id {get; set;}
@@ -58,7 +46,7 @@ namespace Models
 
         [BsonElement("examinationHistory")]
         [JsonPropertyName("examinationHistory")]
-        public List<Examination> examinationHistory {get; set;}
+        public List<ExaminationHistoryEntry>? examinationHistory {get; set;}=new List<ExaminationHistoryEntry>();
 
     }
 }

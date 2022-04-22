@@ -69,8 +69,8 @@ namespace APP.Controllers
         [HttpPut("patients/{id}")]
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
-            var examinationCollection = database.GetCollection<Patient>("Patients");
-            examinationCollection.ReplaceOne(p => p.id == id, patient);
+            var patientCollection = database.GetCollection<Patient>("Patients");
+            patientCollection.ReplaceOne(p => p.id == id, patient);
             return Ok();   
         }
 
@@ -79,9 +79,8 @@ namespace APP.Controllers
         [HttpDelete("patients/{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var examinationCollection = database.GetCollection<Patient>("Patients");
-            examinationCollection.DeleteOne(p => p.id == id);
-            return Ok(); 
+            var patientCollection = database.GetCollection<Patient>("Patients");
+            patientCollection.DeleteOne(p => p.id == id);
         }
 
     }
