@@ -1,7 +1,7 @@
 #nullable disable
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
-using Models;
 using MongoDB.Bson;
 
 [ApiController]
@@ -15,7 +15,7 @@ public class DoctorController : ControllerBase
         var client = new MongoClient(settings);
         database = client.GetDatabase("USI");
     }
-    
+
     [HttpGet("examinations")]
     public async Task<List<Examination>> GetAllExaminations()
     {
@@ -45,7 +45,7 @@ public class DoctorController : ControllerBase
 
         // var drugCollection = database.GetCollection<BsonDocument>("Drugs");
         // List<string> patientsDrug = new List<string>();
-        
+
         // for (int i = 0; i < result.medicalRecord._drugs.Count; i++){
 
         //     var document = new BsonDocument{
@@ -68,14 +68,16 @@ public class DoctorController : ControllerBase
         var patients = database.GetCollection<Patient>("Patients");
         var patient = patients.Find(p => p.id == examination.patinetId);
         Console.WriteLine(patient);
-        if (patient == null){
+        if (patient == null)
+        {
             return BadRequest();
         }
 
         var rooms = database.GetCollection<Room>("Rooms");
         var room = rooms.Find(r => r.name == examination.roomName);
 
-        if (room == null){
+        if (room == null)
+        {
             return BadRequest();
         }
 
@@ -83,15 +85,31 @@ public class DoctorController : ControllerBase
         var id = examinations.Find(e => true).SortByDescending(e => e.id).First().id;
         examination.id = id + 1;
         examinations.InsertOne(examination);
-        return Ok();       
+        return Ok();
     }
 
     [HttpPut("examinations/{id}")]
-    public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
+    public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
+        var patients = database.GetCollection<Patient>("Patients");
+        var patient = patients.Find(p => p.id == examination.patinetId).First();
+
+        if (patient == null){
+            return BadRequest();
+        }
+
+        var rooms = database.GetCollection<Room>("Rooms");
+        var room = rooms.Find(r => r.name == examination.roomName).First();
+ 
+        if (room == null){
+            return BadRequest();
+        }
+
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.ReplaceOne(e => e._id == id, examination);
+
+        examinationCollection.ReplaceOne(e => e.id == id, examination);
         return Ok();    
+
     }
 
     [HttpDelete("examinations/{id}")]
@@ -99,7 +117,7 @@ public class DoctorController : ControllerBase
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
         examinationCollection.DeleteOne(e => e._id == id);
-        return Ok(); 
+        return Ok();
     }
-    
 }
+

@@ -12,7 +12,6 @@ public class Examination
     [JsonPropertyName("id")]
     public int? id { get; set; }
 
-
     [BsonElement("done")]
     [JsonPropertyName("done")]
     public bool isExaminationOver { get; set; }
@@ -54,3 +53,4 @@ public class Examination
 
     public List<string>? equipmentUsed {get; set;} = new List<string>();
 }
+

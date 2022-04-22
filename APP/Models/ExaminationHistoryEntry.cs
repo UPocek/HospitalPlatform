@@ -2,16 +2,13 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Models
+public class ExaminationHistoryEntry
 {
-    public class ExaminationHistoryEntry
-    {
-        [BsonElement("date")]
-        [JsonPropertyName("date")]
-        public string date {get; set;}
+    [BsonElement("date")]
+    [JsonPropertyName("date")]
+    public string date {get; set;}
 
-        [BsonElement("type")]
-        [JsonPropertyName("type")]
-        public string type {get; set;}
-    }
+    [BsonElement("type")]
+    [JsonPropertyName("type")]
+    public string type {get; set;}
 }
