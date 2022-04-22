@@ -38,5 +38,10 @@ public class Patient
 
     [BsonElement("medicalRecord")]
     [JsonPropertyName("medicalRecord")]
-    public MedicalRecord medicalRecord { get; set; }
+    public MedicalRecord medicalRecord {get; set;}
+
+    [BsonElement("examinationHistory")]
+    [JsonPropertyName("examinationHistory")]
+    public List<ExaminationHistoryEntry>? examinationHistory {get; set;} = new List<ExaminationHistoryEntry>();
+
 }
