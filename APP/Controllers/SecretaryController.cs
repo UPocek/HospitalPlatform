@@ -37,7 +37,7 @@ namespace APP.Controllers
 
         // GET by Id: api/Secretary/patients/901
         [HttpGet("patients/{id}")]
-        public async Task<Patient> GetPatient(string id)
+        public async Task<Patient> GetPatient(int id)
         {
             var collection = database.GetCollection<Patient>("Patients");
             
@@ -46,17 +46,17 @@ namespace APP.Controllers
 
         // POST: api/Secretary/patients
         [HttpPost("patients")]
-        public async Task<IActionResult> CreatePatient(string id, Patient patient)
+        public async Task<IActionResult> CreatePatient(int id, Patient patient)
         {
             var collection = database.GetCollection<Patient>("Patients");
 
             Random rnd = new Random();
-            patient.id = rnd.Next(901,10000).ToString();
+            patient.id = rnd.Next(901,10000);
 
             // If patient with that id already exists generate another
             do
             {
-                patient.id = rnd.Next(901,10000).ToString();
+                patient.id = rnd.Next(901,10000);
             }
             while(collection.Find(item => item.id == id).ToList().Count != 0);
 
@@ -65,7 +65,14 @@ namespace APP.Controllers
             return Ok();
         }
 
-        // PUT action
+        // POST: api/Secretary/patients/901
+        [HttpPut("patients/{id}")]
+        public async Task<IActionResult> UpdatePatient(int id, Patient patient)
+        {
+            var examinationCollection = database.GetCollection<Patient>("Patients");
+            examinationCollection.ReplaceOne(p => p.id == id, patient);
+            return Ok();   
+        }
 
         // DELETE action
 

@@ -28,7 +28,7 @@
       <input id="createPatientPassword" type="text" placeholder="" />
       <input id="createPatientHeight" type="number" max=300 min=0 placeholder="" />
       <input id="createPatientWeight" type="number" max=600 min=0 placeholder="" />
-      <select name="createPatientBloodType" id="filterEquipmentType">
+      <select name="createPatientBloodType" id="createPatientBloodType">
         <option value="A">A</option>
         <option value="A+">A+</option>
         <option value="A-">A-</option>

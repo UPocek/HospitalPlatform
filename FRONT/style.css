@@ -1871,9 +1871,11 @@ tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
 
-#rooms,
-#equipment,
-#patients {
+#rooms, 
+#examinations, 
+#doctors,
+#patients,
+#equipment {
     border: 2px solid var(--mainColor);
     border-radius: 10px;
     width: 80%;

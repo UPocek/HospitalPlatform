@@ -184,7 +184,7 @@ createBtn.addEventListener("click", function (e) {
         let finalPassword = document.getElementById("createPatientPassword").value;
         let finalHeight = document.getElementById("createPatientHeight").value;
         let finalWeight = document.getElementById("createPatientWeight").value;
-        let finalBloodType =document.getElementById("createPatientBloodType").value
+        let finalBloodType = document.getElementById("createPatientBloodType").value
 
         if (finalName.length == 0 || finalLastName.length == 0) {
             alert("Error: Name can't be empty!");
@@ -202,7 +202,7 @@ createBtn.addEventListener("click", function (e) {
                 "role": "patient",
                 "email": finalEmail,
                 "password": finalPassword,
-                "active" : "1",
+                "active" : "0",
                 "id" : 0,
                 "medicalRecord":
                     {
@@ -213,7 +213,9 @@ createBtn.addEventListener("click", function (e) {
                         "alergies": [],
                         "drugs": [],
                         "examinations": [],
-                    }
+                        "medicalInstructions":[]
+                    },
+                "examinationHistory":[]
                 }
             ));
         }
