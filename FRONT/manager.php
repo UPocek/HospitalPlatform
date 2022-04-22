@@ -228,10 +228,31 @@
             </div>
         </form>
     </div>
-
     </section>
 
     <section id="three">
+    <div class="plusDiv">
+            <button id="addDrugBtn" class="add"><i data-feather="plus-circle"></i></button>
+        </div>
+        <div id="drugs">
+            <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Ingredients</th>
+                        <th>Status</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="drugTable">
+
+                </tbody>
+                </table>
+            </div>
+        </div>
 
     </section>
 

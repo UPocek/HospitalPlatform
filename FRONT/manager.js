@@ -335,6 +335,7 @@ function setUpFunctionality() {
     setUpRenovations();
     setUpEquipment('empty');
     setUpTransfer();
+    setUpDrugs();
 }
 
 // ComplexRenovations
@@ -676,3 +677,76 @@ transferForm.addEventListener('submit', function (e) {
         alert('Error: Transfer informations invalide');
     }
 });
+
+// Display drugs
+function setUpDrugs() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let allDrugs = JSON.parse(this.responseText);
+                let table = document.getElementById('drugTable');
+                table.innerHTML = '';
+                for (let drug of allDrugs) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = drug['name'];
+                    let tableDataIngredients = document.createElement('td');
+                    tableDataIngredients.innerText = '';
+                    for (let ingredient of drug['ingredients']) {
+                        tableDataIngredients.innerText += `${ingredient}, `;
+                    }
+                    if (tableDataIngredients.innerText.endsWith(', ')) {
+                        tableDataIngredients.innerText = tableDataIngredients.innerText.slice(0, -2);
+                    }
+                    let tableDataStatus = document.createElement('td');
+                    tableDataStatus.innerText = drug['status'];
+
+                    let tableDataDeleteButton = document.createElement('td');
+                    let delBtn = document.createElement('button');
+                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', drug['name']);
+                    delBtn.addEventListener('click', function (e) {
+                        deleteDrug(this.getAttribute('key'));
+                    });
+                    tableDataDeleteButton.appendChild(delBtn);
+
+                    let tableDataPutButton = document.createElement('td');
+                    let putBtn = document.createElement('button');
+                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                    putBtn.classList.add('updateBtn');
+                    putBtn.setAttribute('key', drug['name']);
+                    putBtn.addEventListener('click', function (e) {
+                        updateDrug(this.getAttribute('key'));
+                    });
+                    tableDataPutButton.appendChild(putBtn);
+
+                    let tableDataRequestReviewButton = document.createElement('td');
+                    let requestReviewBtn = document.createElement('button');
+                    requestReviewBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
+                    requestReviewBtn.classList.add('requestReviewBtn');
+                    requestReviewBtn.setAttribute('key', drug['name']);
+                    requestReviewBtn.addEventListener('click', function (e) {
+                        renovateDrug(this.getAttribute('key'));
+                    });
+                    tableDataRequestReviewButton.appendChild(requestReviewBtn);
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataIngredients);
+                    newRow.appendChild(tableDataStatus);
+                    newRow.appendChild(tableDataDeleteButton);
+                    newRow.appendChild(tableDataPutButton);
+                    newRow.appendChild(tableDataRequestReviewButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+                setUpFunctionality();
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/manager/drugs');
+    request.send();
+}
