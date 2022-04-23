@@ -18,6 +18,40 @@
     <body>
         
         <?php include 'header.html';?>
+        <div id="reviewExaminationDiv"class="off">
+            <div id="reviewExaminationPopUp">
+                <div id="reportPopUp">
+                    <h1>Report</h1>
+                    <div id="descReport">
+                        <h3>Report description:</h3>
+                        <p id="reportDescription"></p>
+                    </div>
+                </div>
+                <div class="basicInfo">
+                    <h1>Medical record</h1>
+                    <div>
+                        <p>First name:&nbsp<span id="patientFName"></span></p>
+                        <p>Last name:&nbsp<span id="patientLName"></span></p>
+                        <p>Height:&nbsp<span id="patientHeight"></span></p>
+                        <p>Weight:&nbsp<span id="patientWeight"></span></p>
+                        <p>Blood type:&nbsp<span id="patientBlood"></span></p>
+                        <div class="divList">
+                            <p>Diseases:&nbsp</p>
+                            <ul id="diseasesList">
+                                <!-- patients diseases -->
+                            </ul>
+                        </div>
+                        <div class="divList">
+                            <p>Alergies:&nbsp</p>
+                            <ul id="alergiesList">
+                                <!-- patients diseases -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">

@@ -203,6 +203,12 @@ document.addEventListener('DOMContentLoaded', function () {
     request.send();
 });
 
+function reviewExamination(){
+    let popUp = document.getElementById('reviewExaminationDiv');
+    popUp.classList.remove("off");
+    main.classList.add("hideMain");
+}
+
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule(){
@@ -253,7 +259,7 @@ function searchSchedule(){
             reviewBtn.classList.add("add");
             reviewBtn.setAttribute("key", examination["id"]);
             reviewBtn.addEventListener('click', function(e){
-                
+                reviewExamination();
                 });
             two.appendChild(reviewBtn);
 

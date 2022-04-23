@@ -1883,6 +1883,19 @@ tr:nth-child(even) {
     box-shadow: var(--boxShadow);
 }
 
+#reviewExaminationPopUp{
+    background-color: var(--whiteSmoke);
+    display: flex;
+    margin: 50px auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+    width: 60%;
+    justify-content: space-evenly;
+    padding: 20px;
+    
+}
+
 .instructions{
     margin-top: 20px;
 }
