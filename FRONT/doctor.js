@@ -454,7 +454,7 @@ function submitUpdate(e, updatedExamination, id, popUp){
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    alert("Examination sucessfuly created");
+                    alert("Examination sucessfuly updated");
                     showExaminations();
                 } else {
                     alert("Error: Entered examination informations are invalid");
