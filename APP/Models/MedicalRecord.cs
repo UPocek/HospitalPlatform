@@ -33,9 +33,9 @@ public class MedicalRecord
     [JsonPropertyName("examinations")]
     public List<int> examinations {get; set;}
 
-    [BsonElement("medicalInstructioins")]
-    [JsonPropertyName("medicalInstructioins")]
-    public List<MedicalInstructioin> medicalInstructioins {get; set;} = null;
+    [BsonElement("medicalInstructions")]
+    [JsonPropertyName("medicalInstructions")]
+    public List<MedicalInstruction> medicalInstructions {get; set;}
 
 
 }

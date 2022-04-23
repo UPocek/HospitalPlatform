@@ -18,57 +18,35 @@
     <body>
         
         <?php include 'header.html';?>
-
-        <div id="examinationPopUp" class="form-container sign-in-container off prompt">
-            <form id="examinationForm" class="colDir myForm">
-                <h1 id="examinationFormId" >Create examination</h1>
-                <div class="formDiv">
-                    <label for="scheduleDate">Date:</label>
-                    <input type="datetime-local" id="scheduleDate">
-                </div>
-                <div class="formDiv">
-                    <label for="examinationType">Examination type:</label>
-                    <select id="examinationType">
-                        <option value="visit" selected>Visit</option>
-                        <option value="operation">Operation</option>
-                    </select>
-                </div>
-                <div class="formDiv">
-                    <label for="examinationDuration">Duration:</label>
-                    <input type="number" id="examinationDuration" min="15">
-                </div>
-                <div class="formDiv">
-                    <label for="examinationRoom">Room:</label>
-                    <select id="examinationRoom">
-                        <!-- get rooms from api -->
-                    </select>
-                </div>
-                <div class="formDiv">
-                    <label for="examinationPatient">Patient id:</label>
-                    <input id="examinationPatient" type="number"/>
-                </div>
-                <div class="urgentDiv">
-                    <label for="urgent"> Urgent </label>
-                    <input type="checkbox" id="urgent" value="urgent">
-                    
-                </div>
-                <button class="mainBtn">OK</button>
-            </form>
-	    </div>
-
+        
         <main>
-            <div id="hi">
-                <h1>Welcome back &nbsp; </h1>
-            </div>
             <section id="one" class="active">
-                <div class="tableHeaderDiv">
-                    <div id="scheduleOption" class="hideMain">
-                        <label for="scheduleDate">Schedule for date:</label>
-                        <input type="date" id="scheduleDate" name="schedule">
-                        <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
+                <div id="patientInfo" >
+                    <div class="basicInfo">
+                        <h1>Medical record</h1>
+                        <div>
+                            <p>First name:&nbsp<span id="patientFName"></span></p>
+                            <p>Last name:&nbsp<span id="patientLName"></span></p>
+                            <p>Height:&nbsp<span id="patientHeight"></span></p>
+                            <p>Weight:&nbsp<span id="patientWeight"></span></p>
+                            <p>Blood type:&nbsp<span id="patientBlood"></span></p>
+                            <div class="divList">
+                                <p>Diseases:&nbsp</p>
+                                <ul id="diseasesList">
+                                    <!-- patients diseases -->
+                                </ul>
+                            </div>
+                            <div class="divList">
+                                <p>Alergies:&nbsp</p>
+                                <ul id="alergiesList">
+                                    <!-- patients diseases -->
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
                 </div>
+            </section>
+            <section id="two">
                 <div id="rooms">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
@@ -80,7 +58,6 @@
                                     <th>Examination room</th>
                                     <th>Type</th>
                                     <th>Urgent</th>
-                                    <th>Patient</th>
                                 </tr>
                             </thead>
                             <tbody id="examinationsTable">
@@ -90,6 +67,25 @@
                     </div>
                 </div>
             </section>
+            <section id="three">
+                <div id="rooms" class="instructions">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="instructionsTable">
+                                <!-- this is where data from api comes -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+                
+                
         </main>
 
         <!-- <?php include 'footer.html';?> -->
@@ -100,7 +96,7 @@
         <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
             integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
 
-        <script src="doctor.js">
+        <script src="medical_card.js">
         </script>
         <script>
             $(window).on("load resize ", function() {

@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-public class MedicalInstructioin
+public class MedicalInstruction
 {
     [BsonElement("date")]
     [JsonPropertyName("date")]
