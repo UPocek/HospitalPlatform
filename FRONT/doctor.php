@@ -19,50 +19,14 @@
         
         <?php include 'header.html';?>
 
-        <div class="container  off" id="container">
-            <div class="form-container sign-up-container">
-                <form id="signUpForm">
-                <h1>Create Account</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <input id="signUpName" type="text" placeholder="Name" />
-                <input id="signUpEmail" type="email" placeholder="Email" />
-                <input id="signUpPassword" type="password" placeholder="Password" />
-                <button class="mainBtn">Sign Up</button>
-                </form>
+        
+        <div id="reportPopUp" class="form-container sign-in-container off prompt">
+            <h1>Report</h1>
+            <div id="descReport">
+                <h3>Report description:</h3>
+                <p id="reportDescription"></p>
             </div>
-            <div class="form-container sign-in-container">
-                <form id="signInForm">
-                <h1>Sign in</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <input id="signInEmail" type="email" placeholder="Email" />
-                <input id="signInPassword" type="password" placeholder="Password" />
-                <a href="#">Forgot your password?</a>
-                <button class="mainBtn">Sign In</button>
-                </form>
-            </div>
-            <div class="overlay-container">
-                <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                        <h1>Hello, Friend!</h1>
-                        <p>Enter your personal details and levrage power of our app</p>
-                        <button class="mainBtn ghost" id="signIn">Sign In</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                        <h1>Welcome Back!</h1>
-                        <p>Enter your's personal information to login into your account</p>
-                        <button class="mainBtn ghost" id="signUp">Sign Up</button>
-                </div>
-                </div>
-            </div>
-        </div>
+	    </div>
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">
