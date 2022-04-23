@@ -1799,7 +1799,7 @@ footer {
     text-align: center;
 }
 
-/* Manager */
+/* Hi */
 
 #hi {
     text-align: center;
@@ -1815,6 +1815,8 @@ footer {
     margin: auto;
 }
 
+/* Table */
+
 .delBtn {
     color: red;
     border: none;
@@ -1829,7 +1831,8 @@ footer {
     padding: 0.625rem;
 }
 
-.renovateBtn {
+.renovateBtn,
+.requestReviewBtn {
     color: purple;
     border: none;
     background: transparent;
@@ -1843,12 +1846,26 @@ footer {
     padding: 0.625rem;
 }
 
+.plusDiv {
+    text-align: right;
+    max-width: 79%;
+    margin: 0.625rem auto;
+}
+
+.plusDiv button {
+    cursor: pointer;
+}
+
 tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
 
-#rooms, #examinations, #doctors,
-#equipment {
+#rooms,
+#examinations,
+#doctors,
+#equipment,
+#drugs,
+#ingredients {
     border: 2px solid var(--mainColor);
     border-radius: 10px;
     width: 80%;
@@ -1899,6 +1916,8 @@ td button {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Prompt */
+
 .prompt {
     display: flex;
     flex-direction: column;
@@ -1929,15 +1948,7 @@ td button {
     display: none;
 }
 
-.plusDiv {
-    text-align: right;
-    max-width: 79%;
-    margin: 0.625rem auto;
-}
-
-.plusDiv button {
-    cursor: pointer;
-}
+/* Manager */
 
 /* Complex Renovations */
 
@@ -2028,6 +2039,36 @@ td button {
     min-width: 280px;
     font-size: 1.4rem;
     font-weight: 200;
+}
+
+/* Ingredients */
+
+#createDrugPrompt h3,
+#updateDrugPrompt h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.ingredients {
+    display: grid;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ingredients div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.ingredients label,
+.ingredients input {
+    display: inline;
+    min-width: 0 !important;
+}
+
+.ingredients label {
+    margin-right: 25px;
 }
 
 /* Header */

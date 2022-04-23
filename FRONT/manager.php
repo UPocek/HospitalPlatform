@@ -44,7 +44,7 @@
                 <option value="rest room">Rest room</option>
                 <option value="other">Other</option>
             </select>
-			<button class="mainBtn">OK</button>
+			<button class="mainBtn">Create</button>
 		</form>
 	</div>
 
@@ -53,6 +53,47 @@
 			<h1>Schedule renovation</h1>
 			<input id="fromRenovation" type="text" placeholder="From (yyyy-MM-dd)" />
             <input id="toRenovation" type="text" placeholder="To (yyyy-MM-dd)" />
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+    <div id="createDrugPrompt" class="form-container sign-in-container off prompt">
+		<form id="createDrugForm" class="colDir myForm">
+			<h1>Create new drug</h1>
+			<input id="createDrugName" type="text" placeholder="Name"/>
+            <h3>Ingredients: </h3>
+            <div id="selectIngredients" class="ingredients">
+
+            </div>
+			<button class="mainBtn">Create</button>
+		</form>
+	</div>
+
+    <div id="updateDrugPrompt" class="form-container sign-in-container off prompt">
+		<form id="updateDrugForm" class="colDir myForm">
+			<h1></h1>
+            <h3> <span></span> </h3>
+			<input id="updateDrugName" type="text" placeholder="Name"/>
+            <h3>Ingredients: </h3>
+            <div id="updateSelectIngredients" class="ingredients">
+
+            </div>
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+    <div id="createIngredientPrompt" class="form-container sign-in-container off prompt">
+		<form id="createIngredientForm" class="colDir myForm">
+			<h1>Create new ingredient</h1>
+			<input id="createIngredientName" type="text" placeholder="Name"/>
+			<button class="mainBtn">Create</button>
+		</form>
+	</div>
+
+    <div id="updateIngredientPrompt" class="form-container sign-in-container off prompt">
+		<form id="updateIngredientForm" class="colDir myForm">
+			<h1></h1>
+			<input id="updateIngredientName" type="text" placeholder="Name"/>
 			<button class="mainBtn">OK</button>
 		</form>
 	</div>
@@ -228,11 +269,50 @@
             </div>
         </form>
     </div>
-
     </section>
 
     <section id="three">
+    <div class="plusDiv">
+        <button id="addDrugBtn" class="add"><i data-feather="plus-circle"></i></button>
+    </div>
+    <div id="drugs">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Ingredients</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="drugTable">
 
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <h2 style="text-align:center; margin:5vh;">Ingredients:</h2>
+    <div class="plusDiv">
+        <button id="addIngredientBtn" class="add"><i data-feather="plus-circle"></i></button>
+    </div>
+    <div id="ingredients">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="ingredientTable">
+
+            </tbody>
+            </table>
+        </div>
+    </div>
     </section>
 
     <section id="four">
