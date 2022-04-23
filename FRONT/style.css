@@ -31,6 +31,7 @@ body {
     display: none;
     margin-bottom: 10vh;
     transition: all 500ms ease-in;
+    max-width: 100%;
 }
 
 .active {
@@ -1874,7 +1875,9 @@ tr:nth-child(even) {
 #doctors,
 #equipment,
 #drugs,
-#ingredients {
+#ingredients,
+#hPolls,
+#dPolls {
     border: 2px solid var(--mainColor);
     border-radius: 10px;
     width: 80%;
@@ -2078,6 +2081,44 @@ td button {
 
 .ingredients label {
     margin-right: 25px;
+}
+
+/* Polls */
+
+#polls {
+    max-width: 80%;
+    margin: auto;
+}
+
+#polls h1 {
+    text-align: center;
+    font-size: 3rem;
+}
+
+#polls h2 {
+    text-align: center;
+    font-size: 2rem;
+}
+
+#polls p {
+    text-align: center;
+}
+
+#hospitalPolls,
+#doctorPolls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+}
+
+#hospitalPolls div,
+#doctorPolls div {
+    width: 90%;
+    margin: auto;
+}
+
+#hPolls {
+    margin: 10vh auto;
 }
 
 @media (max-width:1880px) {

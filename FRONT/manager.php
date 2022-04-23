@@ -316,22 +316,71 @@
     </section>
 
     <section id="four">
+        <div id="polls">
+            <h1>Hospital polls</h1>
+            <div id="hospitalPolls">
 
+            </div>
+            <div id="hPolls">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Comment</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hospitalPollsTable">
+
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h1>Doctor polls</h1>
+            <div id="doctorPolls">
+
+            </div>
+            <div id="hPolls">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Comment</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorPollsTable">
+
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2>Top 3 doctors</h2>
+            <div id="bestDoctors">
+
+            </div>
+            <br><br>
+            <h2>Bottom 3 doctors</h2>
+            <div id="worstDoctors">
+
+            </div>
+
+        </div>
     </section>
       
   </main>
 
   <!-- <?php include 'footer.html';?> -->
 
-
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
     integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="manager.js">
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="manager.js"></script>
   <script>
     $(window).on("load resize ", function() {
     var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
