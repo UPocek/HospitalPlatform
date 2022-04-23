@@ -19,6 +19,15 @@
         
         <?php include 'header.html';?>
 
+        
+        <div id="reportPopUp" class="form-container sign-in-container off prompt">
+            <h1>Report</h1>
+            <div id="descReport">
+                <h3>Report description:</h3>
+                <p id="reportDescription"></p>
+            </div>
+	    </div>
+
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">
                 <h1 id="examinationFormId" >Create examination</h1>

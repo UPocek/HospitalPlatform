@@ -51,7 +51,7 @@ body {
     justify-content: flex-start;
 }
 
-#diseasesList, #alergiesList {
+.divList > ul {
     height: 100px;
     width: 100px;
     list-style: none;
@@ -59,7 +59,7 @@ body {
     overflow-y: scroll;
     padding: 0 0 0 1rem;
   }
-  #diseasesList, #alergiesList li {
+ .divList > ul > li {
     padding: 0 1rem 0 0;
   }
 
@@ -1955,6 +1955,24 @@ td button {
 
 #examinationForm > h1{
     text-align: center;
+}
+
+#reportPopUp{
+    height: 60%;
+    width: 40%;
+    justify-content: flex-start;
+}
+
+#reportPopUp > *{
+    width: 100%;
+    text-align: left;
+}
+
+#descReport{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .formDiv > label{

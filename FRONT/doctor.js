@@ -124,12 +124,23 @@ function displayExaminations(){
         let patientBtn = document.createElement("button");
         patientBtn.innerHTML = '<i data-feather="user"></i>';
         patientBtn.setAttribute("key", examination["patient"]);
+        patientBtn.classList.add('send');
         patientBtn.addEventListener('click', function (e) {
             window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
         });
         one.appendChild(patientBtn);
 
         let two = document.createElement("td");
+        let reportBtn = document.createElement("button");
+        reportBtn.innerHTML = '<i data-feather="clipboard"></i>';
+        reportBtn.setAttribute("key", examination["id"]);
+        reportBtn.classList.add('send');
+        reportBtn.addEventListener('click', function (e) {
+            reviewReport(parseInt(reportBtn.getAttribute('key')));
+        });
+        two.appendChild(reportBtn);
+
+        let three = document.createElement("td");
         let delBtn = document.createElement("button");
         delBtn.innerHTML = '<i data-feather="trash"></i>';
         delBtn.classList.add("delBtn");
@@ -137,9 +148,9 @@ function displayExaminations(){
         delBtn.addEventListener('click', function(e){
             deleteExamination(delBtn.getAttribute('key'));
             });
-        two.appendChild(delBtn);
+        three.appendChild(delBtn);
 
-        let three = document.createElement("td");
+        let four = document.createElement("td");
         let updateBtn = document.createElement("button");
         updateBtn.innerHTML = '<i data-feather="upload"></i>';
         updateBtn.classList.add("updateBtn");
@@ -147,7 +158,7 @@ function displayExaminations(){
         updateBtn.addEventListener('click', function(e){ 
             updateExamination(updateBtn.getAttribute("key"));
         });
-        three.appendChild(updateBtn);
+        four.appendChild(updateBtn);
 
         newRow.appendChild(examinationDate);
         newRow.appendChild(examinationDuration);
@@ -158,6 +169,7 @@ function displayExaminations(){
         newRow.appendChild(one);
         newRow.appendChild(two);
         newRow.appendChild(three);
+        newRow.appendChild(four);
         table.appendChild(newRow);
         feather.replace();
     }
@@ -203,6 +215,48 @@ document.addEventListener('DOMContentLoaded', function () {
     request.send();
 });
 
+var main = document.getElementsByTagName("main")[0];
+
+function reviewReport(id){
+    let currentExamination;
+    for (examination of doctorsExaminations){
+        if (examination["id"] == id){
+            currentExamination = examination;
+            break;
+        }
+    }
+
+    let popUp = document.getElementById('reportPopUp');
+    popUp.classList.remove('off');
+    main.classList.add('hideMain');
+
+    if (currentExamination['anamnesis'] == ""){
+        popUp.classList.add('off');
+        main.classList.remove('hideMain');
+        alert("No report");
+        
+    }else{
+        document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
+
+        if (examination['type'] == "operation"){
+            let equipmentDiv = document.createElement('div');
+            equipmentDiv.classList.add('divList');
+            let equipmentList = document.createElement('ul');
+            let title = document.createElement('h3');
+            title.innerText = "Equipment used:";
+            equipmentDiv.appendChild(title);
+            for (equipment of examination['equipmentUsed']){
+                let item = document.createElement('li');
+                item.innerText = equipment;
+                equipmentList.appendChild(item);
+            }
+            equipmentDiv.appendChild(equipmentList);
+            popUp.appendChild(equipmentDiv);
+        }
+
+    }
+}
+
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule(){
@@ -242,6 +296,7 @@ function searchSchedule(){
             let patientBtn = document.createElement("button");
             patientBtn.innerHTML = '<i data-feather="user"></i>';
             patientBtn.setAttribute("key", examination["patient"]);
+            patientBtn.classList.add('send');
             patientBtn.addEventListener('click', function (e) {
                 window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
             });
@@ -249,7 +304,7 @@ function searchSchedule(){
 
             let two = document.createElement("td");
             let reviewBtn = document.createElement("button");
-            reviewBtn.innerHTML = '<i data-feather="check"></i>';
+            reviewBtn.innerHTML = '<i data-feather="check-square"></i>';
             reviewBtn.classList.add("add");
             reviewBtn.setAttribute("key", examination["id"]);
             reviewBtn.addEventListener('click', function(e){
@@ -291,8 +346,6 @@ function deleteExamination(id){
     request.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
     request.send();
 };
-
-var main = document.getElementsByTagName("main")[0];
 
 function validateTimeOfExamination(date,duration){
 
@@ -422,6 +475,10 @@ function createExamination() {
                 popUp.classList.remove("off");
                 main.classList.add("hideMain");
 
+                document.getElementById("examinationDuration").value = 15;
+                document.getElementById("examinationPatient").value = "";
+                document.getElementById("urgent").checked = false;
+
                 let form = document.getElementById("examinationForm");
                 let title = document.getElementById("examinationFormId");
                 title.innerText = "Create examination";
@@ -539,3 +596,4 @@ function updateExamination(id){
 var createBtn = document.getElementById("addBtn");
 
 createBtn.addEventListener("click", createExamination);
+
