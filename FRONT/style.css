@@ -1864,7 +1864,8 @@ tr:nth-child(even) {
 #examinations,
 #doctors,
 #equipment,
-#drugs {
+#drugs,
+#ingredients {
     border: 2px solid var(--mainColor);
     border-radius: 10px;
     width: 80%;
@@ -2038,6 +2039,36 @@ td button {
     min-width: 280px;
     font-size: 1.4rem;
     font-weight: 200;
+}
+
+/* Ingredients */
+
+#createDrugPrompt h3,
+#updateDrugPrompt h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.ingredients {
+    display: grid;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ingredients div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.ingredients label,
+.ingredients input {
+    display: inline;
+    min-width: 0 !important;
+}
+
+.ingredients label {
+    margin-right: 25px;
 }
 
 /* Header */

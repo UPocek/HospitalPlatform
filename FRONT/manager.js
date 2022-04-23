@@ -62,8 +62,8 @@ var id = getParamValue('id');
 var date = new Date();
 
 // POST - Room
-var createBtn = document.getElementById('addBtn');
-createBtn.addEventListener('click', function (e) {
+var createRoomBtn = document.getElementById('addBtn');
+createRoomBtn.addEventListener('click', function (e) {
     let prompt = document.getElementById('createRoomPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -678,7 +678,7 @@ transferForm.addEventListener('submit', function (e) {
     }
 });
 
-// Display drugs
+// Drugs
 function setUpDrugs() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -718,35 +718,342 @@ function setUpDrugs() {
                     putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
                     putBtn.classList.add('updateBtn');
                     putBtn.setAttribute('key', drug['name']);
+                    putBtn.setAttribute('ingredients', drug['ingredients']);
+                    try {
+                        if (drug['comment'] != null) {
+                            putBtn.setAttribute('comment', drug['comment']);
+                        } else {
+                            putBtn.setAttribute('comment', 'Doktor još uvek nije ostavio komentar');
+                        }
+                    } catch {
+                        putBtn.setAttribute('comment', 'Doktor još uvek nije ostavio komentar');
+                    }
                     putBtn.addEventListener('click', function (e) {
-                        updateDrug(this.getAttribute('key'));
+                        updateDrug(this.getAttribute('key'), this.getAttribute('ingredients'), this.getAttribute('comment'));
                     });
                     tableDataPutButton.appendChild(putBtn);
-
-                    let tableDataRequestReviewButton = document.createElement('td');
-                    let requestReviewBtn = document.createElement('button');
-                    requestReviewBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
-                    requestReviewBtn.classList.add('requestReviewBtn');
-                    requestReviewBtn.setAttribute('key', drug['name']);
-                    requestReviewBtn.addEventListener('click', function (e) {
-                        renovateDrug(this.getAttribute('key'));
-                    });
-                    tableDataRequestReviewButton.appendChild(requestReviewBtn);
 
                     newRow.appendChild(tableDataName);
                     newRow.appendChild(tableDataIngredients);
                     newRow.appendChild(tableDataStatus);
                     newRow.appendChild(tableDataDeleteButton);
                     newRow.appendChild(tableDataPutButton);
-                    newRow.appendChild(tableDataRequestReviewButton);
                     table.appendChild(newRow);
                     feather.replace();
+                    getIngredients();
                 }
-                setUpFunctionality();
             }
         }
     }
 
     request.open('GET', 'https://localhost:7291/api/manager/drugs');
     request.send();
+}
+
+// Create - Drug
+var ingredients;
+var createDrugBtn = document.getElementById('addDrugBtn');
+createDrugBtn.addEventListener('click', function (e) {
+    let prompt = document.getElementById('createDrugPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+
+    let ingredientsContainer = document.getElementById('selectIngredients');
+    for (let ingredient of ingredients) {
+        let ingredientDiv = document.createElement('div');
+        let ingredientLabel = document.createElement('label');
+        ingredientLabel.innerText = ingredient;
+        ingredientLabel.setAttribute('for', ingredient);
+        let ingredientBox = document.createElement('input');
+        ingredientBox.setAttribute('type', 'checkbox');
+        ingredientBox.setAttribute('value', ingredient);
+        ingredientBox.setAttribute('name', ingredient);
+        ingredientDiv.appendChild(ingredientLabel);
+        ingredientDiv.appendChild(ingredientBox);
+        ingredientsContainer.appendChild(ingredientDiv);
+    }
+
+    let form = document.getElementById('createDrugForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('New drug sucessfuly created');
+                    setUpDrugs();
+                } else {
+                    alert('Error: Entered drug informations are invalid');
+                }
+            }
+        }
+
+        let finalIngredients = []
+        let finalName = document.getElementById('createDrugName').value;
+        let ingredientBoxes = document.querySelectorAll('#createDrugForm [type="checkbox"]');
+        for (box of ingredientBoxes) {
+            if (box.checked) {
+                finalIngredients.push(box.value);
+            }
+        }
+
+        if (finalName && finalIngredients.length != 0) {
+            postRequest.open('POST', 'https://localhost:7291/api/manager/drugs');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
+        } else {
+            alert("Error: Name can't be empty!")
+        }
+    });
+});
+
+function getIngredients() {
+    let getIngredientsRequest = new XMLHttpRequest();
+
+    getIngredientsRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                ingredients = JSON.parse(this.responseText)['ingredients'];
+                let table = document.getElementById('ingredientTable');
+                table.innerHTML = '';
+                for (let ingredient of ingredients) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = ingredient;
+
+                    let tableDataDeleteButton = document.createElement('td');
+                    let delBtn = document.createElement('button');
+                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', ingredient);
+                    delBtn.addEventListener('click', function (e) {
+                        deleteIngredient(this.getAttribute('key'));
+                    });
+                    tableDataDeleteButton.appendChild(delBtn);
+
+                    let tableDataPutButton = document.createElement('td');
+                    let putBtn = document.createElement('button');
+                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                    putBtn.classList.add('updateBtn');
+                    putBtn.setAttribute('key', ingredient);
+                    putBtn.addEventListener('click', function (e) {
+                        updateIngredient(this.getAttribute('key'));
+                    });
+                    tableDataPutButton.appendChild(putBtn);
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataDeleteButton);
+                    newRow.appendChild(tableDataPutButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            } else {
+                alert("Error: Ingredients couldn't be supplied");
+            }
+        }
+    }
+
+    getIngredientsRequest.open('GET', 'https://localhost:7291/api/manager/ingredients')
+    getIngredientsRequest.send();
+}
+
+// CREATE - Ingredient
+var createIngredientBtn = document.getElementById('addIngredientBtn');
+createIngredientBtn.addEventListener('click', function (e) {
+
+    let prompt = document.getElementById('createIngredientPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+
+    let form = document.getElementById('createIngredientForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('New ingredinet sucessfuly created');
+                    getIngredients();
+                } else {
+                    alert('Error: Entered ingredient informations are invalid');
+                }
+            }
+        }
+
+        let finalName = document.getElementById('createIngredientName').value;
+
+        if (finalName) {
+            postRequest.open('POST', 'https://localhost:7291/api/manager/ingredients');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.send(JSON.stringify({ 'name': finalName }));
+        } else {
+            alert("Error: Name can't be empty!")
+        }
+    });
+});
+
+// PUT - Drug
+function updateDrug(key, myIngredients, comment) {
+    let prompt = document.getElementById('updateDrugPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whichDrug = prompt.querySelector('h1');
+    let message = prompt.querySelector('span');
+    let nameField = document.getElementById('updateDrugName');
+    nameField.setAttribute('placeholder', key);
+    message.innerText = `Message: ${comment}`;
+    whichDrug.innerText = `Update ${key}`;
+
+    let ingredientsContainer = document.getElementById('updateSelectIngredients');
+    ingredientsContainer.innerHTML = '';
+    for (let ingredient of ingredients) {
+        let ingredientDiv = document.createElement('div');
+        let ingredientLabel = document.createElement('label');
+        ingredientLabel.innerText = ingredient;
+        ingredientLabel.setAttribute('for', ingredient);
+        let ingredientBox = document.createElement('input');
+        ingredientBox.setAttribute('type', 'checkbox');
+        ingredientBox.setAttribute('value', ingredient);
+        ingredientBox.setAttribute('name', ingredient);
+        if (myIngredients.split(',').includes(ingredient)) {
+            ingredientBox.setAttribute('checked', true);
+        }
+        ingredientDiv.appendChild(ingredientLabel);
+        ingredientDiv.appendChild(ingredientBox);
+        ingredientsContainer.appendChild(ingredientDiv);
+    }
+
+    let form = document.getElementById('updateDrugForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let putRequest = new XMLHttpRequest();
+
+        putRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Drug sucessfuly updated and passed to review');
+                    location.reload();
+                    setUpDrugs();
+                    showWindow(3);
+                } else {
+                    alert('Error: Entered drug informations are invalid');
+                }
+            }
+        }
+
+        let finalIngredients = []
+        let finalName = nameField.value;
+        let ingredientBoxes = document.querySelectorAll('#updateDrugForm [type="checkbox"]');
+        for (box of ingredientBoxes) {
+            if (box.checked) {
+                finalIngredients.push(box.value);
+            }
+        }
+
+        if (finalName && finalIngredients.length != 0) {
+            putRequest.open('PUT', 'https://localhost:7291/api/manager/drugs/' + key);
+            putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
+        } else {
+            alert("Error: Name can't be empty!")
+        }
+    });
+}
+
+// PUT - Ingredient
+function updateIngredient(key) {
+
+    let prompt = document.getElementById('updateIngredientPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whichIngredient = prompt.querySelector('h1');
+    let nameField = document.getElementById('updateIngredientName');
+    nameField.setAttribute('placeholder', key);
+    whichIngredient.innerText = `Update ${key}`;
+
+    let form = document.getElementById('updateIngredientForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let putRequest = new XMLHttpRequest();
+
+        putRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Ingredinet sucessfuly updated');
+                    location.reload();
+                    getIngredients();
+                    showWindow(3);
+                } else {
+                    alert('Error: Entered ingredient informations are invalid');
+                }
+            }
+        }
+
+        let finalName = document.getElementById('updateIngredientName').value;
+
+        if (finalName) {
+            putRequest.open('PUT', 'https://localhost:7291/api/manager/ingredients/' + key);
+            putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.send(JSON.stringify({ 'name': finalName }));
+        } else {
+            alert("Error: Name can't be empty!")
+        }
+    });
+}
+
+// DELETE - Drug
+function deleteDrug(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected drug was successfully deleted');
+                setUpDrugs();
+            } else {
+                alert("Error: Selected drug couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key)
+    deleteRequest.send();
+}
+
+// DELETE - Ingredient
+function deleteIngredient(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected drug was successfully deleted');
+                getIngredients();
+            } else {
+                alert("Error: Selected drug couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key)
+    deleteRequest.send();
 }
