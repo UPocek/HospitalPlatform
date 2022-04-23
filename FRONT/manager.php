@@ -98,7 +98,7 @@
 		</form>
 	</div>
 
-  <main>
+  <main class="myMain">
 
     <div id="hi">
         <h1>Welcome back &nbsp; </h1>
@@ -293,7 +293,7 @@
             </table>
         </div>
     </div>
-    <h2 style="text-align:center; margin:5vh;">Ingredients:</h2>
+    <h2 id="ingredientsStyle" style="text-align:center; margin:5vh;">Ingredients:</h2>
     <div class="plusDiv">
         <button id="addIngredientBtn" class="add"><i data-feather="plus-circle"></i></button>
     </div>

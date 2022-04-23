@@ -30,7 +30,7 @@ body {
 #four {
     display: none;
     margin-bottom: 10vh;
-    transition: 500ms ease-in;
+    transition: all 500ms ease-in;
 }
 
 .active {
@@ -155,6 +155,15 @@ body {
     width: 768px;
     max-width: 100%;
     min-height: 480px;
+}
+
+#first .container2 {
+    display: none;
+    background-color: var(--backgroundColor);
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+    text-align: center;
+    padding: 2rem;
 }
 
 #first .form-container {
@@ -1821,14 +1830,14 @@ footer {
     color: red;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 0.5rem;
 }
 
 .updateBtn {
     color: blue;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 0.5rem;
 }
 
 .renovateBtn,
@@ -1836,20 +1845,20 @@ footer {
     color: purple;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 0.5rem;
 }
 
 .add {
     color: green;
     border: none;
     background: transparent;
-    padding: 0.625rem;
+    padding: 0.5rem;
 }
 
 .plusDiv {
     text-align: right;
     max-width: 79%;
-    margin: 0.625rem auto;
+    margin: 0.5rem auto;
 }
 
 .plusDiv button {
@@ -2071,13 +2080,353 @@ td button {
     margin-right: 25px;
 }
 
+@media (max-width:1880px) {
+
+    #filters div {
+        margin: 0 1rem;
+    }
+
+}
+
+@media (max-width:1500px) {
+
+    .myMain {
+        margin-left: 105px;
+    }
+
+    #rooms,
+    #examinations,
+    #doctors,
+    #equipment,
+    #drugs,
+    #ingredients {
+        width: 90%;
+    }
+
+    .delBtn,
+    .updateBtn,
+    .renovateBtn,
+    .requestReviewBtn,
+    .add,
+    .plusDiv {
+        padding: 0.1rem;
+    }
+
+    .plusDiv {
+        max-width: 88%;
+    }
+
+    .tbl-content {
+        height: 400px;
+    }
+
+    td {
+        padding: 1rem 0.5rem;
+        font-size: 1rem;
+    }
+
+    #filters {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 1rem auto;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .box {
+        width: 90%;
+    }
+
+    #ifDevide form,
+    #ifMerge form {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 2rem;
+    }
+
+}
+
+@media (max-width:1280px) {
+
+    #ifDevide form,
+    #ifMerge form {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+    }
+
+    #ifDevide,
+    #ifMerge {
+        width: 90%;
+        margin: 2vh auto;
+    }
+}
+
+@media (max-width:1280px) {
+
+    #ifDevide form,
+    #ifMerge form {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+
 /* Header */
 @media (max-width:1069px) {
 
-    /* TABLET size*/
+    .myForm input,
+    .myForm select {
+        padding: 0.75rem 1rem;
+        margin: 0.4rem 0;
+        font-size: 0.9rem;
+        min-width: 250px;
+    }
+
+    .myForm h3 {
+        font-size: 1.1rem;
+    }
+
+    #first h1 {
+        font-size: 1.8rem;
+    }
+
+    #first>h1 {
+        font-size: 2rem;
+    }
+
+    #first .container {
+        width: 640px;
+        margin-left: 105px;
+    }
+
+    .mainH {
+        margin-left: 105px !important;
+    }
+
+    #first form {
+        padding: 0 2rem;
+        height: 100%;
+        text-align: center;
+    }
+
+    #rooms,
+    #examinations,
+    #doctors,
+    #equipment,
+    #drugs,
+    #ingredients {
+        width: 94%;
+    }
+
+    .delBtn,
+    .updateBtn,
+    .renovateBtn,
+    .requestReviewBtn,
+    .add,
+    .plusDiv {
+        padding: 0rem;
+    }
+
+    .plusDiv {
+        max-width: 90%;
+    }
+
+    .tbl-content {
+        height: 400px;
+    }
+
+    th {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    td {
+        font-size: 0.9rem;
+    }
+
+    #hi {
+        text-align: center;
+        margin: 10vh auto 5vh;
+        padding: 1rem;
+    }
+
+    #complexRenovations h2 {
+        font-size: 1.4rem;
+    }
+
+    #hi h1 {
+        font-size: 2rem;
+        max-width: 500px;
+    }
+
+    #transfers {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    #transfers form>div {
+        column-gap: 1rem;
+    }
+
+    #transfers p {
+        font-size: 0.9rem;
+    }
+
+    #transfers h4 {
+        min-width: 280px;
+        font-size: 1.2rem;
+        font-weight: 200;
+    }
+
+    .prompt {
+        min-width: 400px;
+        min-height: 300px;
+        padding: 1rem;
+        margin-left: 55px;
+    }
+
+    .colDir {
+        display: flex;
+        flex-direction: column;
+        gap: 1.8rem;
+    }
 }
 
 @media (max-width:768px) {
 
-    /* PHONE size*/
+    .myForm h3 {
+        font-size: 1rem;
+    }
+
+    #first .container2 {
+        display: initial;
+        margin-left: 92px;
+    }
+
+    .mainH {
+        margin-left: 92px !important;
+    }
+
+
+    #first .container1 {
+        display: none;
+    }
+
+    #first h1,
+    #first>h1 {
+        font-size: 1.6rem;
+    }
+
+    .navbar__link {
+        width: 4.5rem;
+    }
+
+    .navbar__item:last-child:before {
+        left: 0.5rem;
+    }
+
+    table {
+        display: block;
+        max-width: -moz-fit-content;
+        max-width: fit-content;
+        margin: 0 auto;
+        white-space: nowrap;
+        overflow-x: scroll;
+    }
+
+    .myMain {
+        margin-left: 90px;
+    }
+
+    .tbl-content {
+        height: 350px;
+    }
+
+    td {
+        padding: 1rem;
+    }
+
+    #hi {
+        text-align: center;
+        margin: 10vh auto 5vh;
+        padding: 1rem;
+    }
+
+    #complexRenovations h2 {
+        font-size: 1.2rem;
+    }
+
+    #hi h1 {
+        font-size: 1.8rem;
+        max-width: 450px;
+    }
+
+    #filters {
+        grid-template-columns: 1fr;
+    }
+
+    .spacious {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #transfers form>div {
+        text-align: center;
+        margin: auto;
+        justify-items: center;
+        align-items: center;
+        grid-template-columns: 1fr;
+        column-gap: 2rem;
+    }
+
+    #transfers p {
+        margin: 2.5rem auto 0.5rem;
+    }
+
+    #ingredientsStyle {
+        font-size: 1.2rem;
+        margin-bottom: 0 !important;
+    }
+
+    #ifDevide form,
+    #ifMerge form {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .prompt {
+        margin-left: 45px;
+    }
+
+}
+
+@media (max-width:500px) {
+
+    #first h1,
+    #first>h1 {
+        font-size: 1.2rem;
+    }
+
+    #first .container2 {
+        padding: 1rem 0rem;
+    }
+
+    #hi {
+        text-align: center;
+        margin: 10vh auto 5vh;
+        padding: 1rem;
+    }
+
+    #hi h1 {
+        font-size: 1.4rem;
+        max-width: 300px;
+    }
+
+    th {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    td {
+        font-size: 0.8rem;
+        padding: 0.8rem;
+    }
 }
