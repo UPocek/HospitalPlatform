@@ -1,3 +1,21 @@
+class User {
+    constructor(data) {
+        this.id = data['id']
+        this.firstName = data['firstName'];
+        this.lastName = data['lastName'];
+        this.email = data['email'];
+        this.role = data['role'];
+        if (this.role == 'doctor') {
+            this.specialization = data['specialization'];
+            this.score = data['score'];
+            this.freeDays = data['freeDays'];
+            this.examinations = data['examinations'];
+        } else if (this.role == 'patient') {
+            this.medicalRecord = data['medicalRecord'];
+        }
+    }
+}
+
 //*helper functions
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
@@ -22,14 +40,35 @@ function getParamValue(name) {
 
 var doctorsExaminations;
 var doctorId = getParamValue('id');
+var user;
+
+function getDoctor(){
+    let getUserRequest = new XMLHttpRequest();
+    getUserRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let doctor = JSON.parse(this.responseText);
+                console.log(doctor);
+                doctorFirstName = doctor['firstName'];
+                doctorLastName = doctor['lastName'];
+            }
+        }
+    }
+    getUserRequest.open('GET', 'https://localhost:7291/api/my/users/' + doctorId);
+    getUserRequest.send();
+}
 
 function setUpMenu() {
+    
     let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+        <a href="#" class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
     </li>
     <li id="option2" class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+    </li>
+    <li id="option3" class="navbar__item">
         <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
@@ -39,12 +78,82 @@ function setUpMenu() {
     let item2 = document.getElementById("option2");
 
     item1.addEventListener('click', (e) => {
-        
+        document.getElementById("scheduleOption").classList.remove("scheduleDiv");
+        document.getElementById("scheduleOption").classList.add("hideMain");
+        document.getElementById("addBtn").classList.remove("hideMain");
+        displayExaminations();
     });
     item2.addEventListener('click', (e) => {
-        
+        document.getElementById("scheduleOption").classList.remove("hideMain");
+        document.getElementById("scheduleOption").classList.add("scheduleDiv");
+        document.getElementById("addBtn").classList.add("hideMain");
+        document.getElementById("scheduleDate").value = (new Date()).toDateString;
+        searchSchedule()
     });
     
+}
+
+function displayExaminations(){
+    let table = document.getElementById("examinationsTable");
+    table.innerHTML = "";
+    for (let examination of doctorsExaminations) {
+
+        let newRow = document.createElement("tr");
+
+        let examinationDate = document.createElement("td");
+        examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
+        let examinationDone = document.createElement("td");
+        examinationDone.innerText = examination["done"];
+        let examinationDuration = document.createElement("td");
+        examinationDuration.innerText = examination["duration"];
+        let examinationRoom = document.createElement("td");
+        examinationRoom.innerText = examination["room"];
+        let examinationType = document.createElement("td");
+        examinationType.innerText = examination["type"];
+        let isUrgent = document.createElement("td");
+        isUrgent.innerText = examination["urgent"];
+
+        let one = document.createElement("td");
+        let patientBtn = document.createElement("button");
+        patientBtn.innerHTML = '<i data-feather="user"></i>';
+        patientBtn.setAttribute("key", examination["patient"]);
+        patientBtn.addEventListener('click', function (e) {
+            window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
+        });
+        one.appendChild(patientBtn);
+
+        let two = document.createElement("td");
+        let delBtn = document.createElement("button");
+        delBtn.innerHTML = '<i data-feather="trash"></i>';
+        delBtn.classList.add("delBtn");
+        delBtn.setAttribute("key", examination["id"]);
+        delBtn.addEventListener('click', function(e){
+            deleteExamination(delBtn.getAttribute('key'));
+            });
+        two.appendChild(delBtn);
+
+        let three = document.createElement("td");
+        let updateBtn = document.createElement("button");
+        updateBtn.innerHTML = '<i data-feather="upload"></i>';
+        updateBtn.classList.add("updateBtn");
+        updateBtn.setAttribute("key", examination["id"]);
+        updateBtn.addEventListener('click', function(e){ 
+            updateExamination(updateBtn.getAttribute("key"));
+        });
+        three.appendChild(updateBtn);
+
+        newRow.appendChild(examinationDate);
+        newRow.appendChild(examinationDuration);
+        newRow.appendChild(examinationDone);
+        newRow.appendChild(examinationRoom);
+        newRow.appendChild(examinationType);
+        newRow.appendChild(isUrgent);
+        newRow.appendChild(one);
+        newRow.appendChild(two);
+        newRow.appendChild(three);
+        table.appendChild(newRow);
+        feather.replace();
+    }
 }
 
 function showExaminations(){
@@ -54,63 +163,7 @@ function showExaminations(){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 doctorsExaminations = JSON.parse(this.responseText);
-                let table = document.getElementById("examinationsTable");
-                table.innerHTML = "";
-                for (let examination of doctorsExaminations) {
-
-                    let newRow = document.createElement("tr");
-
-                    let examinationDate = document.createElement("td");
-                    examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
-                    let examinationDone = document.createElement("td");
-                    examinationDone.innerText = examination["done"];
-                    let examinationRoom = document.createElement("td");
-                    examinationRoom.innerText = examination["room"];
-                    let examinationType = document.createElement("td");
-                    examinationType.innerText = examination["type"];
-                    let isUrgent = document.createElement("td");
-                    isUrgent.innerText = examination["urgent"];
-
-                    let one = document.createElement("td");
-                    let patientBtn = document.createElement("button");
-                    patientBtn.innerHTML = '<i data-feather="user"></i>';
-                    patientBtn.setAttribute("key", examination["patient"]);
-                    patientBtn.addEventListener('click', function (e) {
-                        window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key"));
-                    });
-                    one.appendChild(patientBtn);
-
-                    let two = document.createElement("td");
-                    let delBtn = document.createElement("button");
-                    delBtn.innerHTML = '<i data-feather="trash"></i>';
-                    delBtn.classList.add("delBtn");
-                    delBtn.setAttribute("key", examination["id"]);
-                    delBtn.addEventListener('click', function(e){
-                        deleteExamination(parseInt(delBtn.getAttribute('key')));
-                     });
-                    two.appendChild(delBtn);
-
-                    let three = document.createElement("td");
-                    let updateBtn = document.createElement("button");
-                    updateBtn.innerHTML = '<i data-feather="upload"></i>';
-                    updateBtn.classList.add("updateBtn");
-                    updateBtn.setAttribute("key", examination["id"]);
-                    updateBtn.addEventListener('click', function(e){ 
-                        updateExamination(parseInt(updateBtn.getAttribute("key")));
-                    });
-                    three.appendChild(updateBtn);
-
-                    newRow.appendChild(examinationDate);
-                    newRow.appendChild(examinationDone);
-                    newRow.appendChild(examinationRoom);
-                    newRow.appendChild(examinationType);
-                    newRow.appendChild(isUrgent);
-                    newRow.appendChild(one);
-                    newRow.appendChild(two);
-                    newRow.appendChild(three);
-                    table.appendChild(newRow);
-                    feather.replace();
-                }
+                displayExaminations();
             }
         }
     }
@@ -120,12 +173,27 @@ function showExaminations(){
 }
 
 function setUpPage(){
+    let hi = document.querySelector('#hi h1');
+    hi.innerText += `${user.firstName} ${user.lastName}`;
     setUpMenu();
     showExaminations();
 }
 
-window.addEventListener("load", function(e){
-    setUpPage();
+document.addEventListener('DOMContentLoaded', function () {
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                user = new User(response);
+                setUpPage();
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/my/users/' + doctorId);
+    request.send();
 });
 
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
@@ -153,6 +221,8 @@ function searchSchedule(){
 
             let examinationDate = document.createElement("td");
             examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
+            let examinationDuration = document.createElement("td");
+            examinationDuration.innerText = examination["duration"];
             let examinationDone = document.createElement("td");
             examinationDone.innerText = examination["done"];
             let examinationRoom = document.createElement("td");
@@ -172,33 +242,23 @@ function searchSchedule(){
             one.appendChild(patientBtn);
 
             let two = document.createElement("td");
-            let delBtn = document.createElement("button");
-            delBtn.innerHTML = '<i data-feather="trash"></i>';
-            delBtn.classList.add("delBtn");
-            delBtn.setAttribute("key", examination["id"]);
-            delBtn.addEventListener('click', function(e){
-               deleteExamination(parseInt(delBtn.getAttribute('key')))
-            });
-            two.appendChild(delBtn);
-
-            let three = document.createElement("td");
-            let updateBtn = document.createElement("button");
-            updateBtn.innerHTML = '<i data-feather="upload"></i>';
-            updateBtn.classList.add("updateBtn");
-            updateBtn.setAttribute("key", examination["id"].toString());
-            updateBtn.addEventListener('click', function(e){ 
-                updateExamination(parseInt(updateBtn.getAttribute("key")));
-            });
-            three.appendChild(updateBtn);
+            let reviewBtn = document.createElement("button");
+            reviewBtn.innerHTML = '<i data-feather="check"></i>';
+            reviewBtn.classList.add("add");
+            reviewBtn.setAttribute("key", examination["id"]);
+            reviewBtn.addEventListener('click', function(e){
+                
+                });
+            two.appendChild(reviewBtn);
 
             newRow.appendChild(examinationDate);
+            newRow.appendChild(examinationDuration);
             newRow.appendChild(examinationDone);
             newRow.appendChild(examinationRoom);
             newRow.appendChild(examinationType);
             newRow.appendChild(isUrgent);
             newRow.appendChild(one);
             newRow.appendChild(two);
-            newRow.appendChild(three);
             table.appendChild(newRow);
             feather.replace();
         }

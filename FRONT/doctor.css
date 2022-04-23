@@ -3,6 +3,15 @@
     box-sizing: border-box;
 }
 
+:root {
+    --mainColor: #153B50;
+    --backgroundColor: #fcfcfc;
+    --accentColor1: #FF416C;
+    --accentColor2: #FF4B2B;
+    --whiteSmoke: #F5F5F5;
+    --boxShadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
 body {
     background-color: #fcfcfc;
     font-family: 'Montserrat', sans-serif;
@@ -16,7 +25,6 @@ body {
 #two,
 #three,
 #four {
-    display: none;
     margin-bottom: 10vh;
     transition: 500ms ease-in;
 }
@@ -37,6 +45,23 @@ body {
     font-size: 0.9rem;
     min-width: 280px;
 }
+
+.divList{
+    display: flex;
+    justify-content: flex-start;
+}
+
+#diseasesList, #alergiesList {
+    height: 100px;
+    width: 100px;
+    list-style: none;
+    margin: 1rem 20px;
+    overflow-y: scroll;
+    padding: 0 0 0 1rem;
+  }
+  #diseasesList, #alergiesList li {
+    padding: 0 1rem 0 0;
+  }
 
 .myForm h3 {
     font-size: 1.4rem;
@@ -1840,12 +1865,26 @@ tr:nth-child(even) {
 }
 
 #rooms,
-#equipment,
-#patient_info {
+#equipment {
     border: 2px solid #153B50;
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#patientInfo{
+    background-color: var(--whiteSmoke);
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin: 50px auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+}
+
+.instructions{
+    margin-top: 20px;
 }
 
 table {
@@ -1934,10 +1973,6 @@ td button {
     min-width: 30px;
 }
 
-.basic_info{
-    text-align: center;
-    overflow-x: auto;
-}
 .colDir {
     display: flex;
     flex-direction: column;
@@ -1972,13 +2007,13 @@ td button {
     width: 79%;
     margin: 10px auto;
     display: flex;
-    justify-content: space-between;
-    
+    justify-content: flex-end; 
 }
 
 .tableHeaderDiv button {
     cursor: pointer;
 }
+
 
 /* Complex Renovations */
 

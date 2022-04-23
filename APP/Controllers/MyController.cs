@@ -54,6 +54,13 @@ namespace APP.Controllers
             }
         }
 
+        [HttpGet("users/doctors")]
+        public async Task<List<Employee>> GetDoctors()
+        {
+            var collection = database.GetCollection<Employee>("Employees");
+            return collection.Find(e => e.role == "doctor").ToList();
+        }
+
         // GET: api/My/users/id
         [HttpGet("users/{id}")]
         public IActionResult GetUser(int id)

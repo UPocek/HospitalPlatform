@@ -37,27 +37,18 @@ public class DoctorController : ControllerBase
         return examinationCollection.Find(e => e.doctorId == id).ToList();
     }
 
+    [HttpGet("examinations/patientId/{id}")]
+    public async Task<List<Examination>> GetPatientsExaminationa(int id)
+    {
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => e.patinetId == id).ToList();
+    }
+
     [HttpGet("examinations/patientMedicalCard/{id}")]
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
-        var examinationCollection = database.GetCollection<MedicalCard>("Patients");
-        MedicalCard result = examinationCollection.Find(p => p.id == id).ToList()[0];
-
-        // var drugCollection = database.GetCollection<BsonDocument>("Drugs");
-        // List<string> patientsDrug = new List<string>();
-
-        // for (int i = 0; i < result.medicalRecord._drugs.Count; i++){
-
-        //     var document = new BsonDocument{
-        //         {"_id", new ObjectId(result.medicalRecord._drugs[i])}
-        //     };
-
-        //     if (drugCollection.Find(document).ToList().Count != 0){
-        //         patientsDrug.Add(drugCollection.Find(document).ToList()[0].ToString());
-        //     }
-        // }
-
-        // result.medicalRecord.patientsDrugs = patientsDrug;
+        var patientsCards = database.GetCollection<MedicalCard>("Patients");
+        MedicalCard result = patientsCards.Find(p => p.id == id).First();
 
         return result;
     }
