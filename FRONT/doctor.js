@@ -436,7 +436,7 @@ function createExamination() {
     getRequest.send();
 }
 
-function submitUpdate(updatedExamination, id, popUp){
+function submitUpdate(e, updatedExamination, id, popUp){
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -520,7 +520,7 @@ function updateExamination(id){
                 })
 
                 form.addEventListener('submit', function (e) {
-                    submitUpdate(updateExamination, id, popUp);
+                    submitUpdate(e, updatedExamination, id, popUp);
                 });
             }
         }
