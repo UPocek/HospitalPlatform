@@ -65,20 +65,20 @@ function setUpMenu() {
     let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
+        <a class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
     </li>
     <li id="option2" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+        <a class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
     </li>
     <li id="option3" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
+        <a class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
     feather.replace();
 
     let item1 = document.getElementById("option1");
     let item2 = document.getElementById("option2");
-
+    
     item1.addEventListener('click', (e) => {
         document.getElementById("hi").classList.remove("hideMain");
         document.getElementById("scheduleOption").classList.remove("scheduleDiv");
@@ -444,7 +444,7 @@ function createExamination() {
     getRequest.send();
 }
 
-function submitUpdate(updatedExamination, id, popUp){
+function submitUpdate(e, updatedExamination, id, popUp){
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -462,7 +462,7 @@ function submitUpdate(updatedExamination, id, popUp){
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    alert("Examination sucessfuly created");
+                    alert("Examination sucessfuly updated");
                     showExaminations();
                 } else {
                     alert("Error: Entered examination informations are invalid");
@@ -527,7 +527,7 @@ function updateExamination(id){
                 })
 
                 form.addEventListener('submit', function (e) {
-                    submitUpdate(updateExamination, id, popUp);
+                    submitUpdate(e, updatedExamination, id, popUp);
                 });
             }
         }
