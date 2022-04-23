@@ -113,10 +113,10 @@ public class DoctorController : ControllerBase
     }
 
     [HttpDelete("examinations/{id}")]
-    public async Task<IActionResult> DeleteExamination(string id)
+    public async Task<IActionResult> DeleteExamination(int id)
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        examinationCollection.DeleteOne(e => e._id == id);
+        examinationCollection.DeleteOne(e => e.id == id);
         return Ok();
     }
 }

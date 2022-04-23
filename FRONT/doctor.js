@@ -86,7 +86,7 @@ function showExaminations(){
                     delBtn.classList.add("delBtn");
                     delBtn.setAttribute("key", examination["id"]);
                     delBtn.addEventListener('click', function(e){
-                        deleteExamination(delBtn.getAttribute('key'));
+                        deleteExamination(parseInt(delBtn.getAttribute('key')));
                      });
                     two.appendChild(delBtn);
 
@@ -96,7 +96,7 @@ function showExaminations(){
                     updateBtn.classList.add("updateBtn");
                     updateBtn.setAttribute("key", examination["id"]);
                     updateBtn.addEventListener('click', function(e){ 
-                        updateExamination(updateBtn.getAttribute("key"));
+                        updateExamination(parseInt(updateBtn.getAttribute("key")));
                     });
                     three.appendChild(updateBtn);
 
@@ -124,7 +124,9 @@ function setUpPage(){
     showExaminations();
 }
 
-window.addEventListener("load", setUpPage);
+window.addEventListener("load", function(e){
+    setUpPage();
+});
 
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
@@ -175,7 +177,7 @@ function searchSchedule(){
             delBtn.classList.add("delBtn");
             delBtn.setAttribute("key", examination["id"]);
             delBtn.addEventListener('click', function(e){
-               deleteExamination(delBtn.getAttribute('key'))
+               deleteExamination(parseInt(delBtn.getAttribute('key')))
             });
             two.appendChild(delBtn);
 
@@ -183,9 +185,9 @@ function searchSchedule(){
             let updateBtn = document.createElement("button");
             updateBtn.innerHTML = '<i data-feather="upload"></i>';
             updateBtn.classList.add("updateBtn");
-            updateBtn.setAttribute("key", examination["id"]);
+            updateBtn.setAttribute("key", examination["id"].toString());
             updateBtn.addEventListener('click', function(e){ 
-                updateExamination(updateBtn.getAttribute("key"));
+                updateExamination(parseInt(updateBtn.getAttribute("key")));
             });
             three.appendChild(updateBtn);
 
