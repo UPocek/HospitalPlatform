@@ -51,7 +51,6 @@ function getDoctor(){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let doctor = JSON.parse(this.responseText);
-                console.log(doctor);
                 doctorFirstName = doctor['firstName'];
                 doctorLastName = doctor['lastName'];
             }
@@ -214,8 +213,6 @@ function searchSchedule(){
     lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
     convertedInputDate.setHours(7,0,0);
     lastDayInSchedule.setHours(23,0,0);
-    console.log(convertedInputDate);
-    console.log(lastDayInSchedule);
 
     let table = document.getElementById("examinationsTable");
     removeAllChildNodes(table);
@@ -477,7 +474,6 @@ function submitUpdate(updatedExamination, id, popUp){
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
         postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
