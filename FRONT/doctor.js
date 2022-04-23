@@ -25,9 +25,6 @@ function removeAllChildNodes(parent) {
 
 function getParamValue(name) {
     var location = decodeURI(window.location.toString());
-    if (location[-1] == "#"){
-        location = location.substring(0, location.length -1);
-    }
     var index = location.indexOf("?") + 1;
     var subs = location.substring(index, location.length);
     var splitted = subs.split("&");
@@ -51,7 +48,6 @@ function getDoctor(){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let doctor = JSON.parse(this.responseText);
-                console.log(doctor);
                 doctorFirstName = doctor['firstName'];
                 doctorLastName = doctor['lastName'];
             }
@@ -66,13 +62,13 @@ function setUpMenu() {
     let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
+        <a class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
     </li>
     <li id="option2" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+        <a class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
     </li>
     <li id="option3" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
+        <a class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
     feather.replace();
@@ -84,7 +80,6 @@ function setUpMenu() {
         document.getElementById("scheduleOption").classList.remove("scheduleDiv");
         document.getElementById("scheduleOption").classList.add("hideMain");
         document.getElementById("addBtn").classList.remove("hideMain");
-        doctorId = getParamValue('id');
         displayExaminations();
     });
     item2.addEventListener('click', (e) => {
@@ -92,8 +87,6 @@ function setUpMenu() {
         document.getElementById("scheduleOption").classList.add("scheduleDiv");
         document.getElementById("addBtn").classList.add("hideMain");
         document.getElementById("scheduleDate").value = (new Date()).toDateString;
-        doctorId = getParamValue('id');
-        console.log(doctorId)
         searchSchedule()
     });
     
@@ -471,8 +464,7 @@ function submitUpdate(e, updatedExamination, id, popUp){
         let selectedRoom = document.getElementById("examinationRoom").value;
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
-        console.log(doctorId);
-        console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+    
         postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
