@@ -25,30 +25,20 @@
                     <div class="basicInfo">
                         <h3>Medical record</h3>
                         <div>
-                            <p>First name:&nbsp<span id="patient_fname"></span></p>
-                            <p>Last name:&nbsp<span id="patient_lname"></span></p>
-                            <p>Height:&nbsp<span id="patient_height"></span></p>
-                            <p>Weight:&nbsp<span id="patient_weight"></span></p>
-                            <p>Blood type:&nbsp<span id="patient_blood"></span></p>
+                            <p>First name:&nbsp<span id="patientFName"></span></p>
+                            <p>Last name:&nbsp<span id="patientLName"></span></p>
+                            <p>Height:&nbsp<span id="patientHeight"></span></p>
+                            <p>Weight:&nbsp<span id="patientWeight"></span></p>
+                            <p>Blood type:&nbsp<span id="patientBlood"></span></p>
                             <div class="divList">
-                                <p>Diseases:&nbsp<span id="patient_diseases"></span></p>
+                                <p>Diseases:&nbsp</p>
                                 <ul id="diseasesList">
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
-                                    <li>Mama</li>
                                     <!-- patients diseases -->
                                 </ul>
                             </div>
                             <div class="divList">
-                                <p>Alergies:&nbsp<span id="patient_alergies"></span></p>
-                                <ul id="alergeesList">
+                                <p>Alergies:&nbsp</p>
+                                <ul id="alergiesList">
                                     <!-- patients diseases -->
                                 </ul>
                             </div>

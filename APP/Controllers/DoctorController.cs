@@ -41,7 +41,7 @@ public class DoctorController : ControllerBase
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
         var examinationCollection = database.GetCollection<MedicalCard>("Patients");
-        MedicalCard result = examinationCollection.Find(p => p.id == id).ToList()[0];
+        MedicalCard result = examinationCollection.Find(p => p.id == id).First();
 
         return result;
     }
