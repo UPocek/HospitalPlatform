@@ -25,6 +25,9 @@ function removeAllChildNodes(parent) {
 
 function getParamValue(name) {
     var location = decodeURI(window.location.toString());
+    if (location[-1] == "#"){
+        location = location.substring(0, location.length -1);
+    }
     var index = location.indexOf("?") + 1;
     var subs = location.substring(index, location.length);
     var splitted = subs.split("&");
@@ -78,16 +81,21 @@ function setUpMenu() {
     let item2 = document.getElementById("option2");
 
     item1.addEventListener('click', (e) => {
+        document.getElementById("hi").classList.remove("hideMain");
         document.getElementById("scheduleOption").classList.remove("scheduleDiv");
         document.getElementById("scheduleOption").classList.add("hideMain");
         document.getElementById("addBtn").classList.remove("hideMain");
+        doctorId = getParamValue('id');
         displayExaminations();
     });
     item2.addEventListener('click', (e) => {
+        document.getElementById("hi").classList.add("hideMain");;
         document.getElementById("scheduleOption").classList.remove("hideMain");
         document.getElementById("scheduleOption").classList.add("scheduleDiv");
         document.getElementById("addBtn").classList.add("hideMain");
         document.getElementById("scheduleDate").value = (new Date()).toDateString;
+        doctorId = getParamValue('id');
+        document.getElementById("scheduleDateOption").value = new Date().toISOString().split('T')[0];
         searchSchedule()
     });
     
@@ -199,13 +207,15 @@ document.addEventListener('DOMContentLoaded', function () {
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule(){
-    let inputDate = document.getElementById("scheduleDate").value;
+    let inputDate = document.getElementById("scheduleDateOption").value;
 
     const convertedInputDate = new Date(inputDate);
     const lastDayInSchedule = new Date(inputDate);
     lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
     convertedInputDate.setHours(7,0,0);
     lastDayInSchedule.setHours(23,0,0);
+    console.log(convertedInputDate);
+    console.log(lastDayInSchedule);
 
     let table = document.getElementById("examinationsTable");
     removeAllChildNodes(table);
@@ -213,7 +223,6 @@ function searchSchedule(){
     for (let i in doctorsExaminations){
         
         let examinationDate = new Date(doctorsExaminations[i]['date']);
-        
         if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule){
             
             let examination = doctorsExaminations[i];
@@ -265,7 +274,9 @@ function searchSchedule(){
     }
 }
 
-scheduleDateButton.addEventListener("click", searchSchedule);
+scheduleDateButton.addEventListener("click", function(e){
+    searchSchedule();
+});
 
 function deleteExamination(id){
     let request = new XMLHttpRequest();
