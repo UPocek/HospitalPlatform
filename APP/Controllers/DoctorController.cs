@@ -37,11 +37,18 @@ public class DoctorController : ControllerBase
         return examinationCollection.Find(e => e.doctorId == id).ToList();
     }
 
+    [HttpGet("examinations/patientId/{id}")]
+    public async Task<List<Examination>> GetPatientsExaminationa(int id)
+    {
+        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationCollection.Find(e => e.patinetId == id).ToList();
+    }
+
     [HttpGet("examinations/patientMedicalCard/{id}")]
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
-        var examinationCollection = database.GetCollection<MedicalCard>("Patients");
-        MedicalCard result = examinationCollection.Find(p => p.id == id).First();
+        var patientsCards = database.GetCollection<MedicalCard>("Patients");
+        MedicalCard result = patientsCards.Find(p => p.id == id).First();
 
         return result;
     }
