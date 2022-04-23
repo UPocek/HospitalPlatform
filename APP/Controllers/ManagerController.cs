@@ -48,7 +48,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
 
-            return collection.Find(item => true).First();
+            return collection.Find(item => true).FirstOrDefault();
         }
 
         // POST: api/Manager/rooms
@@ -58,7 +58,7 @@ namespace APP.Controllers
             var collection = database.GetCollection<Room>("Rooms");
 
             // If room with that name already exists abort action
-            if (collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -248,7 +248,7 @@ namespace APP.Controllers
                 var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.quantity);
                 collection.UpdateOne(filter1, update1);
 
-                if (collection.Find(filter2).ToList().Count != 0)
+                if (collection.Find(filter2).FirstOrDefault() != null)
                 {
                     var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.quantity);
                     collection.UpdateOne(filter2, update2);
@@ -273,7 +273,7 @@ namespace APP.Controllers
             var collection = database.GetCollection<Drug>("Drugs");
 
             // If drug with that name already exists abort action
-            if (collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -288,7 +288,7 @@ namespace APP.Controllers
         public async Task<IActionResult> CreateIngredinet(Dictionary<string, string> data)
         {
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
-            var result = collection.Find(item => true).First();
+            var result = collection.Find(item => true).FirstOrDefault();
 
             // If drug with that name already exists abort action
             if (result.ingredients.Contains(data["name"]))
@@ -309,7 +309,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Room>("Rooms");
 
-            if (data.name != id && collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -342,7 +342,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Drug>("Drugs");
 
-            if (data.name != id && collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -363,7 +363,7 @@ namespace APP.Controllers
         public async Task<IActionResult> UpdateIngredinet(string id, Dictionary<string, string> data)
         {
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
-            var result = collection.Find(item => true).First();
+            var result = collection.Find(item => true).FirstOrDefault();
 
             if (id != data["name"] && result.ingredients.Contains(data["name"]))
             {
@@ -410,7 +410,7 @@ namespace APP.Controllers
         public async Task<IActionResult> DeleteIngredient(string id)
         {
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
-            var result = collection.Find(item => true).First();
+            var result = collection.Find(item => true).FirstOrDefault();
 
             result.ingredients.Remove(id);
 
