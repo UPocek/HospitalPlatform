@@ -23,7 +23,7 @@
             <section id="one" class="active">
                 <div id="patientInfo" >
                     <div class="basicInfo">
-                        <h3>Medical record</h3>
+                        <h1>Medical record</h1>
                         <div>
                             <p>First name:&nbsp<span id="patientFName"></span></p>
                             <p>Last name:&nbsp<span id="patientLName"></span></p>
@@ -45,9 +45,47 @@
                         </div>
                     </div>
                 </div>
-                
-                
             </section>
+            <section id="two">
+                <div id="rooms">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Duration</th>
+                                    <th>Done</th>
+                                    <th>Examination room</th>
+                                    <th>Type</th>
+                                    <th>Urgent</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examinationsTable">
+                                <!-- this is where data from api comes -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="three">
+                <div id="rooms" class="instructions">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="instructionsTable">
+                                <!-- this is where data from api comes -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+                
+                
         </main>
 
         <!-- <?php include 'footer.html';?> -->
