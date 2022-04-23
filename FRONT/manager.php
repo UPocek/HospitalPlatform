@@ -273,7 +273,7 @@
 
     <section id="three">
     <div class="plusDiv">
-            <button id="addDrugBtn" class="add"><i data-feather="plus-circle"></i></button>
+        <button id="addDrugBtn" class="add"><i data-feather="plus-circle"></i></button>
     </div>
     <div id="drugs">
         <div class="tbl-content">
@@ -295,7 +295,7 @@
     </div>
     <h2 style="text-align:center; margin:5vh;">Ingredients:</h2>
     <div class="plusDiv">
-            <button id="addIngredientBtn" class="add"><i data-feather="plus-circle"></i></button>
+        <button id="addIngredientBtn" class="add"><i data-feather="plus-circle"></i></button>
     </div>
     <div id="ingredients">
         <div class="tbl-content">
@@ -313,7 +313,6 @@
             </table>
         </div>
     </div>
-
     </section>
 
     <section id="four">

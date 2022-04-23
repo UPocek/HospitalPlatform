@@ -750,7 +750,7 @@ function setUpDrugs() {
     request.send();
 }
 
-// Create - Drug
+// POST - Drug
 var ingredients;
 var createDrugBtn = document.getElementById('addDrugBtn');
 createDrugBtn.addEventListener('click', function (e) {
@@ -759,6 +759,7 @@ createDrugBtn.addEventListener('click', function (e) {
     main.classList.add('hideMain');
 
     let ingredientsContainer = document.getElementById('selectIngredients');
+    ingredientsContainer.innerHTML = '';
     for (let ingredient of ingredients) {
         let ingredientDiv = document.createElement('div');
         let ingredientLabel = document.createElement('label');
@@ -807,7 +808,7 @@ createDrugBtn.addEventListener('click', function (e) {
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty")
         }
     });
 });
@@ -898,7 +899,7 @@ createIngredientBtn.addEventListener('click', function (e) {
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty")
         }
     });
 });
@@ -970,7 +971,7 @@ function updateDrug(key, myIngredients, comment) {
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty nor can there be a drug without any ingredients")
         }
     });
 }
@@ -1015,7 +1016,7 @@ function updateIngredient(key) {
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty")
         }
     });
 }
