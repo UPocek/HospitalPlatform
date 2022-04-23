@@ -25,6 +25,9 @@ function removeAllChildNodes(parent) {
 
 function getParamValue(name) {
     var location = decodeURI(window.location.toString());
+    if (location[-1] == "#"){
+        location = location.substring(0, location.length -1);
+    }
     var index = location.indexOf("?") + 1;
     var subs = location.substring(index, location.length);
     var splitted = subs.split("&");
@@ -48,7 +51,6 @@ function getDoctor(){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let doctor = JSON.parse(this.responseText);
-                console.log(doctor);
                 doctorFirstName = doctor['firstName'];
                 doctorLastName = doctor['lastName'];
             }
@@ -63,31 +65,36 @@ function setUpMenu() {
     let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
+        <a class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
     </li>
     <li id="option2" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
+        <a class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
     </li>
     <li id="option3" class="navbar__item">
-        <a href="#" class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
+        <a class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
     feather.replace();
 
     let item1 = document.getElementById("option1");
     let item2 = document.getElementById("option2");
-
+    
     item1.addEventListener('click', (e) => {
+        document.getElementById("hi").classList.remove("hideMain");
         document.getElementById("scheduleOption").classList.remove("scheduleDiv");
         document.getElementById("scheduleOption").classList.add("hideMain");
         document.getElementById("addBtn").classList.remove("hideMain");
+        doctorId = getParamValue('id');
         displayExaminations();
     });
     item2.addEventListener('click', (e) => {
+        document.getElementById("hi").classList.add("hideMain");;
         document.getElementById("scheduleOption").classList.remove("hideMain");
         document.getElementById("scheduleOption").classList.add("scheduleDiv");
         document.getElementById("addBtn").classList.add("hideMain");
         document.getElementById("scheduleDate").value = (new Date()).toDateString;
+        doctorId = getParamValue('id');
+        document.getElementById("scheduleDateOption").value = new Date().toISOString().split('T')[0];
         searchSchedule()
     });
     
@@ -211,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule(){
-    let inputDate = document.getElementById("scheduleDate").value;
+    let inputDate = document.getElementById("scheduleDateOption").value;
 
     const convertedInputDate = new Date(inputDate);
     const lastDayInSchedule = new Date(inputDate);
@@ -225,7 +232,6 @@ function searchSchedule(){
     for (let i in doctorsExaminations){
         
         let examinationDate = new Date(doctorsExaminations[i]['date']);
-        
         if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule){
             
             let examination = doctorsExaminations[i];
@@ -278,7 +284,9 @@ function searchSchedule(){
     }
 }
 
-scheduleDateButton.addEventListener("click", searchSchedule);
+scheduleDateButton.addEventListener("click", function(e){
+    searchSchedule();
+});
 
 function deleteExamination(id){
     let request = new XMLHttpRequest();
@@ -449,7 +457,7 @@ function createExamination() {
     getRequest.send();
 }
 
-function submitUpdate(updatedExamination, id, popUp){
+function submitUpdate(e, updatedExamination, id, popUp){
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -467,7 +475,7 @@ function submitUpdate(updatedExamination, id, popUp){
         postRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    alert("Examination sucessfuly created");
+                    alert("Examination sucessfuly updated");
                     showExaminations();
                 } else {
                     alert("Error: Entered examination informations are invalid");
@@ -479,7 +487,6 @@ function submitUpdate(updatedExamination, id, popUp){
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        console.log(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
         postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -533,7 +540,7 @@ function updateExamination(id){
                 })
 
                 form.addEventListener('submit', function (e) {
-                    submitUpdate(updateExamination, id, popUp);
+                    submitUpdate(e, updatedExamination, id, popUp);
                 });
             }
         }

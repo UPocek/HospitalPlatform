@@ -57,8 +57,8 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId);
-        Console.WriteLine(patient);
+        var patient = patients.Find(p => p.id == examination.patinetId).First();
+        
         if (patient == null)
         {
             return BadRequest();

@@ -108,8 +108,8 @@
             <section id="one" class="active">
                 <div class="tableHeaderDiv">
                     <div id="scheduleOption" class="hideMain">
-                        <label for="scheduleDate">Schedule for date:</label>
-                        <input type="date" id="scheduleDate" name="schedule">
+                        <label for="scheduleDateOption">Schedule for date:</label>
+                        <input type="date" id="scheduleDateOption">
                         <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
                     </div>
                     <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
