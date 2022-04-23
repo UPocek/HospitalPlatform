@@ -15,9 +15,12 @@ loginForm.addEventListener('submit', function (e) {
                 else if (response["role"] == "patient") {
                     window.location.replace("patient.php" + "?id=" + response["id"]);
                 }
-                else if (response["role"] == "doctor"){
+                else if (response["role"] == "doctor") {
                     window.location.replace("doctor.php" + "?id=" + response["id"]);
                 }
+            }
+            else {
+                alert("Invalid username or password");
             }
         }
     }

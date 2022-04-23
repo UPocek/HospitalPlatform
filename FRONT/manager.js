@@ -121,6 +121,7 @@ function renovateRoom(key) {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     alert('Selected room is schedule for renovation');
+                    setUpRooms();
                 } else {
                     alert('Error: Selected room cannot be renovated during this period');
                 }
@@ -225,16 +226,16 @@ function setUpMenu() {
     let menu = document.getElementById('mainMenu');
     menu.innerHTML += `
     <li id='option1' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='log-in'></i><span>Room Management</span></a>
+        <a class='navbar__link'><i data-feather='log-in'></i><span>Room Management</span></a>
     </li>
     <li id='option2' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='tool'></i><span>Equipment Management</span></a>
+        <a class='navbar__link'><i data-feather='tool'></i><span>Equipment Management</span></a>
     </li>
     <li id='option3' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='shield'></i><span>Drug Management</span></a>
+        <a class='navbar__link'><i data-feather='shield'></i><span>Drug Management</span></a>
     </li>
     <li id='option4' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
+        <a class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
     </li>
     `;
     feather.replace();
@@ -278,34 +279,36 @@ function setUpRooms() {
                     tableDataRenovation.innerText = room['inRenovation'];
 
                     let tableDataDeleteButton = document.createElement('td');
-                    let delBtn = document.createElement('button');
-                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
-                    delBtn.classList.add('delBtn');
-                    delBtn.setAttribute('key', room['name']);
-                    delBtn.addEventListener('click', function (e) {
-                        deleteRoom(this.getAttribute('key'));
-                    });
-                    tableDataDeleteButton.appendChild(delBtn);
-
                     let tableDataPutButton = document.createElement('td');
-                    let putBtn = document.createElement('button');
-                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
-                    putBtn.classList.add('updateBtn');
-                    putBtn.setAttribute('key', room['name']);
-                    putBtn.addEventListener('click', function (e) {
-                        updateRoom(this.getAttribute('key'));
-                    });
-                    tableDataPutButton.appendChild(putBtn);
-
                     let tableDataRenovateButton = document.createElement('td');
-                    let renovateBtn = document.createElement('button');
-                    renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
-                    renovateBtn.classList.add('renovateBtn');
-                    renovateBtn.setAttribute('key', room['name']);
-                    renovateBtn.addEventListener('click', function (e) {
-                        renovateRoom(this.getAttribute('key'));
-                    });
-                    tableDataRenovateButton.appendChild(renovateBtn);
+                    if (room['type'] != 'warehouse') {
+                        let delBtn = document.createElement('button');
+                        delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                        delBtn.classList.add('delBtn');
+                        delBtn.setAttribute('key', room['name']);
+                        delBtn.addEventListener('click', function (e) {
+                            deleteRoom(this.getAttribute('key'));
+                        });
+                        tableDataDeleteButton.appendChild(delBtn);
+
+                        let putBtn = document.createElement('button');
+                        putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                        putBtn.classList.add('updateBtn');
+                        putBtn.setAttribute('key', room['name']);
+                        putBtn.addEventListener('click', function (e) {
+                            updateRoom(this.getAttribute('key'));
+                        });
+                        tableDataPutButton.appendChild(putBtn);
+
+                        let renovateBtn = document.createElement('button');
+                        renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
+                        renovateBtn.classList.add('renovateBtn');
+                        renovateBtn.setAttribute('key', room['name']);
+                        renovateBtn.addEventListener('click', function (e) {
+                            renovateRoom(this.getAttribute('key'));
+                        });
+                        tableDataRenovateButton.appendChild(renovateBtn);
+                    }
 
                     newRow.appendChild(tableDataName);
                     newRow.appendChild(tableDataType);
@@ -336,6 +339,7 @@ function setUpFunctionality() {
     setUpEquipment('empty');
     setUpTransfer();
     setUpDrugs();
+    setUpIngredients();
 }
 
 // ComplexRenovations
@@ -740,7 +744,6 @@ function setUpDrugs() {
                     newRow.appendChild(tableDataPutButton);
                     table.appendChild(newRow);
                     feather.replace();
-                    getIngredients();
                 }
             }
         }
@@ -813,7 +816,7 @@ createDrugBtn.addEventListener('click', function (e) {
     });
 });
 
-function getIngredients() {
+function setUpIngredients() {
     let getIngredientsRequest = new XMLHttpRequest();
 
     getIngredientsRequest.onreadystatechange = function () {
@@ -885,7 +888,7 @@ createIngredientBtn.addEventListener('click', function (e) {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     alert('New ingredinet sucessfuly created');
-                    getIngredients();
+                    setUpIngredients();
                 } else {
                     alert('Error: Entered ingredient informations are invalid');
                 }
@@ -1001,7 +1004,7 @@ function updateIngredient(key) {
                 if (this.status == 200) {
                     alert('Ingredinet sucessfuly updated');
                     location.reload();
-                    getIngredients();
+                    setUpIngredients();
                     showWindow(3);
                 } else {
                     alert('Error: Entered ingredient informations are invalid');
@@ -1048,7 +1051,7 @@ function deleteIngredient(key) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert('Selected drug was successfully deleted');
-                getIngredients();
+                setUpIngredients();
             } else {
                 alert("Error: Selected drug couldn't be deleted");
             }
