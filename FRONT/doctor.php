@@ -20,38 +20,80 @@
         <?php include 'header.html';?>
         <div id="reviewExaminationDiv"class="off">
             <div id="reviewExaminationPopUp">
-                <div id="reportPopUp">
+                <form id="reportPopUp" class="myForm">
                     <h1>Report</h1>
                     <div id="descReport">
-                        <h3>Report description:</h3>
-                        <p id="reportDescription"></p>
+                        <label for="reportDescription">Report description:</label>
+                        <textarea  id="reportDescription"></textarea>
                     </div>
-                </div>
-                <div class="basicInfo">
+                    <div id="equipmentDiv">
+                        <!-- equipmentUsed -->
+                    </div>
+                    <button class="mainBtn">End review</button>
+                </form>
+                <form class="basicInfo">
                     <h1>Medical record</h1>
-                    <div>
-                        <p>First name:&nbsp<span id="patientFName"></span></p>
-                        <p>Last name:&nbsp<span id="patientLName"></span></p>
-                        <p>Height:&nbsp<span id="patientHeight"></span></p>
-                        <p>Weight:&nbsp<span id="patientWeight"></span></p>
-                        <p>Blood type:&nbsp<span id="patientBlood"></span></p>
-                        <div class="divList">
-                            <p>Diseases:&nbsp</p>
-                            <ul id="diseasesList">
-                                <!-- patients diseases -->
-                            </ul>
+                    <div class="myForm">
+                        <h5>First name:&nbsp<span id="patientFName"></span></h5>
+                        <h5>Last name:&nbsp<span id="patientLName"></span></h5>
+                        <div>
+                            <label for="patientHeight">Height:&nbsp</label>
+                            <input id="patientHeight" type="number" min="0"></input>
                         </div>
-                        <div class="divList">
-                            <p>Alergies:&nbsp</p>
-                            <ul id="alergiesList">
-                                <!-- patients diseases -->
-                            </ul>
+                        <div>
+                            <label for="patientWeight">Weight:&nbsp</label>
+                            <input id="patientWeight" type="number" min="0"></input>
+                        </div>
+                        <div>
+                            <label for="patientBlood">Blood type:&nbsp</label>
+                            <input id="patientBlood"></input>
+                        </div>
+                        
+                        <div>
+                            <div class="listContainer">
+                                <div class="divList">
+                                    <p>Diseases:&nbsp</p>
+                                    <ul id="diseasesList">
+                                        <!-- patients diseases -->
+                                    </ul>
+                                </div>
+                                <button class="delBtn"><i data-feather="trash"></i></button>
+                            </div>
+                            <div>
+                                <input id="patientHeight"></input>
+                                <button class="add"><i data-feather="plus"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="listContainer">
+                                <div class="divList">
+                                    <p>Alergies:&nbsp</p>
+                                    <ul id="alergiesList">
+                                        <!-- patients diseases -->
+                                    </ul>
+                                </div>
+                                <button class="delBtn"><i data-feather="trash"></i></button>
+                            </div>
+                            <div>
+                                <input id="patientHeight"></input>
+                                <button class="add"><i data-feather="plus"></i></button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <button class="mainBtn">Update medical card</button>
+                </form>
             </div>
         </div>
             
+
+        
+        <div id="reportPopUp" class="form-container sign-in-container off prompt">
+            <h1>Report</h1>
+            <div id="descReport">
+                <h3>Report description:</h3>
+                <p id="reportDescription"></p>
+            </div>
+	    </div>
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">

@@ -27,7 +27,7 @@ public class DoctorController : ControllerBase
     public async Task<Examination> GetNextExaminationsIndex()
     {
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => true).SortByDescending(e => e.id).First();
+        return examinationCollection.Find(e => true).SortByDescending(e => e.id).FirstOrDefault();
     }
 
     [HttpGet("examinations/doctorId/{id}")]
@@ -48,7 +48,7 @@ public class DoctorController : ControllerBase
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
         var patientsCards = database.GetCollection<MedicalCard>("Patients");
-        MedicalCard result = patientsCards.Find(p => p.id == id).First();
+        MedicalCard result = patientsCards.Find(p => p.id == id).FirstOrDefault();
 
         return result;
     }
@@ -57,7 +57,7 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId).First();
+        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
         
         if (patient == null)
         {
@@ -73,7 +73,7 @@ public class DoctorController : ControllerBase
         }
 
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        var id = examinations.Find(e => true).SortByDescending(e => e.id).First().id;
+        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
         examination.id = id + 1;
         examinations.InsertOne(examination);
         return Ok();
@@ -83,14 +83,14 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId).First();
+        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
 
         if (patient == null){
             return BadRequest();
         }
 
         var rooms = database.GetCollection<Room>("Rooms");
-        var room = rooms.Find(r => r.name == examination.roomName).First();
+        var room = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
  
         if (room == null){
             return BadRequest();
