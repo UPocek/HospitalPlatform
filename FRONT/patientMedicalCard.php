@@ -17,12 +17,12 @@
     </head>
     <body>
         
-        <?php include 'doctor_navbar.html';?>
+        <?php include 'header.html';?>
         
         <main>
             <section id="one" class="active">
-                <div id="patient_info" >
-                    <div class="basic_info">
+                <div id="patientInfo" >
+                    <div class="basicInfo">
                         <h3>Medical record</h3>
                         <div>
                             <p>First name:&nbsp<span id="patient_fname"></span></p>
@@ -30,8 +30,28 @@
                             <p>Height:&nbsp<span id="patient_height"></span></p>
                             <p>Weight:&nbsp<span id="patient_weight"></span></p>
                             <p>Blood type:&nbsp<span id="patient_blood"></span></p>
-                            <p>Diseases:&nbsp<span id="patient_diseases"></span></p>
-                            <p>Alergies:&nbsp<span id="patient_alergies"></span></p>
+                            <div class="divList">
+                                <p>Diseases:&nbsp<span id="patient_diseases"></span></p>
+                                <ul id="diseasesList">
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <li>Mama</li>
+                                    <!-- patients diseases -->
+                                </ul>
+                            </div>
+                            <div class="divList">
+                                <p>Alergies:&nbsp<span id="patient_alergies"></span></p>
+                                <ul id="alergeesList">
+                                    <!-- patients diseases -->
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

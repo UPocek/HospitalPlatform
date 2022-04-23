@@ -43,22 +43,6 @@ public class DoctorController : ControllerBase
         var examinationCollection = database.GetCollection<MedicalCard>("Patients");
         MedicalCard result = examinationCollection.Find(p => p.id == id).ToList()[0];
 
-        // var drugCollection = database.GetCollection<BsonDocument>("Drugs");
-        // List<string> patientsDrug = new List<string>();
-
-        // for (int i = 0; i < result.medicalRecord._drugs.Count; i++){
-
-        //     var document = new BsonDocument{
-        //         {"_id", new ObjectId(result.medicalRecord._drugs[i])}
-        //     };
-
-        //     if (drugCollection.Find(document).ToList().Count != 0){
-        //         patientsDrug.Add(drugCollection.Find(document).ToList()[0].ToString());
-        //     }
-        // }
-
-        // result.medicalRecord.patientsDrugs = patientsDrug;
-
         return result;
     }
 

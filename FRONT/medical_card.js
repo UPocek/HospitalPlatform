@@ -17,33 +17,50 @@ let patient;
 let patientId = getParamValue("patient_id");
 
 window.addEventListener("load", function () {
-
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
+    setUpMenu();
+    // let request = new XMLHttpRequest();
+    // request.onreadystatechange = function () {
+    //     if (this.readyState == 4) {
+    //         if (this.status == 200) {
                 
-                patient = JSON.parse(this.responseText);
+    //             patient = JSON.parse(this.responseText);
 
-                let patientFName = document.getElementById("patient_fname");
-                patientFName.innerText = patient["firstName"];
-                let patientLName = document.getElementById("patient_lname");
-                patientLName.innerText = patient["lastName"];
-                let patientHeight = document.getElementById("patient_height");
-                patientHeight.innerText = patient["medicalRecord"]["height"];
-                let patientWeight = document.getElementById("patient_weight");
-                patientWeight.innerText = patient["medicalRecord"]["weight"];
-                let patientBlood = document.getElementById("patient_blood");
-                patientBlood.innerText = patient["medicalRecord"]["bloodType"];
-                let patientDiseases = document.getElementById("patient_diseases");
-                patientDiseases.innerText = patient["medicalRecord"]["diseases"];
-                let patientAlergies = document.getElementById("patient_alergies");
-                patientAlergies.innerText = patient["medicalRecord"]["alergies"];
+    //             let patientFName = document.getElementById("patient_fname");
+    //             patientFName.innerText = patient["firstName"];
+    //             let patientLName = document.getElementById("patient_lname");
+    //             patientLName.innerText = patient["lastName"];
+    //             let patientHeight = document.getElementById("patient_height");
+    //             patientHeight.innerText = patient["medicalRecord"]["height"];
+    //             let patientWeight = document.getElementById("patient_weight");
+    //             patientWeight.innerText = patient["medicalRecord"]["weight"];
+    //             let patientBlood = document.getElementById("patient_blood");
+    //             patientBlood.innerText = patient["medicalRecord"]["bloodType"];
+    //             let patientDiseases = document.getElementById("patient_diseases");
+    //             patientDiseases.innerText = patient["medicalRecord"]["diseases"];
+    //             let patientAlergies = document.getElementById("patient_alergies");
+    //             patientAlergies.innerText = patient["medicalRecord"]["alergies"];
                 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patient_medical_card/' + patientId);
-    request.send();
+    // request.open('GET', 'https://localhost:7291/api/doctor/examinations/patient_medical_card/' + patientId);
+    // request.send();
 });
+
+function setUpMenu() {
+    
+    let menu = document.getElementById("mainMenu");
+    menu.innerHTML = `
+    <li id="option1" class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="chevron-left"></i><span>Back</span></a>
+    </li>
+    `;
+    feather.replace();
+
+    let item1 = document.getElementById("option1");
+
+    item1.addEventListener('click', (e) => {
+        
+    });
+}
