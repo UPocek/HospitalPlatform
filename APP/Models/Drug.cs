@@ -19,4 +19,8 @@ public class Drug
     [BsonElement("status")]
     [JsonPropertyName("status")]
     public string status { get; set; }
+
+    [BsonElement("comment")]
+    [JsonPropertyName("comment")]
+    public string? comment { get; set; }
 }
