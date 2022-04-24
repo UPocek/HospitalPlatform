@@ -40,7 +40,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Patient>("Patients");
             
-            return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
+            return collection.Find(item => item.id == id && item.active=="0").FirstOrDefault();
         }
 
         // POST: api/Secretary/patients
@@ -69,7 +69,7 @@ namespace APP.Controllers
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
             var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).ToList()[0];
+            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.firstName = patient.firstName;
             updatedPatient.dateAndlastName = patient.dateAndlastName;
