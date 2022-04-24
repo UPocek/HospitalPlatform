@@ -140,8 +140,8 @@ function setUpPatients() {
 }
 
 function setUpPage() {
-    let hi = document.getElementById('hi');
-    hi.innerText += user.firstName + ' ' + user.lastName;
+    let hi = document.querySelector('#hi h1');
+    hi.innerText += `${user.firstName} ${user.lastName}`;
     setUpPatients();
 }
 
@@ -165,7 +165,7 @@ function deletePatient(key) {
 
 
 function updatePatient(key) {
-    let prompt = document.getElementById('createPatientPrompt');
+    let prompt = document.getElementById('editPatientPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
     let request = new XMLHttpRequest();
@@ -175,24 +175,24 @@ function updatePatient(key) {
             if (this.status == 200) {
                 patient = JSON.parse(this.responseText);
                 
-                let fFirstName = document.getElementById('createPatientFirstName');
+                let fFirstName = document.getElementById('editPatientFirstName');
                 fFirstName.value = patient['firstName'];
-                let fLastName = document.getElementById('createPatientLastName');
+                let fLastName = document.getElementById('editPatientLastName');
                 fLastName.value = patient['lastName'];
-                let fEmail = document.getElementById('createPatientEmail');
+                let fEmail = document.getElementById('editPatientEmail');
                 fEmail.value = patient['email'];
-                let fPassword = document.getElementById('createPatientPassword');
+                let fPassword = document.getElementById('editPatientPassword');
                 fPassword.value = patient['password'];
-                let fHeight = document.getElementById('createPatientHeight');
+                let fHeight = document.getElementById('editPatientHeight');
 
                 let medRecord = patient['medicalRecord'];
                 fHeight.value = medRecord['height'];
-                let fWeight = document.getElementById('createPatientWeight');
+                let fWeight = document.getElementById('editPatientWeight');
                 fWeight.value = medRecord['weight'];
-                let fBloodType = document.getElementById('createPatientBloodType');
+                let fBloodType = document.getElementById('editPatientBloodType');
                 fBloodType.value = medRecord['bloodType'];
 
-                let form = document.getElementById('createPatientForm');
+                let form = document.getElementById('editPatientForm');
 
                 form.addEventListener('submit', function (e) {
                     prompt.classList.add('off');
@@ -207,19 +207,24 @@ function updatePatient(key) {
                                 alert('Patient sucessfuly updated');
                                 setUpPatients();
                             }else{
-                                alert('Error: Entered patient information is invalid');
+                                if (this.responseText == ''){
+                                    alert('Error: Entered patient information is invalid');
+                                }
+                                else{
+                                    alert(this.responseText);
+                                }
                             }
                             
                         }
                     }
 
-                    let finalName = document.getElementById('createPatientFirstName').value;
-                    let finalLastName = document.getElementById('createPatientLastName').value;
-                    let finalEmail = document.getElementById('createPatientEmail').value;
-                    let finalPassword = document.getElementById('createPatientPassword').value;
-                    let finalHeight = document.getElementById('createPatientHeight').value;
-                    let finalWeight = document.getElementById('createPatientWeight').value;
-                    let finalBloodType = document.getElementById('createPatientBloodType').value
+                    let finalName = document.getElementById('editPatientFirstName').value;
+                    let finalLastName = document.getElementById('editPatientLastName').value;
+                    let finalEmail = document.getElementById('editPatientEmail').value;
+                    let finalPassword = document.getElementById('editPatientPassword').value;
+                    let finalHeight = document.getElementById('editPatientHeight').value;
+                    let finalWeight = document.getElementById('editPatientWeight').value;
+                    let finalBloodType = document.getElementById('editPatientBloodType').value
 
                     if (finalName.length == 0 || finalLastName.length == 0) {
                         alert("Error: Name can't be empty!");
@@ -249,6 +254,7 @@ function updatePatient(key) {
                         ));
                     }
                 });
+                form.removeEventListener();
             }
         }
     }
@@ -295,7 +301,12 @@ createBtn.addEventListener('click', function (e) {
                     alert('Patient sucessfuly created');
                     setUpPatients();
                 }else{
-                    alert('Error: Entered patient information is invalid');
+                    if (this.responseText == ''){
+                        alert('Error: Entered patient information is invalid');
+                    }
+                    else{
+                        alert(this.responseText);
+                    }
                 }
                 
             }
@@ -337,6 +348,7 @@ createBtn.addEventListener('click', function (e) {
             ));
         }
     });
+    form.removeEventListener('submit');
 });
 
 // Main

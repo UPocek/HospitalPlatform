@@ -49,6 +49,10 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Patient>("Patients");
 
+            if(collection.Find(item => item.email == patient.email).ToList().Count != 0){
+                return BadRequest("Error: email already exists!");
+            }
+
             Random rnd = new Random();
             patient.id = rnd.Next(901,10000);
 
