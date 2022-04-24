@@ -131,6 +131,10 @@ function setUpPatients() {
                     let blockBtn = document.createElement('button');
                     blockBtn.innerHTML = '<i data-feather="x-octagon"></i>';;
                     blockBtn.classList.add('blockBtn');
+                    blockBtn.setAttribute('key', patient['id']);
+                    blockBtn.addEventListener('click', function (e) {
+                        blockPatient(this.getAttribute('key'));
+                    });
                     three.appendChild(blockBtn);
 
                     newRow.appendChild(pName);
@@ -426,6 +430,24 @@ createBtn.addEventListener('click', function (e) {
         }
     });
 });
+
+function blockPatient(key){
+    let postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Patient sucessfuly blocked");
+                setUpPatients();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    postRequest.send();
+}
+
 
 // Main
 
