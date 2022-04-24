@@ -101,5 +101,18 @@ namespace APP.Controllers
             return Ok(); 
         }
 
+        [HttpPut("patients/block/{id}/{activityValue}")]
+        // PUT: api/Secretary/patients/901/1
+        public async Task<IActionResult> ChangePatientActivity(int id, string activityValue)
+        {
+            var patientCollection = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+
+            updatedPatient.active = activityValue;
+
+            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            return Ok();   
+        }
+
     }
 }
