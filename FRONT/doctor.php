@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="mainBtn">Update medical card</button>
+                    <button id="updateMedicalCard" class="mainBtn">Update medical card</button>
                 </form>
             </div>
         </div>

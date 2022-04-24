@@ -294,6 +294,24 @@ function reviewExamination(id){
     request.send();
 }
 
+var updateMedicalCardBtn = document.getElementById("updateMedicalCard");
+
+updateMedicalCardBtn.addEventListener('click', function(e){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+            }
+        }
+    }
+    postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
+        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
+    request.open('PUT', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + patientId);
+    request.send();
+})
+
 function reviewReport(id){
     let currentExamination;
     for (examination of doctorsExaminations){
