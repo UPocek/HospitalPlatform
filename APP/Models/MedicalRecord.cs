@@ -34,7 +34,9 @@ public class MedicalRecord
     [JsonPropertyName("examinations")]
     public List<int>? examinations {get; set;} = new List<int>();
 
-    [BsonElement("medicalInstructioins")]
-    [JsonPropertyName("medicalInstructioins")]
-    public List<MedicalInstructioin>? medicalInstructioins {get; set;} = new List<MedicalInstructioin>();
+    [BsonElement("medicalInstructions")]
+    [JsonPropertyName("medicalInstructions")]
+    public List<MedicalInstruction>? medicalInstructions {get; set;} = new List<MedicalInstruction>();
+
 }
+

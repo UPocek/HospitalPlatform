@@ -62,8 +62,8 @@ var id = getParamValue('id');
 var date = new Date();
 
 // POST - Room
-var createBtn = document.getElementById('addBtn');
-createBtn.addEventListener('click', function (e) {
+var createRoomBtn = document.getElementById('addBtn');
+createRoomBtn.addEventListener('click', function (e) {
     let prompt = document.getElementById('createRoomPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -121,6 +121,7 @@ function renovateRoom(key) {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     alert('Selected room is schedule for renovation');
+                    setUpRooms();
                 } else {
                     alert('Error: Selected room cannot be renovated during this period');
                 }
@@ -225,16 +226,16 @@ function setUpMenu() {
     let menu = document.getElementById('mainMenu');
     menu.innerHTML += `
     <li id='option1' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='log-in'></i><span>Room Management</span></a>
+        <a class='navbar__link'><i data-feather='log-in'></i><span>Room Management</span></a>
     </li>
     <li id='option2' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='tool'></i><span>Equipment Management</span></a>
+        <a class='navbar__link'><i data-feather='tool'></i><span>Equipment Management</span></a>
     </li>
     <li id='option3' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='shield'></i><span>Drug Management</span></a>
+        <a class='navbar__link'><i data-feather='shield'></i><span>Drug Management</span></a>
     </li>
     <li id='option4' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
+        <a class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
     </li>
     `;
     feather.replace();
@@ -278,34 +279,36 @@ function setUpRooms() {
                     tableDataRenovation.innerText = room['inRenovation'];
 
                     let tableDataDeleteButton = document.createElement('td');
-                    let delBtn = document.createElement('button');
-                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
-                    delBtn.classList.add('delBtn');
-                    delBtn.setAttribute('key', room['name']);
-                    delBtn.addEventListener('click', function (e) {
-                        deleteRoom(this.getAttribute('key'));
-                    });
-                    tableDataDeleteButton.appendChild(delBtn);
-
                     let tableDataPutButton = document.createElement('td');
-                    let putBtn = document.createElement('button');
-                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
-                    putBtn.classList.add('updateBtn');
-                    putBtn.setAttribute('key', room['name']);
-                    putBtn.addEventListener('click', function (e) {
-                        updateRoom(this.getAttribute('key'));
-                    });
-                    tableDataPutButton.appendChild(putBtn);
-
                     let tableDataRenovateButton = document.createElement('td');
-                    let renovateBtn = document.createElement('button');
-                    renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
-                    renovateBtn.classList.add('renovateBtn');
-                    renovateBtn.setAttribute('key', room['name']);
-                    renovateBtn.addEventListener('click', function (e) {
-                        renovateRoom(this.getAttribute('key'));
-                    });
-                    tableDataRenovateButton.appendChild(renovateBtn);
+                    if (room['type'] != 'warehouse') {
+                        let delBtn = document.createElement('button');
+                        delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                        delBtn.classList.add('delBtn');
+                        delBtn.setAttribute('key', room['name']);
+                        delBtn.addEventListener('click', function (e) {
+                            deleteRoom(this.getAttribute('key'));
+                        });
+                        tableDataDeleteButton.appendChild(delBtn);
+
+                        let putBtn = document.createElement('button');
+                        putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                        putBtn.classList.add('updateBtn');
+                        putBtn.setAttribute('key', room['name']);
+                        putBtn.addEventListener('click', function (e) {
+                            updateRoom(this.getAttribute('key'));
+                        });
+                        tableDataPutButton.appendChild(putBtn);
+
+                        let renovateBtn = document.createElement('button');
+                        renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
+                        renovateBtn.classList.add('renovateBtn');
+                        renovateBtn.setAttribute('key', room['name']);
+                        renovateBtn.addEventListener('click', function (e) {
+                            renovateRoom(this.getAttribute('key'));
+                        });
+                        tableDataRenovateButton.appendChild(renovateBtn);
+                    }
 
                     newRow.appendChild(tableDataName);
                     newRow.appendChild(tableDataType);
@@ -335,6 +338,8 @@ function setUpFunctionality() {
     setUpRenovations();
     setUpEquipment('empty');
     setUpTransfer();
+    setUpDrugs();
+    setUpIngredients();
 }
 
 // ComplexRenovations
@@ -676,3 +681,383 @@ transferForm.addEventListener('submit', function (e) {
         alert('Error: Transfer informations invalide');
     }
 });
+
+// Drugs
+function setUpDrugs() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let allDrugs = JSON.parse(this.responseText);
+                let table = document.getElementById('drugTable');
+                table.innerHTML = '';
+                for (let drug of allDrugs) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = drug['name'];
+                    let tableDataIngredients = document.createElement('td');
+                    tableDataIngredients.innerText = '';
+                    for (let ingredient of drug['ingredients']) {
+                        tableDataIngredients.innerText += `${ingredient}, `;
+                    }
+                    if (tableDataIngredients.innerText.endsWith(', ')) {
+                        tableDataIngredients.innerText = tableDataIngredients.innerText.slice(0, -2);
+                    }
+                    let tableDataStatus = document.createElement('td');
+                    tableDataStatus.innerText = drug['status'];
+
+                    let tableDataDeleteButton = document.createElement('td');
+                    let delBtn = document.createElement('button');
+                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', drug['name']);
+                    delBtn.addEventListener('click', function (e) {
+                        deleteDrug(this.getAttribute('key'));
+                    });
+                    tableDataDeleteButton.appendChild(delBtn);
+
+                    let tableDataPutButton = document.createElement('td');
+                    let putBtn = document.createElement('button');
+                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                    putBtn.classList.add('updateBtn');
+                    putBtn.setAttribute('key', drug['name']);
+                    putBtn.setAttribute('ingredients', drug['ingredients']);
+                    try {
+                        if (drug['comment'] != null) {
+                            putBtn.setAttribute('comment', drug['comment']);
+                        } else {
+                            putBtn.setAttribute('comment', 'Doktor još uvek nije ostavio komentar');
+                        }
+                    } catch {
+                        putBtn.setAttribute('comment', 'Doktor još uvek nije ostavio komentar');
+                    }
+                    putBtn.addEventListener('click', function (e) {
+                        updateDrug(this.getAttribute('key'), this.getAttribute('ingredients'), this.getAttribute('comment'));
+                    });
+                    tableDataPutButton.appendChild(putBtn);
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataIngredients);
+                    newRow.appendChild(tableDataStatus);
+                    newRow.appendChild(tableDataDeleteButton);
+                    newRow.appendChild(tableDataPutButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/manager/drugs');
+    request.send();
+}
+
+// POST - Drug
+var ingredients;
+var createDrugBtn = document.getElementById('addDrugBtn');
+createDrugBtn.addEventListener('click', function (e) {
+    let prompt = document.getElementById('createDrugPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+
+    let ingredientsContainer = document.getElementById('selectIngredients');
+    ingredientsContainer.innerHTML = '';
+    for (let ingredient of ingredients) {
+        let ingredientDiv = document.createElement('div');
+        let ingredientLabel = document.createElement('label');
+        ingredientLabel.innerText = ingredient;
+        ingredientLabel.setAttribute('for', ingredient);
+        let ingredientBox = document.createElement('input');
+        ingredientBox.setAttribute('type', 'checkbox');
+        ingredientBox.setAttribute('value', ingredient);
+        ingredientBox.setAttribute('name', ingredient);
+        ingredientDiv.appendChild(ingredientLabel);
+        ingredientDiv.appendChild(ingredientBox);
+        ingredientsContainer.appendChild(ingredientDiv);
+    }
+
+    let form = document.getElementById('createDrugForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('New drug sucessfuly created');
+                    setUpDrugs();
+                } else {
+                    alert('Error: Entered drug informations are invalid');
+                }
+            }
+        }
+
+        let finalIngredients = []
+        let finalName = document.getElementById('createDrugName').value;
+        let ingredientBoxes = document.querySelectorAll('#createDrugForm [type="checkbox"]');
+        for (box of ingredientBoxes) {
+            if (box.checked) {
+                finalIngredients.push(box.value);
+            }
+        }
+
+        if (finalName && finalIngredients.length != 0) {
+            postRequest.open('POST', 'https://localhost:7291/api/manager/drugs');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
+        } else {
+            alert("Error: Name can't be empty")
+        }
+    });
+});
+
+function setUpIngredients() {
+    let getIngredientsRequest = new XMLHttpRequest();
+
+    getIngredientsRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                ingredients = JSON.parse(this.responseText)['ingredients'];
+                let table = document.getElementById('ingredientTable');
+                table.innerHTML = '';
+                for (let ingredient of ingredients) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = ingredient;
+
+                    let tableDataDeleteButton = document.createElement('td');
+                    let delBtn = document.createElement('button');
+                    delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', ingredient);
+                    delBtn.addEventListener('click', function (e) {
+                        deleteIngredient(this.getAttribute('key'));
+                    });
+                    tableDataDeleteButton.appendChild(delBtn);
+
+                    let tableDataPutButton = document.createElement('td');
+                    let putBtn = document.createElement('button');
+                    putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                    putBtn.classList.add('updateBtn');
+                    putBtn.setAttribute('key', ingredient);
+                    putBtn.addEventListener('click', function (e) {
+                        updateIngredient(this.getAttribute('key'));
+                    });
+                    tableDataPutButton.appendChild(putBtn);
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataDeleteButton);
+                    newRow.appendChild(tableDataPutButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            } else {
+                alert("Error: Ingredients couldn't be supplied");
+            }
+        }
+    }
+
+    getIngredientsRequest.open('GET', 'https://localhost:7291/api/manager/ingredients')
+    getIngredientsRequest.send();
+}
+
+// CREATE - Ingredient
+var createIngredientBtn = document.getElementById('addIngredientBtn');
+createIngredientBtn.addEventListener('click', function (e) {
+
+    let prompt = document.getElementById('createIngredientPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+
+    let form = document.getElementById('createIngredientForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('New ingredinet sucessfuly created');
+                    setUpIngredients();
+                } else {
+                    alert('Error: Entered ingredient informations are invalid');
+                }
+            }
+        }
+
+        let finalName = document.getElementById('createIngredientName').value;
+
+        if (finalName) {
+            postRequest.open('POST', 'https://localhost:7291/api/manager/ingredients');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.send(JSON.stringify({ 'name': finalName }));
+        } else {
+            alert("Error: Name can't be empty")
+        }
+    });
+});
+
+// PUT - Drug
+function updateDrug(key, myIngredients, comment) {
+    let prompt = document.getElementById('updateDrugPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whichDrug = prompt.querySelector('h1');
+    let message = prompt.querySelector('span');
+    let nameField = document.getElementById('updateDrugName');
+    nameField.setAttribute('placeholder', key);
+    message.innerText = `Message: ${comment}`;
+    whichDrug.innerText = `Update ${key}`;
+
+    let ingredientsContainer = document.getElementById('updateSelectIngredients');
+    ingredientsContainer.innerHTML = '';
+    for (let ingredient of ingredients) {
+        let ingredientDiv = document.createElement('div');
+        let ingredientLabel = document.createElement('label');
+        ingredientLabel.innerText = ingredient;
+        ingredientLabel.setAttribute('for', ingredient);
+        let ingredientBox = document.createElement('input');
+        ingredientBox.setAttribute('type', 'checkbox');
+        ingredientBox.setAttribute('value', ingredient);
+        ingredientBox.setAttribute('name', ingredient);
+        if (myIngredients.split(',').includes(ingredient)) {
+            ingredientBox.setAttribute('checked', true);
+        }
+        ingredientDiv.appendChild(ingredientLabel);
+        ingredientDiv.appendChild(ingredientBox);
+        ingredientsContainer.appendChild(ingredientDiv);
+    }
+
+    let form = document.getElementById('updateDrugForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let putRequest = new XMLHttpRequest();
+
+        putRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Drug sucessfuly updated and passed to review');
+                    location.reload();
+                    setUpDrugs();
+                    showWindow(3);
+                } else {
+                    alert('Error: Entered drug informations are invalid');
+                }
+            }
+        }
+
+        let finalIngredients = []
+        let finalName = nameField.value;
+        let ingredientBoxes = document.querySelectorAll('#updateDrugForm [type="checkbox"]');
+        for (box of ingredientBoxes) {
+            if (box.checked) {
+                finalIngredients.push(box.value);
+            }
+        }
+
+        if (finalName && finalIngredients.length != 0) {
+            putRequest.open('PUT', 'https://localhost:7291/api/manager/drugs/' + key);
+            putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
+        } else {
+            alert("Error: Name can't be empty nor can there be a drug without any ingredients")
+        }
+    });
+}
+
+// PUT - Ingredient
+function updateIngredient(key) {
+
+    let prompt = document.getElementById('updateIngredientPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whichIngredient = prompt.querySelector('h1');
+    let nameField = document.getElementById('updateIngredientName');
+    nameField.setAttribute('placeholder', key);
+    whichIngredient.innerText = `Update ${key}`;
+
+    let form = document.getElementById('updateIngredientForm');
+
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let putRequest = new XMLHttpRequest();
+
+        putRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Ingredinet sucessfuly updated');
+                    location.reload();
+                    setUpIngredients();
+                    showWindow(3);
+                } else {
+                    alert('Error: Entered ingredient informations are invalid');
+                }
+            }
+        }
+
+        let finalName = document.getElementById('updateIngredientName').value;
+
+        if (finalName) {
+            putRequest.open('PUT', 'https://localhost:7291/api/manager/ingredients/' + key);
+            putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.send(JSON.stringify({ 'name': finalName }));
+        } else {
+            alert("Error: Name can't be empty")
+        }
+    });
+}
+
+// DELETE - Drug
+function deleteDrug(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected drug was successfully deleted');
+                setUpDrugs();
+            } else {
+                alert("Error: Selected drug couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key)
+    deleteRequest.send();
+}
+
+// DELETE - Ingredient
+function deleteIngredient(key) {
+    let deleteRequest = new XMLHttpRequest();
+
+    deleteRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected drug was successfully deleted');
+                setUpIngredients();
+            } else {
+                alert("Error: Selected drug couldn't be deleted");
+            }
+        }
+    }
+
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key)
+    deleteRequest.send();
+}

@@ -1,4 +1,4 @@
-var loginForm = document.getElementById("signInForm");
+var loginForm = document.getElementById("signInForm2");
 
 // Login
 loginForm.addEventListener('submit', function (e) {
@@ -11,9 +11,6 @@ loginForm.addEventListener('submit', function (e) {
                 let response = JSON.parse(this.responseText);
                 if (response["role"] == "manager") {
                     window.location.replace("manager.php" + "?id=" + response["id"]);
-                }
-                else if (response["role"] == "secretary") {
-                    window.location.replace("secretary.php" + "?id=" + response["id"]);
                 }
                 else if (response["role"] == "patient") {
                     window.location.replace("patient.php" + "?id=" + response["id"]);
@@ -28,8 +25,8 @@ loginForm.addEventListener('submit', function (e) {
         }
     }
 
-    let finalEmail = document.getElementById("signInEmail").value;
-    let finalPassword = document.getElementById("signInPassword").value;
+    let finalEmail = document.getElementById("signInEmail2").value;
+    let finalPassword = document.getElementById("signInPassword2").value;
 
     request.open('GET', 'https://localhost:7291/api/my/login/' + finalEmail + "&" + finalPassword);
     request.send();

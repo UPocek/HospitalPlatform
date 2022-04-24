@@ -32,26 +32,34 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<BsonDocument>("Employees");
             var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
-            var users = collection.Find(filter).ToList();
+            var user = collection.Find(filter).FirstOrDefault();
             // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-            if (users.Count != 0)
+
+            if (user != null)
             {
-                var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
+                var dotNetObj = BsonTypeMapper.MapToDotNetValue(user);
                 Response.StatusCode = StatusCodes.Status200OK;
                 return new JsonResult(dotNetObj);
             }
             else
             {
                 collection = database.GetCollection<BsonDocument>("Patients");
-                users = collection.Find(filter).ToList();
-                if (users.Count != 0 && users[0]["active"] == "0")
+                user = collection.Find(filter).FirstOrDefault();
+                if (user != null && user["active"] == "0")
                 {
-                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
+                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(user);
                     Response.StatusCode = StatusCodes.Status200OK;
                     return new JsonResult(dotNetObj);
                 }
                 return NotFound();
             }
+        }
+
+        [HttpGet("users/doctors")]
+        public async Task<List<Employee>> GetDoctors()
+        {
+            var collection = database.GetCollection<Employee>("Employees");
+            return collection.Find(e => e.role == "doctor").ToList();
         }
 
         // GET: api/My/users/id
@@ -68,7 +76,7 @@ namespace APP.Controllers
                 collection = database.GetCollection<BsonDocument>("Patients");
             }
             var filter = Builders<BsonDocument>.Filter.Eq("id", id);
-            var result = collection.Find(filter).First();
+            var result = collection.Find(filter).FirstOrDefault();
             var wantedUser = BsonTypeMapper.MapToDotNetValue(result);
             Response.StatusCode = StatusCodes.Status200OK;
             return new JsonResult(wantedUser);
