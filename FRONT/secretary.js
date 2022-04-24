@@ -18,12 +18,15 @@ class User {
 var user;
 
 function showWindow(section) {
-    let s1 = document.getElementById('one');
+    let sectionOne = document.getElementById('one');
+    let sectionTwo = document.getElementById('two');
 
-    s1.classList.remove('active');
+    sectionOne.classList.remove('active');
+    sectionTwo.classList.remove('active');
 
     switch (section) {
-        case 1: s1.classList.add('active'); break;
+        case 1: sectionOne.classList.add('active'); break;
+        case 2: sectionTwo.classList.add('active'); break;
     }
 }
 
@@ -42,23 +45,34 @@ function getParamValue(name) {
     }
 }
 
-var main = document.getElementsByTagName('main')[0];
+var main = document.getElementsByTagName("main")[0];
 var id = getParamValue('id');
 
 function setUpMenu() {
-    let menu = document.getElementById('mainMenu');
+    let menu = document.getElementById("mainMenu");
     menu.innerHTML += `
-    <li id='option1' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='user'></i><span>Patient Managment</span></a>
+    <li id="option1" class="navbar__item">
+        <a class="navbar__link"><i data-feather="user"></i><span>Patient Managment</span></a>
+    </li>
+    <li id="option2" class="navbar__item">
+        <a class="navbar__link"><i data-feather="user-x"></i><span>Blocked Patients</span></a>
     </li>
     `;
     feather.replace();
 
-    let item1 = document.getElementById('option1');
+    let menuItem1 = document.getElementById("option1");
+    let menuItem2 = document.getElementById("option2");
 
-    item1.addEventListener('click', (e) => {
+    menuItem1.addEventListener('click', (e) => {
         showWindow(1);
     });
+    menuItem2.addEventListener('click', (e) => {
+        showWindow(2);
+    });
+}
+
+function setUpFunctionality() {
+    setUpBlockedPatients();
 }
 
 var mainResponse;
@@ -131,11 +145,75 @@ function setUpPatients() {
                     table.appendChild(newRow);
                     feather.replace();
                 }
+                setUpFunctionality();
             }
         }
     }
 
     request.open('GET', 'https://localhost:7291/api/secretary/patients');
+    request.send();
+}
+
+function setUpBlockedPatients(){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById('blockedPatientTable');
+                table.innerHTML = '';
+                for (let i in mainResponse) {
+                    let patient = mainResponse[i];
+                    let newRow = document.createElement('tr');
+
+                    let pName = document.createElement('td');
+                    pName.innerText = patient['firstName'];
+                    let pSurname = document.createElement('td');
+                    pSurname.innerText = patient['lastName'];
+                    let pEmail = document.createElement('td');
+                    pEmail.innerText = patient['email'];
+                    let pPassword = document.createElement('td');
+                    pPassword.innerText = patient['password'];
+                    let pId = document.createElement('td');
+                    pId.innerText = patient['id'];
+                    let pMedRecord = document.createElement('td');
+                    let recordBtn = document.createElement('button');
+                    recordBtn.innerHTML = '<i data-feather="file-text"></i>';;
+                    recordBtn.classList.add('recordBtn');
+                    pMedRecord.appendChild(recordBtn);
+
+                    let pBlockedBy = document.createElement('td');
+                    if (patient['active'] == "1"){
+                        pBlockedBy.innerText = 'SECRETARY'
+                    }
+                    else if(patient['active'] == "2"){
+                        pBlockedBy.innerText = 'SYSTEM';
+                    }
+
+                    let one = document.createElement("td");
+                    one.classList.add('smallerWidth');
+                    let unblockBtn = document.createElement("button");
+                    unblockBtn.innerHTML = '<i data-feather="user-check"></i>';
+                    unblockBtn.classList.add('unblockBtn');
+                    unblockBtn.setAttribute('key', patient['id']);
+                    one.appendChild(unblockBtn);
+
+                    newRow.appendChild(pName);
+                    newRow.appendChild(pSurname);
+                    newRow.appendChild(pEmail);
+                    newRow.appendChild(pPassword);
+                    newRow.appendChild(pId);
+                    newRow.appendChild(pMedRecord);
+                    newRow.appendChild(pBlockedBy);
+                    newRow.appendChild(one);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/patients/blocked');
     request.send();
 }
 
@@ -254,7 +332,6 @@ function updatePatient(key) {
                         ));
                     }
                 });
-                form.removeEventListener();
             }
         }
     }
@@ -348,7 +425,6 @@ createBtn.addEventListener('click', function (e) {
             ));
         }
     });
-    form.removeEventListener('submit');
 });
 
 // Main

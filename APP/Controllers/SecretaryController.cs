@@ -27,7 +27,7 @@ namespace APP.Controllers
 
         // GET: api/Secretary/patients
         [HttpGet("patients")]
-        public async Task<List<Patient>> GetPatients()
+        public async Task<List<Patient>> GetUnblockedPatients()
         {
             var collection = database.GetCollection<Patient>("Patients");
 
@@ -36,13 +36,22 @@ namespace APP.Controllers
 
         // GET by Id: api/Secretary/patients/901
         [HttpGet("patients/{id}")]
-        public async Task<Patient> GetPatient(int id)
+        public async Task<Patient> GetUnblockedPatient(int id)
         {
             var collection = database.GetCollection<Patient>("Patients");
             
-            return collection.Find(item => item.id == id && item.active=="0").FirstOrDefault();
+            return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
         }
 
+        // GET: api/Secretary/patients/blocked
+        [HttpGet("patients/blocked")]
+        public async Task<List<Patient>> GetBlockedPatients()
+        {
+            var collection = database.GetCollection<Patient>("Patients");
+
+            return collection.Find(item => item.active != "0").ToList();
+        }
+        
         // POST: api/Secretary/patients
         [HttpPost("patients")]
         public async Task<IActionResult> CreatePatient(int id, Patient patient)

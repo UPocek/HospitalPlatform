@@ -1823,10 +1823,16 @@ footer {
     padding: 10px;
 }
 
-.patientTable{
-    display: block;
+.unblockBtn{
+    color: Green;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.patientTable,
+.blockedPatientTable{
     overflow-x: auto;
-    white-space: nowrap;
 }
 .createPatientHeader{
     margin: 0%;
@@ -1910,6 +1916,15 @@ table {
     width: 100%;
     table-layout: fixed;
     text-align: center;
+}
+
+.patientTable,
+.blockedPatientTable
+{
+    display:block;
+    table-layout: default;
+    overflow-x:auto;
+    white-space: nowrap;
 }
 
 .tbl-content {
@@ -2134,6 +2149,7 @@ td button {
     #rooms,
     #examinations,
     #doctors,
+    #patients,
     #equipment,
     #drugs,
     #ingredients {
@@ -2142,6 +2158,9 @@ td button {
 
     .delBtn,
     .updateBtn,
+    .blockBtn,
+    .unblockBtn,
+    .recordBtn,
     .renovateBtn,
     .requestReviewBtn,
     .add,
@@ -2255,6 +2274,9 @@ td button {
 
     .delBtn,
     .updateBtn,
+    .blockBtn,
+    .unblockBtn,
+    .recordBtn,
     .renovateBtn,
     .requestReviewBtn,
     .add,
