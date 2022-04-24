@@ -31,6 +31,7 @@ body {
     display: none;
     margin-bottom: 10vh;
     transition: all 500ms ease-in;
+    max-width: 100%;
 }
 
 .active {
@@ -1842,7 +1843,7 @@ footer {
 
 #hi h1 {
     border-bottom: 1px solid var(--accentColor1);
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-weight: bold;
     max-width: 768px;
     margin: auto;
@@ -1899,7 +1900,9 @@ tr:nth-child(even) {
 #patients,
 #equipment,
 #drugs,
-#ingredients {
+#ingredients,
+#hPolls,
+#dPolls {
     border: 2px solid var(--mainColor);
     border-radius: 10px;
     width: 80%;
@@ -1940,6 +1943,16 @@ td {
 
 td button {
     cursor: pointer;
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 6px;
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    height: 6px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar {
@@ -2005,7 +2018,7 @@ td button {
 }
 
 #complexRenovations h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .box {
@@ -2087,6 +2100,10 @@ td button {
     font-weight: 200;
 }
 
+#transfers h3 {
+    font-size: 1.8rem;
+}
+
 /* Ingredients */
 
 #createDrugPrompt h3,
@@ -2117,6 +2134,51 @@ td button {
     margin-right: 25px;
 }
 
+#ingredientsStyle {
+    font-size: 1.8rem;
+    margin-bottom: 0 !important;
+}
+
+/* Polls */
+
+#polls {
+    max-width: 80%;
+    margin: auto;
+}
+
+#polls h1 {
+    text-align: center;
+    font-size: 2.8rem;
+    margin-bottom: 5vh;
+}
+
+#polls h2 {
+    text-align: center;
+    font-size: 2rem;
+}
+
+#polls p {
+    text-align: center;
+}
+
+#hospitalPolls,
+#doctorPolls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+}
+
+#hospitalPolls div,
+#doctorPolls div {
+    width: 90%;
+    margin: auto;
+}
+
+#hPolls {
+    margin: 10vh auto;
+}
+
+/* Header */
 @media (max-width:1880px) {
 
     #filters div {
@@ -2180,21 +2242,11 @@ td button {
         gap: 2rem;
     }
 
-}
-
-@media (max-width:1280px) {
-
-    #ifDevide form,
-    #ifMerge form {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: 1rem;
+    #hospitalPolls,
+    #doctorPolls {
+        gap: 50px;
     }
 
-    #ifDevide,
-    #ifMerge {
-        width: 90%;
-        margin: 2vh auto;
-    }
 }
 
 @media (max-width:1280px) {
@@ -2204,9 +2256,14 @@ td button {
         grid-template-columns: 1fr 1fr;
         gap: 2rem;
     }
+
+    #ifDevide,
+    #ifMerge {
+        width: 90%;
+        margin: 2vh auto;
+    }
 }
 
-/* Header */
 @media (max-width:1069px) {
 
     .myForm input,
@@ -2325,6 +2382,29 @@ td button {
         flex-direction: column;
         gap: 1.8rem;
     }
+
+    #polls {
+        max-width: 90%;
+    }
+
+    #polls h1 {
+        font-size: 2rem;
+        margin-bottom: 4vh;
+    }
+
+    #polls h2 {
+        font-size: 1.6rem;
+    }
+
+    #hospitalPolls,
+    #doctorPolls {
+        gap: 20px;
+    }
+
+    #hPolls,
+    #dPolls {
+        width: 100%;
+    }
 }
 
 @media (max-width:768px) {
@@ -2433,6 +2513,17 @@ td button {
         margin-left: 45px;
     }
 
+    #polls h1 {
+        font-size: 1.6rem;
+        margin-bottom: 3vh;
+    }
+
+    #hospitalPolls,
+    #doctorPolls {
+        grid-template-columns: 1fr;
+        grid-gap: 50px;
+    }
+
 }
 
 @media (max-width:500px) {
@@ -2465,5 +2556,9 @@ td button {
     td {
         font-size: 0.8rem;
         padding: 0.8rem;
+    }
+
+    #polls h1 {
+        font-size: 1.4rem;
     }
 }

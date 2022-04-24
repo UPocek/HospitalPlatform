@@ -1,7 +1,7 @@
 // Globals
 class User {
     constructor(data) {
-        this.id = data['id']
+        this.id = data['id'];
         this.firstName = data['firstName'];
         this.lastName = data['lastName'];
         this.email = data['email'];
@@ -97,7 +97,7 @@ createRoomBtn.addEventListener('click', function (e) {
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty!");
         }
     });
 });
@@ -178,7 +178,7 @@ function updateRoom(key) {
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
         } else {
-            alert("Error: Name can't be empty!")
+            alert("Error: Name can't be empty!");
         }
     });
 }
@@ -340,6 +340,7 @@ function setUpFunctionality() {
     setUpTransfer();
     setUpDrugs();
     setUpIngredients();
+    setUpCharts();
 }
 
 // ComplexRenovations
@@ -515,7 +516,7 @@ function setUpEquipment(myFilter) {
             let newRow = document.createElement('tr');
 
             let tableDataName = document.createElement('td');
-            tableDataName.innerText = item["name"];
+            tableDataName.innerText = item['name'];
             let tableDataType = document.createElement('td');
             tableDataType.innerText = item['type'];
             let cQuantity = document.createElement('td');
@@ -811,7 +812,7 @@ createDrugBtn.addEventListener('click', function (e) {
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
         } else {
-            alert("Error: Name can't be empty")
+            alert("Error: Name can't be empty");
         }
     });
 });
@@ -902,7 +903,7 @@ createIngredientBtn.addEventListener('click', function (e) {
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
-            alert("Error: Name can't be empty")
+            alert("Error: Name can't be empty");
         }
     });
 });
@@ -1019,7 +1020,7 @@ function updateIngredient(key) {
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
-            alert("Error: Name can't be empty")
+            alert("Error: Name can't be empty");
         }
     });
 }
@@ -1039,7 +1040,7 @@ function deleteDrug(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key)
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key);
     deleteRequest.send();
 }
 
@@ -1058,6 +1059,206 @@ function deleteIngredient(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key)
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key);
     deleteRequest.send();
+}
+
+// Polls
+
+function setUpCharts() {
+
+    let getRequestHospital = new XMLHttpRequest();
+    let getRequestDoctors = new XMLHttpRequest();
+
+    getRequestHospital.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let container = document.getElementById('hospitalPolls');
+                let charts = { 'hygiene': [], 'courtesyOfStaff': [], 'staffExpertise': [], 'efficiency': [], 'equipment': [], 'serviceSatisfaction': [] };
+                let comments = [];
+
+                let polls = JSON.parse(this.responseText)['polls'];
+
+                for (let poll of polls) {
+                    let score = 0;
+                    for (let field in poll) {
+                        if (field != 'comment') {
+                            score += +poll[field];
+                            charts[field].push(poll[field]);
+                        } else {
+                            comments.push([poll[field], Math.round(score / Object.keys(charts).length * 100) / 100]);
+                        }
+                    }
+                }
+
+                for (key in charts) {
+
+                    let avg = Math.round(charts[key].reduce((partialSum, a) => +partialSum + +a, 0) / charts[key].length * 100) / 100;
+
+                    let data = {
+                        labels: ['1', '2', '3', '4', '5'],
+                        datasets: [{
+                            label: `${key} - AVG = ${avg}`,
+                            backgroundColor: '#FF416C',
+                            borderColor: '#FF416C',
+                            data: [charts[key].filter(x => x == 1).length, charts[key].filter(x => x == 2).length, charts[key].filter(x => x == 3).length, charts[key].filter(x => x == 4).length, charts[key].filter(x => x == 5).length],
+                        }]
+                    };
+
+                    let config = {
+                        type: 'bar',
+                        data: data,
+                        options: {
+                            parsing: {
+                                xAxisKey: 'Score',
+                                yAxisKey: 'Number of votes'
+                            }
+                        }
+                    };
+
+                    let chartContainer = document.createElement('div');
+                    let chart = document.createElement('canvas');
+                    chart.setAttribute('id', `${key}Chart`);
+
+                    chartContainer.appendChild(chart);
+                    container.appendChild(chartContainer);
+
+
+                    let myChart = new Chart(
+                        document.getElementById(`${key}Chart`),
+                        config
+                    );
+                }
+
+                let hTable = document.getElementById('hospitalPollsTable');
+                for (let comment of comments) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataComment = document.createElement('td');
+                    tableDataComment.innerText = comment[0];
+                    tableDataComment.setAttribute('colspan', '2');
+                    let tableDataScore = document.createElement('td');
+                    tableDataScore.innerText = comment[1];
+
+                    newRow.appendChild(tableDataComment);
+                    newRow.appendChild(tableDataScore);
+                    hTable.appendChild(newRow);
+                }
+
+            } else {
+                alert("Error: Polls couldn't be acquired");
+            }
+        }
+    }
+
+    getRequestDoctors.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let container = document.getElementById('doctorPolls');
+                let doctors = JSON.parse(this.responseText);
+
+                let scoreBoard = {}
+
+                for (let doctor of doctors) {
+                    let charts = { 'efficiency': [], 'expertise': [], 'communicativeness': [], 'kindness': [] };
+                    let comments = [];
+                    let finalScore = 0;
+                    for (let poll of doctor["score"]) {
+                        let score = 0;
+                        for (let field in poll) {
+                            if (field != 'comment') {
+                                score += +poll[field];
+                                charts[field].push(poll[field]);
+                            } else {
+                                let myScore = Math.round(score / Object.keys(charts).length * 100) / 100;
+                                finalScore += myScore;
+                                comments.push([poll[field], myScore]);
+                            }
+                        }
+                    }
+
+
+                    let data = {
+                        labels: ['efficiency', 'expertise', 'communicativeness', 'kindness'],
+                        datasets: [{
+                            label: `${doctor['firstName']} ${doctor['lastName']} - ${doctor["score"].length} votes`,
+                            backgroundColor: '#FF416C',
+                            borderColor: '#FF416C',
+                            data: [Math.round(charts['efficiency'].reduce((partialSum, a) => +partialSum + +a, 0) / charts['efficiency'].length * 100) / 100, Math.round(charts['expertise'].reduce((partialSum, a) => +partialSum + +a, 0) / charts['expertise'].length * 100) / 100, Math.round(charts['communicativeness'].reduce((partialSum, a) => +partialSum + +a, 0) / charts['communicativeness'].length * 100) / 100, Math.round(charts['kindness'].reduce((partialSum, a) => +partialSum + +a, 0) / charts['kindness'].length * 100) / 100]
+                        }]
+                    };
+
+                    let config = {
+                        type: 'bar',
+                        data: data,
+                        options: {}
+                    };
+
+                    let chartContainer = document.createElement('div');
+                    let chart = document.createElement('canvas');
+                    chart.setAttribute('id', `Chart${doctor["id"]}`);
+
+                    chartContainer.appendChild(chart);
+                    container.appendChild(chartContainer);
+
+
+                    let myChart = new Chart(
+                        document.getElementById(`Chart${doctor["id"]}`),
+                        config
+                    );
+
+
+                    let dTable = document.getElementById('doctorPollsTable');
+                    for (let comment of comments) {
+                        let newRow = document.createElement('tr');
+
+                        let tableDataWho = document.createElement('td');
+                        tableDataWho.innerText = `${doctor['firstName']} ${doctor['lastName']}`;
+                        let tableDataComment = document.createElement('td');
+                        tableDataComment.innerText = comment[0];
+                        let tableDataScore = document.createElement('td');
+                        tableDataScore.innerText = comment[1];
+
+                        newRow.appendChild(tableDataWho);
+                        newRow.appendChild(tableDataComment);
+                        newRow.appendChild(tableDataScore);
+                        dTable.appendChild(newRow);
+                    }
+                    scoreBoard[`${doctor['firstName']} ${doctor['lastName']}`] = Math.round(finalScore / doctor["score"].length * 100) / 100;
+                }
+                let bestDoctorsContainer = document.getElementById('bestDoctors');
+                let worstDoctorsContainer = document.getElementById('worstDoctors');
+                // Create items array
+                let items = Object.keys(scoreBoard).map(function (key) {
+                    return [key, scoreBoard[key]];
+                });
+
+                // Sort the array based on the second element
+                items.sort(function (first, second) {
+                    return second[1] - first[1];
+                });
+
+                for (let el of items.slice(0, 3)) {
+                    let doctorInfo = document.createElement('p');
+                    doctorInfo.innerText = el[0];
+                    bestDoctorsContainer.appendChild(doctorInfo);
+                }
+
+                items = items.reverse();
+                for (let el of items.slice(0, 3)) {
+                    let doctorInfo = document.createElement('p');
+                    doctorInfo.innerText = el[0];
+                    worstDoctorsContainer.appendChild(doctorInfo);
+                }
+            } else {
+                alert("Error: Selected drug couldn't be deleted");
+            }
+        }
+    }
+
+    getRequestHospital.open('GET', 'https://localhost:7291/api/manager/polls');
+    getRequestHospital.send();
+
+    getRequestDoctors.open('GET', 'https://localhost:7291/api/manager/doctorpolls');
+    getRequestDoctors.send();
 }
