@@ -27,7 +27,7 @@ namespace APP.Controllers
 
         // GET: api/Secretary/patients
         [HttpGet("patients")]
-        public async Task<List<Patient>> GetPatients()
+        public async Task<List<Patient>> GetUnblockedPatients()
         {
             var collection = database.GetCollection<Patient>("Patients");
 
@@ -36,18 +36,31 @@ namespace APP.Controllers
 
         // GET by Id: api/Secretary/patients/901
         [HttpGet("patients/{id}")]
-        public async Task<Patient> GetPatient(int id)
+        public async Task<Patient> GetUnblockedPatient(int id)
         {
             var collection = database.GetCollection<Patient>("Patients");
             
             return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
         }
 
+        // GET: api/Secretary/patients/blocked
+        [HttpGet("patients/blocked")]
+        public async Task<List<Patient>> GetBlockedPatients()
+        {
+            var collection = database.GetCollection<Patient>("Patients");
+
+            return collection.Find(item => item.active != "0").ToList();
+        }
+        
         // POST: api/Secretary/patients
         [HttpPost("patients")]
         public async Task<IActionResult> CreatePatient(int id, Patient patient)
         {
             var collection = database.GetCollection<Patient>("Patients");
+
+            if(collection.Find(item => item.email == patient.email).ToList().Count != 0){
+                return BadRequest("Error: email already exists!");
+            }
 
             Random rnd = new Random();
             patient.id = rnd.Next(901,10000);
@@ -69,7 +82,7 @@ namespace APP.Controllers
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
             var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).ToList()[0];
+            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.firstName = patient.firstName;
             updatedPatient.dateAndlastName = patient.dateAndlastName;
@@ -95,6 +108,19 @@ namespace APP.Controllers
             examinationCollection.Find(e => (e.patinetId == id && DateTime.Parse(e.dateAndTimeOfExamination) >= DateTime.Now));
 
             return Ok(); 
+        }
+
+        [HttpPut("patients/block/{id}/{activityValue}")]
+        // PUT: api/Secretary/patients/901/1
+        public async Task<IActionResult> ChangePatientActivity(int id, string activityValue)
+        {
+            var patientCollection = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+
+            updatedPatient.active = activityValue;
+
+            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            return Ok();   
         }
 
     }
