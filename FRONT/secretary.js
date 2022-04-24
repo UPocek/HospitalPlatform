@@ -200,6 +200,9 @@ function setUpBlockedPatients(){
                     unblockBtn.innerHTML = '<i data-feather="user-check"></i>';
                     unblockBtn.classList.add('unblockBtn');
                     unblockBtn.setAttribute('key', patient['id']);
+                    unblockBtn.addEventListener('click', function (e) {
+                        unblockPatient(this.getAttribute('key'));
+                    });
                     one.appendChild(unblockBtn);
 
                     newRow.appendChild(pName);
@@ -445,6 +448,23 @@ function blockPatient(key){
         }
     }
     postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    postRequest.send();
+}
+
+function unblockPatient(key){
+    let postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Patient sucessfuly unblocked");
+                setUpPatients();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
     postRequest.send();
 }
 
