@@ -85,7 +85,7 @@ namespace APP.Controllers
             Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.firstName = patient.firstName;
-            updatedPatient.dateAndlastName = patient.dateAndlastName;
+            updatedPatient.lastName = patient.lastName;
             updatedPatient.email = patient.email;
             updatedPatient.password = patient.password;
             updatedPatient.medicalRecord.weight = patient.medicalRecord.weight;

@@ -9,7 +9,7 @@
 
         <link rel="icon" href="logo.jpeg">
 
-        <link rel="stylesheet" type="text/css" href="doctor.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
         <title>USI Team #9</title>
@@ -18,7 +18,10 @@
     <body>
         
         <?php include 'header.html';?>
-        <div id="reviewExaminationDiv"class="off">
+
+        <div id="reviewExaminationDiv" class="off">
+
+      
             <div id="reviewExaminationPopUp">
                 <form id="reportPopUp" class="myForm">
                     <h1>Report</h1>
@@ -30,6 +33,7 @@
                         <!-- equipmentUsed -->
                     </div>
                     <button class="mainBtn">End review</button>
+
                 </form>
                 <form class="basicInfo">
                     <h1>Medical record</h1>
@@ -53,6 +57,7 @@
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Diseases:&nbsp</p>
+
                                     <ul id="diseasesList">
                                         <!-- patients diseases -->
                                     </ul>
@@ -62,12 +67,14 @@
                             <div>
                                 <input id="patientHeight"></input>
                                 <button class="add"><i data-feather="plus"></i></button>
+
                             </div>
                         </div>
                         <div>
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Alergies:&nbsp</p>
+
                                     <ul id="alergiesList">
                                         <!-- patients diseases -->
                                     </ul>
@@ -77,6 +84,7 @@
                             <div>
                                 <input id="patientHeight"></input>
                                 <button class="add"><i data-feather="plus"></i></button>
+
                             </div>
                         </div>
                     </div>
@@ -84,22 +92,22 @@
                 </form>
             </div>
         </div>
-            
 
         
-        <div id="reportPopUp" class="form-container sign-in-container off prompt">
+        <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
+
             <div id="reportHeader">
                 <h1>Report</h1>
                 <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
             </div>
-            <div id="descReport">
+            <div id="descView">
                 <h3>Report description:</h3>
-                <p id="reportDescription"></p>
-            </div>
-            <div id="reportEquipment">
+                <p id="reportDescriptionNew"></p>
 
             </div>
-            
+            <div id="reportEquipmentNew">
+
+            </div>
 	    </div>
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
@@ -144,13 +152,8 @@
                 <h1>Welcome back &nbsp; </h1>
             </div>
             <section id="one" class="active">
-                <div class="tableHeaderDiv">
-                    <div id="scheduleOption" class="hideMain">
-                        <label for="scheduleDateOption">Schedule for date:</label>
-                        <input type="date" id="scheduleDateOption">
-                        <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
-                    </div>
-                    <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+                <div class="plusDiv">
+                <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
                 </div>
                 <div id="rooms">
                     <div class="tbl-content">
@@ -173,6 +176,39 @@
                     </div>
                 </div>
             </section>
+            <section id="two">
+            <div class="tableHeaderDiv">
+                <div id="scheduleOption" class="scheduleDiv">
+                    <label for="scheduleDateOption">Schedule for date:</label>
+                    <input type="date" id="scheduleDateOption">
+                    <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
+                </div>
+            </div>
+            <div id="rooms">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Done</th>
+                                <th>Examination room</th>
+                                <th>Type</th>
+                                <th>Urgent</th>
+                                <th>Patient</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="examinationsTableSchedule">
+                            <!-- this is where data from api comes -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </section>
+            <section id="three">
+
+            </section>
         </main>
 
         <!-- <?php include 'footer.html';?> -->
@@ -183,8 +219,7 @@
         <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
             integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
 
-        <script src="doctor.js">
-        </script>
+        <script src="doctor.js"></script>
         <script>
             $(window).on("load resize ", function() {
             var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
