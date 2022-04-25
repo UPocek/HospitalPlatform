@@ -9,7 +9,7 @@
 
         <link rel="icon" href="logo.jpeg">
 
-        <link rel="stylesheet" type="text/css" href="doctor.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
         <title>USI Team #9</title>
@@ -20,7 +20,7 @@
         <?php include 'header.html';?>
         
         <main>
-            <section id="one" class="active">
+            <section>
                 <div id="patientInfo" >
                     <div class="basicInfo">
                         <h1>Medical record</h1>
@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </section>
-            <section id="two">
+            <section class="addSpaceBottom">
                 <div id="rooms">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </section>
-            <section id="three">
+            <section class="addSpaceBottom">
                 <div id="rooms" class="instructions">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
