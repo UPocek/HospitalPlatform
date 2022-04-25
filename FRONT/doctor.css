@@ -51,6 +51,11 @@ body {
     height: 280px;
 }
 
+#reportView{
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .divList{
     display: flex;
     flex-direction: column;
@@ -1992,7 +1997,7 @@ td button {
     text-align: left;
 }
 
-#descReport{
+#descReport, #descView{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -2162,4 +2167,5 @@ td button {
 #reportHeader{
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
