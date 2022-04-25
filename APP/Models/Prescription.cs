@@ -11,4 +11,8 @@ public class Prescription
     [BsonElement("when")]
     [JsonPropertyName("when")]
     public List<string> whenPrescribed { get; set; }
+
+    [BsonElement("how")]
+    [JsonPropertyName("how")]
+    public string howPrescribed { get; set; }
 }
