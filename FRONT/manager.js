@@ -59,6 +59,7 @@ function showWindow(section) {
 
 var main = document.getElementsByTagName('main')[0];
 var id = getParamValue('id');
+var jwtoken = getParamValue('token');
 var date = new Date();
 
 // POST - Room
@@ -95,6 +96,7 @@ createRoomBtn.addEventListener('click', function (e) {
         if (finalName && finalType) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/rooms');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
         } else {
             alert("Error: Name can't be empty!");
@@ -134,6 +136,7 @@ function renovateRoom(key) {
         if (isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/renovations');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'room': key, 'startDate': finalFromDate, 'endDate': finalToDate }));
         } else {
             alert('Error: Dates were not entered correctly');
@@ -176,6 +179,7 @@ function updateRoom(key) {
         if (finalName && finalType) {
             putRequest.open('PUT', 'https://localhost:7291/api/manager/rooms/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
         } else {
             alert("Error: Name can't be empty!");
@@ -198,7 +202,8 @@ function deleteRoom(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/rooms/' + key)
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/rooms/' + key);
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
 
@@ -219,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     request.open('GET', 'https://localhost:7291/api/my/users/' + id);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
 
@@ -407,6 +413,7 @@ function makeDevide(e) {
     if (isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
         devideRequest.open('POST', 'https://localhost:7291/api/manager/renovationdevide');
         devideRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        devideRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         devideRequest.send(JSON.stringify({ 'room': finalRoom, 'startDate': finalFromDate, 'endDate': finalToDate }));
     } else {
         alert('Error: Dates were not entered correctly');
@@ -437,6 +444,7 @@ function makeMerge(e) {
     if (finalRoom1 != finalRoom2 && isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
         mergeRequest.open('POST', 'https://localhost:7291/api/manager/renovationmerge');
         mergeRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        mergeRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         mergeRequest.send(JSON.stringify({ 'room1': finalRoom1, 'room2': finalRoom2, 'startDate': finalFromDate, 'endDate': finalToDate }));
     } else {
         alert('Error: Informations were not entered correctly');
@@ -677,6 +685,7 @@ transferForm.addEventListener('submit', function (e) {
     if (ok && finalRoom1 != finalRoom2 && arr.length != 0 && isDateFormatOk(finalDate) && finalDate >= date.toISOString().split('T')[0]) {
         transferRequest.open('POST', 'https://localhost:7291/api/manager/transfer');
         transferRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        transferRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         transferRequest.send(JSON.stringify({ 'room1': finalRoom1, 'room2': finalRoom2, 'date': finalDate, 'done': false, 'equipment': arr }));
     } else {
         alert('Error: Transfer informations invalide');
@@ -810,6 +819,7 @@ createDrugBtn.addEventListener('click', function (e) {
         if (finalName && finalIngredients.length != 0) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/drugs');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
         } else {
             alert("Error: Name can't be empty");
@@ -864,7 +874,8 @@ function setUpIngredients() {
         }
     }
 
-    getIngredientsRequest.open('GET', 'https://localhost:7291/api/manager/ingredients')
+    getIngredientsRequest.open('GET', 'https://localhost:7291/api/manager/ingredients');
+    getIngredientsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getIngredientsRequest.send();
 }
 
@@ -901,6 +912,7 @@ createIngredientBtn.addEventListener('click', function (e) {
         if (finalName) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/ingredients');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
             alert("Error: Name can't be empty");
@@ -973,6 +985,7 @@ function updateDrug(key, myIngredients, comment) {
         if (finalName && finalIngredients.length != 0) {
             putRequest.open('PUT', 'https://localhost:7291/api/manager/drugs/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
         } else {
             alert("Error: Name can't be empty nor can there be a drug without any ingredients")
@@ -1018,6 +1031,7 @@ function updateIngredient(key) {
         if (finalName) {
             putRequest.open('PUT', 'https://localhost:7291/api/manager/ingredients/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName }));
         } else {
             alert("Error: Name can't be empty");
@@ -1041,6 +1055,7 @@ function deleteDrug(key) {
     }
 
     deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key);
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
 
@@ -1060,6 +1075,7 @@ function deleteIngredient(key) {
     }
 
     deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key);
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
 
@@ -1257,8 +1273,10 @@ function setUpCharts() {
     }
 
     getRequestHospital.open('GET', 'https://localhost:7291/api/manager/polls');
+    getRequestHospital.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequestHospital.send();
 
     getRequestDoctors.open('GET', 'https://localhost:7291/api/manager/doctorpolls');
+    getRequestDoctors.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequestDoctors.send();
 }
