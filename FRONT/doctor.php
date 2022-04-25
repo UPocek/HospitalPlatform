@@ -18,7 +18,10 @@
     <body>
         
         <?php include 'header.html';?>
+
         <div id="reviewExaminationDiv" class="off">
+
+      
             <div id="reviewExaminationPopUp">
                 <form id="reportPopUp" class="myForm">
                     <h1>Report</h1>
@@ -30,6 +33,7 @@
                         <!-- equipmentUsed -->
                     </div>
                     <button class="mainBtn">End review</button>
+
                 </form>
                 <form class="basicInfo">
                     <h1>Medical record</h1>
@@ -53,6 +57,7 @@
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Diseases:&nbsp</p>
+
                                     <ul id="diseasesList">
                                         <!-- patients diseases -->
                                     </ul>
@@ -62,12 +67,14 @@
                             <div>
                                 <input id="patientHeight"></input>
                                 <button class="add"><i data-feather="plus"></i></button>
+
                             </div>
                         </div>
                         <div>
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Alergies:&nbsp</p>
+
                                     <ul id="alergiesList">
                                         <!-- patients diseases -->
                                     </ul>
@@ -77,6 +84,7 @@
                             <div>
                                 <input id="patientHeight"></input>
                                 <button class="add"><i data-feather="plus"></i></button>
+
                             </div>
                         </div>
                     </div>
@@ -84,15 +92,18 @@
                 </form>
             </div>
         </div>
+
         
         <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
+
             <div id="reportHeader">
                 <h1>Report</h1>
                 <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
             </div>
-            <div id="descReport">
+            <div id="descView">
                 <h3>Report description:</h3>
                 <p id="reportDescriptionNew"></p>
+
             </div>
             <div id="reportEquipmentNew">
 

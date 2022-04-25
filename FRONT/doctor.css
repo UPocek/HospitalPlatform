@@ -36,6 +36,7 @@ body {
 /* LOGIN FORM */
 
 .myForm input,
+.myForm textarea,
 .myForm select {
     background-color: #eee;
     border: none;
@@ -46,8 +47,18 @@ body {
     min-width: 280px;
 }
 
+#reportDescription{
+    height: 280px;
+}
+
+#reportView{
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .divList{
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
 }
 
@@ -61,6 +72,11 @@ body {
   }
  .divList > ul > li {
     padding: 0 1rem 0 0;
+  }
+
+  .listContainer{
+      display: flex;
+      justify-content: space-evenly;
   }
 
 .myForm h3 {
@@ -1883,6 +1899,19 @@ tr:nth-child(even) {
     box-shadow: var(--boxShadow);
 }
 
+#reviewExaminationPopUp{
+    background-color: var(--whiteSmoke);
+    display: flex;
+    margin: 50px auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+    width: 60%;
+    justify-content: space-evenly;
+    padding: 20px;
+    
+}
+
 .instructions{
     margin-top: 20px;
 }
@@ -1968,7 +1997,7 @@ td button {
     text-align: left;
 }
 
-#descReport{
+#descReport, #descView{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -2138,4 +2167,5 @@ td button {
 #reportHeader{
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }

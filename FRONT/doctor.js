@@ -236,8 +236,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 var main = document.getElementsByTagName("main")[0];
+var currentMedicalRecord;
+var currentPatientMedicalRecord;
+var currentExamination;
+var roomOfExamination;
 
 function reviewExamination(id){
+
     let currentExamination;
     for (let examination of doctorsExaminations){
         if (examination["id"] == id){
@@ -245,6 +250,7 @@ function reviewExamination(id){
             break;
         }
     }
+
 
     let popUp = document.getElementById('reviewExaminationDiv');
     popUp.classList.remove("off");
@@ -312,6 +318,7 @@ function reviewExamination(id){
     request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + currentExamination['patient']);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+
 }
 
 var updateMedicalCardBtn = document.getElementById("updateMedicalCard");
@@ -321,6 +328,7 @@ updateMedicalCardBtn.addEventListener('click', function(e){
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
+
             }
         }
     }
@@ -336,6 +344,8 @@ updateMedicalCardBtn.addEventListener('click', function(e){
 function reviewReport(id){
     let currentExamination;
     for (let examination of doctorsExaminations){
+
+  
         if (examination["id"] == id){
             currentExamination = examination;
             break;
@@ -343,6 +353,7 @@ function reviewReport(id){
     }
 
     let popUp = document.getElementById('reportPopUpNew');
+  
     popUp.classList.remove('off');
     main.classList.add('hideMain');
 
@@ -351,6 +362,7 @@ function reviewReport(id){
         main.classList.remove('hideMain');
         alert("No report present");
     }else{
+
         document.getElementById("reportDescriptionNew").innerText = currentExamination['anamnesis'];
 
         if (examination['type'] == "operation"){
@@ -722,7 +734,146 @@ var closeReportBtn = document.getElementById('closeReportBtn');
 closeReportBtn.addEventListener('click', function(e){
     let equipment = document.getElementById('reportEquipment');
     removeAllChildNodes(equipment);
+
     let popUp = document.getElementById('reportPopUpNew');
+
     popUp.classList.add('off');
     main.classList.remove('hideMain');
+})
+
+var diseaseDelBtn = document.getElementById('deleteDiseases');
+
+diseaseDelBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let diseases = document.getElementById('diseasesList');
+    let deletedDiseases = diseases.value;
+    currentMedicalRecord["diseases"] = currentMedicalRecord["diseases"].filter(function(item) {
+        return item !== deletedDiseases});
+    removeAllChildNodes(diseases);
+    for (disease of currentMedicalRecord['diseases']){
+        let diseaseItem = document.createElement('option');
+        diseaseItem.innerText = disease;
+        diseases.appendChild(diseaseItem);
+    }
+})
+
+var alergiesDelBtn = document.getElementById('deleteAlergies');
+
+alergiesDelBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let alergies = document.getElementById('alergiesList');
+    let deletedAlergies = alergies.value;
+    currentMedicalRecord["alergies"] = currentMedicalRecord["alergies"].filter(function(item) {
+        return item !== deletedAlergies});
+    removeAllChildNodes(alergies);
+    for (alergie of currentMedicalRecord['alergies']){
+        let alergieItem = document.createElement('option');
+        alergieItem.innerText = alergie;
+        alergies.appendChild(alergieItem);
+    }  
+})
+
+var diseaseAddBtn = document.getElementById('addDiseases');
+
+diseaseAddBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let diseasesInput = document.getElementById('diseaseInput');
+    let diseases = document.getElementById('diseasesList');
+    let addedDiseases = diseasesInput.value;
+    currentMedicalRecord["diseases"].push(addedDiseases);
+    removeAllChildNodes(diseases);
+    for (disease of currentMedicalRecord['diseases']){
+        let diseaseItem = document.createElement('option');
+        diseaseItem.innerText = disease;
+        diseases.appendChild(diseaseItem);
+    }
+    diseasesInput.value = "";
+})
+
+var alergiesAddBtn = document.getElementById('addAlergies');
+
+alergiesAddBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let alergiesInput = document.getElementById('alergieInput');
+    let alergies = document.getElementById('alergiesList');
+    let addedAlergies = alergiesInput.value;
+    currentMedicalRecord["alergies"].push(addedAlergies);
+    removeAllChildNodes(alergies);
+    for (alergie of currentMedicalRecord['alergies']){
+        let alergieItem = document.createElement('option');
+        alergieItem.innerText = alergie;
+        alergies.appendChild(alergieItem);
+    }  
+    alergiesInput.value = "";
+})
+
+var endReviewBtn = document.getElementById('endReview');
+
+endReviewBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    currentExamination['anamnesis'] = document.getElementById('reportDescription').value;
+    let ok = true;
+    let equipmentUsed = [];
+    if (currentExamination['type'] == "operation"){
+        let children =document.getElementById('equipmentDiv').children
+        for (let i = 0; i < children.length; i += 2) {
+            if (children[i + 1].value) {
+                console.log(children[i].innerText.split(' ')[3]);
+                if (+children[i].innerText.split(' ')[3] >= +children[i + 1].value) {
+                    let el = {
+                        name: children[i].innerText.split(' ')[0],
+                        type: children[i].getAttribute('equipmentType'),
+                        quantity: children[i + 1].value
+                    };
+                    equipmentUsed.push(el);
+                } else {
+                    ok = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    let reviewExaminationRequest = new XMLHttpRequest();
+    reviewExaminationRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Successful review")
+            }
+        }
+    }
+
+    let roomRequest = new XMLHttpRequest();
+    roomRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+            }
+        }
+    }
+
+    if (ok){
+        if (currentExamination['type'] == 'operation'){
+            for (let i in roomOfExamination['equipment']){
+                for (equipmentInUse of equipmentUsed){
+                    if (roomOfExamination['equipment'][i]['name'] == equipmentInUse['name']){
+                        roomOfExamination['equipment'][i]['quantity'] -= +equipmentInUse['quantity'];
+                    }
+                }
+            }
+            roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
+            roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name":roomOfExamination["name"], "type":roomOfExamination["type"],"inRenovation":roomOfExamination["inRenovation"],"equipment":roomOfExamination["equipment"]}));
+        }
+        
+    currentExamination['equipmentUsed'] = equipmentUsed;
+    reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
+    reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis']}));
+    
+    }
 })
