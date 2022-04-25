@@ -321,6 +321,8 @@ function reviewReport(id){
         }
     }
 
+    console.log(currentExamination);
+
     let popUp = document.getElementById('reportPopUp');
     popUp.classList.remove('off');
     main.classList.add('hideMain');
@@ -334,7 +336,7 @@ function reviewReport(id){
         document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
 
         if (examination['type'] == "operation"){
-            let equipmentDiv = document.createElement('div');
+            let equipmentDiv = document.getElementById('reportEquipment');
             equipmentDiv.classList.add('divList');
             let equipmentList = document.createElement('ul');
             let title = document.createElement('h3');
@@ -692,3 +694,12 @@ var createBtn = document.getElementById("addBtn");
 
 createBtn.addEventListener("click", createExamination);
 
+var closeReportBtn = document.getElementById('closeReportBtn');
+
+closeReportBtn.addEventListener('click', function(e){
+    let equipment = document.getElementById('reportEquipment');
+    removeAllChildNodes(equipment);
+    let popUp = document.getElementById('reportPopUp');
+    popUp.classList.add('off');
+    main.classList.remove('hideMain');
+})

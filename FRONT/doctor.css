@@ -2158,3 +2158,8 @@ td button {
 
     /* PHONE size*/
 }
+
+#reportHeader{
+    display: flex;
+    justify-content: space-between;
+}

@@ -51,6 +51,24 @@ namespace APP.Controllers
             return collection.Find(item => true).FirstOrDefault();
         }
 
+        // GET: api/Manager/polls
+        [HttpGet("polls")]
+        public async Task<Hospital> GetHospitalPolls()
+        {
+            var collection = database.GetCollection<Hospital>("Hospital");
+
+            return collection.Find(item => true).FirstOrDefault();
+        }
+
+        // GET: api/Manager/doctorpolls
+        [HttpGet("doctorpolls")]
+        public async Task<List<PollForDoctors>> GetDoctorPolls()
+        {
+            var collection = database.GetCollection<PollForDoctors>("Employees");
+
+            return collection.Find(item => item.role == "doctor").ToList();
+        }
+
         // POST: api/Manager/rooms
         [HttpPost("rooms")]
         public async Task<IActionResult> CreateRoom(Room data)

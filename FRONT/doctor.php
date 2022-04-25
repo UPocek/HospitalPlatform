@@ -88,11 +88,18 @@
 
         
         <div id="reportPopUp" class="form-container sign-in-container off prompt">
-            <h1>Report</h1>
+            <div id="reportHeader">
+                <h1>Report</h1>
+                <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
+            </div>
             <div id="descReport">
                 <h3>Report description:</h3>
                 <p id="reportDescription"></p>
             </div>
+            <div id="reportEquipment">
+
+            </div>
+            
 	    </div>
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
