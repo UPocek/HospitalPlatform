@@ -14,7 +14,7 @@ public class Patient
 
     [BsonElement("lastName")]
     [JsonPropertyName("lastName")]
-    public string dateAndlastName { get; set; }
+    public string lastName { get; set; }
 
     [BsonElement("role")]
     [JsonPropertyName("role")]
