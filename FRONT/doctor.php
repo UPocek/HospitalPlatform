@@ -8,8 +8,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="icon" href="logo.jpeg">
-
         <link rel="stylesheet" type="text/css" href="doctor.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
         <title>USI Team #9</title>
@@ -18,7 +18,7 @@
     <body>
         
         <?php include 'header.html';?>
-        <div id="reviewExaminationDiv"class="off">
+        <div id="reviewExaminationDiv" class="off myForm">
             <div id="reviewExaminationPopUp">
                 <form id="reportPopUp" class="myForm">
                     <h1>Report</h1>
@@ -27,9 +27,9 @@
                         <textarea  id="reportDescription"></textarea>
                     </div>
                     <div id="equipmentDiv">
-                        <!-- equipmentUsed -->
+                        
                     </div>
-                    <button class="mainBtn">End review</button>
+                    <button id="endReview" class="mainBtn">End review</button>
                 </form>
                 <form class="basicInfo">
                     <h1>Medical record</h1>
@@ -53,30 +53,30 @@
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Diseases:&nbsp</p>
-                                    <ul id="diseasesList">
+                                    <select id="diseasesList" multiple>
                                         <!-- patients diseases -->
-                                    </ul>
+                                    </select>
                                 </div>
-                                <button class="delBtn"><i data-feather="trash"></i></button>
+                                <button id="deleteDiseases" class="delBtn"><i data-feather="trash"></i></button>
                             </div>
                             <div>
-                                <input id="patientHeight"></input>
-                                <button class="add"><i data-feather="plus"></i></button>
+                                <input id="diseaseInput"></input>
+                                <button id="addDiseases" class="add"><i data-feather="plus"></i></button>
                             </div>
                         </div>
                         <div>
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Alergies:&nbsp</p>
-                                    <ul id="alergiesList">
+                                    <select id="alergiesList" multiple>
                                         <!-- patients diseases -->
-                                    </ul>
+                                    </select>
                                 </div>
-                                <button class="delBtn"><i data-feather="trash"></i></button>
+                                <button id="deleteAlergies" class="delBtn"><i data-feather="trash"></i></button>
                             </div>
                             <div>
-                                <input id="patientHeight"></input>
-                                <button class="add"><i data-feather="plus"></i></button>
+                                <input id="alergieInput"></input>
+                                <button id="addAlergies" class="add"><i data-feather="plus"></i></button>
                             </div>
                         </div>
                     </div>
@@ -87,14 +87,14 @@
             
 
         
-        <div id="reportPopUp" class="form-container sign-in-container off prompt">
+        <div id="reportView" class="form-container sign-in-container off prompt">
             <div id="reportHeader">
                 <h1>Report</h1>
                 <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
             </div>
-            <div id="descReport">
+            <div id="descView">
                 <h3>Report description:</h3>
-                <p id="reportDescription"></p>
+                <p id="reportDescView"></p>
             </div>
             <div id="reportEquipment">
 
