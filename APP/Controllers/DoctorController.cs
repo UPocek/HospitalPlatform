@@ -53,6 +53,15 @@ public class DoctorController : ControllerBase
         return result;
     }
 
+    [HttpGet("examinations/room/{name}")]
+    public async Task<Room> GetExaminationRoom(string name)
+    {
+        var rooms = database.GetCollection<Room>("Rooms");
+        Room result = rooms.Find(r => r.name == name).FirstOrDefault();
+
+        return result;
+    }
+
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
@@ -98,7 +107,30 @@ public class DoctorController : ControllerBase
 
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
 
-        examinationCollection.ReplaceOne(e => e.id == id, examination);
+        Console.WriteLine(id);
+        Console.WriteLine(examination.id);
+
+        examinationCollection.FindOneAndReplace(e => e.id == id, examination);
+        return Ok();    
+
+    }
+
+    [HttpPut("examinations/room/{name}")]
+    public async Task<IActionResult> UpdateExaminationRoom(string name, [FromBody] Room room)
+    {
+        var rooms = database.GetCollection<Room>("Rooms");
+        
+        rooms.FindOneAndReplace(e => e.name == name, room);
+        return Ok();    
+
+    }
+
+    [HttpPut("examinations/medicalrecord/{id}")]
+    public async Task<IActionResult> UpdateMedicalCard(int id, MedicalRecord medicalRecord )
+    {
+        var patients = database.GetCollection<Patient>("Patients");
+        var updatePatients = Builders<Patient>.Update.Set("medicalRecord", medicalRecord);
+        patients.UpdateOne(item => item.id == id, updatePatients);
         return Ok();    
 
     }
