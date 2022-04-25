@@ -1808,23 +1808,24 @@ body {
 footer {
     text-align: center;
 }
+
 /* Patient */
 
-.blockBtn{
+.blockBtn {
     color: Red;
     border: none;
     background: transparent;
     padding: 10px;
 }
 
-.recordBtn{
+.recordBtn {
     color: Blue;
     border: none;
     background: transparent;
     padding: 10px;
 }
 
-.unblockBtn{
+.unblockBtn {
     color: Green;
     border: none;
     background: transparent;
@@ -1832,10 +1833,11 @@ footer {
 }
 
 .patientTable,
-.blockedPatientTable{
+.blockedPatientTable {
     overflow-x: auto;
 }
-.createPatientHeader{
+
+.createPatientHeader {
     margin: 0%;
 }
 
@@ -1922,11 +1924,10 @@ table {
 }
 
 .patientTable,
-.blockedPatientTable
-{
-    display:block;
+.blockedPatientTable {
+    display: block;
     table-layout: default;
-    overflow-x:auto;
+    overflow-x: auto;
     white-space: nowrap;
 }
 
@@ -1952,8 +1953,8 @@ td {
     border-bottom: solid 1px rgba(255, 255, 255, 0.2);
 }
 
-.smallerWidth{
-    width:120px;
+.smallerWidth {
+    width: 120px;
 }
 
 td button {
@@ -2000,12 +2001,13 @@ td button {
     box-shadow: var(--boxShadow);
 }
 
-.patientPrompt{
+.patientPrompt {
     text-align: center;
 }
 
-.patientForm input,.patientForm select{
-    margin:0.1rem;
+.patientForm input,
+.patientForm select {
+    margin: 0.1rem;
 }
 
 .colDir {
@@ -2020,6 +2022,10 @@ td button {
 
 .hideMain {
     display: none;
+}
+
+#reportHeader button {
+    cursor: pointer;
 }
 
 /* Manager */
@@ -2191,6 +2197,153 @@ td button {
 
 #hPolls {
     margin: 10vh auto;
+}
+
+/* Doctor */
+
+/* All */
+
+#reportDescription {
+    height: 280px;
+}
+
+#reportView {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.divList {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.divList>ul {
+    height: 100px;
+    width: 100px;
+    list-style: none;
+    margin: 1rem 20px;
+    overflow-y: scroll;
+    padding: 0 0 0 1rem;
+}
+
+.divList>ul>li {
+    padding: 0 1rem 0 0;
+}
+
+.listContainer {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#patientInfo {
+    background-color: var(--whiteSmoke);
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin: 50px auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+}
+
+#reviewExaminationPopUp {
+    background-color: var(--whiteSmoke);
+    display: flex;
+    margin: 50px auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--boxShadow);
+    width: 60%;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+.instructions {
+    margin-top: 20px;
+}
+
+.formDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+#examinationForm>h1 {
+    text-align: center;
+}
+
+#reportPopUp {
+    height: 60%;
+    width: 40%;
+    justify-content: flex-start;
+}
+
+#reportPopUp>* {
+    width: 100%;
+    text-align: left;
+}
+
+#descReport,
+#descView {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.formDiv>label {
+    margin: 10px auto 10px 0px;
+    padding: 0px 10px;
+    text-align: left;
+}
+
+.urgentDiv {
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 10px;
+}
+
+#urgent {
+    min-width: 30px;
+}
+
+.scheduleDiv {
+    display: flex;
+    justify-content: baseline;
+    margin: 10px auto;
+}
+
+.scheduleDiv>* {
+    margin: 10px auto;
+    padding: 0px 10px;
+}
+
+.centarInfo {
+    text-align: right;
+    width: 79%;
+    margin: 10px auto;
+}
+
+.tableHeaderDiv {
+    text-align: right;
+    width: 79%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tableHeaderDiv button {
+    cursor: pointer;
+}
+
+#reportHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.addSpaceBottom {
+    margin-bottom: 10vh;
 }
 
 /* Header */
