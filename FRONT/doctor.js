@@ -242,7 +242,7 @@ var currentExamination;
 var roomOfExamination;
 
 function reviewExamination(id){
-    for (examination of doctorsExaminations){
+    for (let examination of doctorsExaminations){
         if (examination["id"] == id){
             currentExamination = examination;
             break;
@@ -280,13 +280,14 @@ function reviewExamination(id){
                 }
             }
             getEquipmentRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/room/' + currentExamination['room']);
+            getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             getEquipmentRequest.send();
         }
         feather.replace();
         
-        let request = new XMLHttpRequest();
+        let getMedicalRecordRequest = new XMLHttpRequest();
         
-        request.onreadystatechange = function () {
+        getMedicalRecordRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     let patient = JSON.parse(this.responseText);
@@ -306,13 +307,13 @@ function reviewExamination(id){
                     let patientBlood = document.getElementById("patientBlood");
                     patientBlood.value = patient["medicalRecord"]["bloodType"];
                     let patientDiseases = document.getElementById("diseasesList");
-                    for (disease of currentMedicalRecord['diseases']){
+                    for (let disease of currentMedicalRecord['diseases']){
                         let diseaseItem = document.createElement('option');
                         diseaseItem.innerText = disease;
                         patientDiseases.appendChild(diseaseItem);
                     }
                     let patientAlergies = document.getElementById("alergiesList");
-                    for (alergie of currentMedicalRecord['alergies']){
+                    for (let alergie of currentMedicalRecord['alergies']){
                         let alergieItem = document.createElement('option');
                         alergieItem.innerText = alergie;
                         patientAlergies.appendChild(alergieItem);
@@ -320,8 +321,9 @@ function reviewExamination(id){
                 }
             }
         }
-        request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + currentExamination['patient']);
-        request.send();
+        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + currentExamination['patient']);
+        getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        getMedicalRecordRequest.send();
     }else{
         alert('Examination already reviewed.');
     }
@@ -337,7 +339,7 @@ updateMedicalCardBtn.addEventListener('click', function(e){
     currentMedicalRecord['height'] = document.getElementById('patientHeight').value;
     currentMedicalRecord['bloodType'] = document.getElementById('patientBlood').value;
     currentPatientMedicalRecord['medicalRecord'] = currentMedicalRecord;
-    console.log(currentPatientMedicalRecord);
+   
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -348,18 +350,7 @@ updateMedicalCardBtn.addEventListener('click', function(e){
     }
     request.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-    console.log(JSON.stringify({ "_id": currentPatientMedicalRecord["_id"], 
-                                    "id": currentPatientMedicalRecord["id"], 
-                                    "firstName":currentPatientMedicalRecord["firstName"], 
-                                    "lastName": currentPatientMedicalRecord["lastName"], 
-                                    "role": currentPatientMedicalRecord["role"], 
-                                    "email": currentPatientMedicalRecord["email"], 
-                                    "password": currentPatientMedicalRecord["password"],
-                                    "active": currentPatientMedicalRecord["active"], 
-                                    "medicalRecord": currentPatientMedicalRecord["medicalRecord"],
-                                    "examinationHistory":[]}));
-
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send(JSON.stringify(currentMedicalRecord));
 })
 
@@ -479,8 +470,8 @@ scheduleDateButton.addEventListener("click", function(e){
 });
 
 function deleteExamination(id){
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
+    let deleteRequest = new XMLHttpRequest();
+    deleteRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination has been successfully deleted");
@@ -491,9 +482,9 @@ function deleteExamination(id){
             }
         }
     }
-    request.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    deleteRequest.send();
 };
 
 function validateTimeOfExamination(date,duration){
@@ -772,7 +763,7 @@ diseaseDelBtn.addEventListener('click', function(e){
     currentMedicalRecord["diseases"] = currentMedicalRecord["diseases"].filter(function(item) {
         return item !== deletedDiseases});
     removeAllChildNodes(diseases);
-    for (disease of currentMedicalRecord['diseases']){
+    for (let disease of currentMedicalRecord['diseases']){
         let diseaseItem = document.createElement('option');
         diseaseItem.innerText = disease;
         diseases.appendChild(diseaseItem);
@@ -789,7 +780,7 @@ alergiesDelBtn.addEventListener('click', function(e){
     currentMedicalRecord["alergies"] = currentMedicalRecord["alergies"].filter(function(item) {
         return item !== deletedAlergies});
     removeAllChildNodes(alergies);
-    for (alergie of currentMedicalRecord['alergies']){
+    for (let alergie of currentMedicalRecord['alergies']){
         let alergieItem = document.createElement('option');
         alergieItem.innerText = alergie;
         alergies.appendChild(alergieItem);
@@ -806,7 +797,7 @@ diseaseAddBtn.addEventListener('click', function(e){
     let addedDiseases = diseasesInput.value;
     currentMedicalRecord["diseases"].push(addedDiseases);
     removeAllChildNodes(diseases);
-    for (disease of currentMedicalRecord['diseases']){
+    for (let disease of currentMedicalRecord['diseases']){
         let diseaseItem = document.createElement('option');
         diseaseItem.innerText = disease;
         diseases.appendChild(diseaseItem);
@@ -824,7 +815,7 @@ alergiesAddBtn.addEventListener('click', function(e){
     let addedAlergies = alergiesInput.value;
     currentMedicalRecord["alergies"].push(addedAlergies);
     removeAllChildNodes(alergies);
-    for (alergie of currentMedicalRecord['alergies']){
+    for (let alergie of currentMedicalRecord['alergies']){
         let alergieItem = document.createElement('option');
         alergieItem.innerText = alergie;
         alergies.appendChild(alergieItem);
@@ -842,7 +833,6 @@ endReviewBtn.addEventListener('click', function(e){
         let children =document.getElementById('equipmentDiv').children
         for (let i = 0; i < children.length; i += 2) {
             if (children[i + 1].value) {
-                console.log(children[i].innerText.split(' ')[3]);
                 if (+children[i].innerText.split(' ')[3] >= +children[i + 1].value) {
                     let el = {
                         name: children[i].innerText.split(' ')[0],
@@ -891,9 +881,9 @@ endReviewBtn.addEventListener('click', function(e){
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
-            console.log(currentExamination['equipmentUsed'])
             roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
             roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name":roomOfExamination["name"], "type":roomOfExamination["type"],"inRenovation":roomOfExamination["inRenovation"],"equipment":roomOfExamination["equipment"]}));
         }else{
             currentExamination['equipmentUsed'] = [];
@@ -901,6 +891,7 @@ endReviewBtn.addEventListener('click', function(e){
     
     reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
     reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis'], 'equipmentUsed':currentExamination['equipmentUsed']}));
     
     }

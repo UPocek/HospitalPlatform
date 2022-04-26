@@ -107,9 +107,6 @@ public class DoctorController : ControllerBase
 
         var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
 
-        Console.WriteLine(id);
-        Console.WriteLine(examination.id);
-
         examinationCollection.FindOneAndReplace(e => e.id == id, examination);
         return Ok();    
 
