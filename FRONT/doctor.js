@@ -45,15 +45,12 @@ function showWindow(section) {
 
 function getParamValue(name) {
     var location = decodeURI(window.location.toString());
-    if (location[-1] == "#"){
-        location = location.substring(0, location.length -1);
-    }
-    var index = location.indexOf("?") + 1;
+    var index = location.indexOf('?') + 1;
     var subs = location.substring(index, location.length);
-    var splitted = subs.split("&");
+    var splitted = subs.split('&');
 
     for (var i = 0; i < splitted.length; i++) {
-        var s = splitted[i].split("=");
+        var s = splitted[i].split('=');
         var pName = s[0];
         var pValue = s[1];
         if (pName == name)
@@ -84,7 +81,7 @@ function getDoctor(){
 
 function setUpMenu() {
     
-    let menu = document.getElementById("mainMenu");
+    let menu = document.getElementById('mainMenu');
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
         <a class="navbar__link"><i data-feather="archive"></i><span>All examinations</span></a>
@@ -98,9 +95,9 @@ function setUpMenu() {
     `;
     feather.replace();
 
-    let item1 = document.getElementById("option1");
-    let item2 = document.getElementById("option2");
-    let item3 = document.getElementById("option3");
+    let item1 = document.getElementById('option1');
+    let item2 = document.getElementById('option2');
+    let item3 = document.getElementById('option3');
     
     item1.addEventListener('click', (e) => {
         showWindow(1);
@@ -108,8 +105,8 @@ function setUpMenu() {
     });
     item2.addEventListener('click', (e) => {
         showWindow(2);
-        document.getElementById("scheduleDate").value = (new Date()).toDateString;
-        document.getElementById("scheduleDateOption").value = new Date().toISOString().split('T')[0];
+        document.getElementById('scheduleDate').value = (new Date()).toDateString;
+        document.getElementById('scheduleDateOption').value = new Date().toISOString().split('T')[0];
         searchSchedule();
     });
     item3.addEventListener('click', (e) => {
@@ -119,7 +116,7 @@ function setUpMenu() {
 }
 
 function displayExaminations(){
-    let table = document.getElementById("examinationsTable");
+    let table = document.getElementById('examinationsTable');
     table.innerHTML = "";
     for (let examination of doctorsExaminations) {
 
