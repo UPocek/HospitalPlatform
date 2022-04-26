@@ -204,7 +204,7 @@ function setUpExaminations() {
                     putBtn.classList.add("updateBtn");
                     putBtn.setAttribute("key", examination["id"]);
                     putBtn.addEventListener('click', function (e) {
-                        updateExamination(this.getAttribute('key'));
+                        editExamination(this.getAttribute('key'));
                     });
 
                     if(examination['type'] == 'visit'){
@@ -230,7 +230,7 @@ function setUpExaminations() {
 
     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
     //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-            request.send();
+    request.send();
 }
 
 //POST - Examination
@@ -265,7 +265,7 @@ createBtn.addEventListener("click", function (e) {
         };
         postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
    
 
@@ -275,11 +275,10 @@ createBtn.addEventListener("click", function (e) {
 
 
 //PUT - Examination    
-function updateExamination(key) {
+function editExamination(id){ 
     let prompt = document.getElementById("editExaminationPrompt");
     prompt.classList.remove("off");
     main.classList.add("hideMain");
-
     let form = document.getElementById("editExaminationForm");
 
     form.addEventListener('submit', function (e) {
@@ -289,10 +288,10 @@ function updateExamination(key) {
         e.stopImmediatePropagation();
         let examinationDate = document.getElementById("timeEditExamination").value;      
         let doctor = document.getElementById("doctorEditExamination").value;
-   
-        let postRequest = new XMLHttpRequest();
 
-        postRequest.onreadystatechange = function () {
+        let putRequest = new XMLHttpRequest();
+
+        putRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     alert("Examination sucessfuly updated");
@@ -303,12 +302,13 @@ function updateExamination(key) {
                 }
             }
         };
-        postRequest.open('PUT', 'https://localhost:7291/api/patient/examinations/'+key);
-        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        postRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
+        putRequest.open('PUT', 'https://localhost:7291/api/patient/examinations/'+ id);
+        putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        putRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        putRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
     });
-   
-};
+
+}; 
 
 //DELETE - Examination
 function deleteExamination(key) {

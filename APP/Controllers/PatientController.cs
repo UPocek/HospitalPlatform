@@ -59,11 +59,6 @@ public class PatientController : ControllerBase
         var patients = database.GetCollection<Patient>("Patients");
         var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
 
-        var doctors = database.GetCollection<Employee>("Employees");
-        var doctor = doctors.Find(d => d.id == examination.doctorId);
-        if(doctor == null){
-                return BadRequest();
-        }
 
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
@@ -102,27 +97,22 @@ public class PatientController : ControllerBase
 
     // PUT action
     [HttpPut("examinations/{id}")]
-        public async Task<IActionResult> UpdateExamination(int id, Examination examination)
+        public async Task<IActionResult> UpdateExamination(string id, Examination examination)
     {
-       
-        var doctors = database.GetCollection<Employee>("Employees");
-        var doctor = doctors.Find(d => d.id == examination.doctorId);
-        if(doctor == null){
-                return BadRequest();
-        }
+        var patients = database.GetCollection<Patient>("Patients");
+        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
 
+       
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        Examination oldExaminationData = examinations.Find(item => item.id == examination.id).FirstOrDefault();
+        var oldExaminationData = examinations.Find(item => item.id == int.Parse(id)).FirstOrDefault();
 
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
                 if(item.dateAndTimeOfExamination == examination.dateAndTimeOfExamination){
                         return BadRequest();
-
                 }
-        }    
+        }       
 
-        
         var rooms = database.GetCollection<Room>("Rooms");
         var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
         
@@ -136,19 +126,17 @@ public class PatientController : ControllerBase
              
         }
 
+
         DateTime dt = DateTime.Today;
         DateTime dtOfExamination = DateTime.Parse(oldExaminationData.dateAndTimeOfExamination);
         
-        if(dt.Day+1<dtOfExamination.Day){
-                var filter = Builders<Examination>.Filter.Eq("id", id);
-                var update = Builders<Examination>.Update.Set("doctor", examination.doctorId);
-                examinations.UpdateOne(filter, update);
-                update = Builders<Examination>.Update.Set("date", examination.dateAndTimeOfExamination);
-                examinations.UpdateOne(filter, update);
-                return Ok();   
+        if(dt.AddDays(1) >= dtOfExamination){
+            return BadRequest();
         }
-
-        return BadRequest();
+                
+        examinations.FindOneAndReplace(e => e.id == int.Parse(id), examination);
+        return Ok();
+        
 
      
     }
@@ -163,13 +151,16 @@ public class PatientController : ControllerBase
             
             DateTime dt = DateTime.Today;
             DateTime dtOfExamination = DateTime.Parse(examination.dateAndTimeOfExamination);
-            if(dt.Day+1<dtOfExamination.Day){
-                examinations.DeleteOne(item => item.id == int.Parse(id));
-                return Ok();
+
+            if(dt.AddDays(1) >= dtOfExamination){
+                return BadRequest();
             }
+                
+            examinations.DeleteOne(item => item.id == int.Parse(id));
+            return Ok();
 
             //inace posalji zahtev
-            return BadRequest();
+            
             //izbrisi iz liste pregleda kod pacijenta i dodaj u istoriju izmena
            
         }
