@@ -32,7 +32,7 @@
                     <div id="equipmentDiv">
                         <!-- equipmentUsed -->
                     </div>
-                    <button class="mainBtn">End review</button>
+                    <button id="endReview" class="mainBtn">End review</button>
 
                 </form>
                 <form class="basicInfo">
@@ -58,15 +58,15 @@
                                 <div class="divList">
                                     <p>Diseases:&nbsp</p>
 
-                                    <ul id="diseasesList">
+                                    <select id="diseasesList" multiple>
                                         <!-- patients diseases -->
-                                    </ul>
+                                    </select>
                                 </div>
-                                <button class="delBtn"><i data-feather="trash"></i></button>
+                                <button id="deleteDiseases" class="delBtn"><i data-feather="trash"></i></button>
                             </div>
                             <div>
-                                <input id="patientHeight"></input>
-                                <button class="add"><i data-feather="plus"></i></button>
+                                <input id="diseaseInput"></input>
+                                <button id="addDiseases" class="add"><i data-feather="plus"></i></button>
 
                             </div>
                         </div>
@@ -75,15 +75,15 @@
                                 <div class="divList">
                                     <p>Alergies:&nbsp</p>
 
-                                    <ul id="alergiesList">
+                                    <select id="alergiesList" multiple>
                                         <!-- patients diseases -->
-                                    </ul>
+                                    </select>
                                 </div>
-                                <button class="delBtn"><i data-feather="trash"></i></button>
+                                <button id="deleteAlergies" class="delBtn"><i data-feather="trash"></i></button>
                             </div>
                             <div>
-                                <input id="patientHeight"></input>
-                                <button class="add"><i data-feather="plus"></i></button>
+                                <input id="alergieInput"></input>
+                                <button id="addAlergies" class="add"><i data-feather="plus"></i></button>
 
                             </div>
                         </div>

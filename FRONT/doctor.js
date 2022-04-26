@@ -258,7 +258,7 @@ function reviewExamination(id){
 
     document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
 
-    if (examination['type'] == "operation"){
+    if (currentExamination['type'] == "operation"){
         let equipmentDiv = document.getElementById('equipmentDiv');
         equipmentDiv.innerHTML += `<div class="listContainer">
                                         <div id= "eqDiv" class="divList">
@@ -269,7 +269,7 @@ function reviewExamination(id){
                                         <button class="delBtn"><i data-feather="trash"></i></button>
                                     </div>`;
         let equipmentList = document.getElementById('equipmentList');
-        for (let equipment of examination['equipmentUsed']){
+        for (let equipment of currentExamination['equipmentUsed']){
             let item = document.createElement('li');
             item.innerText = equipment;
             equipmentList.appendChild(item);
@@ -290,6 +290,7 @@ function reviewExamination(id){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let patient = JSON.parse(this.responseText);
+                currentMedicalRecord = patient['medicalRecord'];
                 let patientFName = document.getElementById("patientFName");
                 patientFName.innerText = patient["firstName"];
                 let patientLName = document.getElementById("patientLName");
@@ -302,13 +303,13 @@ function reviewExamination(id){
                 patientBlood.value = patient["medicalRecord"]["bloodType"];
                 let patientDiseases = document.getElementById("diseasesList");
                 for (let disease of patient["medicalRecord"]['diseases']){
-                    let diseaseItem = document.createElement('li');
+                    let diseaseItem = document.createElement('option');
                     diseaseItem.innerText = disease;
                     patientDiseases.appendChild(diseaseItem);
                 }
                 let patientAlergies = document.getElementById("alergiesList");
                 for (let alergie of patient["medicalRecord"]['alergies']){
-                    let alergieItem = document.createElement('li');
+                    let alergieItem = document.createElement('option');
                     alergieItem.innerText = alergie;
                     patientAlergies.appendChild(alergieItem);
                 }
@@ -344,8 +345,6 @@ updateMedicalCardBtn.addEventListener('click', function(e){
 function reviewReport(id){
     let currentExamination;
     for (let examination of doctorsExaminations){
-
-  
         if (examination["id"] == id){
             currentExamination = examination;
             break;
@@ -365,14 +364,14 @@ function reviewReport(id){
 
         document.getElementById("reportDescriptionNew").innerText = currentExamination['anamnesis'];
 
-        if (examination['type'] == "operation"){
+        if (currentExamination['type'] == "operation"){
             let equipmentDiv = document.getElementById('reportEquipmentNew');
             equipmentDiv.classList.add('divList');
             let equipmentList = document.createElement('ul');
             let title = document.createElement('h3');
             title.innerText = "Equipment used:";
             equipmentDiv.appendChild(title);
-            for (let equipment of examination['equipmentUsed']){
+            for (let equipment of currentExamination['equipmentUsed']){
                 let item = document.createElement('li');
                 item.innerText = equipment;
                 equipmentList.appendChild(item);
@@ -508,8 +507,8 @@ function validateTimeOfExaminationPut(date, duration, id){
     let newExaminationBegging = new Date(date);
     let newExaminationEnding = new Date(date);
 
-    newExaminationEnding.setTime(newExaminationBegging.getTime() + 6000 * duration);
-    
+    newExaminationEnding.setTime(newExaminationBegging.getTime() + 60000 * duration);
+
     if (currentDate > newExaminationBegging){
         return false;
     }
@@ -519,7 +518,7 @@ function validateTimeOfExaminationPut(date, duration, id){
 
             let examinationBegging = new Date(examination["date"]);
             let examinationEnding = new Date(examination["date"]);
-            examinationEnding.setTime(examinationBegging.getTime() + 6000 * examination["duration"]);
+            examinationEnding.setTime(examinationBegging.getTime() + 60000 * examination["duration"]);
 
             if ((newExaminationBegging >= examinationBegging && newExaminationBegging <= examinationEnding) 
                 | (newExaminationEnding >= examinationBegging && newExaminationEnding <= examinationEnding)){
@@ -631,7 +630,8 @@ function createExamination() {
     getRequest.send();
 }
 
-function submitUpdate(e, updatedExamination, id, popUp){
+function submitUpdate(e, updatedExamination, id){
+    let popUp = document.getElementById('examinationPopUp');
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -640,7 +640,6 @@ function submitUpdate(e, updatedExamination, id, popUp){
     let selectedType = document.getElementById("examinationType").value;
     let selectedDate = document.getElementById("scheduleDate").value;
     let selectedDuration = document.getElementById("examinationDuration").value;
-    
     if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
         && !(selectedType == "visit" && selectedDuration != 15)){
 
@@ -715,7 +714,7 @@ function updateExamination(id){
                 })
 
                 form.addEventListener('submit', function (e) {
-                    submitUpdate(e, updatedExamination, id, popUp);
+                    submitUpdate(e, updatedExamination, id);
                 });
             }
         }
