@@ -106,10 +106,10 @@ namespace APP.Controllers
 
             collectionRenovations.InsertOne(data);
 
-            string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
             // If renovation starts now update data in DB
-            if (date == data.startDate)
+            if (dateToday == data.startDate)
             {
                 var collectionRooms = database.GetCollection<Room>("Rooms");
                 var update = Builders<Room>.Update.Set("inRenovation", true);
@@ -171,9 +171,9 @@ namespace APP.Controllers
             collectionRenovations.InsertOne(renovation1);
             collectionRenovations.InsertOne(renovation2);
 
-            string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            if (date == data.startDate)
+            if (dateToday == data.startDate)
             {
                 var update = Builders<Room>.Update.Set("inRenovation", true);
                 collectionRooms.UpdateMany(item => item.name == room1.name | item.name == room2.name, update);
@@ -242,9 +242,9 @@ namespace APP.Controllers
 
             collectionRenovations.InsertOne(renovation);
 
-            string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            if (date == data.startDate)
+            if (dateToday == data.startDate)
             {
                 var update = Builders<Room>.Update.Set("inRenovation", true);
                 collectionRooms.UpdateMany(item => item.name == room1.name, update);
@@ -257,25 +257,31 @@ namespace APP.Controllers
         [HttpPost("transfer")]
         public async Task<IActionResult> CreateTransfer(Transfer data)
         {
-            var collection = database.GetCollection<Room>("Rooms");
-            foreach (var item in data.equipment)
+            string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+            if (dateToday == data.date)
             {
-                var filter1 = Builders<Room>.Filter.Eq("name", data.room1) & Builders<Room>.Filter.Eq("equipment.name", item.name);
-                var filter2 = Builders<Room>.Filter.Eq("name", data.room2) & Builders<Room>.Filter.Eq("equipment.name", item.name);
-
-                var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.quantity);
-                collection.UpdateOne(filter1, update1);
-
-                if (collection.Find(filter2).FirstOrDefault() != null)
+                var collection = database.GetCollection<Room>("Rooms");
+                foreach (var item in data.equipment)
                 {
-                    var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.quantity);
-                    collection.UpdateOne(filter2, update2);
+                    var filter1 = Builders<Room>.Filter.Eq("name", data.room1) & Builders<Room>.Filter.Eq("equipment.name", item.name);
+                    var filter2 = Builders<Room>.Filter.Eq("name", data.room2) & Builders<Room>.Filter.Eq("equipment.name", item.name);
+
+                    var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.quantity);
+                    collection.UpdateOne(filter1, update1);
+
+                    if (collection.Find(filter2).FirstOrDefault() != null)
+                    {
+                        var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.quantity);
+                        collection.UpdateOne(filter2, update2);
+                    }
+                    else
+                    {
+                        var update2 = Builders<Room>.Update.Push("equipment", item);
+                        collection.UpdateOne(Builders<Room>.Filter.Eq("name", data.room2), update2);
+                    }
                 }
-                else
-                {
-                    var update2 = Builders<Room>.Update.Push("equipment", item);
-                    collection.UpdateOne(Builders<Room>.Filter.Eq("name", data.room2), update2);
-                }
+                data.done = true;
             }
 
             var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");

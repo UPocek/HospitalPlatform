@@ -4,10 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var key = "TeamNineAuthenticationPrivateKey";
+
 // Add services
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddControllers();
+
+// JwtAuthentication
+var key = "TeamNineAuthenticationPrivateKey";
 builder.Services.AddAuthentication(
     x =>
     {
@@ -30,6 +33,14 @@ builder.Services.AddAuthentication(
 );
 builder.Services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
 
+// Cron jobs
+builder.Services.AddCronJob<TransferService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"0 0 * * *";
+});
+
+// Cors policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
