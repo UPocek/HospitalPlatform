@@ -1811,7 +1811,7 @@ footer {
     border-bottom: 1px solid var(--accentColor1);
     font-size: 3rem;
     font-weight: bold;
-    max-width: 768px;
+    max-width: 900px;
     margin: auto;
 }
 

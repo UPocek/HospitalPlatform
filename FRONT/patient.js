@@ -111,15 +111,23 @@ function setUpMenu() {
 }
 
 function setUpPage() {
-    let hi = document.getElementById("hi");
-    hi.innerText += user.firstName + " " + user.lastName;
 
-    setUpExaminations();
+    let hi = document.querySelector('#hi h1');
+    hi.innerText += `${user.firstName} ${user.lastName}`;
+
+    setUpFunctionality();
+
 }
 
 
 function setUpFunctionality() {
-    getDoctors();
+
+    setUpExaminations();
+    setUpSearchExaminations();
+    setUpDoctors();
+    doctorOptions("doctorCreateExamination");
+    doctorOptions("doctorEditExamination");
+
 }
 
 var mainResponse;
@@ -199,6 +207,47 @@ function setUpExaminations() {
     request.send();
 }
 
+
+
+function setUpSearchExaminations() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById("searchExaminationTable");
+                table.innerHTML = "";
+                for (let i in mainResponse) {
+
+                    let examination = mainResponse[i];
+                    let newRow = document.createElement("tr");
+
+                    let cType = document.createElement("td");
+                    cType.innerText = examination["type"];
+                    let cDoctor = document.createElement("td");
+                    cDoctor.innerText = examination["doctor"];
+                    let cDate = document.createElement("td");
+                    cDate.innerText = (new Date(examination["date"])).toLocaleString();
+                    let cAnamnesis = document.createElement("td");
+                    cAnamnesis.innerText = examination["anamnesis"];
+                    let cUrgen = document.createElement("td");
+                    cUrgen.innerText = examination["urgent"]
+
+
+                    newRow.appendChild(cType)
+                    newRow.appendChild(cDoctor);
+                    newRow.appendChild(cDate);
+                    newRow.appendChild(cAnamnesis);
+                    newRow.appendChild(cUrgen);
+                    table.appendChild(newRow);
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
+    request.send();
+}
 //POST - Examination
 
 let createBtn = document.getElementById("addBtn");
