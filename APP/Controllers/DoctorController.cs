@@ -1,8 +1,6 @@
 #nullable disable
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
-using MongoDB.Bson;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,117 +17,118 @@ public class DoctorController : ControllerBase
     [HttpGet("examinations")]
     public async Task<List<Examination>> GetAllExaminations()
     {
-        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => true).ToList();
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+        return examinationsCollection.Find(e => true).ToList();
     }
 
     [HttpGet("examinations/nextIndex")]
     public async Task<Examination> GetNextExaminationsIndex()
     {
-        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => true).SortByDescending(e => e.id).FirstOrDefault();
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+
+        return examinationsCollection.Find(e => true).SortByDescending(e => e.id).FirstOrDefault();
     }
 
     [HttpGet("examinations/doctorId/{id}")]
-    public async Task<List<Examination>> GetDoctorsExaminationa(int id)
+    public async Task<List<Examination>> GetDoctorsExaminations(int id)
     {
-        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => e.doctorId == id).ToList();
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+
+        return examinationsCollection.Find(e => e.doctorId == id).ToList();
     }
 
     [HttpGet("examinations/patientId/{id}")]
-    public async Task<List<Examination>> GetPatientsExaminationa(int id)
+    public async Task<List<Examination>> GetPatientsExaminations(int id)
     {
-        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => e.patinetId == id).ToList();
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+
+        return examinationsCollection.Find(e => e.patinetId == id).ToList();
     }
 
     [HttpGet("examinations/patientMedicalCard/{id}")]
     public async Task<MedicalCard> GetPatientMedicalCard(int id)
     {
-        var patientsCards = database.GetCollection<MedicalCard>("Patients");
-        MedicalCard result = patientsCards.Find(p => p.id == id).FirstOrDefault();
+        var patientsCollection = database.GetCollection<MedicalCard>("Patients");
+        MedicalCard resultingMedicalCard = patientsCollection.Find(p => p.id == id).FirstOrDefault();
 
-        return result;
+        return resultingMedicalCard;
     }
 
     [HttpGet("examinations/room/{name}")]
     public async Task<Room> GetExaminationRoom(string name)
     {
-        var rooms = database.GetCollection<Room>("Rooms");
-        Room result = rooms.Find(r => r.name == name).FirstOrDefault();
+        var roomsCollection = database.GetCollection<Room>("Rooms");
+        Room resultingRoom = roomsCollection.Find(r => r.name == name).FirstOrDefault();
 
-        return result;
+        return resultingRoom;
     }
 
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
-        var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+        var patientsCollection = database.GetCollection<Patient>("Patients");
+        var resultingPatient = patientsCollection.Find(p => p.id == examination.patinetId).FirstOrDefault();
         
-        if (patient == null)
+        if (resultingPatient == null)
         {
             return BadRequest();
         }
 
-        var rooms = database.GetCollection<Room>("Rooms");
-        var room = rooms.Find(r => r.name == examination.roomName);
+        var roomsCollection = database.GetCollection<Room>("Rooms");
+        var resultingRoom = roomsCollection.Find(r => r.name == examination.roomName);
 
-        if (room == null)
+        if (resultingRoom == null)
         {
             return BadRequest();
         }
 
-        var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+        var id = examinationsCollection.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
         examination.id = id + 1;
-        examinations.InsertOne(examination);
+        examinationsCollection.InsertOne(examination);
+
         return Ok();
     }
 
     [HttpPut("examinations/{id}")]
     public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
-        var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+        var patientsCollection = database.GetCollection<Patient>("Patients");
+        var resultingPatient = patientsCollection.Find(p => p.id == examination.patinetId).FirstOrDefault();
 
-        if (patient == null){
+        if (resultingPatient == null){
             return BadRequest();
         }
 
-        var rooms = database.GetCollection<Room>("Rooms");
-        var room = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
+        var roomsCollection = database.GetCollection<Room>("Rooms");
+        var resultingRoom = roomsCollection.Find(r => r.name == examination.roomName).FirstOrDefault();
  
-        if (room == null){
+        if (resultingRoom == null){
             return BadRequest();
         }
 
-        var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-
-        examinationCollection.FindOneAndReplace(e => e.id == id, examination);
+        var examinationsCollection = database.GetCollection<Examination>("MedicalExaminations");
+        examinationsCollection.FindOneAndReplace(e => e.id == id, examination);
+        
         return Ok();    
-
     }
 
     [HttpPut("examinations/room/{name}")]
     public async Task<IActionResult> UpdateExaminationRoom(string name, [FromBody] Room room)
     {
-        var rooms = database.GetCollection<Room>("Rooms");
+        var roomsCollection = database.GetCollection<Room>("Rooms");
         
-        rooms.FindOneAndReplace(e => e.name == name, room);
+        roomsCollection.FindOneAndReplace(r => r.name == name, room);
         return Ok();    
-
     }
 
     [HttpPut("examinations/medicalrecord/{id}")]
     public async Task<IActionResult> UpdateMedicalCard(int id, MedicalRecord medicalRecord )
     {
-        var patients = database.GetCollection<Patient>("Patients");
+        var patientsCollection = database.GetCollection<Patient>("Patients");
         var updatePatients = Builders<Patient>.Update.Set("medicalRecord", medicalRecord);
-        patients.UpdateOne(item => item.id == id, updatePatients);
+        patientsCollection.UpdateOne(p => p.id == id, updatePatients);
         return Ok();    
-
     }
 
     [HttpDelete("examinations/{id}")]
