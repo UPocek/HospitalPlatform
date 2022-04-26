@@ -20,8 +20,6 @@
         <?php include 'header.html';?>
 
         <div id="reviewExaminationDiv" class="off">
-
-      
             <div id="reviewExaminationPopUp">
                 <form id="reportPopUp" class="myForm">
                     <h1>Report</h1>
