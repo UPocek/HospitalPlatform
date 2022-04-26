@@ -249,14 +249,14 @@ function reviewExamination(id){
         }
     }
 
-    if (examination['done'] != true){
+    if (currentExamination['done'] != true){
         let popUp = document.getElementById('reviewExaminationDiv');
         popUp.classList.remove("off");
         main.classList.add("hideMain");
     
         document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
     
-        if (examination['type'] == "operation"){
+        if (currentExamination['type'] == "operation"){
             let getEquipmentRequest = new XMLHttpRequest();
             getEquipmentRequest.onreadystatechange = function () {
                 if (this.readyState == 4) {
@@ -880,11 +880,8 @@ endReviewBtn.addEventListener('click', function(e){
             }
 
             let equipmenForExamination = []
-<<<<<<< HEAD
+
             for(let equipmentItem of equipmentUsed){
-=======
-            for(equipmentItem of equipmentUsed){
->>>>>>> 1759d8d657d25cbaea461723b86f1010da231eee
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
