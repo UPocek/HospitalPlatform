@@ -11,10 +11,6 @@ public class Equipment
         this.quantity = quantity;
     }
 
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
-
     [BsonElement("name")]
     [JsonPropertyName("name")]
     public string name { get; set; }

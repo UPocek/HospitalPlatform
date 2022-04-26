@@ -9,49 +9,23 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APP.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MyController : ControllerBase
     {
-        private IMongoDatabase database;
-
-        public MyController()
+        private readonly IMongoDatabase database;
+        private readonly IJwtAuthenticationManager manager;
+        public MyController(IJwtAuthenticationManager jwtManager)
         {
+            this.manager = jwtManager;
             var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
             var client = new MongoClient(settings);
             database = client.GetDatabase("USI");
-
-        }
-
-        // GET: api/My/login/u&p
-        [HttpGet("login/{email}&{password}")]
-        public IActionResult UserLogin(string email, string password)
-        {
-            var collection = database.GetCollection<BsonDocument>("Employees");
-            var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
-            var users = collection.Find(filter).ToList();
-            // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-            if (users.Count != 0)
-            {
-                var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
-                Response.StatusCode = StatusCodes.Status200OK;
-                return new JsonResult(dotNetObj);
-            }
-            else
-            {
-                collection = database.GetCollection<BsonDocument>("Patients");
-                users = collection.Find(filter).ToList();
-                if (users.Count != 0 && users[0]["active"] == "0")
-                {
-                    var dotNetObj = BsonTypeMapper.MapToDotNetValue(users[0]);
-                    Response.StatusCode = StatusCodes.Status200OK;
-                    return new JsonResult(dotNetObj);
-                }
-                return NotFound();
-            }
         }
 
         [HttpGet("users/doctors")]
@@ -75,10 +49,37 @@ namespace APP.Controllers
                 collection = database.GetCollection<BsonDocument>("Patients");
             }
             var filter = Builders<BsonDocument>.Filter.Eq("id", id);
-            var result = collection.Find(filter).First();
+            var result = collection.Find(filter).FirstOrDefault();
             var wantedUser = BsonTypeMapper.MapToDotNetValue(result);
             Response.StatusCode = StatusCodes.Status200OK;
             return new JsonResult(wantedUser);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate/{email}&{password}")]
+        public async Task<Account> Authenticate(string email, string password)
+        {
+            var collection = database.GetCollection<User>("Employees");
+            var user = collection.Find(item => item.email == email & item.password == password).FirstOrDefault();
+
+            if (user != null)
+            {
+                var token = manager.GenereteToken(email);
+                var account = new Account(token, user);
+                return account;
+            }
+            else
+            {
+                var collectionPatients = database.GetCollection<User>("Patients");
+                user = collectionPatients.Find(item => item.email == email & item.password == password).FirstOrDefault();
+                if (user != null && user.active == "0")
+                {
+                    var token = manager.GenereteToken(email);
+                    var account = new Account(token, user);
+                    return account;
+                }
+                return new Account();
+            }
         }
 
         // HOW TO : CheetSheet (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
@@ -258,6 +259,35 @@ namespace APP.Controllers
         //     await _context.SaveChangesAsync();
 
         //     return NoContent();
+        // }
+
+        // // GET: api/My/login/u&p
+        // [HttpGet("login/{email}&{password}")]
+        // public IActionResult UserLogin(string email, string password)
+        // {
+        //     var collection = database.GetCollection<BsonDocument>("Employees");
+        //     var filter = Builders<BsonDocument>.Filter.Eq("email", email) & Builders<BsonDocument>.Filter.Eq("password", password);
+        //     var user = collection.Find(filter).FirstOrDefault();
+        //     // var dotNetObjList = bsonDocList.ConvertAll(BsonTypeMapper.MapToDotNetValue);
+
+        //     if (user != null)
+        //     {
+        //         var dotNetObj = BsonTypeMapper.MapToDotNetValue(user);
+        //         Response.StatusCode = StatusCodes.Status200OK;
+        //         return new JsonResult(dotNetObj);
+        //     }
+        //     else
+        //     {
+        //         collection = database.GetCollection<BsonDocument>("Patients");
+        //         user = collection.Find(filter).FirstOrDefault();
+        //         if (user != null && user["active"] == "0")
+        //         {
+        //             var dotNetObj = BsonTypeMapper.MapToDotNetValue(user);
+        //             Response.StatusCode = StatusCodes.Status200OK;
+        //             return new JsonResult(dotNetObj);
+        //         }
+        //         return NotFound();
+        //     }
         // }
 
         // private bool OtherExists(long id)

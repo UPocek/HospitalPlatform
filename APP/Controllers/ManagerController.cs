@@ -33,6 +33,42 @@ namespace APP.Controllers
             return collection.Find(item => true).ToList();
         }
 
+        // GET: api/Manager/drugs
+        [HttpGet("drugs")]
+        public async Task<List<Drug>> GetDrugs()
+        {
+            var collection = database.GetCollection<Drug>("Drugs");
+
+            return collection.Find(item => true).ToList();
+        }
+
+        // GET: api/Manager/ingredients
+        [HttpGet("ingredients")]
+        public async Task<DrugIngredients> GetIngredients()
+        {
+            var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
+
+            return collection.Find(item => true).FirstOrDefault();
+        }
+
+        // GET: api/Manager/polls
+        [HttpGet("polls")]
+        public async Task<Hospital> GetHospitalPolls()
+        {
+            var collection = database.GetCollection<Hospital>("Hospital");
+
+            return collection.Find(item => true).FirstOrDefault();
+        }
+
+        // GET: api/Manager/doctorpolls
+        [HttpGet("doctorpolls")]
+        public async Task<List<PollForDoctors>> GetDoctorPolls()
+        {
+            var collection = database.GetCollection<PollForDoctors>("Employees");
+
+            return collection.Find(item => item.role == "doctor").ToList();
+        }
+
         // POST: api/Manager/rooms
         [HttpPost("rooms")]
         public async Task<IActionResult> CreateRoom(Room data)
@@ -40,7 +76,7 @@ namespace APP.Controllers
             var collection = database.GetCollection<Room>("Rooms");
 
             // If room with that name already exists abort action
-            if (collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -230,7 +266,7 @@ namespace APP.Controllers
                 var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.quantity);
                 collection.UpdateOne(filter1, update1);
 
-                if (collection.Find(filter2).ToList().Count != 0)
+                if (collection.Find(filter2).FirstOrDefault() != null)
                 {
                     var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.quantity);
                     collection.UpdateOne(filter2, update2);
@@ -248,6 +284,42 @@ namespace APP.Controllers
             return Ok();
         }
 
+        // POST: api/Manager/drugs
+        [HttpPost("drugs")]
+        public async Task<IActionResult> CreateDrug(Drug data)
+        {
+            var collection = database.GetCollection<Drug>("Drugs");
+
+            // If drug with that name already exists abort action
+            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            {
+                return BadRequest();
+            }
+
+            collection.InsertOne(data);
+
+            return Ok();
+        }
+
+        // POST: api/Manager/ingredients
+        [HttpPost("ingredients")]
+        public async Task<IActionResult> CreateIngredinet(Dictionary<string, string> data)
+        {
+            var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
+            var result = collection.Find(item => true).FirstOrDefault();
+
+            // If drug with that name already exists abort action
+            if (result.ingredients.Contains(data["name"]))
+            {
+                return BadRequest();
+            }
+
+            var update = Builders<DrugIngredients>.Update.Push("ingredients", data["name"]);
+            collection.UpdateMany(item => true, update);
+
+            return Ok();
+        }
+
 
         // PUT: api/Manager/rooms/1
         [HttpPut("rooms/{id}")]
@@ -255,7 +327,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Room>("Rooms");
 
-            if (data.name != id && collection.Find(item => item.name == data.name).ToList().Count != 0)
+            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -282,6 +354,49 @@ namespace APP.Controllers
             return Ok();
         }
 
+        // PUT: api/Manager/drugs/1
+        [HttpPut("drugs/{id}")]
+        public async Task<IActionResult> UpdateDrug(string id, Drug data)
+        {
+            var collection = database.GetCollection<Drug>("Drugs");
+
+            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            {
+                return BadRequest();
+            }
+
+            var filter = Builders<Drug>.Filter.Eq("name", id);
+            var update = Builders<Drug>.Update.Set("ingredients", data.ingredients);
+            collection.UpdateOne(filter, update);
+            update = Builders<Drug>.Update.Set("name", data.name);
+            collection.UpdateOne(filter, update);
+            update = Builders<Drug>.Update.Set("status", data.status);
+            collection.UpdateOne(filter, update);
+
+            return Ok();
+        }
+
+        // PUT: api/Manager/ingredients
+        [HttpPut("ingredients/{id}")]
+        public async Task<IActionResult> UpdateIngredinet(string id, Dictionary<string, string> data)
+        {
+            var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
+            var result = collection.Find(item => true).FirstOrDefault();
+
+            if (id != data["name"] && result.ingredients.Contains(data["name"]))
+            {
+                return BadRequest();
+            }
+
+            result.ingredients.Remove(id);
+            result.ingredients.Add(data["name"]);
+
+            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.ingredients);
+            collection.UpdateMany(item => true, update);
+
+            return Ok();
+        }
+
         // DELETE: api/Manager/rooms/1
         [HttpDelete("rooms/{id}")]
         public async Task<IActionResult> DeleteRoom(string id)
@@ -294,6 +409,31 @@ namespace APP.Controllers
 
             var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
             collectionTransfer.DeleteMany(item => item.room1 == id | item.room2 == id);
+
+            return Ok();
+        }
+
+        // DELETE: api/Manager/drugs/1
+        [HttpDelete("drugs/{id}")]
+        public async Task<IActionResult> DeleteDrug(string id)
+        {
+            var collection = database.GetCollection<Drug>("Drugs");
+            collection.DeleteOne(item => item.name == id);
+
+            return Ok();
+        }
+
+        // DELETE: api/Manager/ingredients/1
+        [HttpDelete("ingredients/{id}")]
+        public async Task<IActionResult> DeleteIngredient(string id)
+        {
+            var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
+            var result = collection.Find(item => true).FirstOrDefault();
+
+            result.ingredients.Remove(id);
+
+            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.ingredients);
+            collection.UpdateMany(item => true, update);
 
             return Ok();
         }

@@ -9,7 +9,7 @@
 
         <link rel="icon" href="logo.jpeg">
 
-        <link rel="stylesheet" type="text/css" href="doctor.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
         <title>USI Team #9</title>
@@ -18,6 +18,97 @@
     <body>
         
         <?php include 'header.html';?>
+
+        <div id="reviewExaminationDiv" class="off">
+
+      
+            <div id="reviewExaminationPopUp">
+                <form id="reportPopUp" class="myForm">
+                    <h1>Report</h1>
+                    <div id="descReport">
+                        <label for="reportDescription">Report description:</label>
+                        <textarea  id="reportDescription"></textarea>
+                    </div>
+                    <div id="equipmentDiv">
+                        <!-- equipmentUsed -->
+                    </div>
+                    <button id="endReview" class="mainBtn">End review</button>
+
+                </form>
+                <form class="basicInfo">
+                    <h1>Medical record</h1>
+                    <div class="myForm">
+                        <h5>First name:&nbsp<span id="patientFName"></span></h5>
+                        <h5>Last name:&nbsp<span id="patientLName"></span></h5>
+                        <div>
+                            <label for="patientHeight">Height:&nbsp</label>
+                            <input id="patientHeight" type="number" min="0"></input>
+                        </div>
+                        <div>
+                            <label for="patientWeight">Weight:&nbsp</label>
+                            <input id="patientWeight" type="number" min="0"></input>
+                        </div>
+                        <div>
+                            <label for="patientBlood">Blood type:&nbsp</label>
+                            <input id="patientBlood"></input>
+                        </div>
+                        
+                        <div>
+                            <div class="listContainer">
+                                <div class="divList">
+                                    <p>Diseases:&nbsp</p>
+
+                                    <select id="diseasesList" multiple>
+                                        <!-- patients diseases -->
+                                    </select>
+                                </div>
+                                <button id="deleteDiseases" class="delBtn"><i data-feather="trash"></i></button>
+                            </div>
+                            <div>
+                                <input id="diseaseInput"></input>
+                                <button id="addDiseases" class="add"><i data-feather="plus"></i></button>
+
+                            </div>
+                        </div>
+                        <div>
+                            <div class="listContainer">
+                                <div class="divList">
+                                    <p>Alergies:&nbsp</p>
+
+                                    <select id="alergiesList" multiple>
+                                        <!-- patients diseases -->
+                                    </select>
+                                </div>
+                                <button id="deleteAlergies" class="delBtn"><i data-feather="trash"></i></button>
+                            </div>
+                            <div>
+                                <input id="alergieInput"></input>
+                                <button id="addAlergies" class="add"><i data-feather="plus"></i></button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <button id="updateMedicalCard" class="mainBtn">Update medical card</button>
+                </form>
+            </div>
+        </div>
+
+        
+        <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
+
+            <div id="reportHeader">
+                <h1>Report</h1>
+                <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
+            </div>
+            <div id="descView">
+                <h3>Report description:</h3>
+                <p id="reportDescriptionNew"></p>
+
+            </div>
+            <div id="reportEquipmentNew">
+
+            </div>
+	    </div>
 
         <div id="examinationPopUp" class="form-container sign-in-container off prompt">
             <form id="examinationForm" class="colDir myForm">
@@ -61,13 +152,8 @@
                 <h1>Welcome back &nbsp; </h1>
             </div>
             <section id="one" class="active">
-                <div class="tableHeaderDiv">
-                    <div id="scheduleOption" class="hideMain">
-                        <label for="scheduleDate">Schedule for date:</label>
-                        <input type="date" id="scheduleDate" name="schedule">
-                        <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
-                    </div>
-                    <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+                <div class="plusDiv">
+                <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
                 </div>
                 <div id="rooms">
                     <div class="tbl-content">
@@ -90,6 +176,39 @@
                     </div>
                 </div>
             </section>
+            <section id="two">
+            <div class="tableHeaderDiv">
+                <div id="scheduleOption" class="scheduleDiv">
+                    <label for="scheduleDateOption">Schedule for date:</label>
+                    <input type="date" id="scheduleDateOption">
+                    <button id="scheduleDateBtn" class="send"><i data-feather="arrow-right-circle"></i></button>
+                </div>
+            </div>
+            <div id="rooms">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Done</th>
+                                <th>Examination room</th>
+                                <th>Type</th>
+                                <th>Urgent</th>
+                                <th>Patient</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="examinationsTableSchedule">
+                            <!-- this is where data from api comes -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </section>
+            <section id="three">
+
+            </section>
         </main>
 
         <!-- <?php include 'footer.html';?> -->
@@ -100,8 +219,7 @@
         <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
             integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
 
-        <script src="doctor.js">
-        </script>
+        <script src="doctor.js"></script>
         <script>
             $(window).on("load resize ", function() {
             var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
