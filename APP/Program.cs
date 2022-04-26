@@ -40,6 +40,12 @@ builder.Services.AddCronJob<TransferService>(c =>
     c.CronExpression = @"0 0 * * *";
 });
 
+builder.Services.AddCronJob<RenovationService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"0 0 * * *";
+});
+
 // Cors policy
 builder.Services.AddCors(options =>
 {
