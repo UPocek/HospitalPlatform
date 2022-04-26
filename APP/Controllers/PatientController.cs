@@ -57,7 +57,7 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        var patient = patients.Find(p => p.id == examination.patinetId).First();
+        var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
 
         var doctors = database.GetCollection<Employee>("Employees");
         var doctor = doctors.Find(d => d.id == examination.doctorId);
@@ -88,7 +88,7 @@ public class PatientController : ControllerBase
         }
 
 
-        var id = examinations.Find(e => true).SortByDescending(e => e.id).First().id;
+        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
         examination.id = id + 1;
         examinations.InsertOne(examination);
 
@@ -112,7 +112,7 @@ public class PatientController : ControllerBase
         }
 
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        Examination oldExaminationData = examinations.Find(item => item.id == examination.id).First();
+        Examination oldExaminationData = examinations.Find(item => item.id == examination.id).FirstOrDefault();
 
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
@@ -122,15 +122,30 @@ public class PatientController : ControllerBase
                 }
         }    
 
+        
+        var rooms = database.GetCollection<Room>("Rooms");
+        var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
+        
+        foreach (var room  in validRooms)
+        {
+            var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
+            if(examinationsInRoom != null){
+                examination.roomName = room.name;
+                break;
+            }
+             
+        }
+
         DateTime dt = DateTime.Today;
         DateTime dtOfExamination = DateTime.Parse(oldExaminationData.dateAndTimeOfExamination);
+        
         if(dt.Day+1<dtOfExamination.Day){
-        var filter = Builders<Examination>.Filter.Eq("id", id);
-        var update = Builders<Examination>.Update.Set("doctor", examination.doctorId);
-        examinations.UpdateOne(filter, update);
-        update = Builders<Examination>.Update.Set("date", examination.dateAndTimeOfExamination);
-        examinations.UpdateOne(filter, update);
-        return Ok();   
+                var filter = Builders<Examination>.Filter.Eq("id", id);
+                var update = Builders<Examination>.Update.Set("doctor", examination.doctorId);
+                examinations.UpdateOne(filter, update);
+                update = Builders<Examination>.Update.Set("date", examination.dateAndTimeOfExamination);
+                examinations.UpdateOne(filter, update);
+                return Ok();   
         }
 
         return BadRequest();
@@ -143,8 +158,9 @@ public class PatientController : ControllerBase
         public async Task<IActionResult> DeleteExamination(string id)
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            Examination examination = examinations.Find(item => item.id == int.Parse(id)).First();
+            Examination examination = examinations.Find(item => item.id == int.Parse(id)).FirstOrDefault();
             var patients = database.GetCollection<Patient>("Patients");
+            
             DateTime dt = DateTime.Today;
             DateTime dtOfExamination = DateTime.Parse(examination.dateAndTimeOfExamination);
             if(dt.Day+1<dtOfExamination.Day){

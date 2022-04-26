@@ -265,7 +265,8 @@ createBtn.addEventListener("click", function (e) {
         };
         postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        postRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
    
 
     });

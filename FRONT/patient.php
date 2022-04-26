@@ -73,7 +73,26 @@
   </section>
 
   <section id="two">
-    
+  <div class="searchDiv">
+  </div>
+  <div id="examinations">
+      <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Type</th>
+                      <th>Doctor</th>
+                      <th>Date</th>
+                      <th>Anamnesis</th>
+                      <th>Urgent</th>
+                    </tr>
+                </thead>
+                <tbody id="searchExaminationTable">
+
+                </tbody>
+                </table>
+            </div>
+        </div>
 </section>
 
   <section id="three">

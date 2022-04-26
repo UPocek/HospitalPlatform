@@ -676,7 +676,6 @@ function submitUpdate(e, updatedExamination, id){
         postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
     }
     else{
@@ -880,11 +879,7 @@ endReviewBtn.addEventListener('click', function(e){
             }
 
             let equipmenForExamination = []
-<<<<<<< HEAD
-            for(let equipmentItem of equipmentUsed){
-=======
             for(equipmentItem of equipmentUsed){
->>>>>>> 1759d8d657d25cbaea461723b86f1010da231eee
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
