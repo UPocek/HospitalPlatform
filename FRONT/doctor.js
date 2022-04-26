@@ -823,7 +823,6 @@ endReviewBtn.addEventListener('click', function(e){
         let children =document.getElementById('equipmentDiv').children
         for (let i = 0; i < children.length; i += 2) {
             if (children[i + 1].value) {
-                console.log(children[i].innerText.split(' ')[3]);
                 if (+children[i].innerText.split(' ')[3] >= +children[i + 1].value) {
                     let el = {
                         name: children[i].innerText.split(' ')[0],
@@ -852,28 +851,43 @@ endReviewBtn.addEventListener('click', function(e){
     roomRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
+                
             }
         }
     }
 
     if (ok){
+        let popUp = document.getElementById('reviewExaminationDiv');
+        popUp.classList.add('off');
+        main.classList.remove('hideMain');
         if (currentExamination['type'] == 'operation'){
             for (let i in roomOfExamination['equipment']){
-                for (equipmentInUse of equipmentUsed){
+                for (let equipmentInUse of equipmentUsed){
                     if (roomOfExamination['equipment'][i]['name'] == equipmentInUse['name']){
                         roomOfExamination['equipment'][i]['quantity'] -= +equipmentInUse['quantity'];
                     }
                 }
             }
+
+            let equipmenForExamination = []
+            for(let equipmentItem of equipmentUsed){
+                equipmenForExamination.push(equipmentItem['name']);
+            }
+            currentExamination['equipmentUsed'] = equipmenForExamination;
             roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
             roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name":roomOfExamination["name"], "type":roomOfExamination["type"],"inRenovation":roomOfExamination["inRenovation"],"equipment":roomOfExamination["equipment"]}));
+        }else{
+            currentExamination['equipmentUsed'] = [];
         }
-        
-    currentExamination['equipmentUsed'] = equipmentUsed;
+    
     reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
     reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis']}));
+    reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis'], 'equipmentUsed':currentExamination['equipmentUsed']}));
     
+    }else{
+        alert('Quantity inputed badly.');
     }
 })
