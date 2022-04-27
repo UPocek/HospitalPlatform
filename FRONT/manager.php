@@ -44,7 +44,7 @@
                 <option value="rest room">Rest room</option>
                 <option value="other">Other</option>
             </select>
-			<button class="mainBtn">OK</button>
+			<button class="mainBtn">Create</button>
 		</form>
 	</div>
 
@@ -57,7 +57,48 @@
 		</form>
 	</div>
 
-  <main>
+    <div id="createDrugPrompt" class="form-container sign-in-container off prompt">
+		<form id="createDrugForm" class="colDir myForm">
+			<h1>Create new drug</h1>
+			<input id="createDrugName" type="text" placeholder="Name"/>
+            <h3>Ingredients: </h3>
+            <div id="selectIngredients" class="ingredients">
+
+            </div>
+			<button class="mainBtn">Create</button>
+		</form>
+	</div>
+
+    <div id="updateDrugPrompt" class="form-container sign-in-container off prompt">
+		<form id="updateDrugForm" class="colDir myForm">
+			<h1></h1>
+            <h3> <span></span> </h3>
+			<input id="updateDrugName" type="text" placeholder="Name"/>
+            <h3>Ingredients: </h3>
+            <div id="updateSelectIngredients" class="ingredients">
+
+            </div>
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+    <div id="createIngredientPrompt" class="form-container sign-in-container off prompt">
+		<form id="createIngredientForm" class="colDir myForm">
+			<h1>Create new ingredient</h1>
+			<input id="createIngredientName" type="text" placeholder="Name"/>
+			<button class="mainBtn">Create</button>
+		</form>
+	</div>
+
+    <div id="updateIngredientPrompt" class="form-container sign-in-container off prompt">
+		<form id="updateIngredientForm" class="colDir myForm">
+			<h1></h1>
+			<input id="updateIngredientName" type="text" placeholder="Name"/>
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+  <main class="myMain">
 
     <div id="hi">
         <h1>Welcome back &nbsp; </h1>
@@ -228,30 +269,118 @@
             </div>
         </form>
     </div>
-
     </section>
 
     <section id="three">
+    <div class="plusDiv">
+        <button id="addDrugBtn" class="add"><i data-feather="plus-circle"></i></button>
+    </div>
+    <div id="drugs">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Ingredients</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="drugTable">
 
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <h2 id="ingredientsStyle" style="text-align:center; margin:5vh;">Ingredients:</h2>
+    <div class="plusDiv">
+        <button id="addIngredientBtn" class="add"><i data-feather="plus-circle"></i></button>
+    </div>
+    <div id="ingredients">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="ingredientTable">
+
+            </tbody>
+            </table>
+        </div>
+    </div>
     </section>
 
     <section id="four">
+        <div id="polls">
+            <h1>Hospital polls</h1>
+            <div id="hospitalPolls">
 
+            </div>
+            <div id="hPolls">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Comment</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hospitalPollsTable">
+
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h1>Doctor polls</h1>
+            <div id="doctorPolls">
+
+            </div>
+            <div id="hPolls">
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Comment</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorPollsTable">
+
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2>Top 3 doctors</h2>
+            <div id="bestDoctors">
+
+            </div>
+            <br><br>
+            <h2>Bottom 3 doctors</h2>
+            <div id="worstDoctors">
+
+            </div>
+
+        </div>
     </section>
       
   </main>
 
   <!-- <?php include 'footer.html';?> -->
 
-
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
     integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="manager.js">
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="manager.js"></script>
   <script>
     $(window).on("load resize ", function() {
     var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();

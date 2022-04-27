@@ -23,19 +23,19 @@
     <div id="createExaminationPrompt" class="form-container sign-in-container off prompt">
 		<form id="createExaminationForm" class="colDir myForm">
 			<h1>Schedule examination</h1>
-      <input id="dateExamination" type="text" placeholder="(yyyy-MM-dd)" /> 
-      <input id="timeExamination" type="text" placeholder="(hh:mm)" /> 
-      <input id="doctorExamination" type = "text" placeholder="Doctor"/>     
-			<button class="mainBtn">OK</button>
+      <input id="timeCreateExamination" type="datetime-local" /> 
+      <select id="doctorCreateExamination" name="doctors"> 
+      </select> 
+      <button class="mainBtn">OK</button>
 		</form>
 	</div>
 
   <div id="editExaminationPrompt" class="form-container sign-in-container off prompt">
 		<form id="editExaminationForm" class="colDir myForm">
 			<h1>Edit examination</h1>
-			<input id="dateExamination" type="text" placeholder="(yyyy-MM-dd)" /> 
-      <input id="timeExamination" type="text" placeholder="(hh:mm)" /> 
-      <input id="doctorExamination" type = "text" placeholder="Doctor"/>     
+      <input id="timeEditExamination" type="datetime-local" /> 
+      <select id="doctorEditExamination" name="doctors"> 
+      </select>    
 			<button class="mainBtn">OK</button>
 		</form>
 	</div>
@@ -43,8 +43,8 @@
   <main>
 
     <div id="hi">
-        <h1>Welcome back &nbsp; </h1>
-    </div>
+          <h1>Welcome back &nbsp; </h1>
+      </div>
  <section id="one" class="active">
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>

@@ -22,7 +22,7 @@
 
   <main id="first" class="myForm">
       <h1 class="mainH">Medical Institution Team #9</h1>
-    <div class="container" id="container">
+    <div class="container container1" id="container">
       <div class="form-container sign-up-container">
         <form id="signUpForm">
           <h1>Create Account</h1>
@@ -66,11 +66,30 @@
         </div>
       </div>
     </div>
+
+    <div class="container2" id="container">
+      <div>
+        <form id="signInForm2">
+          <h1>Sign in</h1>
+          <div class="social-container">
+            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+          <input id="signInEmail2" type="email" placeholder="Email" />
+          <input id="signInPassword2" type="password" placeholder="Password" />
+          <a href="#">Forgot your password?</a>
+          <button class="mainBtn">Sign In</button>
+        </form>
+      </div>
+    </div>
+
   </main>
 
   <?php include 'footer.html';?>
 
   <script src="app.js"></script>
+  <script src="helper.js"></script>
   
   <script>
     const signUpButton = document.getElementById('signUp');
