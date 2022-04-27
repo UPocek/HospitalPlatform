@@ -307,6 +307,7 @@ function editExamination(id){
         putRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         putRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
     });
+    setUpExaminations();
 
 }; 
 

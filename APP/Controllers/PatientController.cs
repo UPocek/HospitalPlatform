@@ -97,7 +97,7 @@ public class PatientController : ControllerBase
 
     // PUT action
     [HttpPut("examinations/{id}")]
-        public async Task<IActionResult> UpdateExamination(string id, Examination examination)
+        public async Task<IActionResult> UpdateExamination(string id,[FromBody] Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
         var patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
@@ -105,6 +105,8 @@ public class PatientController : ControllerBase
        
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         var oldExaminationData = examinations.Find(item => item.id == int.Parse(id)).FirstOrDefault();
+        examination._id = oldExaminationData._id;
+        examination.id = oldExaminationData.id;
 
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
@@ -115,7 +117,7 @@ public class PatientController : ControllerBase
 
         var rooms = database.GetCollection<Room>("Rooms");
         var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
-        
+
         foreach (var room  in validRooms)
         {
             var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
@@ -132,8 +134,7 @@ public class PatientController : ControllerBase
         
         if(dt.AddDays(1) >= dtOfExamination){
             return BadRequest();
-        }
-                
+        } 
         examinations.FindOneAndReplace(e => e.id == int.Parse(id), examination);
         return Ok();
         
