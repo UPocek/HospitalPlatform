@@ -249,14 +249,14 @@ function reviewExamination(id){
         }
     }
 
-    if (examination['done'] != true){
+    if (currentExamination['done'] != true){
         let popUp = document.getElementById('reviewExaminationDiv');
         popUp.classList.remove("off");
         main.classList.add("hideMain");
     
         document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
     
-        if (examination['type'] == "operation"){
+        if (currentExamination['type'] == "operation"){
             let getEquipmentRequest = new XMLHttpRequest();
             getEquipmentRequest.onreadystatechange = function () {
                 if (this.readyState == 4) {
@@ -376,9 +376,9 @@ function reviewReport(id){
     }else{
 
         document.getElementById("reportDescriptionNew").innerText = currentExamination['anamnesis'];
-
+        let equipmentDiv = document.getElementById('reportEquipmentNew');
+        removeAllChildNodes(equipmentDiv);
         if (currentExamination['type'] == "operation"){
-            let equipmentDiv = document.getElementById('reportEquipmentNew');
             equipmentDiv.classList.add('divList');
             let equipmentList = document.createElement('ul');
             let title = document.createElement('h3');
@@ -825,6 +825,8 @@ alergiesAddBtn.addEventListener('click', function(e){
 var endReviewBtn = document.getElementById('endReview');
 
 endReviewBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
     currentExamination['anamnesis'] = document.getElementById('reportDescription').value;
     let ok = true;
     let equipmentUsed = [];
@@ -851,7 +853,8 @@ endReviewBtn.addEventListener('click', function(e){
     reviewExaminationRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Successful review")
+                alert("Successful review");
+                searchSchedule();
             }
         }
     }
@@ -879,7 +882,8 @@ endReviewBtn.addEventListener('click', function(e){
             }
 
             let equipmenForExamination = []
-            for(equipmentItem of equipmentUsed){
+
+            for(let equipmentItem of equipmentUsed){
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
@@ -890,7 +894,12 @@ endReviewBtn.addEventListener('click', function(e){
         }else{
             currentExamination['equipmentUsed'] = [];
         }
-    
+    for (let examination of doctorsExaminations){
+        if (examination["id"] == currentExamination['id']){
+            examination["done"] = true;
+            break;
+        }
+    }
     reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
     reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
