@@ -58,7 +58,7 @@
                         <th>Doctor</th>
                         <th>Date</th>
                         <th>Room</th>
-                        <th>Anamnesis</th>
+                        <!-- <th>Anamnesis</th> -->
                         <th>Urgent</th>
                         <th>Delete</th>
                         <th>Update</th>
@@ -79,8 +79,8 @@
       <div>
          <p>First name:&nbsp<span id="patientFName"></span></p>
          <p>Last name:&nbsp<span id="patientLName"></span></p>
-         <p>Height:&nbsp<span id="patientHeight"></span></p>
-         <p>Weight:&nbsp<span id="patientWeight"></span></p>
+         <p>Height:&nbsp<span id="patientHeight"></span>cm</p>
+         <p>Weight:&nbsp<span id="patientWeight"></span>kg</p>
          <p>Blood type:&nbsp<span id="patientBlood"></span></p>
          <div class="divList">
             <p>Diseases:&nbsp</p>
@@ -109,11 +109,11 @@
           <table cellpadding="0" cellspacing="0" border="0">
               <thead>
                   <tr>
-                      <th>Type</th>
-                      <th>Doctor</th>
-                      <th>Date</th>
-                      <th>Anamnesis</th>
-                      <th>Urgent</th>
+                      <th onclick="sortTable(0)">Type</th>
+                      <th onclick="sortTable(1)">Doctor</th>
+                      <th onclick="sortTable(2)">Date</th>
+                      <th onclick="sortTable(3)">Anamnesis</th>
+                      <th onclick="sortTable(4)">Urgent</th>
                     </tr>
                 </thead>
                 <tbody id="searchExaminationTable">

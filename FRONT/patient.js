@@ -17,7 +17,6 @@ class User {
     }
 }
 var user;
-// var doctor;
 
 // Helpers
 function getParamValue(name) {
@@ -35,24 +34,23 @@ function getParamValue(name) {
     }
 }
 
-// function getDoctor(doctorID){
-//     let request = new XMLHttpRequest();
+function getDoctor(doctorID){
+    let request = new XMLHttpRequest();
 
-//     request.onreadystatechange = function () {
-//         if (this.readyState == 4) {
-//             if (this.status == 200) {
-//                 let response = JSON.parse(this.responseText);
-//                 doctor= new User(response);
-//             }
-//         }
-//     }
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                return new User(response);
+            }
+        }
+    }
 
-//     request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
-//     request.send();
-// }
+    request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
+    request.send();
+}
+
 // Main
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     let request = new XMLHttpRequest();
@@ -176,14 +174,14 @@ function setUpExaminations() {
                     let cRoom = document.createElement("td");
                     cRoom.innerText = examination["room"];
 
-                    let cAnamnesis = document.createElement("td");
-                    let anamnesisBtn = document.createElement("button");
-                    anamnesisBtn.innerHTML = '<i data-feather="file"></i>';
-                    anamnesisBtn.classList.add("updateBtn");
-                    anamnesisBtn.setAttribute("key", examination["anamnesis"]);
-                    anamnesisBtn.addEventListener('click', function (e) {
-                    });
-                    cAnamnesis.appendChild(anamnesisBtn);
+                    // let cAnamnesis = document.createElement("td");
+                    // let anamnesisBtn = document.createElement("button");
+                    // anamnesisBtn.innerHTML = '<i data-feather="file"></i>';
+                    // anamnesisBtn.classList.add("updateBtn");
+                    // anamnesisBtn.setAttribute("key", examination["anamnesis"]);
+                    // anamnesisBtn.addEventListener('click', function (e) {
+                    // });
+                    // cAnamnesis.appendChild(anamnesisBtn);
 
 
                     let cUrgen = document.createElement("td");
@@ -218,7 +216,7 @@ function setUpExaminations() {
                     newRow.appendChild(cDoctor);
                     newRow.appendChild(cDate);
                     newRow.appendChild(cRoom);
-                    newRow.appendChild(cAnamnesis);
+                    // newRow.appendChild(cAnamnesis);
                     newRow.appendChild(cUrgen);
                     newRow.appendChild(one);
                     newRow.appendChild(two);
@@ -233,7 +231,6 @@ function setUpExaminations() {
     //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
-
 
 
 function setUpSearchExaminations(myFilter) {
@@ -562,4 +559,9 @@ function updateExaminationTable(e) {
     }
 
     setUpSearchExaminations(finalFilter);
+}
+
+function sortTable(n){
+    console.log(n);
+
 }
