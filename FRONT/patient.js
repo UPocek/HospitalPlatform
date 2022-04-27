@@ -136,7 +136,7 @@ function setUpMenu() {
 }
 
 function setUpPage() {
-    let hi = document.getElementById("hi");
+    let hi = document.querySelector('#hi h1');
     hi.innerText += `${user.firstName} ${user.lastName}`;
 
     setUpFunctionality();

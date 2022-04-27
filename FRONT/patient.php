@@ -42,9 +42,9 @@
 
   <main>
 
-  <div id="hi">
-        <h1>Welcome back &nbsp; </h1>
-    </div>
+    <div id="hi">
+          <h1>Welcome back &nbsp; </h1>
+      </div>
  <section id="one" class="active">
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
