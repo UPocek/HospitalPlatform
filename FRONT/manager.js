@@ -137,7 +137,7 @@ function renovateRoom(key) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/renovations');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-            postRequest.send(JSON.stringify({ 'room': key, 'startDate': finalFromDate, 'endDate': finalToDate }));
+            postRequest.send(JSON.stringify({ 'room': key, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'simple' }));
         } else {
             alert('Error: Dates were not entered correctly');
         }
@@ -414,7 +414,7 @@ function makeDevide(e) {
         devideRequest.open('POST', 'https://localhost:7291/api/manager/renovationdevide');
         devideRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         devideRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        devideRequest.send(JSON.stringify({ 'room': finalRoom, 'startDate': finalFromDate, 'endDate': finalToDate }));
+        devideRequest.send(JSON.stringify({ 'room': finalRoom, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'devide' }));
     } else {
         alert('Error: Dates were not entered correctly');
     }
@@ -445,7 +445,7 @@ function makeMerge(e) {
         mergeRequest.open('POST', 'https://localhost:7291/api/manager/renovationmerge');
         mergeRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         mergeRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        mergeRequest.send(JSON.stringify({ 'room1': finalRoom1, 'room2': finalRoom2, 'startDate': finalFromDate, 'endDate': finalToDate }));
+        mergeRequest.send(JSON.stringify({ 'room': finalRoom1, 'room2': finalRoom2, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'merge' }));
     } else {
         alert('Error: Informations were not entered correctly');
     }
