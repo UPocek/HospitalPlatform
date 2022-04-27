@@ -95,6 +95,15 @@ public class PatientController : ControllerBase
         return Ok();       
     }
 
+    [HttpPost("examinationRequests")]
+    public async Task<IActionResult> createRequest(ExaminationRequest request)
+    {
+        var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+        requests.InsertOne(request);
+        return Ok(); 
+    }
+
+
     // PUT action
     [HttpPut("examinations/{id}")]
         public async Task<IActionResult> UpdateExamination(string id,[FromBody] Examination examination)
@@ -132,8 +141,12 @@ public class PatientController : ControllerBase
         DateTime dt = DateTime.Today;
         DateTime dtOfExamination = DateTime.Parse(oldExaminationData.dateAndTimeOfExamination);
         
-        if(dt.AddDays(1) >= dtOfExamination){
-            return BadRequest();
+        if(dt.AddDays(2) >= dtOfExamination){
+            ExaminationRequest request = new ExaminationRequest();
+            request.examination = examination;
+            request.status = 1;
+            await createRequest(request);
+            return Ok();
         } 
         examinations.FindOneAndReplace(e => e.id == int.Parse(id), examination);
         return Ok();
@@ -153,9 +166,13 @@ public class PatientController : ControllerBase
             DateTime dt = DateTime.Today;
             DateTime dtOfExamination = DateTime.Parse(examination.dateAndTimeOfExamination);
 
-            if(dt.AddDays(1) >= dtOfExamination){
-                return BadRequest();
-            }
+        if(dt.AddDays(2) >= dtOfExamination){
+            ExaminationRequest request = new ExaminationRequest();
+            request.examination = examination;
+            request.status = 0;
+            await createRequest(request);
+            return Ok();
+        }
                 
             examinations.DeleteOne(item => item.id == int.Parse(id));
             return Ok();
@@ -165,6 +182,9 @@ public class PatientController : ControllerBase
             //izbrisi iz liste pregleda kod pacijenta i dodaj u istoriju izmena
            
         }
+
+
+
 
 }
 }
