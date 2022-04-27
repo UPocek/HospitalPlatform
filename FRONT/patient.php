@@ -41,11 +41,11 @@
 	</div>
 
   <main>
-
-    <div id="hi">
+ 
+ <section id="one" class="active">
+     <div id="hi">
           <h1>Welcome back &nbsp; </h1>
       </div>
- <section id="one" class="active">
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
@@ -73,8 +73,37 @@
   </section>
 
   <section id="two">
-  <div class="searchDiv">
-  </div>
+  <div id="patientInfo" >
+    <div class="basicInfo">
+      <h1>Medical record</h1>
+      <div>
+         <p>First name:&nbsp<span id="patientFName"></span></p>
+         <p>Last name:&nbsp<span id="patientLName"></span></p>
+         <p>Height:&nbsp<span id="patientHeight"></span></p>
+         <p>Weight:&nbsp<span id="patientWeight"></span></p>
+         <p>Blood type:&nbsp<span id="patientBlood"></span></p>
+         <div class="divList">
+            <p>Diseases:&nbsp</p>
+            <ul id="diseasesList">
+              <!-- patients diseases -->
+            </ul>
+          </div>
+          <div class="divList">
+            <p>Alergies:&nbsp</p>
+            <ul id="alergiesList">
+              <!-- patients diseases -->
+            </ul>
+          </div>
+        </div>
+      </div>
+   </div>
+
+   <form id="patientFilters" class="myForm ">
+        <div>
+        <label for="examinationSearch">Search:</label>
+        <input id="examinationSearch" type="text" value="" placeholder="Enter search term">
+      </div>
+      </form>
   <div id="examinations">
       <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0">
@@ -96,25 +125,33 @@
 </section>
 
   <section id="three">
-  <div id="doctors">
-        <div class="tbl-content">
-            <table cellpadding="0" cellspacing="0" border="0">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Specialization</th>
-                    <th>email</th>
-                    <th>Schedule examination</th>
-                </tr>
-            </thead>
-            <tbody id="doctorsTable">
+    <div>
+      <form id="patientFilters" class="myForm">
+        <div id="search">
+        <label for="doctorSearch">Search:</label>
+        <input id="doctorSearch" type="text" value="" placeholder="Enter search term">
+      </div>
+      </form>
+      
+      <div id="doctors">
+            <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Specialization</th>
+                        <th>email</th>
+                        <th>Schedule examination</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorsTable">
 
-            </tbody>
-            </table>
+                </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
-
-
 </section>
 
    <section id="four">

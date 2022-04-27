@@ -146,9 +146,10 @@ function setUpPage() {
 function setUpFunctionality() {
     setUpExaminations();
     setUpDoctors();
+    setUpMedicalRecord();
     doctorOptions("doctorCreateExamination");
     doctorOptions("doctorEditExamination");
-    setUpSearchExaminations();
+    setUpSearchExaminations('empty');
 
 }
 
@@ -235,7 +236,7 @@ function setUpExaminations() {
 
 
 
-function setUpSearchExaminations() {
+function setUpSearchExaminations(myFilter) {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -244,8 +245,23 @@ function setUpSearchExaminations() {
                 let table = document.getElementById("searchExaminationTable");
                 table.innerHTML = "";
                 for (let i in mainResponse) {
-
                     let examination = mainResponse[i];
+                    if (myFilter.includes('term')) {
+                        let tokens = myFilter.split('&');
+                        let filterValue;
+                        for (let token of tokens) {
+                            if (token.includes('term')) {
+                                filterValue = token.split('|')[1];
+                                break;
+                            }
+                        }
+                        if (!(examination['type'].includes(filterValue) || examination['doctor'] == filterValue || (new Date(examination["date"])).toLocaleString().includes(filterValue) || examination['anamnesis'].includes(filterValue) || (examination['urgent'].toString()).includes(filterValue))) {
+                            continue;
+                        }
+                    }
+
+
+
                     let newRow = document.createElement("tr");
 
                     let cType = document.createElement("td");
@@ -396,45 +412,45 @@ function doctorOptions(elementID){
 }
 
 
-function setUpSearchExaminations() {
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
-                let table = document.getElementById("searchExaminationTable");
-                table.innerHTML = "";
-                for (let i in mainResponse) {
+// function setUpSearchExaminations() {
+//     let request = new XMLHttpRequest();
+//     request.onreadystatechange = function () {
+//         if (this.readyState == 4) {
+//             if (this.status == 200) {
+//                 mainResponse = JSON.parse(this.responseText);
+//                 let table = document.getElementById("searchExaminationTable");
+//                 table.innerHTML = "";
+//                 for (let i in mainResponse) {
 
-                    let examination = mainResponse[i];
-                    let newRow = document.createElement("tr");
+//                     let examination = mainResponse[i];
+//                     let newRow = document.createElement("tr");
 
-                    let cType = document.createElement("td");
-                    cType.innerText = examination["type"];
-                    let cDoctor = document.createElement("td");
-                    cDoctor.innerText = examination["doctor"];
-                    let cDate = document.createElement("td");
-                    cDate.innerText = (new Date(examination["date"])).toLocaleString();
-                    let cAnamnesis = document.createElement("td");
-                    cAnamnesis.innerText = examination["anamnesis"];
-                    let cUrgen = document.createElement("td");
-                    cUrgen.innerText = examination["urgent"]
+//                     let cType = document.createElement("td");
+//                     cType.innerText = examination["type"];
+//                     let cDoctor = document.createElement("td");
+//                     cDoctor.innerText = examination["doctor"];
+//                     let cDate = document.createElement("td");
+//                     cDate.innerText = (new Date(examination["date"])).toLocaleString();
+//                     let cAnamnesis = document.createElement("td");
+//                     cAnamnesis.innerText = examination["anamnesis"];
+//                     let cUrgen = document.createElement("td");
+//                     cUrgen.innerText = examination["urgent"]
 
 
-                    newRow.appendChild(cType)
-                    newRow.appendChild(cDoctor);
-                    newRow.appendChild(cDate);
-                    newRow.appendChild(cAnamnesis);
-                    newRow.appendChild(cUrgen);
-                    table.appendChild(newRow);
-                }
-            }
-        }
-    }
+//                     newRow.appendChild(cType)
+//                     newRow.appendChild(cDoctor);
+//                     newRow.appendChild(cDate);
+//                     newRow.appendChild(cAnamnesis);
+//                     newRow.appendChild(cUrgen);
+//                     table.appendChild(newRow);
+//                 }
+//             }
+//         }
+//     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
-    request.send();
-}
+//     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
+//     request.send();
+// }
 
 //GET - Doctors
 function setUpDoctors() {
@@ -481,4 +497,69 @@ function setUpDoctors() {
 
     request.open('GET', 'https://localhost:7291/api/patient/doctors');
     request.send();
+}
+
+function setUpMedicalRecord(){
+     let getMedicalRecordRequest = new XMLHttpRequest();
+        
+        getMedicalRecordRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    let patient = JSON.parse(this.responseText);
+                    currentMedicalRecord = patient["medicalRecord"];
+                    
+                    let patientFName = document.getElementById("patientFName");
+                    patientFName.setAttribute('id', 'patientId')
+                    patientFName.setAttribute('key', patient['id']);
+                    patientFName.innerText = patient["firstName"];
+                    let patientLName = document.getElementById("patientLName");
+                    patientLName.innerText = patient["lastName"];
+                    let patientHeight = document.getElementById("patientHeight");
+                    patientHeight.innerText = patient["medicalRecord"]["height"];
+                    let patientWeight = document.getElementById("patientWeight");
+                    patientWeight.innerText = patient["medicalRecord"]["weight"];
+                    let patientBlood = document.getElementById("patientBlood");
+                    patientBlood.innerText = patient["medicalRecord"]["bloodType"];
+                    let patientDiseases = document.getElementById("diseasesList");
+                    for (let disease of currentMedicalRecord['diseases']){
+                        let diseaseItem = document.createElement('option');
+                        diseaseItem.innerText = disease;
+                        patientDiseases.appendChild(diseaseItem);
+                    }
+                    let patientAlergies = document.getElementById("alergiesList");
+                    for (let alergie of currentMedicalRecord['alergies']){
+                        let alergieItem = document.createElement('option');
+                        alergieItem.innerText = alergie;
+                        patientAlergies.appendChild(alergieItem);
+                    }
+                }
+            }
+        }
+        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + user.id);
+        getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        getMedicalRecordRequest.send();
+}
+
+
+var examinationSearchFilter = document.getElementById('examinationSearch');
+
+examinationSearchFilter.addEventListener('input', updateExaminationTable);
+
+function updateExaminationTable(e) {
+    e.preventDefault();
+
+    let finalFilter = '';
+    let filter = examinationSearchFilter.value;
+
+    if (filter) {
+        finalFilter += `term|${filter}&`;
+    }
+    if (finalFilter.endsWith('&')) {
+        finalFilter = finalFilter.slice(0, -1);
+    }
+    if (!finalFilter) {
+        finalFilter = 'empty';
+    }
+
+    setUpSearchExaminations(finalFilter);
 }

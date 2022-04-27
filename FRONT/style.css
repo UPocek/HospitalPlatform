@@ -1841,6 +1841,9 @@ footer {
     margin: 0%;
 }
 
+
+
+
 /* Hi */
 
 #hi {
@@ -2062,6 +2065,15 @@ td button {
 }
 
 /* Equipment */
+
+#patientFilters {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin: 1.25rem auto;
+    justify-content: center;
+    align-items: center;
+}
 
 #filters {
     display: flex;
