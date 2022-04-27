@@ -64,10 +64,14 @@ public class PatientController : ControllerBase
 
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
-                if(item.dateAndTimeOfExamination == examination.dateAndTimeOfExamination){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+                if(examinationBegin > itemBegin && examinationBegin < itemEnd || examinationEnd > itemBegin && examinationEnd < itemEnd){
                         return BadRequest();
                 }
-        }       
+        }        
 
         var rooms = database.GetCollection<Room>("Rooms");
         var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
@@ -119,10 +123,14 @@ public class PatientController : ControllerBase
 
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
-                if(item.dateAndTimeOfExamination == examination.dateAndTimeOfExamination){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+                if(examinationBegin > itemBegin && examinationBegin < itemEnd || examinationEnd > itemBegin && examinationEnd < itemEnd){
                         return BadRequest();
                 }
-        }       
+        }        
 
         var rooms = database.GetCollection<Room>("Rooms");
         var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
