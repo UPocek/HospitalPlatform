@@ -676,7 +676,6 @@ function submitUpdate(e, updatedExamination, id){
         postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));
     }
     else{

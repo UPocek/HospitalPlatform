@@ -6,12 +6,18 @@ class User {
         this.lastName = data["lastName"];
         this.email = data["email"];
         this.role = data["role"];
-        if (this.role == "patient") {
-            this.medicalRecord = data["medicalRecord"];
+        if (this.role == 'doctor') {
+            this.specialization = data['specialization'];
+            this.score = data['score'];
+            this.freeDays = data['freeDays'];
+            this.examinations = data['examinations'];
+        } else if (this.role == 'patient') {
+            this.medicalRecord = data['medicalRecord'];
         }
     }
 }
 var user;
+// var doctor;
 
 // Helpers
 function getParamValue(name) {
@@ -29,9 +35,26 @@ function getParamValue(name) {
     }
 }
 
+// function getDoctor(doctorID){
+//     let request = new XMLHttpRequest();
+
+//     request.onreadystatechange = function () {
+//         if (this.readyState == 4) {
+//             if (this.status == 200) {
+//                 let response = JSON.parse(this.responseText);
+//                 doctor= new User(response);
+//             }
+//         }
+//     }
+
+//     request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
+//     request.send();
+// }
 // Main
 
-window.addEventListener("load", function () {
+
+
+document.addEventListener('DOMContentLoaded', function () {
     let request = new XMLHttpRequest();
 
     request.onreadystatechange = function () {
@@ -46,6 +69,7 @@ window.addEventListener("load", function () {
     }
 
     request.open('GET', 'https://localhost:7291/api/my/users/' + id);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
 
@@ -70,6 +94,7 @@ function showWindow(section) {
 }
 
 var main = document.getElementsByTagName("main")[0];
+var jwtoken = getParamValue('token');
 var id = getParamValue('id');
 var date = new Date();
 
@@ -111,15 +136,20 @@ function setUpMenu() {
 }
 
 function setUpPage() {
-    let hi = document.getElementById("hi");
-    hi.innerText += user.firstName + " " + user.lastName;
+    let hi = document.querySelector('#hi h1');
+    hi.innerText += `${user.firstName} ${user.lastName}`;
 
-    setUpExaminations();
+    setUpFunctionality();
 }
 
 
 function setUpFunctionality() {
-    getDoctors();
+    setUpExaminations();
+    setUpDoctors();
+    doctorOptions("doctorCreateExamination");
+    doctorOptions("doctorEditExamination");
+    setUpSearchExaminations();
+
 }
 
 var mainResponse;
@@ -132,16 +162,16 @@ function setUpExaminations() {
                 let table = document.getElementById("examinationTable");
                 table.innerHTML = "";
                 for (let i in mainResponse) {
+
                     let examination = mainResponse[i];
                     let newRow = document.createElement("tr");
 
                     let cType = document.createElement("td");
                     cType.innerText = examination["type"];
                     let cDoctor = document.createElement("td");
-                    //OVO IZMENI ISPISUJE ID DOKTORA, A NE IME I PREZIME
                     cDoctor.innerText = examination["doctor"];
                     let cDate = document.createElement("td");
-                    cDate.innerText = examination["date"].substring(0,10) + "\n" +  examination["date"].substring(11,19);
+                    cDate.innerText = (new Date(examination["date"])).toLocaleString();
                     let cRoom = document.createElement("td");
                     cRoom.innerText = examination["room"];
 
@@ -167,7 +197,6 @@ function setUpExaminations() {
                     delBtn.addEventListener('click', function (e) {
                         deleteExamination(this.getAttribute('key'));
                     });
-                    one.appendChild(delBtn);
 
                     let two = document.createElement("td");
                     let putBtn = document.createElement("button");
@@ -177,7 +206,12 @@ function setUpExaminations() {
                     putBtn.addEventListener('click', function (e) {
                         editExamination(this.getAttribute('key'));
                     });
-                    two.appendChild(putBtn);
+
+                    if(examination['type'] == 'visit'){
+                        one.appendChild(delBtn);
+                        two.appendChild(putBtn);
+
+                    }
 
                     newRow.appendChild(cType)
                     newRow.appendChild(cDoctor);
@@ -189,13 +223,13 @@ function setUpExaminations() {
                     newRow.appendChild(two);
                     table.appendChild(newRow);
                     feather.replace();
-                    setUpFunctionality()
                 }
             }
         }
     }
 
     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
+    //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -214,30 +248,37 @@ createBtn.addEventListener("click", function (e) {
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
-        // let postRequest = new XMLHttpRequest();
+        let examinationDate = document.getElementById("timeCreateExamination").value;      
+        let doctor = document.getElementById("doctorCreateExamination").value;
+   
+        let postRequest = new XMLHttpRequest();
 
-        // postRequest.onreadystatechange = function () {
-        //     if (this.readyState == 4) {
-        //         if (this.status == 200) {
-        //             alert("Examination sucessfuly created");
-        //             setUpRooms();
-        //         } else {
-        //             alert("Error: Examination can't be created");
-        //         }
-        //     }
-        // }
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Examination sucessfuly created");
+                    setUpExaminations();
+                } else {
+                    alert("Error: Entered examination informations are invalid");
+                }
+            }
+        };
+        postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
+        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
+   
 
     });
 
 });
 
 
-//PUT - Examination
-function editExamination(key) {
+//PUT - Examination    
+function editExamination(id){ 
     let prompt = document.getElementById("editExaminationPrompt");
     prompt.classList.remove("off");
     main.classList.add("hideMain");
-
     let form = document.getElementById("editExaminationForm");
 
     form.addEventListener('submit', function (e) {
@@ -245,21 +286,30 @@ function editExamination(key) {
         main.classList.remove("hideMain");
         e.preventDefault();
         e.stopImmediatePropagation();
-        // let putRequest = new XMLHttpRequest();
+        let examinationDate = document.getElementById("timeEditExamination").value;      
+        let doctor = document.getElementById("doctorEditExamination").value;
 
-        // putRequest.onreadystatechange = function () {
-        //     if (this.readyState == 4) {
-        //         if (this.status == 200) {
-        //             alert("Selected examinaton was successfully edited");
-        //             setUpRooms();
-        //         } else {
-        //             alert("Error: You can't edit this examination");
-        //         }
-        //     }
-        // }
+        let putRequest = new XMLHttpRequest();
 
+        putRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Examination sucessfuly updated");
+                    setUpExaminations();
+
+                } else {
+                    alert("Error: Entered examination informations are invalid");
+                }
+            }
+        };
+        putRequest.open('PUT', 'https://localhost:7291/api/patient/examinations/'+ id);
+        putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        putRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        putRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
     });
-}
+    setUpExaminations();
+
+}; 
 
 //DELETE - Examination
 function deleteExamination(key) {
@@ -269,21 +319,84 @@ function deleteExamination(key) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Selected examination was successfully deleted");
-                setUpRooms();
+                setUpExaminations();
             } else {
                 alert("Error: Selected examination couldn't be deleted");
             }
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examination/' + key)
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examinations/' + key)
     deleteRequest.send();
 }
 
 
+function doctorOptions(elementID){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let options = document.getElementById(elementID);
+                for (var i in mainResponse) {
+                    let doctor = mainResponse[i];
+                    let newOption = document.createElement("option");
+                    newOption.value = doctor['id'];
+                    newOption.innerText = doctor["firstName"] + " " + doctor["lastName"];
+  
+                    options.appendChild(newOption);
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/patient/doctors');
+    request.send();
+}
+
+
+function setUpSearchExaminations() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById("searchExaminationTable");
+                table.innerHTML = "";
+                for (let i in mainResponse) {
+
+                    let examination = mainResponse[i];
+                    let newRow = document.createElement("tr");
+
+                    let cType = document.createElement("td");
+                    cType.innerText = examination["type"];
+                    let cDoctor = document.createElement("td");
+                    cDoctor.innerText = examination["doctor"];
+                    let cDate = document.createElement("td");
+                    cDate.innerText = (new Date(examination["date"])).toLocaleString();
+                    let cAnamnesis = document.createElement("td");
+                    cAnamnesis.innerText = examination["anamnesis"];
+                    let cUrgen = document.createElement("td");
+                    cUrgen.innerText = examination["urgent"]
+
+
+                    newRow.appendChild(cType)
+                    newRow.appendChild(cDoctor);
+                    newRow.appendChild(cDate);
+                    newRow.appendChild(cAnamnesis);
+                    newRow.appendChild(cUrgen);
+                    table.appendChild(newRow);
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
+    request.send();
+}
 
 //GET - Doctors
-function getDoctors() {
+function setUpDoctors() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
