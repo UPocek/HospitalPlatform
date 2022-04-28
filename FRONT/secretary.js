@@ -20,13 +20,16 @@ var user;
 function showWindow(section) {
     let sectionOne = document.getElementById('one');
     let sectionTwo = document.getElementById('two');
+    let sectionThree = document.getElementById('three');
 
     sectionOne.classList.remove('active');
     sectionTwo.classList.remove('active');
+    sectionThree.classList.remove('active');
 
     switch (section) {
         case 1: sectionOne.classList.add('active'); break;
         case 2: sectionTwo.classList.add('active'); break;
+        case 3: sectionThree.classList.add('active'); break;
     }
 }
 
@@ -58,17 +61,24 @@ function setUpMenu() {
     <li id="option2" class="navbar__item">
         <a class="navbar__link"><i data-feather="user-x"></i><span>Blocked Patients</span></a>
     </li>
+    <li id="option3" class="navbar__item">
+        <a class="navbar__link"><i data-feather="inbox"></i><span>Examination requests</span></a>
+    </li>
     `;
     feather.replace();
 
     let menuItem1 = document.getElementById("option1");
     let menuItem2 = document.getElementById("option2");
+    let menuItem3 = document.getElementById("option3");
 
     menuItem1.addEventListener('click', (e) => {
         showWindow(1);
     });
     menuItem2.addEventListener('click', (e) => {
         showWindow(2);
+    });
+    menuItem3.addEventListener('click', (e) => {
+        showWindow(3);
     });
 }
 
