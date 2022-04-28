@@ -84,6 +84,7 @@ function setUpMenu() {
 
 function setUpFunctionality() {
     setUpBlockedPatients();
+    setupExaminationRequests()
 }
 
 var mainResponse;
@@ -239,6 +240,85 @@ function setUpBlockedPatients(){
     }
 
     request.open('GET', 'https://localhost:7291/api/secretary/patients/blocked');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+
+function setupExaminationRequests() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById('examinationRequestTable');
+                table.innerHTML = '';
+                for (let i in mainResponse) {
+                    let examinationRequest = mainResponse[i];
+
+                    let examination = examinationRequest['examination']
+
+                    let newRow = document.createElement('tr');
+
+                    let examinationType = document.createElement('td');
+                    examinationType.innerText = examination['type'];
+                    let examinationDoctor = document.createElement('td');
+                    examinationDoctor.innerText = examination['doctor'];
+                    let examinationDate = document.createElement('td');
+                    examinationDate.innerText = examination['date'];
+                    let examinationRoom = document.createElement('td');
+                    examinationRoom.innerText = examination['room'];
+                    let examinationPatient = document.createElement('td');
+                    examinationPatient.innerText = examination['patient'];
+                    let examinationChange = document.createElement('td');
+
+                    let three  = document.createElement('td');
+
+                    if (examinationRequest['status'] == '0'){
+                        examinationChange.innerText = 'DELETION'
+                    }
+                    else{
+                        examinationChange.innerText = 'MODIFICATION'
+                        let oldExamination = document.createElement('button');
+                        oldExamination.innerHTML = '<i data-feather="user"></i>';
+                        oldExamination.classList.add('acceptBtn');
+                        three.appendChild(oldExamination);
+                    }
+
+                    let one = document.createElement('td');
+                    let acceptBtn = document.createElement('button');
+                    acceptBtn.innerHTML = '<i data-feather="check"></i>';
+                    acceptBtn.classList.add('acceptBtn');
+                    one.classList.add('smallerWidth');
+                    one.appendChild(acceptBtn);
+
+                    let two = document.createElement('td');
+                    let declineBtn = document.createElement('button');
+                    declineBtn.innerHTML = '<i data-feather="x"></i>';
+                    declineBtn.classList.add('declineBtn');
+                    two.classList.add('smallerWidth')
+                    two.appendChild(declineBtn);
+
+                    three.classList.add('smallerWidth');
+
+                    newRow.appendChild(examinationType);
+                    newRow.appendChild(examinationDoctor);
+                    newRow.appendChild(examinationDate);
+                    newRow.appendChild(examinationRoom);
+                    newRow.appendChild(examinationPatient);
+                    newRow.appendChild(examinationChange);
+                    newRow.appendChild(one);
+                    newRow.appendChild(two);
+                    newRow.appendChild(three);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+                setUpFunctionality();
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/examinationRequests');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }

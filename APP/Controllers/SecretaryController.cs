@@ -123,5 +123,14 @@ namespace APP.Controllers
             return Ok();   
         }
 
+        // GET by Id: api/Secretary/examinationRequests
+        [HttpGet("examinationRequests")]
+        public async Task<List<ExaminationRequest>> GetExaminationRequests()
+        {
+            var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            
+            return collection.Find(item => true).ToList();
+        }
+
     }
 }

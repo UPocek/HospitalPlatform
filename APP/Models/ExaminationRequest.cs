@@ -4,6 +4,10 @@ using System.Text.Json.Serialization;
 
 public class ExaminationRequest
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? _id { get; set; }
+    
     [BsonElement("examination")]
     [JsonPropertyName("examination")]
     public Examination examination {get; set;}
