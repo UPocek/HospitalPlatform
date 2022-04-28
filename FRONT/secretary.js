@@ -224,6 +224,17 @@ function setUpBlockedPatients(){
                     });
                     one.appendChild(unblockBtn);
 
+                    let two = document.createElement("td");
+                    two.classList.add('smallerWidth');
+                    let delBtn = document.createElement("button");
+                    delBtn.innerHTML = '<i data-feather="trash"></i>';
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', patient['id']);
+                    delBtn.addEventListener('click', function (e) {
+                        deletePatient(this.getAttribute('key'));
+                    });
+                    two.appendChild(delBtn);
+
                     newRow.appendChild(pName);
                     newRow.appendChild(pSurname);
                     newRow.appendChild(pEmail);
@@ -232,6 +243,7 @@ function setUpBlockedPatients(){
                     newRow.appendChild(pMedRecord);
                     newRow.appendChild(pBlockedBy);
                     newRow.appendChild(one);
+                    newRow.appendChild(two);
                     table.appendChild(newRow);
                     feather.replace();
                 }
