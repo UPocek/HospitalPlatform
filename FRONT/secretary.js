@@ -101,11 +101,10 @@ function setUpPatients() {
                     pId.innerText = patient['id'];
                     let pMedRecord = document.createElement('td');
                     let recordBtn = document.createElement('button');
-                    recordBtn.innerHTML = '<i data-feather="file-text"></i>';;
-                    recordBtn.classList.add('recordBtn');
-                    recordBtn.setAttribute("key", patient["id"]);
+                    recordBtn.innerHTML = '<i data-feather="user"></i>';
+                    recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
-                        window.location.replace("patientMedicalCard.php" + "?patientId=" + recordBtn.getAttribute("key") + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
+                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
                     });
                     pMedRecord.appendChild(recordBtn);
 
