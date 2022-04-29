@@ -145,7 +145,7 @@
                     </tr>
                 </thead>
                 <tbody id="examinationRequestTable">
-                    <!-- this is where data from api comes -->
+                   
                 </tbody>
             </table>
         </div>

@@ -220,7 +220,7 @@ function setUpBlockedPatients(){
                     unblockBtn.classList.add('unblockBtn');
                     unblockBtn.setAttribute('key', patient['id']);
                     unblockBtn.addEventListener('click', function (e) {
-                        unblockPatient(this.getAttribute('key'));
+                        unblockPatient(this.getAttribute('key'),e);
                     });
                     one.appendChild(unblockBtn);
 
@@ -294,6 +294,10 @@ function setupExaminationRequests() {
                         let oldExamination = document.createElement('button');
                         oldExamination.innerHTML = '<i data-feather="user"></i>';
                         oldExamination.classList.add('acceptBtn');
+                        oldExamination.setAttribute('key', examinationRequest['_id']);
+                        oldExamination.addEventListener('click', function (e) {
+                        acceptRequest(this.getAttribute('key'));
+                        });
                         three.appendChild(oldExamination);
                     }
 
@@ -301,7 +305,7 @@ function setupExaminationRequests() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
-                    acceptBtn.setAttribute('key', examination['_id']);
+                    acceptBtn.setAttribute('key', examinationRequest['_id']);
                     acceptBtn.addEventListener('click', function (e) {
                         acceptRequest(this.getAttribute('key'));
                     });
@@ -312,7 +316,7 @@ function setupExaminationRequests() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
-                    declineBtn.setAttribute('key', examination['_id']);
+                    declineBtn.setAttribute('key', examinationRequest['_id']);
                     declineBtn.addEventListener('click', function (e) {
                         declineRequest(this.getAttribute('key'));
                     });
@@ -333,7 +337,6 @@ function setupExaminationRequests() {
                     table.appendChild(newRow);
                     feather.replace();
                 }
-                setUpFunctionality();
             }
         }
     }
@@ -395,7 +398,7 @@ function updatePatient(key) {
                 let fWeight = document.getElementById('editPatientWeight');
                 fWeight.value = medRecord['weight'];
                 let fBloodType = document.getElementById('editPatientBloodType');
-                fBloodType.value = medRecord['bloodType'];
+                fBloodType.value = medRecord['bloodType'];  
 
                 let form = document.getElementById('editPatientForm');
 
@@ -573,7 +576,9 @@ function blockPatient(key){
     putRequest.send();
 }
 
-function unblockPatient(key){
+function unblockPatient(key,e){
+    e.stopImmediatePropagation();
+    e.preventDefault();
     let putRequest = new XMLHttpRequest();
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -598,7 +603,7 @@ function acceptRequest(key){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination request accepted");
-                setUpPatients();
+                setupExaminationRequests();
             }else{
                 alert(this.responseText);
             }
@@ -617,7 +622,7 @@ function declineRequest(key){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination request declined");
-                setUpPatients();
+                setupExaminationRequests();
             }else{
                 alert(this.responseText);
             }
