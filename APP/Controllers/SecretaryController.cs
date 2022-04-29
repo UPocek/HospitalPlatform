@@ -105,7 +105,8 @@ namespace APP.Controllers
             patientCollection.DeleteOne(p => p.id == id);
             
             var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-            examinationCollection.Find(e => (e.patinetId == id && DateTime.Parse(e.dateAndTimeOfExamination) >= DateTime.Now));
+            var filter = Builders<Examination>.Filter.Lt("date", DateTime.Now.ToString()) & Builders<Examination>.Filter.Eq("patient", id);
+            examinationCollection.DeleteMany(filter);
 
             return Ok(); 
         }
