@@ -102,25 +102,33 @@ function setUpPatients() {
 
                     let pName = document.createElement('td');
                     pName.innerText = patient['firstName'];
+
                     let pSurname = document.createElement('td');
                     pSurname.innerText = patient['lastName'];
+
                     let pEmail = document.createElement('td');
                     pEmail.innerText = patient['email'];
+
                     let pPassword = document.createElement('td');
                     pPassword.innerText = patient['password'];
+
                     let pId = document.createElement('td');
                     pId.innerText = patient['id'];
+
                     let pMedRecord = document.createElement('td');
+
                     let recordBtn = document.createElement('button');
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
                         window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
                     });
+
                     pMedRecord.appendChild(recordBtn);
 
-                    let one = document.createElement('td');
-                    one.classList.add('smallerWidth');
+                    let delBtnContainer = document.createElement('td');
+                    delBtnContainer.classList.add('smallerWidth');
+
                     let delBtn = document.createElement('button');
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add('delBtn');
@@ -128,10 +136,12 @@ function setUpPatients() {
                     delBtn.addEventListener('click', function (e) {
                         deletePatient(this.getAttribute('key'));
                     });
-                    one.appendChild(delBtn);
 
-                    let two = document.createElement('td');
-                    two.classList.add('smallerWidth');
+                    delBtnContainer.appendChild(delBtn);
+
+                    let putBtnContainer = document.createElement('td');
+                    putBtnContainer.classList.add('smallerWidth');
+
                     let putBtn = document.createElement('button');
                     putBtn.innerHTML = '<i data-feather="edit-2"></i>';
                     putBtn.classList.add('updateBtn');
@@ -139,10 +149,12 @@ function setUpPatients() {
                     putBtn.addEventListener('click', function (e) {
                         updatePatient(this.getAttribute('key'));
                     });
-                    two.appendChild(putBtn);
 
-                    let three = document.createElement('td');
-                    three.classList.add('smallerWidth');
+                    putBtnContainer.appendChild(putBtn);
+
+                    let blockBtnContainer = document.createElement('td');
+                    blockBtnContainer.classList.add('smallerWidth');
+
                     let blockBtn = document.createElement('button');
                     blockBtn.innerHTML = '<i data-feather="x-octagon"></i>';;
                     blockBtn.classList.add('blockBtn');
@@ -150,7 +162,8 @@ function setUpPatients() {
                     blockBtn.addEventListener('click', function (e) {
                         blockPatient(this.getAttribute('key'));
                     });
-                    three.appendChild(blockBtn);
+
+                    blockBtnContainer.appendChild(blockBtn);
 
                     newRow.appendChild(pName);
                     newRow.appendChild(pSurname);
@@ -158,9 +171,9 @@ function setUpPatients() {
                     newRow.appendChild(pPassword);
                     newRow.appendChild(pId);
                     newRow.appendChild(pMedRecord);
-                    newRow.appendChild(one);
-                    newRow.appendChild(two);
-                    newRow.appendChild(three);
+                    newRow.appendChild(delBtnContainer);
+                    newRow.appendChild(putBtnContainer);
+                    newRow.appendChild(blockBtnContainer);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -188,24 +201,33 @@ function setUpBlockedPatients(){
 
                     let pName = document.createElement('td');
                     pName.innerText = patient['firstName'];
+
                     let pSurname = document.createElement('td');
                     pSurname.innerText = patient['lastName'];
+
                     let pEmail = document.createElement('td');
                     pEmail.innerText = patient['email'];
+
                     let pPassword = document.createElement('td');
                     pPassword.innerText = patient['password'];
+
                     let pId = document.createElement('td');
                     pId.innerText = patient['id'];
+
                     let pMedRecord = document.createElement('td');
+
                     let recordBtn = document.createElement('button');
+
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
                         window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
                     });
+
                     pMedRecord.appendChild(recordBtn);
 
                     let pBlockedBy = document.createElement('td');
+
                     if (patient['active'] == "1"){
                         pBlockedBy.innerText = 'SECRETARY'
                     }
@@ -213,8 +235,9 @@ function setUpBlockedPatients(){
                         pBlockedBy.innerText = 'SYSTEM';
                     }
 
-                    let one = document.createElement("td");
-                    one.classList.add('smallerWidth');
+                    let unblockBtnContainer = document.createElement("td");
+                    unblockBtnContainer.classList.add('smallerWidth');
+
                     let unblockBtn = document.createElement("button");
                     unblockBtn.innerHTML = '<i data-feather="user-check"></i>';
                     unblockBtn.classList.add('unblockBtn');
@@ -222,10 +245,12 @@ function setUpBlockedPatients(){
                     unblockBtn.addEventListener('click', function (e) {
                         unblockPatient(this.getAttribute('key'),e);
                     });
-                    one.appendChild(unblockBtn);
 
-                    let two = document.createElement("td");
-                    two.classList.add('smallerWidth');
+                    unblockBtnContainer.appendChild(unblockBtn);
+
+                    let delBtnContainer = document.createElement("td");
+                    delBtnContainer.classList.add('smallerWidth');
+
                     let delBtn = document.createElement("button");
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add('delBtn');
@@ -233,7 +258,8 @@ function setUpBlockedPatients(){
                     delBtn.addEventListener('click', function (e) {
                         deletePatient(this.getAttribute('key'));
                     });
-                    two.appendChild(delBtn);
+
+                    delBtnContainer.appendChild(delBtn);
 
                     newRow.appendChild(pName);
                     newRow.appendChild(pSurname);
@@ -242,8 +268,8 @@ function setUpBlockedPatients(){
                     newRow.appendChild(pId);
                     newRow.appendChild(pMedRecord);
                     newRow.appendChild(pBlockedBy);
-                    newRow.appendChild(one);
-                    newRow.appendChild(two);
+                    newRow.appendChild(unblockBtnContainer);
+                    newRow.appendChild(delBtnContainer);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -333,7 +359,7 @@ function setupExaminationRequests() {
                     declineBtnContainer.classList.add('smallerWidth')
                     declineBtnContainer.appendChild(declineBtn);
 
-                    three.classList.add('smallerWidth');
+                    oldExaminationContainer.classList.add('smallerWidth');
 
                     newRow.appendChild(examinationType);
                     newRow.appendChild(examinationDoctor);
@@ -344,7 +370,9 @@ function setupExaminationRequests() {
                     newRow.appendChild(acceptBtnContainer);
                     newRow.appendChild(declineBtnContainer);
                     newRow.appendChild(oldExaminationContainer);
+
                     table.appendChild(newRow);
+
                     feather.replace();
                 }
             }
@@ -395,18 +423,24 @@ function updatePatient(key) {
                 
                 let fFirstName = document.getElementById('editPatientFirstName');
                 fFirstName.value = patient['firstName'];
+
                 let fLastName = document.getElementById('editPatientLastName');
                 fLastName.value = patient['lastName'];
+
                 let fEmail = document.getElementById('editPatientEmail');
                 fEmail.value = patient['email'];
+
                 let fPassword = document.getElementById('editPatientPassword');
                 fPassword.value = patient['password'];
-                let fHeight = document.getElementById('editPatientHeight');
 
                 let medRecord = patient['medicalRecord'];
+
+                let fHeight = document.getElementById('editPatientHeight');
                 fHeight.value = medRecord['height'];
+
                 let fWeight = document.getElementById('editPatientWeight');
                 fWeight.value = medRecord['weight'];
+
                 let fBloodType = document.getElementById('editPatientBloodType');
                 fBloodType.value = medRecord['bloodType'];  
 
@@ -493,14 +527,19 @@ createBtn.addEventListener('click', function (e) {
 
     let fFirstName = document.getElementById('createPatientFirstName');
     fFirstName.setAttribute('placeholder', 'First Name');
+
     let fLastName = document.getElementById('createPatientLastName');
     fLastName.setAttribute('placeholder', 'Last Name');
+
     let fEmail = document.getElementById('createPatientEmail');
     fEmail.setAttribute('placeholder', 'Email');
+
     let fPassword = document.getElementById('createPatientPassword');
     fPassword.setAttribute('placeholder', 'Password');
+
     let fHeight = document.getElementById('createPatientHeight');
     fHeight.setAttribute('placeholder', 'Height');
+    
     let fWeight = document.getElementById('createPatientWeight');
     fWeight.setAttribute('placeholder', 'Weight');
 
@@ -651,14 +690,19 @@ function showOldExamination(newExamination,examRow){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 oldExamination = JSON.parse(this.responseText);
+
                 let examinationType = examRow.getElementsByClassName('examinationType')[0];
                 examinationType.innerHTML = oldExamination['type'];
+
                 let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
                 examinationDoctor.innerHTML = oldExamination['doctor'];
+
                 let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
                 examinationDate.innerHTML = oldExamination['date'];
+
                 let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
                 examinationRoom.innerHTML = oldExamination['room'];
+
                 let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
                 examinationPatient.innerHTML = oldExamination['patient'];
 
@@ -673,6 +717,7 @@ function showOldExamination(newExamination,examRow){
                 });
 
                 oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+
                 feather.replace();
                 
             }else{
@@ -690,14 +735,19 @@ function showOldExamination(newExamination,examRow){
 function showNewExamination(newExamination,examRow){
     let examinationType = examRow.getElementsByClassName('examinationType')[0];
     examinationType.innerHTML = newExamination['type'];
+
     let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
     examinationDoctor.innerHTML = newExamination['doctor'];
+
     let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
     examinationDate.innerHTML = newExamination['date'];
+
     let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
     examinationRoom.innerHTML = newExamination['room'];
+
     let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
     examinationPatient.innerHTML = newExamination['patient'];
+
     let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
     let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
 
@@ -709,6 +759,7 @@ function showNewExamination(newExamination,examRow){
     });
 
     oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+
     feather.replace();
     
 
