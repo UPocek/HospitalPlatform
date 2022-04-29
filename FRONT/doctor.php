@@ -55,7 +55,6 @@
                             <div class="listContainer">
                                 <div class="divList">
                                     <p>Diseases:&nbsp</p>
-
                                     <select id="diseasesList" multiple>
                                         <!-- patients diseases -->
                                     </select>
@@ -65,7 +64,6 @@
                             <div>
                                 <input id="diseaseInput"></input>
                                 <button id="addDiseases" class="add"><i data-feather="plus"></i></button>
-
                             </div>
                         </div>
                         <div>
@@ -82,7 +80,6 @@
                             <div>
                                 <input id="alergieInput"></input>
                                 <button id="addAlergies" class="add"><i data-feather="plus"></i></button>
-
                             </div>
                         </div>
                     </div>
@@ -93,7 +90,6 @@
 
         
         <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
-
             <div id="reportHeader">
                 <h1>Report</h1>
                 <button id="closeReportBtn" class="delBtn"><i data-feather="x-circle"></i></button>
@@ -101,10 +97,9 @@
             <div id="descView">
                 <h3>Report description:</h3>
                 <p id="reportDescriptionNew"></p>
-
             </div>
             <div id="reportEquipmentNew">
-
+                    <!-- js generating -->
             </div>
 	    </div>
 
@@ -139,7 +134,6 @@
                 <div class="urgentDiv">
                     <label for="urgent"> Urgent </label>
                     <input type="checkbox" id="urgent" value="urgent">
-                    
                 </div>
                 <button class="mainBtn">OK</button>
             </form>
