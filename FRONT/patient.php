@@ -58,7 +58,7 @@
                         <th>Doctor</th>
                         <th>Date</th>
                         <th>Room</th>
-                        <th>Anamnesis</th>
+                        <!-- <th>Anamnesis</th> -->
                         <th>Urgent</th>
                         <th>Delete</th>
                         <th>Update</th>
