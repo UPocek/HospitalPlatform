@@ -85,8 +85,8 @@
         <div id="patients">
             <div class="tbl-content">
                 <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-                <thead>
-                    <tr>
+                  <thead>
+                      <tr>
                         <th >First Name</th>
                         <th >Last Name</th>
                         <th>Email</th>
@@ -96,11 +96,11 @@
                         <th class="smallerWidth"></th>
                         <th class="smallerWidth"></th>
                         <th class="smallerWidth"></th>
-                    </tr>
-                </thead>
-                <tbody id="patientTable">
+                      </tr>
+                  </thead>
+                  <tbody id="patientTable">
 
-                </tbody>
+                  </tbody>
                 </table>
             </div>
         </div>
@@ -109,23 +109,23 @@
     <section id="two">
       <div id="patients">
         <div class="tbl-content">
-            <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th width = 150>Password</th>
-                    <th>Id</th>
-                    <th>Medical Record</th>
-                    <th>Blocked by</th>
-                    <th class="smallerWidth"></th>
-                </tr>
-            </thead>
-            <tbody id="blockedPatientTable">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+          <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th width = 150>Password</th>
+                <th>Id</th>
+                <th>Medical Record</th>
+                <th>Blocked by</th>
+                <th class="smallerWidth"></th>
+              </tr>
+          </thead>
+          <tbody id="blockedPatientTable">
 
-            </tbody>
-            </table>
+          </tbody>
+          </table>
         </div>
     </div>
     </section>
@@ -133,21 +133,21 @@
     <section id="three">
       <div id="examinations">
         <div class="tbl-content">
-            <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-                <thead>
-                    <tr>
-                    <th>Type</th>
-                        <th>Doctor</th>
-                        <th>Date</th>
-                        <th>Room</th>
-                        <th>Patient</th>
-                        <th>Change</th>
-                    </tr>
-                </thead>
-                <tbody id="examinationRequestTable">
-                   
-                </tbody>
-            </table>
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Doctor</th>
+                  <th>Date</th>
+                  <th>Room</th>
+                  <th>Patient</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="examinationRequestTable">
+                  
+              </tbody>
+          </table>
         </div>
       </div>
     </section>

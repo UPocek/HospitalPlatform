@@ -29,36 +29,36 @@ namespace APP.Controllers
         [HttpGet("patients")]
         public async Task<List<Patient>> GetUnblockedPatients()
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            return collection.Find(item => item.active == "0").ToList();
+            return patients.Find(item => item.active == "0").ToList();
         }
 
         // GET by Id: api/Secretary/patients/901
         [HttpGet("patients/{id}")]
         public async Task<Patient> GetUnblockedPatient(int id)
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
             
-            return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
+            return patients.Find(item => item.id == id && item.active=="0").FirstOrDefault();
         }
 
         // GET: api/Secretary/patients/blocked
         [HttpGet("patients/blocked")]
         public async Task<List<Patient>> GetBlockedPatients()
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            return collection.Find(item => item.active != "0").ToList();
+            return patients.Find(item => item.active != "0").ToList();
         }
         
         // POST: api/Secretary/patients
         [HttpPost("patients")]
         public async Task<IActionResult> CreatePatient(int id, Patient patient)
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            if(collection.Find(item => item.email == patient.email).ToList().Count != 0){
+            if(patients.Find(item => item.email == patient.email).ToList().Count != 0){
                 return BadRequest("Error: email already exists!");
             }
 
@@ -70,9 +70,9 @@ namespace APP.Controllers
             {
                 patient.id = rnd.Next(901,10000);
             }
-            while(collection.Find(item => item.id == id).ToList().Count != 0);
+            while(patients.Find(item => item.id == id).ToList().Count != 0);
 
-            collection.InsertOne(patient);
+            patients.InsertOne(patient);
 
             return Ok();
         }
@@ -81,8 +81,8 @@ namespace APP.Controllers
         [HttpPut("patients/{id}")]
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.firstName = patient.firstName;
             updatedPatient.lastName = patient.lastName;
@@ -92,7 +92,7 @@ namespace APP.Controllers
             updatedPatient.medicalRecord.height = patient.medicalRecord.height;
             updatedPatient.medicalRecord.bloodType = patient.medicalRecord.bloodType;
 
-            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            patients.ReplaceOne(p => p.id == id, updatedPatient);
             return Ok();   
         }
 
@@ -101,12 +101,12 @@ namespace APP.Controllers
         [HttpDelete("patients/{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            patientCollection.DeleteOne(p => p.id == id);
+            var patients = database.GetCollection<Patient>("Patients");
+            patients.DeleteOne(p => p.id == id);
             
-            var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
             var filter = Builders<Examination>.Filter.Lt("date", DateTime.Now.ToString()) & Builders<Examination>.Filter.Eq("patient", id);
-            examinationCollection.DeleteMany(filter);
+            examinations.DeleteMany(filter);
 
             return Ok(); 
         }
@@ -115,12 +115,12 @@ namespace APP.Controllers
         // PUT: api/Secretary/patients/901/1
         public async Task<IActionResult> ChangePatientActivity(int id, string activityValue)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.active = activityValue;
 
-            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            patients.ReplaceOne(p => p.id == id, updatedPatient);
             return Ok();   
         }
 
@@ -128,13 +128,13 @@ namespace APP.Controllers
         [HttpGet("examinationRequests")]
         public async Task<List<ExaminationRequest>> GetExaminationRequests()
         {
-            var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
             //Delete deprecated requests
             var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString());
-            requestCollection.DeleteMany(filter);
+            requests.DeleteMany(filter);
 
-            return requestCollection.Find(item => true).ToList();
+            return requests.Find(item => true).ToList();
         }
 
 
@@ -142,9 +142,9 @@ namespace APP.Controllers
         [HttpGet("examination/{id}")]
         public async Task<Examination> GetExamination(int id)
         {
-            var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
             
-            return examinationCollection.Find(item => item.id == id).FirstOrDefault();
+            return examinations.Find(item => item.id == id).FirstOrDefault();
         }
 
 
@@ -152,20 +152,21 @@ namespace APP.Controllers
         [HttpPut("examinationRequests/accept/{id}")]
         public async Task<IActionResult> AcceptExaminationRequest(string id)
         {
-            var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
-            ExaminationRequest examinationRequest = requestCollection.Find(e=> e._id == id).FirstOrDefault();
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            ExaminationRequest examinationRequest = requests.Find(e=> e._id == id).FirstOrDefault();
+
             var examination = examinationRequest.examination;
 
             
-            var examinationCollection = database.GetCollection<Examination>("Examinations");
+            var examinations = database.GetCollection<Examination>("Examinations");
 
             if(examinationRequest.status == 0){
-                examinationCollection.DeleteOne(e => e.id == examination.id);
+                examinations.DeleteOne(e => e.id == examination.id);
             }
             else{
-                examinationCollection.ReplaceOne(e => e.id == examination.id,examination);
+                examinations.ReplaceOne(e => e.id == examination.id,examination);
             }
-            requestCollection.DeleteOne(e=> e._id == id);
+            requests.DeleteOne(e=> e._id == id);
             return Ok();
         }
 
@@ -175,9 +176,9 @@ namespace APP.Controllers
         [HttpPut("examinationRequests/decline/{id}")]
         public async Task<IActionResult> DeclineExaminationRequest(string id)
         {
-            var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
 
-            collection.DeleteOne(e => e._id == id);
+            requests.DeleteOne(e => e._id == id);
             
             return Ok();
         }
