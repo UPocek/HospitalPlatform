@@ -273,14 +273,19 @@ function setupExaminationRequests() {
                     let newRow = document.createElement('tr');
 
                     let examinationType = document.createElement('td');
+                    examinationType.classList.add("examinationType")
                     examinationType.innerText = examination['type'];
                     let examinationDoctor = document.createElement('td');
+                    examinationDoctor.classList.add("examinationDoctor")
                     examinationDoctor.innerText = examination['doctor'];
                     let examinationDate = document.createElement('td');
+                    examinationDate.classList.add("examinationDate")
                     examinationDate.innerText = examination['date'];
                     let examinationRoom = document.createElement('td');
+                    examinationRoom.classList.add("examinationRoom")
                     examinationRoom.innerText = examination['room'];
                     let examinationPatient = document.createElement('td');
+                    examinationPatient.classList.add("examinationPatient")
                     examinationPatient.innerText = examination['patient'];
                     let examinationChange = document.createElement('td');
 
@@ -292,11 +297,11 @@ function setupExaminationRequests() {
                     else{
                         examinationChange.innerText = 'MODIFICATION'
                         let oldExamination = document.createElement('button');
-                        oldExamination.innerHTML = '<i data-feather="user"></i>';
-                        oldExamination.classList.add('acceptBtn');
-                        oldExamination.setAttribute('key', examinationRequest['_id']);
+                        oldExamination.innerHTML = '<i data-feather="arrow-up"></i>';
+                        oldExamination.classList.add('showBtn');
+                        three.classList.add('showBtnContainer')
                         oldExamination.addEventListener('click', function (e) {
-                        acceptRequest(this.getAttribute('key'));
+                        showOldExamination(examination,newRow);
                         });
                         three.appendChild(oldExamination);
                     }
@@ -632,6 +637,76 @@ function declineRequest(key){
     putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/decline/'+key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
+}
+
+
+function showOldExamination(newExamination,examRow){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                oldExamination = JSON.parse(this.responseText);
+                let examinationType = examRow.getElementsByClassName('examinationType')[0];
+                examinationType.innerHTML = oldExamination['type'];
+                let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
+                examinationDoctor.innerHTML = oldExamination['doctor'];
+                let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
+                examinationDate.innerHTML = oldExamination['date'];
+                let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
+                examinationRoom.innerHTML = oldExamination['room'];
+                let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
+                examinationPatient.innerHTML = oldExamination['patient'];
+
+                let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
+                let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+
+                let showBtn = document.createElement('button');
+                showBtn.innerHTML = '<i data-feather="arrow-down"></i>';
+                showBtn.classList.add('showBtn');
+                showBtn.addEventListener('click', function (e) {
+                showNewExamination(newExamination,examRow);
+                });
+
+                oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+                feather.replace();
+                
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('GET', 'https://localhost:7291/api/secretary/examination/'+newExamination['id']);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function showNewExamination(newExamination,examRow){
+    let examinationType = examRow.getElementsByClassName('examinationType')[0];
+    examinationType.innerHTML = newExamination['type'];
+    let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
+    examinationDoctor.innerHTML = newExamination['doctor'];
+    let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
+    examinationDate.innerHTML = newExamination['date'];
+    let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
+    examinationRoom.innerHTML = newExamination['room'];
+    let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
+    examinationPatient.innerHTML = newExamination['patient'];
+    let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
+    let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+
+    let showBtn = document.createElement('button');
+    showBtn.innerHTML = '<i data-feather="arrow-up"></i>';
+    showBtn.classList.add('showBtn');
+    showBtn.addEventListener('click', function (e) {
+    showOldExamination(newExamination,examRow);
+    });
+
+    oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+    feather.replace();
+    
+
 }
 
 
