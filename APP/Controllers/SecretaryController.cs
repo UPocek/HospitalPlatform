@@ -134,8 +134,8 @@ namespace APP.Controllers
         }
 
 
-        // PUT: api/Secretary/examinationRequests/1
-        [HttpPut("examinationRequests/{id}")]
+        // PUT: api/Secretary/examinationRequests/accept/1
+        [HttpPut("examinationRequests/accept/{id}")]
         public async Task<IActionResult> AcceptExaminationRequest(string id)
         {
             var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
@@ -157,8 +157,8 @@ namespace APP.Controllers
 
 
 
-        // PUT: api/Secretary/examinationRequests
-        [HttpPut("examinationRequests/{id}")]
+        // PUT: api/Secretary/examinationRequests/decline/1
+        [HttpPut("examinationRequests/decline/{id}")]
         public async Task<IActionResult> DeclineExaminationRequest(string id)
         {
             var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
