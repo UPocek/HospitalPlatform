@@ -124,13 +124,48 @@ namespace APP.Controllers
             return Ok();   
         }
 
-        // GET by Id: api/Secretary/examinationRequests
+        // PUT: api/Secretary/examinationRequests
         [HttpGet("examinationRequests")]
         public async Task<List<ExaminationRequest>> GetExaminationRequests()
         {
             var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
             return collection.Find(item => true).ToList();
+        }
+
+
+        // PUT: api/Secretary/examinationRequests/1
+        [HttpPut("examinationRequests/{id}")]
+        public async Task<IActionResult> AcceptExaminationRequest(string id)
+        {
+            var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            ExaminationRequest examinationRequest = requestCollection.Find(e=> e._id == id).FirstOrDefault();
+            Examination examination = examinationRequest.examination;
+
+            requestCollection.DeleteOne(e=> e._id == id);
+            
+            var examinationCollection = database.GetCollection<Examination>("Examinations");
+
+            if(examinationRequest.status == 0){
+                examinationCollection.DeleteOne(e => e.id == examination.id);
+            }
+            else{
+                examinationCollection.ReplaceOne(e => e.id == examination.id,examination);
+            }
+            return Ok();
+        }
+
+
+
+        // PUT: api/Secretary/examinationRequests
+        [HttpPut("examinationRequests/{id}")]
+        public async Task<IActionResult> DeclineExaminationRequest(string id)
+        {
+            var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+
+            collection.DeleteOne(e => e._id == id);
+            
+            return Ok();
         }
 
     }
