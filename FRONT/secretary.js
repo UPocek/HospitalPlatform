@@ -275,21 +275,26 @@ function setupExaminationRequests() {
                     let examinationType = document.createElement('td');
                     examinationType.classList.add("examinationType")
                     examinationType.innerText = examination['type'];
+
                     let examinationDoctor = document.createElement('td');
                     examinationDoctor.classList.add("examinationDoctor")
                     examinationDoctor.innerText = examination['doctor'];
+
                     let examinationDate = document.createElement('td');
                     examinationDate.classList.add("examinationDate")
                     examinationDate.innerText = examination['date'];
+
                     let examinationRoom = document.createElement('td');
                     examinationRoom.classList.add("examinationRoom")
                     examinationRoom.innerText = examination['room'];
+
                     let examinationPatient = document.createElement('td');
                     examinationPatient.classList.add("examinationPatient")
                     examinationPatient.innerText = examination['patient'];
+
                     let examinationChange = document.createElement('td');
 
-                    let three  = document.createElement('td');
+                    let oldExaminationContainer  = document.createElement('td');
 
                     if (examinationRequest['status'] == '0'){
                         examinationChange.innerText = 'DELETION'
@@ -299,14 +304,14 @@ function setupExaminationRequests() {
                         let oldExamination = document.createElement('button');
                         oldExamination.innerHTML = '<i data-feather="arrow-up"></i>';
                         oldExamination.classList.add('showBtn');
-                        three.classList.add('showBtnContainer')
+                        oldExaminationContainer.classList.add('showBtnContainer')
                         oldExamination.addEventListener('click', function (e) {
                         showOldExamination(examination,newRow);
                         });
-                        three.appendChild(oldExamination);
+                        oldExaminationContainer.appendChild(oldExamination);
                     }
 
-                    let one = document.createElement('td');
+                    let acceptBtnContainer = document.createElement('td');
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
@@ -314,10 +319,10 @@ function setupExaminationRequests() {
                     acceptBtn.addEventListener('click', function (e) {
                         acceptRequest(this.getAttribute('key'));
                     });
-                    one.classList.add('smallerWidth');
-                    one.appendChild(acceptBtn);
+                    acceptBtnContainer.classList.add('smallerWidth');
+                    acceptBtnContainer.appendChild(acceptBtn);
 
-                    let two = document.createElement('td');
+                    let declineBtnContainer = document.createElement('td');
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
@@ -325,8 +330,8 @@ function setupExaminationRequests() {
                     declineBtn.addEventListener('click', function (e) {
                         declineRequest(this.getAttribute('key'));
                     });
-                    two.classList.add('smallerWidth')
-                    two.appendChild(declineBtn);
+                    declineBtnContainer.classList.add('smallerWidth')
+                    declineBtnContainer.appendChild(declineBtn);
 
                     three.classList.add('smallerWidth');
 
@@ -336,9 +341,9 @@ function setupExaminationRequests() {
                     newRow.appendChild(examinationRoom);
                     newRow.appendChild(examinationPatient);
                     newRow.appendChild(examinationChange);
-                    newRow.appendChild(one);
-                    newRow.appendChild(two);
-                    newRow.appendChild(three);
+                    newRow.appendChild(acceptBtnContainer);
+                    newRow.appendChild(declineBtnContainer);
+                    newRow.appendChild(oldExaminationContainer);
                     table.appendChild(newRow);
                     feather.replace();
                 }
