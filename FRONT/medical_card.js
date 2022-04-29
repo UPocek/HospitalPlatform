@@ -15,7 +15,8 @@ function getParamValue(name) {
 
 var patient;
 var patientId = getParamValue('patientId');
-var doctorId = getParamValue('doctorId')
+var doctorId = getParamValue('doctorId');
+var secretaryId = getParamValue('secretaryId');
 var jwtoken = getParamValue('token');
 var patientsExaminations;
 
@@ -164,7 +165,14 @@ function setUpMenu() {
 
     let item1 = document.getElementById('option1');
 
-    item1.addEventListener('click', (e) => {
-        window.location.replace('doctor.php' + '?id=' + doctorId + '&token=' + jwtoken);
-    });
+    if (doctorId != undefined){
+        item1.addEventListener('click', (e) => {
+            window.location.replace('doctor.php' + '?id=' + doctorId + '&token=' + jwtoken);
+        });
+    }
+    else if(secretaryId != undefined){
+        item1.addEventListener('click', (e) => {
+            window.location.replace('secretary.php' + '?id=' + secretaryId + '&token=' + jwtoken);
+        });
+    }
 }

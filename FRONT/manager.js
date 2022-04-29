@@ -38,6 +38,10 @@ function isDateFormatOk(testDate) {
     return /^2[0-9]{3}-([0][1-9]|1[0-2])-([0][1-9]|[1-2]\d|3[01])$/.test(testDate);
 }
 
+function areDatesValid(from, to) {
+    return (isDateFormatOk(from) && isDateFormatOk(to) && from >= date.toISOString().split('T')[0] && to > from);
+}
+
 function showWindow(section) {
     let sectionOne = document.getElementById('one');
     let sectionTwo = document.getElementById('two');
@@ -133,7 +137,7 @@ function renovateRoom(key) {
         let finalFromDate = document.getElementById('fromRenovation').value;
         let finalToDate = document.getElementById('toRenovation').value;
 
-        if (isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
+        if (areDatesValid(finalFromDate, finalToDate)) {
             postRequest.open('POST', 'https://localhost:7291/api/manager/renovations');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
@@ -410,7 +414,7 @@ function makeDevide(e) {
     let finalFromDate = document.getElementById('fromComplexRenovation').value;
     let finalToDate = document.getElementById('toComplexRenovation').value;
 
-    if (isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
+    if (areDatesValid(finalFromDate, finalToDate)) {
         devideRequest.open('POST', 'https://localhost:7291/api/manager/renovationdevide');
         devideRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         devideRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
@@ -458,6 +462,7 @@ function setUpEquipment(myFilter) {
     equipmentTable.innerHTML = '';
     for (let room of mainResponse) {
         for (let item of room['equipment']) {
+            // Filter by search term
             if (myFilter.includes('term')) {
                 let tokens = myFilter.split('&');
                 let filterValue;
@@ -467,10 +472,12 @@ function setUpEquipment(myFilter) {
                         break;
                     }
                 }
-                if (!(item['type'].includes(filterValue) || item['quantity'] == filterValue || item['name'].includes(filterValue) || room['name'].includes(filterValue))) {
+                let searchTermInQuery = (item['type'].includes(filterValue) || item['quantity'] == filterValue || item['name'].includes(filterValue) || room['name'].includes(filterValue))
+                if (!searchTermInQuery) {
                     continue;
                 }
             }
+            // Filter by room type
             if (myFilter.includes('space')) {
                 let tokens = myFilter.split('&');
                 let filterValue;
@@ -484,6 +491,7 @@ function setUpEquipment(myFilter) {
                     continue;
                 }
             }
+            // Filter by equipment type
             if (myFilter.includes('equipment')) {
                 let tokens = myFilter.split('&');
                 let filterValue;
@@ -497,6 +505,7 @@ function setUpEquipment(myFilter) {
                     continue;
                 }
             }
+            // Filter by equipment quantity
             if (myFilter.includes('quantity')) {
                 let tokens = myFilter.split('&');
                 let filterValue;
@@ -521,6 +530,7 @@ function setUpEquipment(myFilter) {
                 }
             }
 
+            // Display items that satisfy given criterion
             let newRow = document.createElement('tr');
 
             let tableDataName = document.createElement('td');
@@ -682,7 +692,8 @@ transferForm.addEventListener('submit', function (e) {
         }
     }
 
-    if (ok && finalRoom1 != finalRoom2 && arr.length != 0 && isDateFormatOk(finalDate) && finalDate >= date.toISOString().split('T')[0]) {
+    let validTransfer = ok && finalRoom1 != finalRoom2 && arr.length != 0 && isDateFormatOk(finalDate) && finalDate >= date.toISOString().split('T')[0];
+    if (validTransfer) {
         transferRequest.open('POST', 'https://localhost:7291/api/manager/transfer');
         transferRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         transferRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
@@ -765,8 +776,8 @@ function setUpDrugs() {
 
 // POST - Drug
 var ingredients;
-var createDrugBtn = document.getElementById('addDrugBtn');
-createDrugBtn.addEventListener('click', function (e) {
+var createDrug = document.getElementById('addDrugBtn');
+createDrug.addEventListener('click', function (e) {
     let prompt = document.getElementById('createDrugPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -1109,12 +1120,12 @@ function setUpCharts() {
 
                 for (key in charts) {
 
-                    let avg = Math.round(charts[key].reduce((partialSum, a) => +partialSum + +a, 0) / charts[key].length * 100) / 100;
+                    let avgScore = Math.round(charts[key].reduce((partialSum, a) => +partialSum + +a, 0) / charts[key].length * 100) / 100;
 
                     let data = {
                         labels: ['1', '2', '3', '4', '5'],
                         datasets: [{
-                            label: `${key} - AVG = ${avg}`,
+                            label: `${key} - AVG = ${avgScore}`,
                             backgroundColor: '#FF416C',
                             borderColor: '#FF416C',
                             data: [charts[key].filter(x => x == 1).length, charts[key].filter(x => x == 2).length, charts[key].filter(x => x == 3).length, charts[key].filter(x => x == 4).length, charts[key].filter(x => x == 5).length],
@@ -1244,7 +1255,7 @@ function setUpCharts() {
                 }
                 let bestDoctorsContainer = document.getElementById('bestDoctors');
                 let worstDoctorsContainer = document.getElementById('worstDoctors');
-                // Create items array
+                // Create doctors array
                 let items = Object.keys(scoreBoard).map(function (key) {
                     return [key, scoreBoard[key]];
                 });

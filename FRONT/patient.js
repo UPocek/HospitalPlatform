@@ -1,7 +1,7 @@
 // Globals
 class User {
     constructor(data) {
-        this.id = data['id']
+        this.id = data['id'];
         this.firstName = data['firstName'];
         this.lastName = data['lastName'];
         this.email = data['email'];
@@ -170,13 +170,14 @@ function setUpExaminations() {
                     let cDoctor = document.createElement('td');
                     cDoctor.innerText = examination['doctor'];
                     let cDate = document.createElement('td');
-                    cDate.innerText = (new Date(examination['date'])).toLocaleString();
+                    var examinationDate = new Date(examination['date']);
+                    cDate.innerText = examinationDate.toLocaleString();
                     let cRoom = document.createElement('td');
                     cRoom.innerText = examination['room'];
 
                     // let cAnamnesis = document.createElement('td');
                     // let anamnesisBtn = document.createElement('button');
-                    // anamnesisBtn.innerHTML = '<i data-feather='file'></i>';
+                    // anamnesisBtn.innerHTML = '<i data-feather="file"></i>';
                     // anamnesisBtn.classList.add('updateBtn');
                     // anamnesisBtn.setAttribute('key', examination['anamnesis']);
                     // anamnesisBtn.addEventListener('click', function (e) {
@@ -205,8 +206,8 @@ function setUpExaminations() {
                     putBtn.addEventListener('click', function (e) {
                         editExamination(this.getAttribute('key'));
                     });
-
-                    if(examination['type'] == 'visit'){
+                    var today = new Date();
+                    if(examination['type'] == 'visit' && examinationDate > today){
                         one.appendChild(delBtn);
                         two.appendChild(putBtn);
 
@@ -326,8 +327,8 @@ createBtn.addEventListener('click', function (e) {
         };
         postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        postRequest.send(JSON.stringify({ 'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));       
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));       
    
 
     });
@@ -367,7 +368,7 @@ function editExamination(id){
         putRequest.open('PUT', 'https://localhost:7291/api/patient/examinations/'+ id);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        putRequest.send(JSON.stringify({ 'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));       
+        putRequest.send(JSON.stringify({'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));       
     });
 }; 
 
@@ -414,47 +415,6 @@ function doctorOptions(elementID){
     request.open('GET', 'https://localhost:7291/api/patient/doctors');
     request.send();
 }
-
-
-// function setUpSearchExaminations() {
-//     let request = new XMLHttpRequest();
-//     request.onreadystatechange = function () {
-//         if (this.readyState == 4) {
-//             if (this.status == 200) {
-//                 mainResponse = JSON.parse(this.responseText);
-//                 let table = document.getElementById('searchExaminationTable');
-//                 table.innerHTML = ';
-//                 for (let i in mainResponse) {
-
-//                     let examination = mainResponse[i];
-//                     let newRow = document.createElement('tr');
-
-//                     let cType = document.createElement('td');
-//                     cType.innerText = examination['type'];
-//                     let cDoctor = document.createElement('td');
-//                     cDoctor.innerText = examination['doctor'];
-//                     let cDate = document.createElement('td');
-//                     cDate.innerText = (new Date(examination['date'])).toLocaleString();
-//                     let cAnamnesis = document.createElement('td');
-//                     cAnamnesis.innerText = examination['anamnesis'];
-//                     let cUrgen = document.createElement('td');
-//                     cUrgen.innerText = examination['urgent']
-
-
-//                     newRow.appendChild(cType)
-//                     newRow.appendChild(cDoctor);
-//                     newRow.appendChild(cDate);
-//                     newRow.appendChild(cAnamnesis);
-//                     newRow.appendChild(cUrgen);
-//                     table.appendChild(newRow);
-//                 }
-//             }
-//         }
-//     }
-
-//     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
-//     request.send();
-// }
 
 //GET - Doctors
 function setUpDoctors(myFilter) {

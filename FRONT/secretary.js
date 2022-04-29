@@ -46,7 +46,8 @@ function getParamValue(name) {
 }
 
 var main = document.getElementsByTagName("main")[0];
-var id = getParamValue('id');
+var secretaryId = getParamValue('id');
+var jwtoken = getParamValue('token');
 
 function setUpMenu() {
     let menu = document.getElementById("mainMenu");
@@ -100,8 +101,11 @@ function setUpPatients() {
                     pId.innerText = patient['id'];
                     let pMedRecord = document.createElement('td');
                     let recordBtn = document.createElement('button');
-                    recordBtn.innerHTML = '<i data-feather="file-text"></i>';;
-                    recordBtn.classList.add('recordBtn');
+                    recordBtn.innerHTML = '<i data-feather="user"></i>';
+                    recordBtn.setAttribute('key', patient['id']);
+                    recordBtn.addEventListener('click', function (e) {
+                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
+                    });
                     pMedRecord.appendChild(recordBtn);
 
                     let one = document.createElement('td');
@@ -155,6 +159,7 @@ function setUpPatients() {
     }
 
     request.open('GET', 'https://localhost:7291/api/secretary/patients');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -182,8 +187,11 @@ function setUpBlockedPatients(){
                     pId.innerText = patient['id'];
                     let pMedRecord = document.createElement('td');
                     let recordBtn = document.createElement('button');
-                    recordBtn.innerHTML = '<i data-feather="file-text"></i>';;
-                    recordBtn.classList.add('recordBtn');
+                    recordBtn.innerHTML = '<i data-feather="user"></i>';
+                    recordBtn.setAttribute('key', patient['id']);
+                    recordBtn.addEventListener('click', function (e) {
+                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
+                    });
                     pMedRecord.appendChild(recordBtn);
 
                     let pBlockedBy = document.createElement('td');
@@ -221,6 +229,7 @@ function setUpBlockedPatients(){
     }
 
     request.open('GET', 'https://localhost:7291/api/secretary/patients/blocked');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -245,6 +254,7 @@ function deletePatient(key) {
     }
 
     deleteRequest.open('DELETE', 'https://localhost:7291/api/secretary/patients/' + key)
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
 
@@ -343,6 +353,7 @@ function updatePatient(key) {
         }
     }
     request.open('GET', 'https://localhost:7291/api/secretary/patients/'+key);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
     
@@ -448,6 +459,7 @@ function blockPatient(key){
         }
     }
     postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send();
 }
 
@@ -465,6 +477,7 @@ function unblockPatient(key){
         }
     }
     postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send();
 }
 
@@ -485,6 +498,7 @@ window.addEventListener('load', function () {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/my/users/' + id);
+    request.open('GET', 'https://localhost:7291/api/my/users/' + secretaryId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
