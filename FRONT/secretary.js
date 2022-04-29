@@ -301,6 +301,10 @@ function setupExaminationRequests() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
+                    acceptBtn.setAttribute('key', examination['_id']);
+                    acceptBtn.addEventListener('click', function (e) {
+                        acceptRequest(this.getAttribute('key'));
+                    });
                     one.classList.add('smallerWidth');
                     one.appendChild(acceptBtn);
 
@@ -308,6 +312,10 @@ function setupExaminationRequests() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
+                    declineBtn.setAttribute('key', examination['_id']);
+                    declineBtn.addEventListener('click', function (e) {
+                        declineRequest(this.getAttribute('key'));
+                    });
                     two.classList.add('smallerWidth')
                     two.appendChild(declineBtn);
 
@@ -548,8 +556,8 @@ createBtn.addEventListener('click', function (e) {
 });
 
 function blockPatient(key){
-    let postRequest = new XMLHttpRequest();
-    postRequest.onreadystatechange = function () {
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Patient sucessfuly blocked");
@@ -560,14 +568,14 @@ function blockPatient(key){
             
         }
     }
-    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
-    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send();
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
 }
 
 function unblockPatient(key){
-    let postRequest = new XMLHttpRequest();
-    postRequest.onreadystatechange = function () {
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Patient sucessfuly unblocked");
@@ -578,9 +586,47 @@ function unblockPatient(key){
             
         }
     }
-    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
-    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send();
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function acceptRequest(key){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Examination request accepted");
+                setUpPatients();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/accept/'+key);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function declineRequest(key){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Examination request declined");
+                setUpPatients();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/decline/'+key);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
 }
 
 
