@@ -143,7 +143,7 @@ function setUpPage() {
 
 function setUpFunctionality() {
     setUpExaminations();
-    setUpDoctors();
+    setUpDoctors('empty');
     setUpMedicalRecord();
     doctorOptions("doctorCreateExamination");
     doctorOptions("doctorEditExamination");
@@ -249,9 +249,12 @@ function setUpSearchExaminations(myFilter) {
                         for (let token of tokens) {
                             if (token.includes('term')) {
                                 filterValue = token.split('|')[1];
+                                filterValue.toLowerCase();
                                 break;
                             }
                         }
+                        //doctorsName = doctor['firstName'] + ' ' + doctor['lastName'];
+
                         if (!(examination['type'].includes(filterValue) || examination['doctor'] == filterValue || (new Date(examination["date"])).toLocaleString().includes(filterValue) || examination['anamnesis'].includes(filterValue) || (examination['urgent'].toString()).includes(filterValue))) {
                             continue;
                         }
@@ -265,6 +268,8 @@ function setUpSearchExaminations(myFilter) {
                     cType.innerText = examination["type"];
                     let cDoctor = document.createElement("td");
                     cDoctor.innerText = examination["doctor"];
+                    let cSpecialization = document.createElement("td");
+                    cSpecialization.innerText = "  ";
                     let cDate = document.createElement("td");
                     cDate.innerText = (new Date(examination["date"])).toLocaleString();
                     let cAnamnesis = document.createElement("td");
@@ -275,6 +280,7 @@ function setUpSearchExaminations(myFilter) {
 
                     newRow.appendChild(cType)
                     newRow.appendChild(cDoctor);
+                    newRow.appendChild(cSpecialization);
                     newRow.appendChild(cDate);
                     newRow.appendChild(cAnamnesis);
                     newRow.appendChild(cUrgen);
@@ -312,6 +318,7 @@ createBtn.addEventListener("click", function (e) {
                 if (this.status == 200) {
                     alert("Examination sucessfuly created");
                     setUpExaminations();
+                    setUpSearchExaminations('empty');
                 } else {
                     alert("Error: Entered examination informations are invalid");
                 }
@@ -350,6 +357,7 @@ function editExamination(id){
                 if (this.status == 200) {
                     alert("Examination sucessfuly updated");
                     setUpExaminations();
+                    setUpSearchExaminations('empty');
 
                 } else {
                     alert("Error: Entered examination informations are invalid");
@@ -361,8 +369,6 @@ function editExamination(id){
         putRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         putRequest.send(JSON.stringify({ "done":false, "date": examinationDate, "duration": 15 ,"room": "", "patient": user.id, "doctor": doctor, "urgent": false, "type": "visit", "anamnesis":""}));       
     });
-    setUpExaminations();
-
 }; 
 
 //DELETE - Examination
@@ -374,6 +380,7 @@ function deleteExamination(key) {
             if (this.status == 200) {
                 alert("Selected examination was successfully deleted");
                 setUpExaminations();
+                setUpSearchExaminations('empty');
             } else {
                 alert("Error: Selected examination couldn't be deleted");
             }
@@ -450,7 +457,7 @@ function doctorOptions(elementID){
 // }
 
 //GET - Doctors
-function setUpDoctors() {
+function setUpDoctors(myFilter) {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -460,14 +467,41 @@ function setUpDoctors() {
                 table.innerHTML = "";
                 for (let i in mainResponse) {
                     let doctor = mainResponse[i];
-                    let newRow = document.createElement("tr");
 
+                    if (myFilter.includes('term')) {
+                        let tokens = myFilter.split('&');
+                        let filterValue;
+                        for (let token of tokens) {
+                            if (token.includes('term')) {
+                                filterValue = token.split('|')[1];
+                                break;
+                            }
+                        }
+                        doctorsName = doctor['firstName'] + ' ' + doctor['lastName'];
+                        if (!(doctorsName.toLowerCase().includes(filterValue.toLowerCase())  || doctor['specialization'].includes(filterValue.toLowerCase()))) {
+                            continue;
+                        }
+                    }
+
+
+
+
+                    let newRow = document.createElement("tr");
                     let cName = document.createElement("td");
                     cName.innerText = doctor["firstName"] + " " + doctor["lastName"];
                     let cSpecialization = document.createElement("td");
                     cSpecialization.innerText = doctor["specialization"];
                     let cMail = document.createElement("td");
                     cMail.innerText = doctor["email"];
+                    let cScore = document.createElement("td");
+                    var total = 0;
+                    for (var j = 0; j < 1; j++){
+                        total += parseInt(doctor['score'][j]['efficiency']);
+                        total += parseInt(doctor['score'][j]['expertise']);
+                        total += parseInt(doctor['score'][j]['communicativeness']);
+                        total += parseInt(doctor['score'][j]['kindness']);
+                    }
+                    cScore.innerText = total/(4*1);
                     
 
                     let one = document.createElement("td");
@@ -483,6 +517,7 @@ function setUpDoctors() {
                     newRow.appendChild(cName)
                     newRow.appendChild(cSpecialization);
                     newRow.appendChild(cMail);
+                    newRow.appendChild(cScore);
                     newRow.appendChild(one);
                     table.appendChild(newRow);
                     feather.replace();
@@ -539,7 +574,6 @@ function setUpMedicalRecord(){
 
 
 var examinationSearchFilter = document.getElementById('examinationSearch');
-
 examinationSearchFilter.addEventListener('input', updateExaminationTable);
 
 function updateExaminationTable(e) {
@@ -561,7 +595,81 @@ function updateExaminationTable(e) {
     setUpSearchExaminations(finalFilter);
 }
 
-function sortTable(n){
-    console.log(n);
+
+var doctorSearchFilter = document.getElementById('doctorSearch');
+doctorSearchFilter.addEventListener('input', updateDoctorsTable);
+
+function updateDoctorsTable(e) {
+    e.preventDefault();
+
+    let finalFilter = '';
+    let filter = doctorSearchFilter.value;
+
+    if (filter) {
+        finalFilter += `term|${filter}&`;
+    }
+    if (finalFilter.endsWith('&')) {
+        finalFilter = finalFilter.slice(0, -1);
+    }
+    if (!finalFilter) {
+        finalFilter = 'empty';
+    }
+
+    setUpDoctors(finalFilter);
+}
+
+
+function sortTable(n, table){
+    var table, rows, switching, i, x, y, compareA, compareB, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById(table);
+    switching = true;
+    // Set the sorting direction to ascending:
+    dir = "asc";
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+
+            if(n==3 && table == 'searchExaminations'){
+                compareA = Date.parse(x.innerHTML);
+                console.log(compareA);
+                compareB = Date.parse(y.innerHTML);
+
+            }else{
+                compareA = x.innerHTML.toLowerCase();
+                compareB = y.innerHTML.toLowerCase();
+            }
+
+            if (dir == "asc") {
+                if (compareA > compareB) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (compareA < compareB) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount ++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+    }
 
 }

@@ -106,14 +106,15 @@
       </form>
   <div id="examinations">
       <div class="tbl-content">
-          <table cellpadding="0" cellspacing="0" border="0">
+          <table id="searchExaminations" cellpadding="0" cellspacing="0" border="0">
               <thead>
                   <tr>
-                      <th onclick="sortTable(0)">Type</th>
-                      <th onclick="sortTable(1)">Doctor</th>
-                      <th onclick="sortTable(2)">Date</th>
-                      <th onclick="sortTable(3)">Anamnesis</th>
-                      <th onclick="sortTable(4)">Urgent</th>
+                      <th >Type</th>
+                      <th onclick="sortTable(1, 'searchExaminations')">Doctor</th>
+                      <th onclick="sortTable(2, 'searchExaminations')">Specialization</th>
+                      <th onclick="sortTable(3, 'searchExaminations')">Date</th>
+                      <th>Anamnesis</th>
+                      <th>Urgent</th>
                     </tr>
                 </thead>
                 <tbody id="searchExaminationTable">
@@ -135,12 +136,13 @@
       
       <div id="doctors">
             <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0">
+                <table id ='searchsDoctors' cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Specialization</th>
+                        <th onclick="sortTable(0, 'searchsDoctors')">Name</th>
+                        <th onclick="sortTable(1, 'searchsDoctors')">Specialization</th>
                         <th>email</th>
+                        <th onclick="sortTable(3, 'searchsDoctors')">Score</th>
                         <th>Schedule examination</th>
                     </tr>
                 </thead>

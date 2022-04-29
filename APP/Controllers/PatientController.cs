@@ -46,8 +46,9 @@ public class PatientController : ControllerBase
     [HttpGet("examinations/{id}")]
 
     public async  Task<List<Examination>> GetPatientsExaminations(int id){
-          var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-        return examinationCollection.Find(e => e.patinetId == id).ToList();
+          var examinations = database.GetCollection<Examination>("MedicalExaminations");
+          List<Examination> patientsExaminations = examinations.Find(e => e.patinetId == id).ToList();
+        return patientsExaminations;
   }
 
 
