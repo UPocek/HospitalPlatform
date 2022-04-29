@@ -6,6 +6,7 @@ public class ExaminationRequest
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
+    [JsonPropertyName("_id")]
     public string? _id { get; set; }
     
     [BsonElement("examination")]

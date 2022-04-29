@@ -124,13 +124,27 @@ namespace APP.Controllers
             return Ok();   
         }
 
-        // PUT: api/Secretary/examinationRequests
+        // GET: api/Secretary/examinationRequests
         [HttpGet("examinationRequests")]
         public async Task<List<ExaminationRequest>> GetExaminationRequests()
         {
-            var collection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
-            return collection.Find(item => true).ToList();
+            //Delete deprecated requests
+            var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString());
+            requestCollection.DeleteMany(filter);
+
+            return requestCollection.Find(item => true).ToList();
+        }
+
+
+        // GET: api/Secretary/examinations/100
+        [HttpGet("examination/{id}")]
+        public async Task<Examination> GetExamination(int id)
+        {
+            var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
+            
+            return examinationCollection.Find(item => item.id == id).FirstOrDefault();
         }
 
 
@@ -140,9 +154,8 @@ namespace APP.Controllers
         {
             var requestCollection = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             ExaminationRequest examinationRequest = requestCollection.Find(e=> e._id == id).FirstOrDefault();
-            Examination examination = examinationRequest.examination;
+            var examination = examinationRequest.examination;
 
-            requestCollection.DeleteOne(e=> e._id == id);
             
             var examinationCollection = database.GetCollection<Examination>("Examinations");
 
@@ -152,6 +165,7 @@ namespace APP.Controllers
             else{
                 examinationCollection.ReplaceOne(e => e.id == examination.id,examination);
             }
+            requestCollection.DeleteOne(e=> e._id == id);
             return Ok();
         }
 
