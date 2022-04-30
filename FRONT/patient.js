@@ -17,6 +17,7 @@ class User {
     }
 }
 var user;
+var doctors = new Map();
 
 // Helpers
 function getParamValue(name) {
@@ -34,22 +35,7 @@ function getParamValue(name) {
     }
 }
 
-var doctors = new Map();
-// function getDoctor(doctorID){
-//     let request = new XMLHttpRequest();
 
-//     request.onreadystatechange = function () {
-//         if (this.readyState == 4) {
-//             if (this.status == 200) {
-//                 let response = JSON.parse(this.responseText);
-//                 return new User(response);
-//             }
-//         }
-//     }
-
-//     request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
-//     request.send();
-// }
 
 // Main
 
