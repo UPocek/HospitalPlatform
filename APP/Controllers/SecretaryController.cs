@@ -29,36 +29,36 @@ namespace APP.Controllers
         [HttpGet("patients")]
         public async Task<List<Patient>> GetUnblockedPatients()
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            return collection.Find(item => item.active == "0").ToList();
+            return patients.Find(item => item.active == "0").ToList();
         }
 
         // GET by Id: api/Secretary/patients/901
         [HttpGet("patients/{id}")]
         public async Task<Patient> GetUnblockedPatient(int id)
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
             
-            return collection.Find(item => item.id == id && item.active=="0").ToList()[0];
+            return patients.Find(item => item.id == id && item.active=="0").FirstOrDefault();
         }
 
         // GET: api/Secretary/patients/blocked
         [HttpGet("patients/blocked")]
         public async Task<List<Patient>> GetBlockedPatients()
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            return collection.Find(item => item.active != "0").ToList();
+            return patients.Find(item => item.active != "0").ToList();
         }
         
         // POST: api/Secretary/patients
         [HttpPost("patients")]
         public async Task<IActionResult> CreatePatient(int id, Patient patient)
         {
-            var collection = database.GetCollection<Patient>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
 
-            if(collection.Find(item => item.email == patient.email).ToList().Count != 0){
+            if(patients.Find(item => item.email == patient.email).ToList().Count != 0){
                 return BadRequest("Error: email already exists!");
             }
 
@@ -70,9 +70,9 @@ namespace APP.Controllers
             {
                 patient.id = rnd.Next(901,10000);
             }
-            while(collection.Find(item => item.id == id).ToList().Count != 0);
+            while(patients.Find(item => item.id == id).ToList().Count != 0);
 
-            collection.InsertOne(patient);
+            patients.InsertOne(patient);
 
             return Ok();
         }
@@ -81,8 +81,8 @@ namespace APP.Controllers
         [HttpPut("patients/{id}")]
         public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.firstName = patient.firstName;
             updatedPatient.lastName = patient.lastName;
@@ -92,7 +92,7 @@ namespace APP.Controllers
             updatedPatient.medicalRecord.height = patient.medicalRecord.height;
             updatedPatient.medicalRecord.bloodType = patient.medicalRecord.bloodType;
 
-            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            patients.ReplaceOne(p => p.id == id, updatedPatient);
             return Ok();   
         }
 
@@ -101,11 +101,12 @@ namespace APP.Controllers
         [HttpDelete("patients/{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            patientCollection.DeleteOne(p => p.id == id);
+            var patients = database.GetCollection<Patient>("Patients");
+            patients.DeleteOne(p => p.id == id);
             
-            var examinationCollection = database.GetCollection<Examination>("MedicalExaminations");
-            examinationCollection.Find(e => (e.patinetId == id && DateTime.Parse(e.dateAndTimeOfExamination) >= DateTime.Now));
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+            var filter = Builders<Examination>.Filter.Lt("date", DateTime.Now.ToString()) & Builders<Examination>.Filter.Eq("patient", id);
+            examinations.DeleteMany(filter);
 
             return Ok(); 
         }
@@ -114,13 +115,72 @@ namespace APP.Controllers
         // PUT: api/Secretary/patients/901/1
         public async Task<IActionResult> ChangePatientActivity(int id, string activityValue)
         {
-            var patientCollection = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patientCollection.Find(p=> p.id == id).FirstOrDefault();
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p=> p.id == id).FirstOrDefault();
 
             updatedPatient.active = activityValue;
 
-            patientCollection.ReplaceOne(p => p.id == id, updatedPatient);
+            patients.ReplaceOne(p => p.id == id, updatedPatient);
             return Ok();   
+        }
+
+        // GET: api/Secretary/examinationRequests
+        [HttpGet("examinationRequests")]
+        public async Task<List<ExaminationRequest>> GetExaminationRequests()
+        {
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            
+            //Delete deprecated requests
+            var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString());
+            requests.DeleteMany(filter);
+
+            return requests.Find(item => true).ToList();
+        }
+
+
+        // GET: api/Secretary/examinations/100
+        [HttpGet("examination/{id}")]
+        public async Task<Examination> GetExamination(int id)
+        {
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+            
+            return examinations.Find(item => item.id == id).FirstOrDefault();
+        }
+
+
+        // PUT: api/Secretary/examinationRequests/accept/1
+        [HttpPut("examinationRequests/accept/{id}")]
+        public async Task<IActionResult> AcceptExaminationRequest(string id)
+        {
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+            ExaminationRequest examinationRequest = requests.Find(e=> e._id == id).FirstOrDefault();
+
+            var examination = examinationRequest.examination;
+
+            
+            var examinations = database.GetCollection<Examination>("Examinations");
+
+            if(examinationRequest.status == 0){
+                examinations.DeleteOne(e => e.id == examination.id);
+            }
+            else{
+                examinations.ReplaceOne(e => e.id == examination.id,examination);
+            }
+            requests.DeleteOne(e=> e._id == id);
+            return Ok();
+        }
+
+
+
+        // PUT: api/Secretary/examinationRequests/decline/1
+        [HttpPut("examinationRequests/decline/{id}")]
+        public async Task<IActionResult> DeclineExaminationRequest(string id)
+        {
+            var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
+
+            requests.DeleteOne(e => e._id == id);
+            
+            return Ok();
         }
 
     }

@@ -20,13 +20,16 @@ var user;
 function showWindow(section) {
     let sectionOne = document.getElementById('one');
     let sectionTwo = document.getElementById('two');
+    let sectionThree = document.getElementById('three');
 
     sectionOne.classList.remove('active');
     sectionTwo.classList.remove('active');
+    sectionThree.classList.remove('active');
 
     switch (section) {
         case 1: sectionOne.classList.add('active'); break;
         case 2: sectionTwo.classList.add('active'); break;
+        case 3: sectionThree.classList.add('active'); break;
     }
 }
 
@@ -58,11 +61,15 @@ function setUpMenu() {
     <li id="option2" class="navbar__item">
         <a class="navbar__link"><i data-feather="user-x"></i><span>Blocked Patients</span></a>
     </li>
+    <li id="option3" class="navbar__item">
+        <a class="navbar__link"><i data-feather="inbox"></i><span>Examination requests</span></a>
+    </li>
     `;
     feather.replace();
 
     let menuItem1 = document.getElementById("option1");
     let menuItem2 = document.getElementById("option2");
+    let menuItem3 = document.getElementById("option3");
 
     menuItem1.addEventListener('click', (e) => {
         showWindow(1);
@@ -70,10 +77,14 @@ function setUpMenu() {
     menuItem2.addEventListener('click', (e) => {
         showWindow(2);
     });
+    menuItem3.addEventListener('click', (e) => {
+        showWindow(3);
+    });
 }
 
 function setUpFunctionality() {
     setUpBlockedPatients();
+    setupExaminationRequests()
 }
 
 var mainResponse;
@@ -91,25 +102,33 @@ function setUpPatients() {
 
                     let pName = document.createElement('td');
                     pName.innerText = patient['firstName'];
+
                     let pSurname = document.createElement('td');
                     pSurname.innerText = patient['lastName'];
+
                     let pEmail = document.createElement('td');
                     pEmail.innerText = patient['email'];
+
                     let pPassword = document.createElement('td');
                     pPassword.innerText = patient['password'];
+
                     let pId = document.createElement('td');
                     pId.innerText = patient['id'];
+
                     let pMedRecord = document.createElement('td');
+
                     let recordBtn = document.createElement('button');
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
                         window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
                     });
+
                     pMedRecord.appendChild(recordBtn);
 
-                    let one = document.createElement('td');
-                    one.classList.add('smallerWidth');
+                    let delBtnContainer = document.createElement('td');
+                    delBtnContainer.classList.add('smallerWidth');
+
                     let delBtn = document.createElement('button');
                     delBtn.innerHTML = '<i data-feather="trash"></i>';
                     delBtn.classList.add('delBtn');
@@ -117,10 +136,12 @@ function setUpPatients() {
                     delBtn.addEventListener('click', function (e) {
                         deletePatient(this.getAttribute('key'));
                     });
-                    one.appendChild(delBtn);
 
-                    let two = document.createElement('td');
-                    two.classList.add('smallerWidth');
+                    delBtnContainer.appendChild(delBtn);
+
+                    let putBtnContainer = document.createElement('td');
+                    putBtnContainer.classList.add('smallerWidth');
+
                     let putBtn = document.createElement('button');
                     putBtn.innerHTML = '<i data-feather="edit-2"></i>';
                     putBtn.classList.add('updateBtn');
@@ -128,10 +149,12 @@ function setUpPatients() {
                     putBtn.addEventListener('click', function (e) {
                         updatePatient(this.getAttribute('key'));
                     });
-                    two.appendChild(putBtn);
 
-                    let three = document.createElement('td');
-                    three.classList.add('smallerWidth');
+                    putBtnContainer.appendChild(putBtn);
+
+                    let blockBtnContainer = document.createElement('td');
+                    blockBtnContainer.classList.add('smallerWidth');
+
                     let blockBtn = document.createElement('button');
                     blockBtn.innerHTML = '<i data-feather="x-octagon"></i>';;
                     blockBtn.classList.add('blockBtn');
@@ -139,7 +162,8 @@ function setUpPatients() {
                     blockBtn.addEventListener('click', function (e) {
                         blockPatient(this.getAttribute('key'));
                     });
-                    three.appendChild(blockBtn);
+
+                    blockBtnContainer.appendChild(blockBtn);
 
                     newRow.appendChild(pName);
                     newRow.appendChild(pSurname);
@@ -147,9 +171,9 @@ function setUpPatients() {
                     newRow.appendChild(pPassword);
                     newRow.appendChild(pId);
                     newRow.appendChild(pMedRecord);
-                    newRow.appendChild(one);
-                    newRow.appendChild(two);
-                    newRow.appendChild(three);
+                    newRow.appendChild(delBtnContainer);
+                    newRow.appendChild(putBtnContainer);
+                    newRow.appendChild(blockBtnContainer);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -177,24 +201,33 @@ function setUpBlockedPatients(){
 
                     let pName = document.createElement('td');
                     pName.innerText = patient['firstName'];
+
                     let pSurname = document.createElement('td');
                     pSurname.innerText = patient['lastName'];
+
                     let pEmail = document.createElement('td');
                     pEmail.innerText = patient['email'];
+
                     let pPassword = document.createElement('td');
                     pPassword.innerText = patient['password'];
+
                     let pId = document.createElement('td');
                     pId.innerText = patient['id'];
+
                     let pMedRecord = document.createElement('td');
+
                     let recordBtn = document.createElement('button');
+
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
                         window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
                     });
+
                     pMedRecord.appendChild(recordBtn);
 
                     let pBlockedBy = document.createElement('td');
+
                     if (patient['active'] == "1"){
                         pBlockedBy.innerText = 'SECRETARY'
                     }
@@ -202,16 +235,31 @@ function setUpBlockedPatients(){
                         pBlockedBy.innerText = 'SYSTEM';
                     }
 
-                    let one = document.createElement("td");
-                    one.classList.add('smallerWidth');
+                    let unblockBtnContainer = document.createElement("td");
+                    unblockBtnContainer.classList.add('smallerWidth');
+
                     let unblockBtn = document.createElement("button");
                     unblockBtn.innerHTML = '<i data-feather="user-check"></i>';
                     unblockBtn.classList.add('unblockBtn');
                     unblockBtn.setAttribute('key', patient['id']);
                     unblockBtn.addEventListener('click', function (e) {
-                        unblockPatient(this.getAttribute('key'));
+                        unblockPatient(this.getAttribute('key'),e);
                     });
-                    one.appendChild(unblockBtn);
+
+                    unblockBtnContainer.appendChild(unblockBtn);
+
+                    let delBtnContainer = document.createElement("td");
+                    delBtnContainer.classList.add('smallerWidth');
+
+                    let delBtn = document.createElement("button");
+                    delBtn.innerHTML = '<i data-feather="trash"></i>';
+                    delBtn.classList.add('delBtn');
+                    delBtn.setAttribute('key', patient['id']);
+                    delBtn.addEventListener('click', function (e) {
+                        deletePatient(this.getAttribute('key'));
+                    });
+
+                    delBtnContainer.appendChild(delBtn);
 
                     newRow.appendChild(pName);
                     newRow.appendChild(pSurname);
@@ -220,7 +268,8 @@ function setUpBlockedPatients(){
                     newRow.appendChild(pId);
                     newRow.appendChild(pMedRecord);
                     newRow.appendChild(pBlockedBy);
-                    newRow.appendChild(one);
+                    newRow.appendChild(unblockBtnContainer);
+                    newRow.appendChild(delBtnContainer);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -229,6 +278,108 @@ function setUpBlockedPatients(){
     }
 
     request.open('GET', 'https://localhost:7291/api/secretary/patients/blocked');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+
+function setupExaminationRequests() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById('examinationRequestTable');
+                table.innerHTML = '';
+                for (let i in mainResponse) {
+                    let examinationRequest = mainResponse[i];
+
+                    let examination = examinationRequest['examination']
+
+                    let newRow = document.createElement('tr');
+
+                    let examinationType = document.createElement('td');
+                    examinationType.classList.add("examinationType")
+                    examinationType.innerText = examination['type'];
+
+                    let examinationDoctor = document.createElement('td');
+                    examinationDoctor.classList.add("examinationDoctor")
+                    examinationDoctor.innerText = examination['doctor'];
+
+                    let examinationDate = document.createElement('td');
+                    examinationDate.classList.add("examinationDate")
+                    examinationDate.innerText = examination['date'];
+
+                    let examinationRoom = document.createElement('td');
+                    examinationRoom.classList.add("examinationRoom")
+                    examinationRoom.innerText = examination['room'];
+
+                    let examinationPatient = document.createElement('td');
+                    examinationPatient.classList.add("examinationPatient")
+                    examinationPatient.innerText = examination['patient'];
+
+                    let examinationChange = document.createElement('td');
+
+                    let oldExaminationContainer  = document.createElement('td');
+
+                    if (examinationRequest['status'] == '0'){
+                        examinationChange.innerText = 'DELETION'
+                    }
+                    else{
+                        examinationChange.innerText = 'MODIFICATION'
+                        let oldExamination = document.createElement('button');
+                        oldExamination.innerHTML = '<i data-feather="arrow-up"></i>';
+                        oldExamination.classList.add('showBtn');
+                        oldExaminationContainer.classList.add('showBtnContainer')
+                        oldExamination.addEventListener('click', function (e) {
+                        showOldExamination(examination,newRow);
+                        });
+                        oldExaminationContainer.appendChild(oldExamination);
+                    }
+
+                    let acceptBtnContainer = document.createElement('td');
+                    let acceptBtn = document.createElement('button');
+                    acceptBtn.innerHTML = '<i data-feather="check"></i>';
+                    acceptBtn.classList.add('acceptBtn');
+                    acceptBtn.setAttribute('key', examinationRequest['_id']);
+                    acceptBtn.addEventListener('click', function (e) {
+                        acceptRequest(this.getAttribute('key'));
+                    });
+                    acceptBtnContainer.classList.add('smallerWidth');
+                    acceptBtnContainer.appendChild(acceptBtn);
+
+                    let declineBtnContainer = document.createElement('td');
+                    let declineBtn = document.createElement('button');
+                    declineBtn.innerHTML = '<i data-feather="x"></i>';
+                    declineBtn.classList.add('declineBtn');
+                    declineBtn.setAttribute('key', examinationRequest['_id']);
+                    declineBtn.addEventListener('click', function (e) {
+                        declineRequest(this.getAttribute('key'));
+                    });
+                    declineBtnContainer.classList.add('smallerWidth')
+                    declineBtnContainer.appendChild(declineBtn);
+
+                    oldExaminationContainer.classList.add('smallerWidth');
+
+                    newRow.appendChild(examinationType);
+                    newRow.appendChild(examinationDoctor);
+                    newRow.appendChild(examinationDate);
+                    newRow.appendChild(examinationRoom);
+                    newRow.appendChild(examinationPatient);
+                    newRow.appendChild(examinationChange);
+                    newRow.appendChild(acceptBtnContainer);
+                    newRow.appendChild(declineBtnContainer);
+                    newRow.appendChild(oldExaminationContainer);
+
+                    table.appendChild(newRow);
+
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/examinationRequests');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -272,20 +423,26 @@ function updatePatient(key) {
                 
                 let fFirstName = document.getElementById('editPatientFirstName');
                 fFirstName.value = patient['firstName'];
+
                 let fLastName = document.getElementById('editPatientLastName');
                 fLastName.value = patient['lastName'];
+
                 let fEmail = document.getElementById('editPatientEmail');
                 fEmail.value = patient['email'];
+
                 let fPassword = document.getElementById('editPatientPassword');
                 fPassword.value = patient['password'];
-                let fHeight = document.getElementById('editPatientHeight');
 
                 let medRecord = patient['medicalRecord'];
+
+                let fHeight = document.getElementById('editPatientHeight');
                 fHeight.value = medRecord['height'];
+
                 let fWeight = document.getElementById('editPatientWeight');
                 fWeight.value = medRecord['weight'];
+
                 let fBloodType = document.getElementById('editPatientBloodType');
-                fBloodType.value = medRecord['bloodType'];
+                fBloodType.value = medRecord['bloodType'];  
 
                 let form = document.getElementById('editPatientForm');
 
@@ -370,14 +527,19 @@ createBtn.addEventListener('click', function (e) {
 
     let fFirstName = document.getElementById('createPatientFirstName');
     fFirstName.setAttribute('placeholder', 'First Name');
+
     let fLastName = document.getElementById('createPatientLastName');
     fLastName.setAttribute('placeholder', 'Last Name');
+
     let fEmail = document.getElementById('createPatientEmail');
     fEmail.setAttribute('placeholder', 'Email');
+
     let fPassword = document.getElementById('createPatientPassword');
     fPassword.setAttribute('placeholder', 'Password');
+
     let fHeight = document.getElementById('createPatientHeight');
     fHeight.setAttribute('placeholder', 'Height');
+    
     let fWeight = document.getElementById('createPatientWeight');
     fWeight.setAttribute('placeholder', 'Weight');
 
@@ -446,8 +608,8 @@ createBtn.addEventListener('click', function (e) {
 });
 
 function blockPatient(key){
-    let postRequest = new XMLHttpRequest();
-    postRequest.onreadystatechange = function () {
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Patient sucessfuly blocked");
@@ -458,14 +620,16 @@ function blockPatient(key){
             
         }
     }
-    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
-    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send();
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
 }
 
-function unblockPatient(key){
-    let postRequest = new XMLHttpRequest();
-    postRequest.onreadystatechange = function () {
+function unblockPatient(key,e){
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Patient sucessfuly unblocked");
@@ -476,9 +640,129 @@ function unblockPatient(key){
             
         }
     }
-    postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
-    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send();
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function acceptRequest(key){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Examination request accepted");
+                setupExaminationRequests();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/accept/'+key);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function declineRequest(key){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Examination request declined");
+                setupExaminationRequests();
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/decline/'+key);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function showOldExamination(newExamination,examRow){
+    let putRequest = new XMLHttpRequest();
+    putRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                oldExamination = JSON.parse(this.responseText);
+
+                let examinationType = examRow.getElementsByClassName('examinationType')[0];
+                examinationType.innerHTML = oldExamination['type'];
+
+                let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
+                examinationDoctor.innerHTML = oldExamination['doctor'];
+
+                let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
+                examinationDate.innerHTML = oldExamination['date'];
+
+                let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
+                examinationRoom.innerHTML = oldExamination['room'];
+
+                let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
+                examinationPatient.innerHTML = oldExamination['patient'];
+
+                let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
+                let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+
+                let showBtn = document.createElement('button');
+                showBtn.innerHTML = '<i data-feather="arrow-down"></i>';
+                showBtn.classList.add('showBtn');
+                showBtn.addEventListener('click', function (e) {
+                showNewExamination(newExamination,examRow);
+                });
+
+                oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+
+                feather.replace();
+                
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    putRequest.open('GET', 'https://localhost:7291/api/secretary/examination/'+newExamination['id']);
+    putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    putRequest.send();
+}
+
+
+function showNewExamination(newExamination,examRow){
+    let examinationType = examRow.getElementsByClassName('examinationType')[0];
+    examinationType.innerHTML = newExamination['type'];
+
+    let examinationDoctor = examRow.getElementsByClassName('examinationDoctor')[0];
+    examinationDoctor.innerHTML = newExamination['doctor'];
+
+    let examinationDate = examRow.getElementsByClassName('examinationDate')[0];
+    examinationDate.innerHTML = newExamination['date'];
+
+    let examinationRoom = examRow.getElementsByClassName('examinationRoom')[0];
+    examinationRoom.innerHTML = newExamination['room'];
+
+    let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
+    examinationPatient.innerHTML = newExamination['patient'];
+
+    let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
+    let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+
+    let showBtn = document.createElement('button');
+    showBtn.innerHTML = '<i data-feather="arrow-up"></i>';
+    showBtn.classList.add('showBtn');
+    showBtn.addEventListener('click', function (e) {
+    showOldExamination(newExamination,examRow);
+    });
+
+    oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+
+    feather.replace();
+    
+
 }
 
 

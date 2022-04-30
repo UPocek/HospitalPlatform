@@ -1809,7 +1809,7 @@ footer {
     text-align: center;
 }
 
-/* Patient */
+/* Secretary */
 
 .blockBtn {
     color: Red;
@@ -1821,6 +1821,28 @@ footer {
 
 .unblockBtn {
     color: Green;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.showBtn {
+    color: Blue;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.acceptBtn {
+    color: Green;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+
+.declineBtn {
+    color: Red;
     border: none;
     background: transparent;
     padding: 10px;
@@ -1922,8 +1944,8 @@ table {
 
 .patientTable,
 .blockedPatientTable {
-    display: block;
-    table-layout: default;
+    display: table;
+    table-layout: auto;
     overflow-x: auto;
     white-space: nowrap;
 }
