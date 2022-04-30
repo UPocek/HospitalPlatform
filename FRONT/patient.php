@@ -56,6 +56,7 @@
                     <tr>
                         <th>Type</th>
                         <th>Doctor</th>
+                        <th>Specialization</th>
                         <th>Date</th>
                         <th>Room</th>
                         <!-- <th>Anamnesis</th> -->

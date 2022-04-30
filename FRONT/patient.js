@@ -34,21 +34,22 @@ function getParamValue(name) {
     }
 }
 
-function getDoctor(doctorID){
-    let request = new XMLHttpRequest();
+var doctors = new Map();
+// function getDoctor(doctorID){
+//     let request = new XMLHttpRequest();
 
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                let response = JSON.parse(this.responseText);
-                return new User(response);
-            }
-        }
-    }
+//     request.onreadystatechange = function () {
+//         if (this.readyState == 4) {
+//             if (this.status == 200) {
+//                 let response = JSON.parse(this.responseText);
+//                 return new User(response);
+//             }
+//         }
+//     }
 
-    request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
-    request.send();
-}
+//     request.open('GET', 'https://localhost:7291/api/my/users/' + doctorID);
+//     request.send();
+// }
 
 // Main
 
@@ -142,8 +143,8 @@ function setUpPage() {
 
 
 function setUpFunctionality() {
-    setUpExaminations();
     setUpDoctors('empty');
+    setUpExaminations();
     setUpMedicalRecord();
     doctorOptions('doctorCreateExamination');
     doctorOptions('doctorEditExamination');
@@ -167,8 +168,13 @@ function setUpExaminations() {
 
                     let cType = document.createElement('td');
                     cType.innerText = examination['type'];
+
+                    var doctor = doctors.get(examination['doctor']);
                     let cDoctor = document.createElement('td');
-                    cDoctor.innerText = examination['doctor'];
+                    cDoctor.innerText = doctor.firstName + " " + doctor.lastName;
+                    let cSpecialization = document.createElement('td');
+                    cSpecialization.innerText = doctor.specialization;
+
                     let cDate = document.createElement('td');
                     var examinationDate = new Date(examination['date']);
                     cDate.innerText = examinationDate.toLocaleString();
@@ -215,6 +221,7 @@ function setUpExaminations() {
 
                     newRow.appendChild(cType)
                     newRow.appendChild(cDoctor);
+                    newRow.appendChild(cSpecialization);
                     newRow.appendChild(cDate);
                     newRow.appendChild(cRoom);
                     // newRow.appendChild(cAnamnesis);
@@ -244,6 +251,8 @@ function setUpSearchExaminations(myFilter) {
                 table.innerHTML = '';
                 for (let i in mainResponse) {
                     let examination = mainResponse[i];
+                    var doctor = doctors.get(examination['doctor']);
+
                     if (myFilter.includes('term')) {
                         let tokens = myFilter.split('&');
                         let filterValue;
@@ -254,9 +263,9 @@ function setUpSearchExaminations(myFilter) {
                                 break;
                             }
                         }
-                        //doctorsName = doctor['firstName'] + ' ' + doctor['lastName'];
+                        doctorsName = doctor['firstName'] + ' ' + doctor['lastName'];
 
-                        if (!(examination['type'].includes(filterValue) || examination['doctor'] == filterValue || (new Date(examination['date'])).toLocaleString().includes(filterValue) || examination['anamnesis'].includes(filterValue) || (examination['urgent'].toString()).includes(filterValue))) {
+                        if (!(examination['type'].includes(filterValue) || doctorsName.toLowerCase().includes(filterValue.toLowerCase()) || doctor.specialization.includes(filterValue) || (new Date(examination['date'])).toLocaleString().includes(filterValue) || examination['anamnesis'].includes(filterValue) || (examination['urgent'].toString()).includes(filterValue))) {
                             continue;
                         }
                     }
@@ -267,10 +276,13 @@ function setUpSearchExaminations(myFilter) {
 
                     let cType = document.createElement('td');
                     cType.innerText = examination['type'];
+                    
+
                     let cDoctor = document.createElement('td');
-                    cDoctor.innerText = examination['doctor'];
+                    cDoctor.innerText = doctor.firstName + " " + doctor.lastName;
                     let cSpecialization = document.createElement('td');
-                    cSpecialization.innerText = '  ';
+                    cSpecialization.innerText = doctor.specialization;
+
                     let cDate = document.createElement('td');
                     cDate.innerText = (new Date(examination['date'])).toLocaleString();
                     let cAnamnesis = document.createElement('td');
@@ -427,6 +439,9 @@ function setUpDoctors(myFilter) {
                 table.innerHTML = '';
                 for (let i in mainResponse) {
                     let doctor = mainResponse[i];
+
+                    var doc = new User(doctor);
+                    doctors.set(doc.id, doc);
 
                     if (myFilter.includes('term')) {
                         let tokens = myFilter.split('&');
