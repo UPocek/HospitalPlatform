@@ -296,11 +296,21 @@ function setUpSearchExaminations(myFilter) {
 
 let createBtn = document.getElementById('addBtn');
 createBtn.addEventListener('click', function (e) {
+    creareExamination(0);
+});
+
+function creareExamination(doctorId){
     let prompt = document.getElementById('createExaminationPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
-
     let form = document.getElementById('createExaminationForm');
+
+    if (doctorId != 0){
+        let doctor = document.getElementById('doctorCreateExamination');
+        let selectedDoctor = document.getElementById(doctorId);
+        doctor.value = selectedDoctor.value;  
+    }
+    
 
     form.addEventListener('submit', function (e) {
         prompt.classList.add('off');
@@ -330,8 +340,8 @@ createBtn.addEventListener('click', function (e) {
    
 
     });
+};
 
-});
 
 
 //PUT - Examination    
@@ -340,6 +350,26 @@ function editExamination(id){
     prompt.classList.remove('off');
     main.classList.add('hideMain');
     let form = document.getElementById('editExaminationForm');
+
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var oldExamination = JSON.parse(this.responseText);
+
+                let examinationDate = document.getElementById('timeEditExamination');  
+                examinationDate.value = oldExamination['date']    
+                let doctor = document.getElementById('doctorEditExamination');
+                let selectedDoctor = document.getElementById(oldExamination['doctor']);
+                doctor.value = selectedDoctor.value;
+
+            }
+        }
+    }
+    request.open('GET', 'https://localhost:7291/api/patient/examination/' + id);
+    //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+
 
     form.addEventListener('submit', function (e) {
         prompt.classList.add('off');
@@ -401,6 +431,7 @@ function doctorOptions(elementID){
                 for (var i in mainResponse) {
                     let doctor = mainResponse[i];
                     let newOption = document.createElement('option');
+                    newOption.id = doctor['id'];
                     newOption.value = doctor['id'];
                     newOption.innerText = doctor['firstName'] + ' ' + doctor['lastName'];
   
@@ -466,14 +497,14 @@ function setUpDoctors(myFilter) {
                     
 
                     let one = document.createElement('td');
-                    let putBtn = document.createElement('button');
-                    putBtn.innerHTML = '<i data-feather="file-plus"></i>';
-                    putBtn.classList.add('updateBtn');
-                    putBtn.setAttribute('key', doctor['id']);
-                    putBtn.addEventListener('click', function (e) {
-                        updateRoom(this.getAttribute('key'));
+                    let createBtn = document.createElement('button');
+                    createBtn.innerHTML = '<i data-feather="file-plus"></i>';
+                    createBtn.classList.add('updateBtn');
+                    createBtn.setAttribute('key', doctor['id']);
+                    createBtn.addEventListener('click', function (e) {
+                        creareExamination(this.getAttribute('key'));
                     });
-                    one.appendChild(putBtn);
+                    one.appendChild(createBtn);
 
                     newRow.appendChild(cName)
                     newRow.appendChild(cSpecialization);
