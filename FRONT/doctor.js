@@ -906,3 +906,164 @@ endReviewBtn.addEventListener('click', function(e){
         alert('Quantity inputed badly.');
     }
 })
+
+var drugs;
+var percsriptionBtn = document.getElementById('prescribeReviews');
+
+percsriptionBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let popUp = document.getElementById('reviewExaminationDiv');
+    popUp.classList.add('off');
+
+    let perscriptionPopUp = document.getElementById('perscriptionDiv');
+    perscriptionPopUp.classList.remove('off');
+
+    let getDrugsRequest = new XMLHttpRequest();
+    getDrugsRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                drugs = JSON.parse(this.response);
+                let drugOptions = document.getElementById('drugOptionsList');
+                for(let drug of drugs){
+                    let drugItem = document.createElement('option');
+                    drugItem.innerText = drug['name'];
+                    drugOptions.appendChild(drugItem);
+                }
+                drugOptions.firstElementChild.setAttribute('selected', true);
+                let percsriptionTime = document.getElementById('perscriptionTime');
+                percsriptionTime.value = new Date().toISOString().split('T')[1].split('Z')[0];
+            }
+        }
+    }
+
+    getDrugsRequest.open('GET', 'https://localhost:7291/api/manager/drugs');
+    getDrugsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getDrugsRequest.send();
+})
+
+var addpercsriptionBtn = document.getElementById('addPrescription');
+
+addpercsriptionBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let drugOptions = document.getElementById('drugOptionsList');
+    let pickedDrug = drugOptions.value;
+    let drug = findDrug(pickedDrug);
+    let answer = validationOfPrescription(drug);
+    if(answer == "allergic"){
+        alert('Patient is alergic to ingredients of this drug.');
+    }
+    else{
+        if(answer == "modified"){
+            modifyLastPerscription(pickedDrug);
+            addMedicalInstruction(pickedDrug);
+        }
+        else{
+            addPerscriptionToRecord(pickedDrug);
+            addMedicalInstruction(pickedDrug);
+        }
+    
+        let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Perscription added.")
+                }
+            }
+        }
+    
+        request.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send(JSON.stringify(currentMedicalRecord));
+    } 
+
+    let perscriptionPopUp = document.getElementById('perscriptionDiv');
+    perscriptionPopUp.classList.add('off');
+
+    let popUp = document.getElementById('reviewExaminationDiv');
+    popUp.classList.remove('off');
+})
+
+function validationOfPrescription(drug){
+    let patientAllergies = currentMedicalRecord["alergies"]; 
+    let isAllergic = checkIfAllergicToIngredients(patientAllergies,drug['ingredients'], drug['name']);
+    if(isAllergic){
+        return "allergic";
+    }else if (checkIfDrugPerscribed(drug['name'])){
+        return "modified";
+    }else{
+        return "accepted";
+    }
+}
+
+function findDrug(drugName){
+    for(let drug of drugs){
+        if(drug['name'] == drugName){
+            return drug;
+        }
+    }
+    return NaN;
+}
+
+function checkIfDrugPerscribed(drugName){
+    for(let drug of currentMedicalRecord['drugs']){
+        if(drugName == drug['name']){
+            return true;
+        }
+    }
+    return false;
+}
+
+function getDrugPerscribed(drugName){
+    for(let drug of currentMedicalRecord['drugs']){
+        if(drugName == drug['name']){
+            return drug;
+        }
+    }
+    return Nan;
+}
+
+function checkIfAllergicToIngredients(allergies, ingredients, drugName){
+    if(allergies.includes(drugName)){
+        return true;
+    }
+    for(let ingredient of ingredients){
+        if(allergies.includes(ingredient)){
+            return true;
+        }
+    }
+    return false;
+}
+
+function modifyLastPerscription(drugName){
+    let drugPerscription = getDrugPerscribed(drugName);
+    let time = document.getElementById('perscriptionTime').value;
+    drugPerscription['when'] = time;
+    let frequency = document.getElementById('perscriptionFrequency').value;
+    drugPerscription['frequency'] = frequency;
+    let when = document.getElementById('perscriptionFrequency').value;
+    drugPerscription['how'] = when;
+}
+
+function addMedicalInstruction(drugName){
+    let perscriptionDuration = document.getElementById('perscriptionDuration').value;
+    let start = new Date();
+    let end = new Date();
+    end.setDate( start.getDate() + +perscriptionDuration).set;
+
+    let convertedStart = start.toISOString().split('T')[0];
+    let convertedEnd = end.toISOString().split('T')[0]
+    let medicalInstruction = {'startDate': convertedStart,'endDate': convertedEnd,'doctor': doctorId,'drug':drugName};
+    currentMedicalRecord['medicalInstructions'].push(medicalInstruction);
+}
+
+function addPerscriptionToRecord(drugName){
+    let time = document.getElementById('perscriptionTime').value;
+    let frequency = document.getElementById('perscriptionFrequency').value;
+    let how = document.getElementById('howList').value;
+
+    let newPerscription = {'name':drugName,'when':time,'how':how,'frequency':frequency};
+    currentMedicalRecord['drugs'].push(newPerscription);
+}
