@@ -19,7 +19,7 @@
         
         <?php include 'header.html';?>
         
-        <main>
+        <main class = "myMain">
             <section>
                 <div id="patientInfo" >
                     <div class="basicInfo">

@@ -584,6 +584,9 @@ function submitForm(e) {
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
     }
+    else{
+        alert("Error: Entered examination informations are invalid");
+    }
 }
 
 var rooms;

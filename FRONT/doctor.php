@@ -188,7 +188,7 @@
             </form>
         </div>
 
-        <main>
+        <main class = "myMain">
             <div id="hi">
                 <h1>Welcome back &nbsp; </h1>
             </div>
