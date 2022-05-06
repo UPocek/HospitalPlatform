@@ -2169,6 +2169,15 @@ td button {
     font-size: 1.2rem;
 }
 
+#messageDrugForm{
+    width: 100%;
+    margin: 0.5rem;
+}
+
+#drugReviewMessage{
+    height: 30vh;
+}
+
 .ingredients {
     display: grid;
     grid-template-columns: 1fr;

@@ -114,9 +114,17 @@ function displayInstructions(doctors){
     for (let instruction of patient['medicalRecord']['medicalInstructions']){
         let newRow = document.createElement('tr');
 
-        let instructionDate = document.createElement('td');
-        instructionDate.innerText = instruction['date'];
-        newRow.appendChild(instructionDate);
+        let instructionStartDate = document.createElement('td');
+        instructionStartDate.innerText = instruction['startDate'];
+        newRow.appendChild(instructionStartDate);
+
+        let instructionEndDate = document.createElement('td');
+        instructionEndDate.innerText = instruction['endDate'];
+        newRow.appendChild(instructionEndDate);
+
+        let drugName = document.createElement('td');
+        drugName.innerText = instruction['drug'];
+        newRow.appendChild(drugName);
 
         for(let doctor of doctors){
             if (doctor['id'] == instruction['doctor']){

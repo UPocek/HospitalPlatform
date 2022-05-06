@@ -180,6 +180,14 @@
             </form>
 	    </div>
 
+        <div id="messageDrugPrompt" class="form-container off prompt">
+            <form id="messageDrugForm" class="colDir myForm">
+                <h1> Message </h1>
+                <textarea  id="drugReviewMessage"></textarea>
+                <button id="sendDrugMessage" class="mainBtn">Send</button>
+            </form>
+        </div>
+
         <main>
             <div id="hi">
                 <h1>Welcome back &nbsp; </h1>
@@ -240,6 +248,25 @@
             </div>
             </section>
             <section id="three">
+                <div id="drugs">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Ingredients</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="drugTable">
+
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="four">
 
             </section>
         </main>

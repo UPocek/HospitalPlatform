@@ -89,7 +89,10 @@ function setUpMenu() {
     <li id="option2" class="navbar__item">
         <a class="navbar__link"><i data-feather="calendar"></i><span>Schedule</span></a>
     </li>
-    <li id="option3" class="navbar__item">
+    <li id='option3' class='navbar__item'>
+        <a class='navbar__link'><i data-feather='shield'></i><span>Drug Review</span></a>
+    </li>
+    <li id="option4" class="navbar__item">
         <a class="navbar__link"><i data-feather="briefcase"></i><span>Free days</span></a>
     </li>
     `;
@@ -98,6 +101,7 @@ function setUpMenu() {
     let item1 = document.getElementById('option1');
     let item2 = document.getElementById('option2');
     let item3 = document.getElementById('option3');
+    let item4 = document.getElementById('option4');
     
     item1.addEventListener('click', (e) => {
         showWindow(1);
@@ -111,6 +115,10 @@ function setUpMenu() {
     });
     item3.addEventListener('click', (e) => {
         showWindow(3);
+        setUpDrugsForReview();
+    });
+    item4.addEventListener('click', (e) => {
+        showWindow(4);
     });
     
 }
@@ -925,6 +933,7 @@ percsriptionBtn.addEventListener('click', function(e){
             if (this.status == 200) {
                 drugs = JSON.parse(this.response);
                 let drugOptions = document.getElementById('drugOptionsList');
+                removeAllChildNodes(drugOptions);
                 for(let drug of drugs){
                     let drugItem = document.createElement('option');
                     drugItem.innerText = drug['name'];
@@ -1066,4 +1075,110 @@ function addPerscriptionToRecord(drugName){
 
     let newPerscription = {'name':drugName,'when':time,'how':how,'frequency':frequency};
     currentMedicalRecord['drugs'].push(newPerscription);
+}
+
+function setUpDrugsForReview() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let reviewDrugs = JSON.parse(this.responseText);
+                let table = document.getElementById('drugTable');
+                table.innerHTML = '';
+                for (let drug of reviewDrugs) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = drug['name'];
+                    let tableDataIngredients = document.createElement('td');
+                    tableDataIngredients.innerText = '';
+                    for (let ingredient of drug['ingredients']) {
+                        tableDataIngredients.innerText += `${ingredient}, `;
+                    }
+                    if (tableDataIngredients.innerText.endsWith(', ')) {
+                        tableDataIngredients.innerText = tableDataIngredients.innerText.slice(0, -2);
+                    }
+
+                    let tableSendBackButton = document.createElement('td');
+                    let sendBackBtn = document.createElement('button');
+                    sendBackBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                    sendBackBtn.classList.add('updateBtn');
+                    sendBackBtn.setAttribute('key', drug['name']);
+                    sendBackBtn.addEventListener('click', function (e) {
+                        sendBackDrug(sendBackBtn.getAttribute('key'));
+                    });
+                    tableSendBackButton.appendChild(sendBackBtn);
+
+                    let tableDataApproveButton = document.createElement('td');
+                    let approveBtn = document.createElement('button');
+                    approveBtn.innerHTML = `<i data-feather='check'></i>`;
+                    approveBtn.classList.add('add');
+                    approveBtn.setAttribute('key', drug['name']);
+                    approveBtn.addEventListener('click', function (e) {
+                        approveDrug(this.getAttribute('key'));
+                    });
+                    tableDataApproveButton.appendChild(approveBtn);
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataIngredients);
+                    newRow.appendChild(tableSendBackButton);
+                    newRow.appendChild(tableDataApproveButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/doctor/drugs');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function sendBackDrug(key){
+    let sendBtn = document.getElementById('sendDrugMessage');
+    sendBtn.setAttribute('key', key);
+    sendBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        let sendMessageRequest = new XMLHttpRequest();
+        sendMessageRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    let messageDiv = document.getElementById('messageDrugPrompt');
+                    messageDiv.value = "";
+                    messageDiv.classList.add('off');
+                    main.classList.remove("hideMain");
+                    alert('Message sent sucessfuly.');
+                } 
+            }
+        }
+        let message = document.getElementById('drugReviewMessage').value;
+        console.log(message);
+        sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/' + key);
+        sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        sendMessageRequest.send(JSON.stringify({"message": message}));
+        })
+    main.classList.add("hideMain");
+    let messageDiv = document.getElementById('messageDrugPrompt');
+    messageDiv.classList.remove('off');  
+}
+
+function approveDrug(key){
+    let sendMessageRequest = new XMLHttpRequest();
+    sendMessageRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Drug approved sucessfuly.');
+                location.reload();
+                setUpDrugsForReview();
+                showWindow(3);
+            } 
+        }
+    }
+    sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/approve/' + key);
+    sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    sendMessageRequest.send();
 }
