@@ -152,6 +152,28 @@
       </div>
     </section>
 
+    <section id="four">
+      <div id="referrals">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Doctor</th>
+                  <th>Date</th>
+                  <th>Room</th>
+                  <th>Patient</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentReferralTable">
+                  
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
 
       
   </main>
