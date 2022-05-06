@@ -6,9 +6,9 @@ public class Referral
 {
     [BsonElement("doctorId")]
     [JsonPropertyName("doctorId")]
-    public int? doctorId {get; set;}
+    public int? doctorId {get; set;} = null;
 
     [BsonElement("speciality")]
     [JsonPropertyName("speciality")]
-    public string? speciality {get; set;}
+    public string? speciality {get; set;} = null;
 }

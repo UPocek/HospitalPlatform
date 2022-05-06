@@ -75,6 +75,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Doctor</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody id="instructionsTable">
@@ -85,13 +86,14 @@
                 </div>
             </section>
 
-            <section class="addSpaceBottom">
+            <section id="referralSection" class="addSpaceBottom off">
                 <div id="rooms" class="referrals">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
                             <thead>
                                 <tr>
                                     <th>Doctor</th>
+                                    <th>Specialization</th>
                                 </tr>
                             </thead>
                             <tbody id="referralsTable">

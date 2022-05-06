@@ -124,6 +124,16 @@ namespace APP.Controllers
             return Ok();   
         }
 
+
+        [HttpGet("patients/{id}/activity")]
+        // PUT: api/Secretary/patients/901/1
+        public async Task<String> GetPatientActivity(int id)
+        {
+            var patients = database.GetCollection<Patient>("Patients");;
+
+            return patients.Find(p=> p.id == id).FirstOrDefault().active;   
+        }
+
         // GET: api/Secretary/examinationRequests
         [HttpGet("examinationRequests")]
         public async Task<List<ExaminationRequest>> GetExaminationRequests()
@@ -146,6 +156,8 @@ namespace APP.Controllers
             
             return examinations.Find(item => item.id == id).FirstOrDefault();
         }
+
+        
 
 
         // PUT: api/Secretary/examinationRequests/accept/1

@@ -50,6 +50,7 @@ function setupPatientBasicInfo(){
                     alergieItem.innerText = alergie;
                     patientAlergies.appendChild(alergieItem);
                 }
+                setUpMenu();
                 setUpPatientExaminations();
                 setUpPatientInstructions();
             }
@@ -131,6 +132,104 @@ function displayInstructions(doctors){
     }
 }
 
+function displayInstructions(doctors){
+    let table = document.getElementById('instructionsTable');
+    
+    for (let instruction of patient['medicalRecord']['medicalInstructions']){
+        let newRow = document.createElement('tr');
+
+        let instructionDate = document.createElement('td');
+        instructionDate.innerText = instruction['date'];
+        newRow.appendChild(instructionDate);
+
+        for(let doctor of doctors){
+            if (doctor['id'] == instruction['doctor']){
+                let instructionOfDoctor = document.createElement('td');
+                instructionOfDoctor.innerText = doctor['firstName'] + ' ' + doctor['lastName'];
+                newRow.appendChild(instructionOfDoctor);
+            }
+        }
+        
+        table.appendChild(newRow);
+
+    }
+}
+
+
+function displayReferrals(){
+    let table = document.getElementById('referralsTable');
+    
+    for (let referral of patient['medicalRecord']['referrals']){
+        let newRow = document.createElement('tr');
+
+        let anyConst = 'ANY ';
+
+        let doctorId = document.createElement('td');
+        let doctorSpeciality = document.createElement('td');
+
+        let referralBtnContainer = document.createElement('td');
+        let referralBtn = document.createElement('button');
+        referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
+        referralBtn.classList.add('referralBtn');
+        referralBtnContainer.classList.add('smallerWidth');
+        referralBtnContainer.appendChild(referralBtn);
+
+
+        if (referral['doctorId'] == null){
+            doctorId.innerText = anyConst;
+            doctorSpeciality.innerText = referral['speciality'];
+
+            newRow.appendChild(doctorId);
+            newRow.appendChild(doctorSpeciality);
+            newRow.appendChild(referralBtnContainer);
+            table.appendChild(newRow);
+        }
+        else{
+        doctorId.innerText = referral['doctorId'];
+        doctorSpeciality.innerText = anyConst;
+
+
+        newRow.appendChild(doctorId);
+        newRow.appendChild(doctorSpeciality);
+        newRow.appendChild(referralBtnContainer);
+
+        table.appendChild(newRow);
+        
+
+
+
+        }
+
+        feather.replace();
+
+    }
+}
+
+async function checkPatientActivity(patientId){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let activityValue = JSON.parse(this.responseText);
+                
+                if (activityValue == ''){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/Secretary/patients/'+patientId+'/activity');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+    await request;
+
+}
+
+
 function setUpPatientInstructions(){
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -148,8 +247,8 @@ function setUpPatientInstructions(){
 }
 
 
+
 document.addEventListener('DOMContentLoaded', function () {
-    setUpMenu();
     setupPatientBasicInfo();
 });
 
@@ -171,6 +270,10 @@ function setUpMenu() {
         });
     }
     else if(secretaryId != undefined){
+        let referralSection = document.getElementById('referralSection');
+        referralSection.classList.remove('off');
+        displayReferrals();
+
         item1.addEventListener('click', (e) => {
             window.location.replace('secretary.php' + '?id=' + secretaryId + '&token=' + jwtoken);
         });

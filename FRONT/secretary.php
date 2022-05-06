@@ -87,11 +87,11 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
                   <thead>
                       <tr>
-                        <th >First Name</th>
-                        <th >Last Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
-                        <th >Password</th>
-                        <th >Id</th>
+                        <th>Password</th>
+                        <th>Id</th>
                         <th class="smallerWidth">Medical Record</th>
                         <th class="smallerWidth"></th>
                         <th class="smallerWidth"></th>
@@ -145,28 +145,6 @@
                 </tr>
               </thead>
               <tbody id="examinationRequestTable">
-                  
-              </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section id="four">
-      <div id="referrals">
-        <div class="tbl-content">
-          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Doctor</th>
-                  <th>Date</th>
-                  <th>Room</th>
-                  <th>Patient</th>
-                  <th>Change</th>
-                </tr>
-              </thead>
-              <tbody id="appointmentReferralTable">
                   
               </tbody>
           </table>
