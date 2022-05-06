@@ -91,7 +91,6 @@ public class DoctorController : ControllerBase
         else{
             return BadRequest();
         }
-
     }
 
     [HttpPut("drugs/{id}")]
@@ -123,22 +122,17 @@ public class DoctorController : ControllerBase
     {
         var patients = database.GetCollection<Patient>("Patients");
         var resultingPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
-
-        if (resultingPatient == null){
-            return BadRequest();
-        }
-
         var rooms = database.GetCollection<Room>("Rooms");
         var resultingRoom = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
- 
-        if (resultingRoom == null){
-            return BadRequest();
+        var isValidExamination = CheckIfValidExamination(resultingPatient, resultingRoom);
+        if(isValidExamination){
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+            examinations.FindOneAndReplace(e => e.id == id, examination);
+            return Ok(); 
         }
-
-        var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        examinations.FindOneAndReplace(e => e.id == id, examination);
-        
-        return Ok();    
+        else{
+            return BadRequest();
+        }   
     }
 
     [HttpPut("examinations/room/{name}")]
