@@ -75,7 +75,6 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Doctor</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody id="instructionsTable">
