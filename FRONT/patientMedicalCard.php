@@ -73,7 +73,9 @@
                         <table cellpadding="0" cellspacing="0" border="0">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
+                                    <th>Start date</th>
+                                    <th>End date</th>
+                                    <th>Drug</th>
                                     <th>Doctor</th>
                                 </tr>
                             </thead>
