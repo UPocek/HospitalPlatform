@@ -2275,7 +2275,7 @@ td button {
     box-shadow: var(--boxShadow);
 }
 
-#reviewExaminationPopUp {
+#reviewExaminationPopUp, #perscriptionPopUp {
     background-color: var(--whiteSmoke);
     display: flex;
     margin: 50px auto;

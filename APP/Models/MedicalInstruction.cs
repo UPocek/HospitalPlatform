@@ -4,9 +4,17 @@ using System.Text.Json.Serialization;
 
 public class MedicalInstruction
 {
-    [BsonElement("date")]
-    [JsonPropertyName("date")]
-    public string date { get; set; }
+    [BsonElement("startDate")]
+    [JsonPropertyName("startDate")]
+    public string startDate { get; set; }
+
+    [BsonElement("endDate")]
+    [JsonPropertyName("endDate")]
+    public string endtDate { get; set; }
+
+    [BsonElement("drug")]
+    [JsonPropertyName("drug")]
+    public string drugName { get; set; }
 
     [BsonElement("doctor")]
     [JsonPropertyName("doctor")]
