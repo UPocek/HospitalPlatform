@@ -32,6 +32,7 @@ public class DoctorController : ControllerBase
     public async Task<List<Examination>> GetDoctorsExaminations(int id)
     {
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
         return examinations.Find(e => e.doctorId == id).ToList();
     }
 
@@ -39,6 +40,7 @@ public class DoctorController : ControllerBase
     public async Task<List<Examination>> GetPatientsExaminations(int id)
     {
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
         return examinations.Find(e => e.patinetId == id).ToList();
     }
 
@@ -47,6 +49,7 @@ public class DoctorController : ControllerBase
     {
         var patients = database.GetCollection<MedicalCard>("Patients");
         MedicalCard resultingMedicalCard = patients.Find(p => p.id == id).FirstOrDefault();
+
         return resultingMedicalCard;
     }
 
@@ -55,6 +58,7 @@ public class DoctorController : ControllerBase
     {
         var rooms = database.GetCollection<Room>("Rooms");
         Room resultingRoom = rooms.Find(r => r.name == name).FirstOrDefault();
+
         return resultingRoom;
     }
 
@@ -65,31 +69,24 @@ public class DoctorController : ControllerBase
         return drugs.Find(item => item.status == "inReview").ToList();
     }
 
-    public bool CheckIfValidExamination(Patient patient, Room room){
-        if (patient == null | room == null)
-        {
-            return false;
-        }
-        return true;
-    }
-
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
         var resultingPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
         var rooms = database.GetCollection<Room>("Rooms");
-        var resultingRoom = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
-        var isValidExamination = CheckIfValidExamination(resultingPatient, resultingRoom);
-        if(isValidExamination){
-            var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
-            examination.id = id + 1;
-            examinations.InsertOne(examination);
-            return Ok();
-        }
-        else{
+        var resultingRoom = rooms.Find(r => r.name == examination.roomName);
+        
+        if (resultingPatient == null | resultingRoom == null)
+        {
             return BadRequest();
+        }else{
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
+        examination.id = id + 1;
+        examinations.InsertOne(examination);
+
+        return Ok();
         }
     }
 
@@ -124,14 +121,16 @@ public class DoctorController : ControllerBase
         var resultingPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
         var rooms = database.GetCollection<Room>("Rooms");
         var resultingRoom = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
-        var isValidExamination = CheckIfValidExamination(resultingPatient, resultingRoom);
-        if(isValidExamination){
-            var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            examinations.FindOneAndReplace(e => e.id == id, examination);
-            return Ok(); 
+ 
+
+        if (resultingPatient == null | resultingRoom == null){
+            return BadRequest();
         }
         else{
-            return BadRequest();
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+            examinations.FindOneAndReplace(e => e.id == id, examination);
+            
+            return Ok(); 
         }   
     }
 
