@@ -1991,11 +1991,13 @@ td button {
 ::-webkit-scrollbar:horizontal {
     height: 6px;
     width: 6px;
+    border-radius: 50%;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
     height: 6px;
     width: 6px;
+    border-radius: 50%;
 }
 
 ::-webkit-scrollbar {
@@ -2169,12 +2171,12 @@ td button {
     font-size: 1.2rem;
 }
 
-#messageDrugForm{
+#messageDrugForm {
     width: 100%;
     margin: 0.5rem;
 }
 
-#drugReviewMessage{
+#drugReviewMessage {
     height: 30vh;
 }
 
