@@ -84,6 +84,23 @@
                     </div>
                 </div>
             </section>
+
+            <section class="addSpaceBottom">
+                <div id="rooms" class="referrals">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="referralsTable">
+                                <!-- this is where data from api comes -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
                 
                 
         </main>
