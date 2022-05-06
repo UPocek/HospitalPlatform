@@ -51,6 +51,15 @@ public class PatientController : ControllerBase
         return patientsExaminations;
   }
 
+    // GET: api/Patient/examination/id
+    [HttpGet("examination/{id}")]
+
+    public async  Task<Examination> GetExamination(int id){
+          var examinations = database.GetCollection<Examination>("MedicalExaminations");
+          Examination patientsExaminations = examinations.Find(e => e.id == id).FirstOrDefault();
+        return patientsExaminations;
+  }
+
 
     // POST action
 
