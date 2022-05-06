@@ -265,7 +265,7 @@
             <div id="transferOptions">
             </div>
             <div id="correctPos">
-            <button class="mainBtn">Transfer</button>
+            <button class="mainBtn btnAnimation">Transfer</button>
             </div>
         </form>
     </div>

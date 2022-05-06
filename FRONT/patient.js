@@ -148,7 +148,6 @@ function setUpFunctionality() {
     doctorOptions('doctorCreateExamination');
     doctorOptions('doctorEditExamination');
     setUpSearchExaminations('empty');
-
 }
 
 var mainResponse;
@@ -235,7 +234,7 @@ function setUpExaminations() {
     }
 
     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
-    //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -269,14 +268,11 @@ function setUpSearchExaminations(myFilter) {
                         }
                     }
 
-
-
                     let newRow = document.createElement('tr');
 
                     let cType = document.createElement('td');
                     cType.innerText = examination['type'];
                     
-
                     let cDoctor = document.createElement('td');
                     cDoctor.innerText = doctor.firstName + " " + doctor.lastName;
                     let cSpecialization = document.createElement('td');
@@ -288,7 +284,6 @@ function setUpSearchExaminations(myFilter) {
                     cAnamnesis.innerText = examination['anamnesis'];
                     let cUrgen = document.createElement('td');
                     cUrgen.innerText = examination['urgent']
-
 
                     newRow.appendChild(cType)
                     newRow.appendChild(cDoctor);
@@ -303,6 +298,7 @@ function setUpSearchExaminations(myFilter) {
     }
 
     request.open('GET', 'https://localhost:7291/api/patient/examinations/' + id);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 //POST - Examination
@@ -349,13 +345,9 @@ function creareExamination(doctorId){
         postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        postRequest.send(JSON.stringify({'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));       
-   
-
+        postRequest.send(JSON.stringify({'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));
     });
 };
-
-
 
 //PUT - Examination    
 function editExamination(id){ 
@@ -380,7 +372,7 @@ function editExamination(id){
         }
     }
     request.open('GET', 'https://localhost:7291/api/patient/examination/' + id);
-    //postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
 
@@ -429,7 +421,8 @@ function deleteExamination(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examinations/' + key)
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examinations/' + key);
+    deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
 
@@ -455,6 +448,7 @@ function doctorOptions(elementID){
     }
 
     request.open('GET', 'https://localhost:7291/api/patient/doctors');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -487,9 +481,6 @@ function setUpDoctors(myFilter) {
                             continue;
                         }
                     }
-
-
-
 
                     let newRow = document.createElement('tr');
                     let cName = document.createElement('td');
@@ -526,13 +517,13 @@ function setUpDoctors(myFilter) {
                     newRow.appendChild(one);
                     table.appendChild(newRow);
                     feather.replace();
-                    
                 }
             }
         }
     }
 
     request.open('GET', 'https://localhost:7291/api/patient/doctors');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -663,12 +654,11 @@ function sortTable(n, table){
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
             switchcount ++;
-            } else {
-                if (switchcount == 0 && dir == 'asc') {
-                    dir = 'desc';
-                    switching = true;
-                }
+        } else {
+            if (switchcount == 0 && dir == 'asc') {
+                dir = 'desc';
+                switching = true;
             }
+        }
     }
-
 }

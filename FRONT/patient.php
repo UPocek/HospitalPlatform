@@ -42,10 +42,10 @@
 
   <main class="myMain">
  
+<div id="hi">
+  <h1>Welcome back &nbsp; </h1>
+</div>
  <section id="one" class="active">
-     <div id="hi">
-          <h1>Welcome back &nbsp; </h1>
-      </div>
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>

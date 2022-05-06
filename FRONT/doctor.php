@@ -30,8 +30,8 @@
                     <div id="equipmentDiv">
                         <!-- equipmentUsed -->
                     </div>
+                    <button id="prescribeReviews" class="mainBtn">Prescribe drugs</button>
                     <button id="endReview" class="mainBtn">End review</button>
-
                 </form>
                 <form class="basicInfo">
                     <h1>Medical record</h1>
@@ -87,8 +87,49 @@
                 </form>
             </div>
         </div>
-
-        
+        <div id="perscriptionDiv" class = "off">
+            <div id="perscriptionPopUp">
+                <form>
+                    <h1>Add prescription</h1>
+                    <div class="myForm">
+                        <div>
+                            <label for="perscriptionTime">Time:&nbsp</label>
+                            <input id="perscriptionTime" type="time"></input>
+                        </div>
+                        <div>
+                            <label for="perscriptionFrequency">Frequency:&nbsp</label>
+                            <input id="perscriptionFrequency" type="number" min="1"></input>
+                        </div>
+                        <div>
+                            <div>
+                                <p>Drug:&nbsp</p>
+                                <select id="drugOptionsList">
+                                       <!--addible drugs--> 
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="listContainer">
+                                <div class="divList">
+                                    <p>How to drink:&nbsp</p>
+                                    <select id="howList">
+                                        <option value="before" >Before</option>
+                                        <option value="during" >During</option>
+                                        <option value="after" >After</option>
+                                        <option value="not_important" selected>Not important</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="perscriptionDuration">Duration:&nbsp</label>
+                                <input id="perscriptionDuration" type="number" min='1'></input>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="addPrescription" class="mainBtn">Add prescription</button>
+                </form>
+            </div>
+        </div> 
         <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
             <div id="reportHeader">
                 <h1>Report</h1>
@@ -138,6 +179,14 @@
                 <button class="mainBtn">OK</button>
             </form>
 	    </div>
+
+        <div id="messageDrugPrompt" class="form-container off prompt">
+            <form id="messageDrugForm" class="colDir myForm">
+                <h1> Message </h1>
+                <textarea  id="drugReviewMessage"></textarea>
+                <button id="sendDrugMessage" class="mainBtn">Send</button>
+            </form>
+        </div>
 
         <main>
             <div id="hi">
@@ -199,6 +248,25 @@
             </div>
             </section>
             <section id="three">
+                <div id="drugs">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Ingredients</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="drugTable">
+
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="four">
 
             </section>
         </main>
