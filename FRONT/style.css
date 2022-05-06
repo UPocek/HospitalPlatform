@@ -119,6 +119,20 @@ body {
     margin: 0.625rem 0;
 }
 
+.btnAnimation {
+    transform: translateY(0);
+    transition: all 500ms;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.05),
+        0 10px 10px rgba(0, 0, 0, 0.02);
+}
+
+.btnAnimation:hover {
+    transform: translateY(-25%);
+    box-shadow: var(--boxShadow);
+}
+
+@keyframes moveUp {}
+
 #first .ghost {
     background: transparent !important;
 }
