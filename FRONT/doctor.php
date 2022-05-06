@@ -31,6 +31,7 @@
                         <!-- equipmentUsed -->
                     </div>
                     <button id="prescribeReviews" class="mainBtn">Prescribe drugs</button>
+                    <button id="createReferall" class="mainBtn">Create referall</button>
                     <button id="endReview" class="mainBtn">End review</button>
                 </form>
                 <form class="basicInfo">
@@ -129,7 +130,26 @@
                     <button id="addPrescription" class="mainBtn">Add prescription</button>
                 </form>
             </div>
-        </div> 
+        </div>
+
+        <div id="referallDiv" class="form-container sign-in-container off prompt">
+            <h1>Create referral</h1>
+            <div class="myForm">
+                <label for="referallType">Referall type:</label>
+                <select id="referallType">
+                    <option value="doctor" selected>doctor</option>
+                    <option value="speciality">speciality</option>
+                </select>
+            </div>
+            <div class="myForm">
+                <label for="referallOption">Option:</label>
+                <select id="referallOption">
+                    <!--options for referall-->
+                </select>
+            </div>
+            <button id="addReferall" class="mainBtn">Add referall</button>
+        </div>
+
         <div id="reportPopUpNew" class="form-container sign-in-container off prompt">
             <div id="reportHeader">
                 <h1>Report</h1>
