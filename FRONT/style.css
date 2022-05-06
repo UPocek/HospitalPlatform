@@ -27,7 +27,8 @@ body {
 #one,
 #two,
 #three,
-#four {
+#four,
+#five {
     display: none;
     margin-bottom: 10vh;
     transition: all 500ms ease-in;
@@ -40,6 +41,10 @@ body {
 
 /* LOGIN FORM */
 
+
+.myForm p{
+    width: 100%;
+}
 .myForm input,
 .myForm select {
     background-color: #eee;
@@ -1921,8 +1926,58 @@ tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
 
+#createAdvancedExamination{
+    align-items: center;
+    width: 80%;
+    padding: 1rem;
+    margin: 5% 10%;
+    border-radius: 10px;
+    border: 2px solid var(--mainColor);
+}
+/* .radio{
+    display: block;
+}
+.radio label{
+    min-width: 80%;
+}
+
+.radio input{
+    max-width: 20%;
+    min-width: 10%;
+} */
+
+#okButton{
+    width: 48%;
+    margin-left: 26%;
+}
+
+
+#timeTo, #timeFrom, #dateTo,
+#doctorAdvancedCreateExamination{
+    min-width: 48%;
+}
+#priorityDoctor, #priorityTime{
+    min-width: 5%;
+}
+
+#labelDoctor, #labelTime{
+    min-width: 41%;
+    display: inline-flex;
+}
+
+input[type="radio" i] {
+    align-items: center;
+    display: inline-flex;
+    font-family: monospace;
+    padding-inline-start: 1px;
+    cursor: default;
+    overflow: hidden;
+    padding: 0px;
+}
+
 #rooms,
 #examinations,
+#advancedExaminations,
 #doctors,
 #patients,
 #equipment,
@@ -1962,6 +2017,18 @@ th {
     font-size: 1.2rem;
     text-transform: uppercase;
     vertical-align: middle;
+}
+#pinkTh:hover{
+    border-radius: 10px;
+    border: 1px solid var(--accentColor2);
+    background: var(--accentColor1);
+    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    color: var(--backgroundColor);
+    text-align: center;
+    letter-spacing: 1px;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
 }
 
 td {
@@ -2389,14 +2456,20 @@ td button {
         margin-left: 105px;
     }
 
+
     #rooms,
     #examinations,
+    #advancedExaminations,
+    #createAdvancedExamination,
     #doctors,
     #patients,
     #equipment,
     #drugs,
     #ingredients {
         width: 90%;
+    }
+    #createAdvancedExamination{
+        margin: 5% 5%;
     }
 
     .delBtn,
@@ -2503,6 +2576,8 @@ td button {
 
     #rooms,
     #examinations,
+    #advancedExaminations,
+    #createAdvancedExamination,
     #doctors,
     #equipment,
     #drugs,
@@ -2510,6 +2585,9 @@ td button {
         width: 94%;
     }
 
+    #createAdvancedExamination{
+        margin: 5% 3%;
+    }
     .delBtn,
     .updateBtn,
     .blockBtn,
@@ -2763,5 +2841,20 @@ td button {
 
     #polls h1 {
         font-size: 1.4rem;
+    }
+
+    #timeTo,
+    #timeFrom,
+    #dateTo,
+    #doctorAdvancedCreateExamination{
+        min-width: 100%;
+    }
+
+    #labelDoctor, #labelTime{
+        min-width: 92%;
+    }
+    #okButton{
+        width: 100%;
+        margin-left: 0%;
     }
 }

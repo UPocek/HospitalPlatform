@@ -64,17 +64,22 @@ function showWindow(section) {
     let s2 = document.getElementById('two');
     let s3 = document.getElementById('three');
     let s4 = document.getElementById('four');
+    let s5 = document.getElementById('five');
+
 
     s1.classList.remove('active');
     s2.classList.remove('active');
     s3.classList.remove('active');
     s4.classList.remove('active');
+    s5.classList.remove('active');
 
     switch (section) {
         case 1: s1.classList.add('active'); break;
         case 2: s2.classList.add('active'); break;
         case 3: s3.classList.add('active'); break;
         case 4: s4.classList.add('active'); break;
+        case 5: s5.classList.add('active'); break;
+
     }
 }
 
@@ -90,12 +95,15 @@ function setUpMenu() {
         <a href='#' class='navbar__link'><i data-feather='activity'></i><span>Examinations</span></a>
     </li>
     <li id='option2' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='user'></i><span>Profile</span></a>
+        <a href='#' class='navbar__link'><i data-feather='file-plus'></i><span>Advanced examination scheduler</span></a>
     </li>
     <li id='option3' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='users'></i><span>Doctors</span></a>
+        <a href='#' class='navbar__link'><i data-feather='user'></i><span>Profile</span></a>
     </li>
     <li id='option4' class='navbar__item'>
+        <a href='#' class='navbar__link'><i data-feather='users'></i><span>Doctors</span></a>
+    </li>
+    <li id='option5' class='navbar__item'>
         <a href='#' class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
     </li>
     `;
@@ -105,6 +113,8 @@ function setUpMenu() {
     let item2 = document.getElementById('option2');
     let item3 = document.getElementById('option3');
     let item4 = document.getElementById('option4');
+    let item5 = document.getElementById('option5');
+
 
     item1.addEventListener('click', (e) => {
         showWindow(1);
@@ -117,6 +127,9 @@ function setUpMenu() {
     });
     item4.addEventListener('click', (e) => {
         showWindow(4);
+    });
+    item5.addEventListener('click', (e) => {
+        showWindow(5);
     });
 }
 
