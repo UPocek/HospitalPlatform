@@ -925,6 +925,7 @@ percsriptionBtn.addEventListener('click', function(e){
             if (this.status == 200) {
                 drugs = JSON.parse(this.response);
                 let drugOptions = document.getElementById('drugOptionsList');
+                removeAllChildNodes(drugOptions);
                 for(let drug of drugs){
                     let drugItem = document.createElement('option');
                     drugItem.innerText = drug['name'];
