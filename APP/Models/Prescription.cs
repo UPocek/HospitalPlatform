@@ -10,9 +10,13 @@ public class Prescription
 
     [BsonElement("when")]
     [JsonPropertyName("when")]
-    public List<string> whenPrescribed { get; set; }
+    public string whenPrescribed { get; set; }
 
     [BsonElement("how")]
     [JsonPropertyName("how")]
     public string howPrescribed { get; set; }
+
+    [BsonElement("frequency")]
+    [JsonPropertyName("frequency")]
+    public int frequency { get; set; }
 }
