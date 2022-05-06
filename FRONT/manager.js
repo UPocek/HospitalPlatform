@@ -335,6 +335,7 @@ function setUpRooms() {
     }
 
     request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
@@ -771,6 +772,7 @@ function setUpDrugs() {
     }
 
     request.open('GET', 'https://localhost:7291/api/manager/drugs');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
 
