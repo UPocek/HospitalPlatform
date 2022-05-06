@@ -1857,15 +1857,23 @@ footer {
     margin: 0%;
 }
 
-
-
-
 /* Hi */
 
 #hi {
     text-align: center;
-    margin: 8vh auto;
+    margin: 9vh auto;
     padding: 1rem;
+    animation: fade 500ms ease-in-out forwards;
+    animation-delay: 250ms;
+    opacity: 0;
+    transform: translateY(50%);
+}
+
+@keyframes fade {
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #hi h1 {
@@ -2275,7 +2283,8 @@ td button {
     box-shadow: var(--boxShadow);
 }
 
-#reviewExaminationPopUp, #perscriptionPopUp {
+#reviewExaminationPopUp,
+#perscriptionPopUp {
     background-color: var(--whiteSmoke);
     display: flex;
     margin: 50px auto;
