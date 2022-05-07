@@ -147,6 +147,7 @@ function setUpFunctionality() {
     setUpMedicalRecord();
     doctorOptions('doctorCreateExamination');
     doctorOptions('doctorEditExamination');
+    doctorOptions('doctorAdvancedCreateExamination');
     setUpSearchExaminations('empty');
 }
 
@@ -178,16 +179,6 @@ function setUpExaminations() {
                     cDate.innerText = examinationDate.toLocaleString();
                     let cRoom = document.createElement('td');
                     cRoom.innerText = examination['room'];
-
-                    // let cAnamnesis = document.createElement('td');
-                    // let anamnesisBtn = document.createElement('button');
-                    // anamnesisBtn.innerHTML = '<i data-feather="file"></i>';
-                    // anamnesisBtn.classList.add('updateBtn');
-                    // anamnesisBtn.setAttribute('key', examination['anamnesis']);
-                    // anamnesisBtn.addEventListener('click', function (e) {
-                    // });
-                    // cAnamnesis.appendChild(anamnesisBtn);
-
 
                     let cUrgen = document.createElement('td');
                     cUrgen.innerText = examination['urgent']
@@ -222,7 +213,6 @@ function setUpExaminations() {
                     newRow.appendChild(cSpecialization);
                     newRow.appendChild(cDate);
                     newRow.appendChild(cRoom);
-                    // newRow.appendChild(cAnamnesis);
                     newRow.appendChild(cUrgen);
                     newRow.appendChild(one);
                     newRow.appendChild(two);
@@ -305,10 +295,10 @@ function setUpSearchExaminations(myFilter) {
 
 let createBtn = document.getElementById('addBtn');
 createBtn.addEventListener('click', function (e) {
-    creareExamination(0);
+    createExamination(0);
 });
 
-function creareExamination(doctorId){
+function createExamination(doctorId){
     let prompt = document.getElementById('createExaminationPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -348,6 +338,95 @@ function creareExamination(doctorId){
         postRequest.send(JSON.stringify({'done':false, 'date': examinationDate, 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis':''}));
     });
 };
+
+
+let advancedForm = document.getElementById('createAdvancedExaminationForm');
+advancedForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        let dueDate = document.getElementById('dueDate').value;      
+        let doctor = document.getElementById('doctorAdvancedCreateExamination').value;
+        let intervalBegin = document.getElementById('timeFrom').value;
+        let intervalEnd = document.getElementById('timeTo').value;
+        let priority = document.querySelector( 'input[name="priority"]:checked').value;   
+
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+
+                if (this.status == 200) {
+                    mainResponse = JSON.parse(this.responseText);
+                    let table = document.getElementById('advancedExaminationTable');
+                    table.innerHTML = '';
+                for (let i in mainResponse) {
+                    let examination = mainResponse[i];
+                    let newRow = document.createElement('tr');
+
+                    let cType = document.createElement('td');
+                    cType.innerText = examination['type'];
+
+                    var doctor = doctors.get(examination['doctor']);
+                    let cDoctor = document.createElement('td');
+                    cDoctor.innerText = doctor.firstName + " " + doctor.lastName;
+                    let cSpecialization = document.createElement('td');
+                    cSpecialization.innerText = doctor.specialization;
+
+                    let cDate = document.createElement('td');
+                    var examinationDate = new Date(examination['date']);
+                    cDate.innerText = examinationDate.toLocaleString();
+
+                    let one = document.createElement('td');
+                    let choseBtn = document.createElement('button');
+                    choseBtn.innerHTML = '<i data-feather="check"></i>';
+                    choseBtn.classList.add('updateBtn');
+                    choseBtn.setAttribute('key', examination);
+                    choseBtn.addEventListener('click', function (e) {
+                        createAdvancedExamination(examination);
+                    });
+
+                    newRow.appendChild(cType)
+                    newRow.appendChild(cDoctor);
+                    newRow.appendChild(cSpecialization);
+                    newRow.appendChild(cDate);
+                    one.appendChild(choseBtn);
+                    newRow.appendChild(one);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }}}
+        };
+        postRequest.open('POST', 'https://localhost:7291/api/patient/examinationFilter');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString() ,'timeTo': intervalEnd.toString(), 'priority': priority}));
+});
+
+function createAdvancedExamination(examination){
+    console.log(examination);
+    console.log(examination['doctor']);
+    let postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Examination sucessfuly created');
+                setUpExaminations();
+                setUpSearchExaminations('empty');
+
+                let table = document.getElementById('advancedExaminationTable');    
+                while(table.hasChildNodes()){
+                    table.removeChild(table.firstChild);
+                }
+            } else {
+                alert('Error: Entered examination informations are invalid');
+            }
+        }
+    };
+    postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({'done':false, 'date': examination['date'], 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis':''}));
+
+ };
+
 
 //PUT - Examination    
 function editExamination(id){ 
@@ -506,7 +585,7 @@ function setUpDoctors(myFilter) {
                     createBtn.classList.add('updateBtn');
                     createBtn.setAttribute('key', doctor['id']);
                     createBtn.addEventListener('click', function (e) {
-                        creareExamination(this.getAttribute('key'));
+                        createExamination(this.getAttribute('key'));
                     });
                     one.appendChild(createBtn);
 
@@ -615,23 +694,25 @@ function updateDoctorsTable(e) {
 }
 
 
-function sortTable(n, table){
+function sortTable(n, tableName){
     var table, rows, switching, i, x, y, compareA, compareB, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById(table);
+    table = document.getElementById(tableName);
     switching = true;
     dir = 'asc';
     while (switching) {
         switching = false;
         rows = table.rows;
         for (i = 1; i < (rows.length - 1); i++) {
+            
             shouldSwitch = false;
             x = rows[i].getElementsByTagName('TD')[n];
             y = rows[i + 1].getElementsByTagName('TD')[n];
 
-            if(n==3 && table == 'searchExaminations'){
+            
+            if(parseInt(n)==3 && tableName== 'searchExaminations'){
                 compareA = Date.parse(x.innerHTML);
-                console.log(compareA);
                 compareB = Date.parse(y.innerHTML);
+
 
             }else{
                 compareA = x.innerHTML.toLowerCase();

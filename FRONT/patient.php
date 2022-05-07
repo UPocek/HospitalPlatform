@@ -59,7 +59,6 @@
                         <th>Specialization</th>
                         <th>Date</th>
                         <th>Room</th>
-                        <!-- <th>Anamnesis</th> -->
                         <th>Urgent</th>
                         <th>Delete</th>
                         <th>Update</th>
@@ -75,21 +74,24 @@
 
 <section id="two">
   <div id="createAdvancedExamination" class="form-container sign-in-container">
-		<form id="createExaminationForm2" class="myForm">
+		<form id="createAdvancedExaminationForm" class="myForm">
 			<h1>Advanced examination scheduler</h1>
-      <input id="dateTo" type="date" /> 
-      <select id="doctorAdvancedCreateExamination" name="doctors">
-      <label for="timeTo">Begining and end of time interval</label> 
-      <input id="timeFrom" type="time" /> 
-      <input id="timeTo" type="time" /> 
+
+      <p>Please select due date and doctor</p>
+      <input id="dueDate" type="date" placeholder="Due to"/> 
+      <select id="doctorAdvancedCreateExamination" name="doctors"></select>
+
+      <p>Please select begining and end of time interval</p>
+      <input id="timeFrom" type="time"/> 
+      <input id="timeTo" type="time"/> 
+
       <p>Please select your priority:  </p>
- 
-        <input type="radio" id="priorityDoctor" name="priority" value="doctor">
-        <label for="priorityDoctor" id="labelDoctor">Doctor</label>
-        <input type="radio" id="priorityTime" name="priority" value="time">
-        <label for="priorityTime" id="labelTime">Time interval</label>
-      </select> 
-      <button class="mainBtn" id="okButton">OK</button>
+      <input type="radio" id="priorityDoctor" name="priority" value="doctor">
+      <label for="priorityDoctor" id="labelDoctor">Doctor</label>
+      <input type="radio" id="priorityTime" name="priority" value="time">
+      <label for="priorityTime" id="labelTime">Time interval</label>
+
+      <button class="mainBtn advancedBtn" id="addAdvancedBtn">OK</button>
 		</form>
 	</div>
 
@@ -102,7 +104,6 @@
                         <th>Doctor</th>
                         <th>Specialization</th>
                         <th>Date</th>
-                        <th>Urgent</th>
                         <th>Choose</th>
                     </tr>
                 </thead>

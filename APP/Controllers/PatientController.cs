@@ -60,45 +60,141 @@ public class PatientController : ControllerBase
         return patientsExaminations;
   }
 
+    // POST: api/Patient/examinationFilter
+    [HttpPost("examinationFilter")]
+
+    public async  Task<List<Examination>> GetAvailableExamination([FromBody] ExaminationFilter filter){
+        var dueDate = DateTime.Parse(filter.dueDate);
+        var timeFrom = DateTime.Parse(filter.timeFrom);
+        var timeTo = DateTime.Parse(filter.timeTo);
+        var intervalFrom = DateTime.Today.AddDays(1).AddHours(timeFrom.Hour).AddMinutes(timeFrom.Minute);
+        var intervalEnd = DateTime.Today.AddDays(1).AddHours(timeTo.Hour).AddMinutes(timeTo.Minute);
+        var result = new List<Examination>();
+        
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        var doctorsExaminations = examinations.Find(e => e.doctorId == filter.doctorId).ToList();
+        var patientsExaminations = examinations.Find(e => e.patinetId == filter.patientId).ToList();
+        var examinationTime = intervalFrom;
+
+        int i = 0;
+        var okay = true;
+        while(examinationTime < dueDate){
+            
+            Examination examination = new Examination();
+            examination.doctorId = filter.doctorId;
+            examination.dateAndTimeOfExamination = examinationTime.ToString();
+            examination.typeOfExamination = "visit";
+
+            //check if doctor is free        
+            foreach(var item in doctorsExaminations){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+
+                if(examinationTime >= itemBegin && examinationTime <= itemEnd || examinationTime.AddMinutes(15) >= itemBegin && examinationTime.AddMinutes(15) <= itemEnd){
+                    okay = false;
+                    break; 
+                }
+
+            }
+            //check if patient is free        
+            foreach(var item in patientsExaminations){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+
+                if(examinationTime >= itemBegin && examinationTime <= itemEnd || examinationTime.AddMinutes(15) >= itemBegin && examinationTime.AddMinutes(15) <= itemEnd){
+                    okay = false; 
+                    break;
+                }
+            }
+            if(okay){
+                result.Add(examination);
+                i++;
+            }    
+            examinationTime = examinationTime.AddMinutes(15);
+            if(examinationTime.AddMinutes(15) > intervalEnd){
+                intervalFrom = intervalFrom.AddDays(1);
+                intervalEnd = intervalEnd.AddDays(1);
+                examinationTime = intervalFrom;    
+            }  
+            okay = true;
+        }
+
+        //ako nema termina za odabrnog doktora u odabrano vreme
+        if (result.Count == 0){
+            if(filter.priority == "doctor"){
+                
+            }else if(filter.priority == "time"){ 
+
+            }
+        }
+
+        return result;
+  }
+
 
     // POST action
 
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
-    {
+    {        
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
+        DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+
         var patients = database.GetCollection<Patient>("Patients");
         Patient patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+
+        var patientsExaminations = examinations.Find(item => item.patinetId == examination.patinetId).ToList();
+        foreach (var item in patientsExaminations){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+
+                if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
+                        return BadRequest();
+                }
+        }   
 
         var isTroll = trollCheck(patient, "created", 8);
         if(!isTroll){
             return BadRequest();
-            //blokiraj pacijenta
-        }
-        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        }                
 
+        
         var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
         foreach (var item in doctorsExaminations){
                 DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
                 DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
-                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
-                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+
                 if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
                         return BadRequest();
                 }
-        }        
+        }       
+
+        if(examination.doctorId % 2 != 0){
+            examination.roomName = "Examination room 1"; 
+        }else{
+            examination.roomName = "Examination room 2"; 
+        }
+        
 
         var rooms = database.GetCollection<Room>("Rooms");
         var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
-        
-        foreach (var room  in validRooms)
-        {
-            var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
-            if(examinationsInRoom != null){
-                examination.roomName = room.name;
-                break;
-            }
-             
+        if(examination.doctorId % 2 != 0){
+            examination.roomName = validRooms[0].name; 
+        }else{
+            examination.roomName = validRooms[validRooms.Count-1].name; 
         }
+        
+        // foreach (var room  in validRooms)
+        // {
+        //     var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
+            
+        //     if(examinationsInRoom != null){
+        //         examination.roomName = room.name;
+        //         break;
+        //     }
+             
+        // }
 
 
         var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;

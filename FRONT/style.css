@@ -124,6 +124,7 @@ body {
     margin: 0.625rem 0;
 }
 
+
 .btnAnimation {
     transform: translateY(0);
     transition: all 500ms;
@@ -1968,13 +1969,13 @@ tr:nth-child(even) {
     min-width: 10%;
 } */
 
-#okButton{
+.advancedBtn{
     width: 48%;
     margin-left: 26%;
 }
 
 
-#timeTo, #timeFrom, #dateTo,
+#timeTo, #timeFrom, #dueDate,
 #doctorAdvancedCreateExamination{
     min-width: 48%;
 }
@@ -2879,7 +2880,7 @@ td button {
 
     #timeTo,
     #timeFrom,
-    #dateTo,
+    #dueDate,
     #doctorAdvancedCreateExamination{
         min-width: 100%;
     }
@@ -2887,7 +2888,8 @@ td button {
     #labelDoctor, #labelTime{
         min-width: 92%;
     }
-    #okButton{
+    .advancedBtn{
+
         width: 100%;
         margin-left: 0%;
     }
