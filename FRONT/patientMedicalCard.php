@@ -18,6 +18,31 @@
     <body>
         
         <?php include 'header.html';?>
+
+
+        <div id="examinationRefPopUp" class="form-container sign-in-container off prompt">
+            <form id="examinationRefForm" class="colDir myForm">
+                <h1 id="examinationRefFormId" >Create examination</h1>
+                <div class="formDiv">
+                    <label for="examinationType">Examination type:</label>
+                    <select id="examinationRefType">
+                        <option value="visit" selected>Visit</option>
+                        <option value="operation">Operation</option>
+                    </select>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationDuration">Duration:</label>
+                    <input type="number" id="examinationRefDuration" min=15>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationRoom">Room:</label>
+                    <select id="examinationRefRoom">
+                        <!-- get rooms from api -->
+                    </select>
+                </div>
+                <button class="mainBtn">OK</button>
+            </form>
+	    </div>
         
         <main>
             <section>

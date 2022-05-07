@@ -14,6 +14,7 @@ function getParamValue(name) {
 };
 
 var patient;
+var patientActivity;
 var patientId = getParamValue('patientId');
 var doctorId = getParamValue('doctorId');
 var secretaryId = getParamValue('secretaryId');
@@ -175,48 +176,126 @@ function displayReferrals(){
         let doctorId = document.createElement('td');
         let doctorSpeciality = document.createElement('td');
         let referralBtnContainer = document.createElement('td');
+        let referralBtn = document.createElement('button');
 
-        if(checkPatientActivity(patientId)){
-            referralBtnContainer = document.createElement('td');
-            let referralBtn = document.createElement('button');
-            referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
-            referralBtn.classList.add('referralBtn');
-            referralBtnContainer.classList.add('smallerWidth');
-            referralBtnContainer.appendChild(referralBtn);
-        }
+        let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    var response = JSON.parse(this.responseText);
+                    patientActivity = response['active'];
 
+                    if (referral['doctorId'] == null){
+                        doctorId.innerText = anyConst;
+                        doctorSpeciality.innerText = referral['speciality'];
+                        
+                        referralBtn.setAttribute('key', referral['speciality']);
+                        referralBtn.addEventListener('click', function (e) {
+                            createRefferedExaminationBySpeciality(this.getAttribute('key'),this.getAttribute('patientid'));
+                        });
+            
+                        newRow.appendChild(doctorId);
+                        newRow.appendChild(doctorSpeciality);
 
-        if (referral['doctorId'] == null){
-            doctorId.innerText = anyConst;
-            doctorSpeciality.innerText = referral['speciality'];
+                        table.appendChild(newRow);
+                    }
+            
+                    else{
+                        doctorId.innerText = referral['doctorId'];
+                        doctorSpeciality.innerText = anyConst;
+                
+                        referralBtn.setAttribute('key', referral['doctorId']);
+                        referralBtn.addEventListener('click', function (e) {
+                            createRefferedExaminationByDoctorId(this.getAttribute('key'),this.getAttribute('patientid'));
+                        });
+                
+                        newRow.appendChild(doctorId);
+                        newRow.appendChild(doctorSpeciality);
+                
+                        table.appendChild(newRow);
+            
+                    }
+            
 
-            newRow.appendChild(doctorId);
-            newRow.appendChild(doctorSpeciality);
-            if (referralBtnContainer.innerHTML!=''){
-                newRow.appendChild(referralBtnContainer);
+                    referralBtnContainer = document.createElement('td');
+                    referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
+                    referralBtn.classList.add('referralBtn');
+                    referralBtn.setAttribute('patientid', patientId);
+                    referralBtnContainer.classList.add('smallerWidth');
+                    referralBtnContainer.appendChild(referralBtn);
+
+                    newRow.appendChild(referralBtnContainer);
+
+                    feather.replace();
+                }
             }
-            table.appendChild(newRow);
         }
 
-        else{
-        doctorId.innerText = referral['doctorId'];
-        doctorSpeciality.innerText = anyConst;
-
-
-        newRow.appendChild(doctorId);
-        newRow.appendChild(doctorSpeciality);
-        if (referralBtnContainer.innerHTML!=''){
-            newRow.appendChild(referralBtnContainer);
-        }
-
-        table.appendChild(newRow);
-
-        }
-
-        feather.replace();
+        request.open('GET', 'https://localhost:7291/api/Secretary/patients/' + patientId);
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send();
 
     }
 }
+
+function createRefferedExaminationByDoctorId(doctorid,patientid){
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                rooms = JSON.parse(this.responseText);
+
+                let prompt = document.getElementById('examinationRefPopUp');
+                prompt.classList.remove('off');
+                main.classList.add('hideMain');
+
+                let eType = document.getElementById('examinationRefType');
+
+                let eDuration = document.getElementById('examinationRefDuration');
+
+                let eRoom = document.getElementById('examinationRefRoom');
+
+                let form = document.getElementById('examinationRefForm');
+
+                addOptions(eType, eRoom);
+                eType.addEventListener('change', function(e){
+                    removeAllChildNodes(eRoom);
+                    addOptions(eType, eRoom);
+                })
+                
+            }
+        }
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+
+}
+
+
+function addOptions(element, roomOptions){
+    let valueOfType = element.value;
+    if (valueOfType == "visit"){
+        for (let room of rooms){
+            if (room["type"] == "examination room"){
+                let newOption = document.createElement('option');
+                newOption.setAttribute('value', room['name']);
+                newOption.innerText = room['name'];
+                roomOptions.appendChild(newOption);
+            }
+        }
+    }else{
+        for (let room of rooms){
+            if (room["type"] == "operation room"){
+                let newOption = document.createElement('option');
+                newOption.setAttribute('value', room['name']);
+                newOption.innerText = room['name'];
+                roomOptions.appendChild(newOption);
+            }
+        }
+    }
+}
+
  
 function checkPatientActivity(patientId){
     let checkRequest = new XMLHttpRequest();
@@ -239,7 +318,6 @@ function checkPatientActivity(patientId){
     checkRequest.open('GET', 'https://localhost:7291/api/secretary/patients/'+patientId+'/activity');
     checkRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     checkRequest.send();
-
 }
 
 
