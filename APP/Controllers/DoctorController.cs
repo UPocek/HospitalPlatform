@@ -63,6 +63,13 @@ public class DoctorController : ControllerBase
         return resultingRoom;
     }
 
+    [HttpGet("drugs")]
+    public async Task<List<Drug>> GetDrugsForReview()
+    {
+        var drugs = database.GetCollection<Drug>("Drugs");
+        return drugs.Find(item => item.status == "inReview").ToList();
+    }
+
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
@@ -86,6 +93,30 @@ public class DoctorController : ControllerBase
         var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
         examination.id = id + 1;
         examinations.InsertOne(examination);
+
+        return Ok();
+    }
+
+    [HttpPut("drugs/{id}")]
+    public async Task<IActionResult> UpdateDrugMessage(string id, Dictionary<string, string> data)
+    {
+        var drugs = database.GetCollection<Drug>("Drugs");
+        
+        var filter = Builders<Drug>.Filter.Eq("name", id);
+        var update = Builders<Drug>.Update.Set("comment", data["message"]);
+        drugs.UpdateOne(filter, update);
+
+        return Ok();
+    }
+
+    [HttpPut("drugs/approve/{id}")]
+    public async Task<IActionResult> ApproveDrug(string id)
+    {
+        var drugs = database.GetCollection<Drug>("Drugs");
+        
+        var filter = Builders<Drug>.Filter.Eq("name", id);
+        var update = Builders<Drug>.Update.Set("status", "inUse");
+        drugs.UpdateOne(filter, update);
 
         return Ok();
     }
