@@ -13,6 +13,17 @@ function getParamValue(name) {
     }
 };
 
+//*helper functions
+function removeAllChildNodes(parent) {
+    try{
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }catch{
+        ;
+    }    
+}
+
 var patient;
 var patientActivity;
 var patientId = getParamValue('patientId');
@@ -247,6 +258,45 @@ function createRefferedExaminationByDoctorId(doctorid,patientid){
 
                 let prompt = document.getElementById('examinationRefPopUp');
                 prompt.classList.remove('off');
+
+                let main = document.getElementById('medCardMain');
+                main.classList.add('hideMain');
+
+                let eType = document.getElementById('examinationRefType');
+
+                let eDuration = document.getElementById('examinationRefDuration');
+
+                let eRoom = document.getElementById('examinationRefRoom');
+
+                let form = document.getElementById('examinationRefForm');
+
+                addOptions(eType, eRoom);
+                eType.addEventListener('change', function(e){
+                    removeAllChildNodes(eRoom);
+                    addOptions(eType, eRoom);
+                })
+                
+            }
+        }
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+
+}
+
+
+function createRefferedExaminationBySpeciality(doctorSpeciality,patientid){
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                rooms = JSON.parse(this.responseText);
+
+                let prompt = document.getElementById('examinationRefPopUp');
+                prompt.classList.remove('off');
+
+                let main = document.getElementById('medCardMain');
                 main.classList.add('hideMain');
 
                 let eType = document.getElementById('examinationRefType');
@@ -296,29 +346,7 @@ function addOptions(element, roomOptions){
     }
 }
 
- 
-function checkPatientActivity(patientId){
-    let checkRequest = new XMLHttpRequest();
-    checkRequest.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                let activityValue = this.responseText;
-                
-                if (activityValue == '0'){
-                    return true;
-                }
-                else{
-                    return false;
-                }
 
-            }
-        }
-    }
-
-    checkRequest.open('GET', 'https://localhost:7291/api/secretary/patients/'+patientId+'/activity');
-    checkRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    checkRequest.send();
-}
 
 
 function setUpPatientInstructions(){

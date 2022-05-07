@@ -44,7 +44,7 @@
             </form>
 	    </div>
         
-        <main>
+        <main id='medCardMain'>
             <section>
                 <div id="patientInfo" >
                     <div class="basicInfo">
