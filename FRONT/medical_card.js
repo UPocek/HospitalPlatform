@@ -174,13 +174,16 @@ function displayReferrals(){
 
         let doctorId = document.createElement('td');
         let doctorSpeciality = document.createElement('td');
-
         let referralBtnContainer = document.createElement('td');
-        let referralBtn = document.createElement('button');
-        referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
-        referralBtn.classList.add('referralBtn');
-        referralBtnContainer.classList.add('smallerWidth');
-        referralBtnContainer.appendChild(referralBtn);
+
+        if(checkPatientActivity(patientId)){
+            referralBtnContainer = document.createElement('td');
+            let referralBtn = document.createElement('button');
+            referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
+            referralBtn.classList.add('referralBtn');
+            referralBtnContainer.classList.add('smallerWidth');
+            referralBtnContainer.appendChild(referralBtn);
+        }
 
 
         if (referral['doctorId'] == null){
@@ -189,9 +192,12 @@ function displayReferrals(){
 
             newRow.appendChild(doctorId);
             newRow.appendChild(doctorSpeciality);
-            newRow.appendChild(referralBtnContainer);
+            if (referralBtnContainer.innerHTML!=''){
+                newRow.appendChild(referralBtnContainer);
+            }
             table.appendChild(newRow);
         }
+
         else{
         doctorId.innerText = referral['doctorId'];
         doctorSpeciality.innerText = anyConst;
@@ -199,12 +205,11 @@ function displayReferrals(){
 
         newRow.appendChild(doctorId);
         newRow.appendChild(doctorSpeciality);
-        newRow.appendChild(referralBtnContainer);
+        if (referralBtnContainer.innerHTML!=''){
+            newRow.appendChild(referralBtnContainer);
+        }
 
         table.appendChild(newRow);
-        
-
-
 
         }
 
@@ -212,28 +217,28 @@ function displayReferrals(){
 
     }
 }
-
-async function checkPatientActivity(patientId){
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
+ 
+function checkPatientActivity(patientId){
+    let checkRequest = new XMLHttpRequest();
+    checkRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                let activityValue = JSON.parse(this.responseText);
+                let activityValue = this.responseText;
                 
-                if (activityValue == ''){
+                if (activityValue == '0'){
                     return true;
                 }
                 else{
                     return false;
                 }
+
             }
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/Secretary/patients/'+patientId+'/activity');
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
-    await request;
+    checkRequest.open('GET', 'https://localhost:7291/api/secretary/patients/'+patientId+'/activity');
+    checkRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    checkRequest.send();
 
 }
 
