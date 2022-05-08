@@ -192,7 +192,7 @@ namespace APP.Controllers
             return Ok();
         }
 
-        public bool validateTimeOfExaminationRoom(DateTime date,int duration,string roomName){
+        public bool validateTimeOfExamination(DateTime date,int duration,string roomName,int doctorId){
 
             var currentDate = DateTime.Now;
             var newExaminationBegging = date;
@@ -206,54 +206,38 @@ namespace APP.Controllers
 
             var examinationsInRoom = examinations.Find(e => e.roomName == roomName).ToList();
             
-            foreach (Examination examination in examinationsInRoom){
+            foreach (Examination examinationRoom in examinationsInRoom){
 
-                var examinationBegging = DateTime.Parse(examination.dateAndTimeOfExamination);
-                var examinationEnding = DateTime.Parse(examination.dateAndTimeOfExamination).AddMinutes(examination.durationOfExamination);
+                var examinationBeggingRoom = DateTime.Parse(examinationRoom.dateAndTimeOfExamination);
+                var examinationEndingRoom = DateTime.Parse(examinationRoom.dateAndTimeOfExamination).AddMinutes(examinationRoom.durationOfExamination);
 
-                if ((newExaminationBegging >= examinationBegging && newExaminationBegging <= examinationEnding) 
-                    | (newExaminationEnding >= examinationBegging && newExaminationEnding <= examinationEnding)){
-                        return false;
+                if ((newExaminationBegging >= examinationBeggingRoom && newExaminationBegging <= examinationEndingRoom) 
+                    | (newExaminationEnding >= examinationBeggingRoom && newExaminationEnding <= examinationEndingRoom)){
+
+                    var examinationsWithDoctor = examinations.Find(e => e.doctorId == doctorId).ToList();
+                    
+                    foreach (Examination examinationDoctor in examinationsWithDoctor){
+
+                    var examinationBeggingDoctor = DateTime.Parse(examinationDoctor.dateAndTimeOfExamination);
+                    var examinationEndingDoctor = DateTime.Parse(examinationDoctor.dateAndTimeOfExamination).AddMinutes(examinationDoctor.durationOfExamination);
+
+                    if ((newExaminationBegging >= examinationBeggingDoctor && newExaminationBegging <= examinationEndingDoctor) 
+                        |(newExaminationEnding >= examinationBeggingDoctor && newExaminationEnding <= examinationEndingDoctor)){
+                            return false;
+                        }
                     }
+                }
             }
 
             return true;
         }
 
-
-        public bool validateTimeOfExaminationDoctor(DateTime date,int duration,int doctorId){
-
-            var currentDate = DateTime.Now;
-            var newExaminationBegging = date;
-            var newExaminationEnding = date.AddMinutes(duration);
-            
-            if (currentDate > newExaminationBegging){
-                return false;
-            }
-
-            var examinations = database.GetCollection<Examination>("MedicalExaminations");
-
-            var examinationsWithDoctor = examinations.Find(e => e.doctorId == doctorId).ToList();
-            
-            foreach (Examination examination in examinationsWithDoctor){
-
-                var examinationBegging = DateTime.Parse(examination.dateAndTimeOfExamination);
-                var examinationEnding = DateTime.Parse(examination.dateAndTimeOfExamination).AddMinutes(examination.durationOfExamination);
-
-                if ((newExaminationBegging >= examinationBegging && newExaminationBegging <= examinationEnding) 
-                    | (newExaminationEnding >= examinationBegging && newExaminationEnding <= examinationEnding)){
-                        return false;
-                    }
-            }
-
-            return true;
-        }
 
 
 
          // GET: api/Secretary/examination/referral/create/none
         [HttpPost("examination/referral/create/{specialization}/{referralid}")]
-        public async Task<IActionResult> CreateRefferedExamination(Examination examination,string specialization,int referralid)
+        public async Task<IActionResult> CreateRefferedExamination(Examination newExamination,string specialization,int referralid)
         {
             if (specialization != "none"){
                 var employees = database.GetCollection<Employee>("Employees");
@@ -263,47 +247,53 @@ namespace APP.Controllers
                     return BadRequest("Error: No such specialist exists");
                 }
                 Random rnd = new Random();
-                examination.doctorId = specializedDoctors[rnd.Next(0,specializedDoctors.Count()-1)].id;
+                newExamination.doctorId = specializedDoctors[rnd.Next(0,specializedDoctors.Count()-1)].id;
             }
 
-            if (examination.durationOfExamination <= 15 || examination.durationOfExamination >= 200){
+            if (newExamination.durationOfExamination <= 15 || newExamination.durationOfExamination >= 200){
                 BadRequest();
             }
+
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
-            var checkFrom = DateTime.Now.AddDays(1);
+            var newExaminationDate = DateTime.Now.AddDays(1);
 
 
             while(true){
                 
-                if (validateTimeOfExaminationRoom(checkFrom,examination.durationOfExamination,examination.roomName) &&
-                 validateTimeOfExaminationDoctor(checkFrom,examination.durationOfExamination,examination.doctorId)){
-                     examination.dateAndTimeOfExamination = checkFrom.ToString();
+                if (validateTimeOfExamination(newExaminationDate,newExamination.durationOfExamination,newExamination.roomName,newExamination.doctorId)){
+                     newExamination.dateAndTimeOfExamination = newExaminationDate.ToString();
                      break;
                  }
 
                 else{
-                    checkFrom = checkFrom.AddMinutes(30);
+                    newExaminationDate = newExaminationDate.AddMinutes(30);
                 }
 
             }
 
             var rooms = database.GetCollection<Room>("Rooms");
-            var resultingRoom = rooms.Find(r => r.name == examination.roomName);
+            var resultingRoom = rooms.Find(r => r.name == newExamination.roomName);
 
             if (resultingRoom == null)
             {
                 return BadRequest();
             }
             var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
-            examination.id = id + 1;
-            examinations.InsertOne(examination);
+            newExamination.id = id + 1;
+            examinations.InsertOne(newExamination);
 
             var patients = database.GetCollection<Patient>("Patients");
-            Patient newPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+            Patient updatedPatient = patients.Find(p => p.id == newExamination.patinetId).FirstOrDefault();
 
-            
-            newPatient.medicalRecord.referrals.Remove(newPatient.medicalRecord.referrals[referralid]);
+            foreach (Referral patientReferral in updatedPatient.medicalRecord.referrals){
+                if (patientReferral.referralId == referralid){
+                    updatedPatient.medicalRecord.referrals.Remove(patientReferral);
+                    break;
+                }
+            }
+
+            patients.ReplaceOne(p => p.id == newExamination.patinetId, updatedPatient);
             
             return Ok();
         

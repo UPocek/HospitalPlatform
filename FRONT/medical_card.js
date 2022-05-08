@@ -179,7 +179,7 @@ function displayInstructions(doctors){
 function displayReferrals(){
     let table = document.getElementById('referralsTable');
 
-    table.innerHTML = "";
+    table.innerHTML = ""
     
     for (let referral of patient['medicalRecord']['referrals']){
         let newRow = document.createElement('tr');
@@ -347,7 +347,7 @@ function submitDoctorIdForm(e,doctorid,referralid) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination sucessfuly created");
-                displayReferrals();
+                setupPatientBasicInfo();
             } else {
                 alert("Error: Entered examination informations are invalid");
             }
@@ -381,7 +381,7 @@ function submitSpecialityForm(e,speciality,referralid) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination sucessfuly created");
-                displayReferrals();
+                setupPatientBasicInfo();
             } else {
                 alert("Error: Entered examination informations are invalid");
             }
