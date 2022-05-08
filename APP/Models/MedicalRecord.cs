@@ -36,7 +36,7 @@ public class MedicalRecord
 
     [BsonElement("referrals")]
     [JsonPropertyName("referrals")]
-    public List<Referral>? referralDoctorId { get; set; } = new List<Referral>();
+    public List<Referral>? referrals{ get; set; } = new List<Referral>();
 
 
     [BsonElement("medicalInstructions")]
