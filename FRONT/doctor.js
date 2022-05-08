@@ -519,7 +519,7 @@ function validateTimeOfExamination(date,duration){
     return true;
 }
 
-function validateTimeOfExaminationPut(date, duration, id){
+function validateTimeOfExaminationPut(date, duration, id){f
 
     let currentDate = new Date();
     let newExaminationBegging = new Date(date);

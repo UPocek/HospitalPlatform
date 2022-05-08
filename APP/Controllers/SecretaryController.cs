@@ -251,10 +251,18 @@ namespace APP.Controllers
 
 
 
-         // GET: api/Secretary/examinations/100
-        [HttpPost("examination/referral/create/doctor")]
-        public async Task<IActionResult> CreateRefferedExaminationByDoctorId(Examination examination)
+         // GET: api/Secretary/examination/referral/create/none
+        [HttpPost("examination/referral/create/{specialization}/{referralid}")]
+        public async Task<IActionResult> CreateRefferedExamination(Examination examination,string specialization,int referralid)
         {
+            if (specialization != "none"){
+                var employees = database.GetCollection<Employee>("Employees");
+                List<Employee> specializedDoctors = employees.Find(e => e.role == "doctor" && e.specialization == specialization).ToList();
+
+                Random rnd = new Random();
+                examination.doctorId = specializedDoctors[rnd.Next(0,specializedDoctors.Count()-1)].id;
+            }
+
             if (examination.durationOfExamination <= 15 || examination.durationOfExamination >= 200){
                 BadRequest();
             }
@@ -287,8 +295,16 @@ namespace APP.Controllers
             var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
             examination.id = id + 1;
             examinations.InsertOne(examination);
+
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient newPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+
+            
+            newPatient.medicalRecord.referrals.Remove(newPatient.medicalRecord.referrals[referralid]);
+            
             return Ok();
         
-         }       
+        }       
+
     }
 }
