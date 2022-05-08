@@ -51,12 +51,14 @@ function setupPatientBasicInfo(){
                 let patientBlood = document.getElementById('patientBlood');
                 patientBlood.innerText = patient['medicalRecord']['bloodType'];
                 let patientDiseases = document.getElementById('diseasesList');
+                patientDiseases.innerHTML = '';
                 for (let disease of patient['medicalRecord']['diseases']){
                     let diseaseItem = document.createElement('li');
                     diseaseItem.innerText = disease;
                     patientDiseases.appendChild(diseaseItem);
                 }
                 let patientAlergies = document.getElementById('alergiesList');
+                patientAlergies.innerHTML = '';
                 for (let alergie of patient['medicalRecord']['alergies']){
                     let alergieItem = document.createElement('li');
                     alergieItem.innerText = alergie;
@@ -179,7 +181,7 @@ function displayInstructions(doctors){
 function displayReferrals(){
     let table = document.getElementById('referralsTable');
 
-    table.innerHTML = ""
+    table.innerHTML = ''
     
     for (let referral of patient['medicalRecord']['referrals']){
         let newRow = document.createElement('tr');
@@ -330,15 +332,15 @@ function createRefferedExaminationBySpeciality(doctorSpeciality,referralid){
 
 
 function submitDoctorIdForm(e,doctorid,referralid) {
-    let popUp = document.getElementById("examinationRefPopUp");
+    let popUp = document.getElementById('examinationRefPopUp');
     let main = document.getElementById('medCardMain');
-    popUp.classList.add("off");
-    main.classList.remove("hideMain");
+    popUp.classList.add('off');
+    main.classList.remove('hideMain');
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    let selectedType = document.getElementById("examinationRefType").value;
-    let selectedDuration = document.getElementById("examinationRefDuration").value;
+    let selectedType = document.getElementById('examinationRefType').value;
+    let selectedDuration = document.getElementById('examinationRefDuration').value;
 
       
     let postRequest = new XMLHttpRequest();
@@ -346,33 +348,33 @@ function submitDoctorIdForm(e,doctorid,referralid) {
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Examination sucessfuly created");
+                alert('Examination sucessfuly created');
                 setupPatientBasicInfo();
             } else {
-                alert("Error: Entered examination informations are invalid");
+                alert('Error: Entered examination informations are invalid');
             }
         }
     };
 
-    let selectedRoom = document.getElementById("examinationRefRoom").value;
+    let selectedRoom = document.getElementById('examinationRefRoom').value;
 
     postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/'+referralid);
-    postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ "done":false, "date": "", "duration": selectedDuration,"room": selectedRoom, "patient": patientId, "doctor": doctorid, "urgent": false, "type": selectedType, "anamnesis":""}));       
+    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis':''}));       
 }
 
 
 function submitSpecialityForm(e,speciality,referralid) {
-    let popUp = document.getElementById("examinationRefPopUp");
+    let popUp = document.getElementById('examinationRefPopUp');
     let main = document.getElementById('medCardMain');
-    popUp.classList.add("off");
-    main.classList.remove("hideMain");
+    popUp.classList.add('off');
+    main.classList.remove('hideMain');
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    let selectedType = document.getElementById("examinationRefType").value;
-    let selectedDuration = document.getElementById("examinationRefDuration").value;
+    let selectedType = document.getElementById('examinationRefType').value;
+    let selectedDuration = document.getElementById('examinationRefDuration').value;
 
       
     let postRequest = new XMLHttpRequest();
@@ -380,28 +382,28 @@ function submitSpecialityForm(e,speciality,referralid) {
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Examination sucessfuly created");
+                alert('Examination sucessfuly created');
                 setupPatientBasicInfo();
             } else {
-                alert("Error: Entered examination informations are invalid");
+                alert('Error: Entered examination informations are invalid');
             }
         }
     };
 
-    let selectedRoom = document.getElementById("examinationRefRoom").value;
+    let selectedRoom = document.getElementById('examinationRefRoom').value;
 
     postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/'+speciality+'/'+referralid);
-    postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ "done":false, "date": '', "duration": selectedDuration,"room": selectedRoom, "patient": patientId, "doctor": -1, "urgent": false, "type": selectedType, "anamnesis":""}));       
+    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis':''}));       
 }
 
 
 function addOptions(element, roomOptions){
     let valueOfType = element.value;
-    if (valueOfType == "visit"){
+    if (valueOfType == 'visit'){
         for (let room of rooms){
-            if (room["type"] == "examination room"){
+            if (room['type'] == 'examination room'){
                 let newOption = document.createElement('option');
                 newOption.setAttribute('value', room['name']);
                 newOption.innerText = room['name'];
@@ -410,7 +412,7 @@ function addOptions(element, roomOptions){
         }
     }else{
         for (let room of rooms){
-            if (room["type"] == "operation room"){
+            if (room['type'] == 'operation room'){
                 let newOption = document.createElement('option');
                 newOption.setAttribute('value', room['name']);
                 newOption.innerText = room['name'];

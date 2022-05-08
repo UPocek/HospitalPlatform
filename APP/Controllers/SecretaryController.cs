@@ -105,7 +105,7 @@ namespace APP.Controllers
             patients.DeleteOne(p => p.id == id);
             
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            var filter = Builders<Examination>.Filter.Lt("date", DateTime.Now.ToString()) & Builders<Examination>.Filter.Eq("patient", id);
+            var filter = Builders<Examination>.Filter.Gt(e=> e.dateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm")) & Builders<Examination>.Filter.Eq("patient", id);
             examinations.DeleteMany(filter);
 
             return Ok(); 
@@ -141,7 +141,7 @@ namespace APP.Controllers
             var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
             //Delete deprecated requests
-            var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString());
+            var filter = Builders<ExaminationRequest>.Filter.Gt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
             requests.DeleteMany(filter);
 
             return requests.Find(item => true).ToList();
@@ -232,6 +232,20 @@ namespace APP.Controllers
             return true;
         }
 
+        public void RemovePatientReferral(int referralid,Examination newExamination){
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p => p.id == newExamination.patinetId).FirstOrDefault();
+
+                foreach (Referral patientReferral in updatedPatient.medicalRecord.referrals){
+                    if (patientReferral.referralId == referralid){
+                        updatedPatient.medicalRecord.referrals.Remove(patientReferral);
+                        break;
+                    }
+                }
+
+            patients.ReplaceOne(p => p.id == newExamination.patinetId, updatedPatient);
+        }
+
 
 
 
@@ -239,11 +253,15 @@ namespace APP.Controllers
         [HttpPost("examination/referral/create/{specialization}/{referralid}")]
         public async Task<IActionResult> CreateRefferedExamination(Examination newExamination,string specialization,int referralid)
         {
+            var patients = database.GetCollection<Patient>("Patients");
+
             if (specialization != "none"){
                 var employees = database.GetCollection<Employee>("Employees");
                 List<Employee> specializedDoctors = employees.Find(e => e.role == "doctor" && e.specialization == specialization).ToList();
+                if (specializedDoctors.Count()-1 < 0){
+                    
+                    RemovePatientReferral(referralid,newExamination);
 
-                if (specializedDoctors.Count()-1 <= 0){
                     return BadRequest("Error: No such specialist exists");
                 }
                 Random rnd = new Random();
@@ -251,7 +269,7 @@ namespace APP.Controllers
             }
 
             if (newExamination.durationOfExamination <= 15 || newExamination.durationOfExamination >= 200){
-                BadRequest();
+                return BadRequest();
             }
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
@@ -262,7 +280,7 @@ namespace APP.Controllers
             while(true){
                 
                 if (validateTimeOfExamination(newExaminationDate,newExamination.durationOfExamination,newExamination.roomName,newExamination.doctorId)){
-                     newExamination.dateAndTimeOfExamination = newExaminationDate.ToString();
+                     newExamination.dateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
                      break;
                  }
 
@@ -283,17 +301,7 @@ namespace APP.Controllers
             newExamination.id = id + 1;
             examinations.InsertOne(newExamination);
 
-            var patients = database.GetCollection<Patient>("Patients");
-            Patient updatedPatient = patients.Find(p => p.id == newExamination.patinetId).FirstOrDefault();
-
-            foreach (Referral patientReferral in updatedPatient.medicalRecord.referrals){
-                if (patientReferral.referralId == referralid){
-                    updatedPatient.medicalRecord.referrals.Remove(patientReferral);
-                    break;
-                }
-            }
-
-            patients.ReplaceOne(p => p.id == newExamination.patinetId, updatedPatient);
+            RemovePatientReferral(referralid,newExamination);
             
             return Ok();
         
