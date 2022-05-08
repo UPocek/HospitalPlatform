@@ -4,10 +4,6 @@ using System.Text.Json.Serialization;
 
 public class Referral
 {
-    [BsonElement("refferalId")]
-    [JsonPropertyName("refferalId")]
-    public int? refferalId {get; set;} = null;
-
     [BsonElement("doctorId")]
     [JsonPropertyName("doctorId")]
     public int? doctorId {get; set;} = null;
@@ -15,5 +11,10 @@ public class Referral
     [BsonElement("speciality")]
     [JsonPropertyName("speciality")]
     public string? speciality {get; set;} = null;
+
+    [BsonElement("referralId")]
+    [JsonPropertyName("referralId")]
+    public int? referralId {get; set;} = null;
+
 
 }

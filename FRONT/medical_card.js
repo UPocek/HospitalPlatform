@@ -178,6 +178,8 @@ function displayInstructions(doctors){
 
 function displayReferrals(){
     let table = document.getElementById('referralsTable');
+
+    table.innerHTML = "";
     
     for (let referral of patient['medicalRecord']['referrals']){
         let newRow = document.createElement('tr');
@@ -188,7 +190,7 @@ function displayReferrals(){
         let doctorSpeciality = document.createElement('td');
         let referralBtnContainer = document.createElement('td');
         let referralBtn = document.createElement('button');
-        referralBtn.setAttribute('id', referral['refferalId']);
+        referralBtn.setAttribute('id', referral['referralId']);
 
         let request = new XMLHttpRequest();
         request.onreadystatechange = function () {
@@ -196,7 +198,6 @@ function displayReferrals(){
                 if (this.status == 200) {
                     var response = JSON.parse(this.responseText);
                     patientActivity = response['active'];
-                    referralBtn.setAttribute('id', referral['refferalId']);
 
                     if (referral['doctorId'] == null){
                         doctorId.innerText = anyConst;
@@ -329,7 +330,8 @@ function createRefferedExaminationBySpeciality(doctorSpeciality,referralid){
 
 
 function submitDoctorIdForm(e,doctorid,referralid) {
-    let popUp = document.getElementById("examinationPopUp");
+    let popUp = document.getElementById("examinationRefPopUp");
+    let main = document.getElementById('medCardMain');
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -352,17 +354,18 @@ function submitDoctorIdForm(e,doctorid,referralid) {
         }
     };
 
-    let selectedRoom = document.getElementById("examinationRoom").value;
+    let selectedRoom = document.getElementById("examinationRefRoom").value;
 
     postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/'+referralid);
     postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ "done":false, "date": '', "duration": selectedDuration,"room": selectedRoom, "patient": patientId, "doctor": doctorid, "urgent": false, "type": selectedType, "anamnesis":""}));       
+    postRequest.send(JSON.stringify({ "done":false, "date": "", "duration": selectedDuration,"room": selectedRoom, "patient": patientId, "doctor": doctorid, "urgent": false, "type": selectedType, "anamnesis":""}));       
 }
 
 
 function submitSpecialityForm(e,speciality,referralid) {
-    let popUp = document.getElementById("examinationPopUp");
+    let popUp = document.getElementById("examinationRefPopUp");
+    let main = document.getElementById('medCardMain');
     popUp.classList.add("off");
     main.classList.remove("hideMain");
     e.preventDefault();
@@ -385,7 +388,7 @@ function submitSpecialityForm(e,speciality,referralid) {
         }
     };
 
-    let selectedRoom = document.getElementById("examinationRoom").value;
+    let selectedRoom = document.getElementById("examinationRefRoom").value;
 
     postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/'+speciality+'/'+referralid);
     postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

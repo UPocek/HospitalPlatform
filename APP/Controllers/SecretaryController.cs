@@ -204,7 +204,7 @@ namespace APP.Controllers
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
-            var examinationsInRoom = examinations.Find(e => e.roomName == roomName &&  e.dateAndTimeOfExamination.CompareTo(newExaminationBegging.ToString()) >= 0).SortBy(e => e.dateAndTimeOfExamination).ToList();
+            var examinationsInRoom = examinations.Find(e => e.roomName == roomName).ToList();
             
             foreach (Examination examination in examinationsInRoom){
 
@@ -233,7 +233,7 @@ namespace APP.Controllers
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
-            var examinationsWithDoctor = examinations.Find(e => e.doctorId == doctorId &&  e.dateAndTimeOfExamination.CompareTo(newExaminationBegging.ToString()) >= 0).SortBy(e => e.dateAndTimeOfExamination).ToList();
+            var examinationsWithDoctor = examinations.Find(e => e.doctorId == doctorId).ToList();
             
             foreach (Examination examination in examinationsWithDoctor){
 
@@ -259,6 +259,9 @@ namespace APP.Controllers
                 var employees = database.GetCollection<Employee>("Employees");
                 List<Employee> specializedDoctors = employees.Find(e => e.role == "doctor" && e.specialization == specialization).ToList();
 
+                if (specializedDoctors.Count()-1 <= 0){
+                    return BadRequest("Error: No such specialist exists");
+                }
                 Random rnd = new Random();
                 examination.doctorId = specializedDoctors[rnd.Next(0,specializedDoctors.Count()-1)].id;
             }
@@ -274,13 +277,13 @@ namespace APP.Controllers
             while(true){
                 
                 if (validateTimeOfExaminationRoom(checkFrom,examination.durationOfExamination,examination.roomName) &&
-                 validateTimeOfExaminationDoctor(checkFrom,examination.durationOfExamination,examination.id)){
+                 validateTimeOfExaminationDoctor(checkFrom,examination.durationOfExamination,examination.doctorId)){
                      examination.dateAndTimeOfExamination = checkFrom.ToString();
                      break;
                  }
 
                 else{
-                    checkFrom.AddMinutes(5);
+                    checkFrom = checkFrom.AddMinutes(30);
                 }
 
             }
