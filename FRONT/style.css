@@ -1858,6 +1858,13 @@ footer {
     padding: 10px;
 }
 
+.referralBtn {
+    color: darkcyan;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
 .acceptBtn {
     color: Green;
     border: none;

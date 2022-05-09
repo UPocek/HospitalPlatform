@@ -10,7 +10,7 @@ public class Examination
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
+    public int? id { get; set; }
 
     [BsonElement("done")]
     [JsonPropertyName("done")]

@@ -105,7 +105,7 @@ namespace APP.Controllers
             patients.DeleteOne(p => p.id == id);
             
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            var filter = Builders<Examination>.Filter.Lt("date", DateTime.Now.ToString()) & Builders<Examination>.Filter.Eq("patient", id);
+            var filter = Builders<Examination>.Filter.Gt(e=> e.dateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm")) & Builders<Examination>.Filter.Eq("patient", id);
             examinations.DeleteMany(filter);
 
             return Ok(); 
@@ -124,6 +124,16 @@ namespace APP.Controllers
             return Ok();   
         }
 
+
+        [HttpGet("patients/{id}/activity")]
+        // PUT: api/Secretary/patients/901/1
+        public async Task<String> GetPatientActivity(int id)
+        {
+            var patients = database.GetCollection<Patient>("Patients");;
+
+            return patients.Find(p=> p.id == id).FirstOrDefault().active;   
+        }
+
         // GET: api/Secretary/examinationRequests
         [HttpGet("examinationRequests")]
         public async Task<List<ExaminationRequest>> GetExaminationRequests()
@@ -131,7 +141,7 @@ namespace APP.Controllers
             var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
             //Delete deprecated requests
-            var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString());
+            var filter = Builders<ExaminationRequest>.Filter.Gt(e=>e.examination.dateAndTimeOfExamination,DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
             requests.DeleteMany(filter);
 
             return requests.Find(item => true).ToList();
@@ -147,7 +157,7 @@ namespace APP.Controllers
             return examinations.Find(item => item.id == id).FirstOrDefault();
         }
 
-
+        
         // PUT: api/Secretary/examinationRequests/accept/1
         [HttpPut("examinationRequests/accept/{id}")]
         public async Task<IActionResult> AcceptExaminationRequest(string id)
@@ -171,7 +181,6 @@ namespace APP.Controllers
         }
 
 
-
         // PUT: api/Secretary/examinationRequests/decline/1
         [HttpPut("examinationRequests/decline/{id}")]
         public async Task<IActionResult> DeclineExaminationRequest(string id)
@@ -182,6 +191,121 @@ namespace APP.Controllers
             
             return Ok();
         }
+
+        public bool validateTimeOfExamination(DateTime date,int duration,string roomName,int doctorId){
+
+            var currentDate = DateTime.Now;
+            var newExaminationBegging = date;
+            var newExaminationEnding = date.AddMinutes(duration);
+            
+            if (currentDate > newExaminationBegging){
+                return false;
+            }
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var examinationsInRoom = examinations.Find(e => e.roomName == roomName).ToList();
+            
+            foreach (Examination examinationRoom in examinationsInRoom){
+
+                var examinationBeggingRoom = DateTime.Parse(examinationRoom.dateAndTimeOfExamination);
+                var examinationEndingRoom = DateTime.Parse(examinationRoom.dateAndTimeOfExamination).AddMinutes(examinationRoom.durationOfExamination);
+
+                if ((newExaminationBegging >= examinationBeggingRoom && newExaminationBegging <= examinationEndingRoom) 
+                    | (newExaminationEnding >= examinationBeggingRoom && newExaminationEnding <= examinationEndingRoom)){
+
+                    var examinationsWithDoctor = examinations.Find(e => e.doctorId == doctorId).ToList();
+                    
+                    foreach (Examination examinationDoctor in examinationsWithDoctor){
+
+                    var examinationBeggingDoctor = DateTime.Parse(examinationDoctor.dateAndTimeOfExamination);
+                    var examinationEndingDoctor = DateTime.Parse(examinationDoctor.dateAndTimeOfExamination).AddMinutes(examinationDoctor.durationOfExamination);
+
+                    if ((newExaminationBegging >= examinationBeggingDoctor && newExaminationBegging <= examinationEndingDoctor) 
+                        |(newExaminationEnding >= examinationBeggingDoctor && newExaminationEnding <= examinationEndingDoctor)){
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public void RemovePatientReferral(int referralid,Examination newExamination){
+            var patients = database.GetCollection<Patient>("Patients");
+            Patient updatedPatient = patients.Find(p => p.id == newExamination.patinetId).FirstOrDefault();
+
+                foreach (Referral patientReferral in updatedPatient.medicalRecord.referrals){
+                    if (patientReferral.referralId == referralid){
+                        updatedPatient.medicalRecord.referrals.Remove(patientReferral);
+                        break;
+                    }
+                }
+
+            patients.ReplaceOne(p => p.id == newExamination.patinetId, updatedPatient);
+        }
+
+
+
+
+         // GET: api/Secretary/examination/referral/create/none
+        [HttpPost("examination/referral/create/{specialization}/{referralid}")]
+        public async Task<IActionResult> CreateRefferedExamination(Examination newExamination,string specialization,int referralid)
+        {
+            var patients = database.GetCollection<Patient>("Patients");
+
+            if (specialization != "none"){
+                var employees = database.GetCollection<Employee>("Employees");
+                List<Employee> specializedDoctors = employees.Find(e => e.role == "doctor" && e.specialization == specialization).ToList();
+                if (specializedDoctors.Count()-1 < 0){
+                    
+                    RemovePatientReferral(referralid,newExamination);
+
+                    return BadRequest("Error: No such specialist exists");
+                }
+                Random rnd = new Random();
+                newExamination.doctorId = specializedDoctors[rnd.Next(0,specializedDoctors.Count()-1)].id;
+            }
+
+            if (newExamination.durationOfExamination <= 15 || newExamination.durationOfExamination >= 200){
+                return BadRequest();
+            }
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var newExaminationDate = DateTime.Now.AddDays(1);
+
+
+            while(true){
+                
+                if (validateTimeOfExamination(newExaminationDate,newExamination.durationOfExamination,newExamination.roomName,newExamination.doctorId)){
+                     newExamination.dateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                     break;
+                 }
+
+                else{
+                    newExaminationDate = newExaminationDate.AddMinutes(30);
+                }
+
+            }
+
+            var rooms = database.GetCollection<Room>("Rooms");
+            var resultingRoom = rooms.Find(r => r.name == newExamination.roomName);
+
+            if (resultingRoom == null)
+            {
+                return BadRequest();
+            }
+            var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
+            newExamination.id = id + 1;
+            examinations.InsertOne(newExamination);
+
+            RemovePatientReferral(referralid,newExamination);
+            
+            return Ok();
+        
+        }       
 
     }
 }

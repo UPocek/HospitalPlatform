@@ -1,0 +1,20 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
+
+public class Referral
+{
+    [BsonElement("doctorId")]
+    [JsonPropertyName("doctorId")]
+    public int? doctorId {get; set;} = null;
+
+    [BsonElement("speciality")]
+    [JsonPropertyName("speciality")]
+    public string? speciality {get; set;} = null;
+
+    [BsonElement("referralId")]
+    [JsonPropertyName("referralId")]
+    public int? referralId {get; set;} = null;
+
+
+}
