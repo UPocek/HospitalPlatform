@@ -1,5 +1,6 @@
 var loginForm = document.getElementById('signInForm');
 var jwtoken;
+
 // Login
 loginForm.addEventListener('submit', function (e) {
     e.preventDefault();

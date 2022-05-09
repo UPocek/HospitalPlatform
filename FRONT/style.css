@@ -30,12 +30,23 @@ body {
 #four {
     display: none;
     margin-bottom: 10vh;
-    transition: all 500ms ease-in;
     max-width: 100%;
 }
 
 .active {
     display: block !important;
+    opacity: 0;
+    animation: fadeIn 750ms ease-in-out 250ms forwards;
+    /* transform: translateY(200px); */
+    /* transform: scale(0); */
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+        /* transform: translateY(0); */
+        /* transform: scale(1); */
+    }
 }
 
 /* LOGIN FORM */
@@ -118,6 +129,20 @@ body {
     cursor: pointer;
     margin: 0.625rem 0;
 }
+
+.btnAnimation {
+    transform: translateY(0);
+    transition: all 500ms;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.05),
+        0 10px 10px rgba(0, 0, 0, 0.02);
+}
+
+.btnAnimation:hover {
+    transform: translateY(-25%);
+    box-shadow: var(--boxShadow);
+}
+
+@keyframes moveUp {}
 
 #first .ghost {
     background: transparent !important;
@@ -1833,6 +1858,13 @@ footer {
     padding: 10px;
 }
 
+.referralBtn {
+    color: darkcyan;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
 .acceptBtn {
     color: Green;
     border: none;
@@ -1991,11 +2023,13 @@ td button {
 ::-webkit-scrollbar:horizontal {
     height: 6px;
     width: 6px;
+    border-radius: 50%;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
     height: 6px;
     width: 6px;
+    border-radius: 50%;
 }
 
 ::-webkit-scrollbar {
@@ -2169,12 +2203,12 @@ td button {
     font-size: 1.2rem;
 }
 
-#messageDrugForm{
+#messageDrugForm {
     width: 100%;
     margin: 0.5rem;
 }
 
-#drugReviewMessage{
+#drugReviewMessage {
     height: 30vh;
 }
 
