@@ -154,30 +154,6 @@ function displayInstructions(doctors){
     }
 }
 
-function displayInstructions(doctors){
-    let table = document.getElementById('instructionsTable');
-    
-    for (let instruction of patient['medicalRecord']['medicalInstructions']){
-        let newRow = document.createElement('tr');
-
-        let instructionDate = document.createElement('td');
-        instructionDate.innerText = instruction['date'];
-        newRow.appendChild(instructionDate);
-
-        for(let doctor of doctors){
-            if (doctor['id'] == instruction['doctor']){
-                let instructionOfDoctor = document.createElement('td');
-                instructionOfDoctor.innerText = doctor['firstName'] + ' ' + doctor['lastName'];
-                newRow.appendChild(instructionOfDoctor);
-            }
-        }
-        
-        table.appendChild(newRow);
-
-    }
-}
-
-
 function displayReferrals(){
     let table = document.getElementById('referralsTable');
 

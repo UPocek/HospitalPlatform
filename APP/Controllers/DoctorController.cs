@@ -18,6 +18,7 @@ public class DoctorController : ControllerBase
     public async Task<List<Examination>> GetAllExaminations()
     {
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
         return examinations.Find(e => true).ToList();
     }
 
@@ -25,6 +26,7 @@ public class DoctorController : ControllerBase
     public async Task<Examination> GetNextExaminationsIndex()
     {
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
         return examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault();
     }
 
@@ -69,24 +71,78 @@ public class DoctorController : ControllerBase
         return drugs.Find(item => item.status == "inReview").ToList();
     }
 
+    bool IsRoomOccupied(Examination examination){
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        var possiblyOccupiedRooms = examinations.Find(item => true).ToList();
+
+        foreach (Examination item in possiblyOccupiedRooms){
+            if(item.roomName == examination.roomName){
+                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+                if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
+                        return true;
+                }
+            }  
+        }
+        Console.Write("Room occupied");
+        return false;
+    }
+
+    bool IsRoomValid(string roomName){
+        var rooms = database.GetCollection<Room>("Rooms");
+        var resultingRoom = rooms.Find(r => r.name == roomName && r.inRenovation == false);
+        if(resultingRoom == null){
+            Console.Write("Room false");
+            return false;
+        }
+        return true;
+    }
+
+    bool IsValidPatient(int id){
+        var patients = database.GetCollection<Patient>("Patients");
+        var resultingPatient = patients.Find(p => p.id == id).FirstOrDefault();
+        if(resultingPatient == null){
+            Console.Write("Patient false");
+            return false;
+        }
+        return true;
+
+    }
+
+    bool IsRoomInRenovation(string roomName, string examinationDate){
+        var renovations = database.GetCollection<Renovation>("Renovations").Find(renovation => true).ToList();
+
+        foreach(Renovation r in renovations){
+            DateTime renovationBegin = DateTime.Parse(r.startDate);
+            DateTime renovationEnd = DateTime.Parse(r.endDate);
+            DateTime examinationDateParsed = DateTime.Parse(examinationDate);
+            if(renovationBegin <= examinationDateParsed && renovationEnd >= examinationDateParsed){
+                Console.Write("Renavtion false");
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
-        var patients = database.GetCollection<Patient>("Patients");
-        var resultingPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
-        var rooms = database.GetCollection<Room>("Rooms");
-        var resultingRoom = rooms.Find(r => r.name == examination.roomName);
-        
-        if (resultingPatient == null | resultingRoom == null)
+        if ((IsValidPatient(examination.patinetId) && IsRoomValid(examination.roomName)) && (!IsRoomOccupied(examination) &&
+        !IsRoomInRenovation(examination.roomName, examination.dateAndTimeOfExamination)))
         {
-            return BadRequest();
-        }else{
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
-        examination.id = id + 1;
-        examinations.InsertOne(examination);
+            var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
+            examination.id = id + 1;
+            examinations.InsertOne(examination);
 
-        return Ok();
+            return Ok(); 
+        }
+        else{
+            return BadRequest();       
         }
     }
 
