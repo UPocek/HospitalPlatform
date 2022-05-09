@@ -18,8 +18,33 @@
     <body>
         
         <?php include 'header.html';?>
+
+
+        <div id="examinationRefPopUp" class="form-container sign-in-container off prompt">
+            <form id="examinationRefForm" class="colDir myForm">
+                <h1 id="examinationRefFormId" >Create examination</h1>
+                <div class="formDiv">
+                    <label for="examinationType">Examination type:</label>
+                    <select id="examinationRefType">
+                        <option value="visit" selected>Visit</option>
+                        <option value="operation">Operation</option>
+                    </select>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationDuration">Duration:</label>
+                    <input type="number" id="examinationRefDuration" min=15>
+                </div>
+                <div class="formDiv">
+                    <label for="examinationRoom">Room:</label>
+                    <select id="examinationRefRoom">
+                        <!-- get rooms from api -->
+                    </select>
+                </div>
+                <button class="mainBtn">OK</button>
+            </form>
+	    </div>
         
-        <main class = "myMain">
+        <main id='medCardMain'>
             <section>
                 <div id="patientInfo" >
                     <div class="basicInfo">
@@ -80,6 +105,24 @@
                                 </tr>
                             </thead>
                             <tbody id="instructionsTable">
+                                <!-- this is where data from api comes -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="referralSection" class="addSpaceBottom off">
+                <div id="rooms" class="referrals">
+                    <div class="tbl-content">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                </tr>
+                            </thead>
+                            <tbody id="referralsTable">
                                 <!-- this is where data from api comes -->
                             </tbody>
                         </table>

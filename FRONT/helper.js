@@ -1,22 +1,28 @@
 var loginForm = document.getElementById("signInForm2");
+var jwtoken;
 
 // Login
 loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    let request = new XMLHttpRequest();
+    let loginRequest = new XMLHttpRequest();
 
-    request.onreadystatechange = function () {
+    loginRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let response = JSON.parse(this.responseText);
-                if (response["role"] == "manager") {
-                    window.location.replace("manager.php" + "?id=" + response["id"]);
+                jwtoken = response['token'];
+                let user = response['user'];
+                if (user['role'] == 'manager') {
+                    window.location.replace('manager.php' + '?id=' + user['id'] + '&token=' + jwtoken);
                 }
-                else if (response["role"] == "patient") {
-                    window.location.replace("patient.php" + "?id=" + response["id"]);
+                else if (user['role'] == 'secretary') {
+                    window.location.replace('secretary.php' + '?id=' + user['id'] + '&token=' + jwtoken);
                 }
-                else if (response["role"] == "doctor") {
-                    window.location.replace("doctor.php" + "?id=" + response["id"]);
+                else if (user['role'] == 'patient') {
+                    window.location.replace('patient.php' + '?id=' + user['id'] + '&token=' + jwtoken);
+                }
+                else if (user['role'] == 'doctor') {
+                    window.location.replace('doctor.php' + '?id=' + user['id'] + '&token=' + jwtoken);
                 }
             }
             else {
@@ -28,6 +34,6 @@ loginForm.addEventListener('submit', function (e) {
     let finalEmail = document.getElementById("signInEmail2").value;
     let finalPassword = document.getElementById("signInPassword2").value;
 
-    request.open('GET', 'https://localhost:7291/api/my/login/' + finalEmail + "&" + finalPassword);
-    request.send();
+    loginRequest.open('POST', 'https://localhost:7291/api/my/authenticate/' + finalEmail + '&' + finalPassword);
+    loginRequest.send();
 });

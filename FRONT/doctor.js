@@ -1080,6 +1080,106 @@ function addPerscriptionToRecord(drugName){
     currentMedicalRecord['drugs'].push(newPerscription);
 }
 
+var referallBtn = document.getElementById('createReferall');
+var doctors;
+var specialities;
+
+referallBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let popUp = document.getElementById('reviewExaminationDiv');
+    popUp.classList.add("off");
+    let referallDiv= document.getElementById('referallDiv');
+    referallDiv.classList.remove('off');
+    getDoctors();
+    let referallOption = document.getElementById('referallType');
+    referallOption.addEventListener('change', function(e){
+        addReferallOptions();
+    })
+})
+
+function getDoctors(){
+    let getDoctorsRequest = new XMLHttpRequest();
+    getDoctorsRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                doctors = [];
+                doctors = doctors.concat((JSON.parse(this.response)));
+                getSpecialities();
+                addReferallOptions();
+            }
+        }
+    }
+    getDoctorsRequest.open('GET', 'https://localhost:7291/api/my/users/doctors');
+    getDoctorsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getDoctorsRequest.send();
+}
+
+function getSpecialities(){
+    specialities = [];
+    for(let doctor of doctors){
+        if(!specialities.includes(doctor['specialization'])){
+            specialities.push(doctor['specialization']);
+        }
+    }
+}
+
+function addReferallOptions(){
+    let valueOfReferallType = document.getElementById('referallType').value;
+    let referallOptions = document.getElementById('referallOption');
+    removeAllChildNodes(referallOptions);
+    if (valueOfReferallType == "doctor"){
+        for (let doctor of doctors){ 
+            let newOption = document.createElement('option');
+            newOption.setAttribute('value', doctor['id']);
+            newOption.innerText = doctor['firstName'] + " " + doctor['lastName'];
+            referallOptions.appendChild(newOption);
+        }
+    }else{
+        for (let speciality of specialities){
+            let newOption = document.createElement('option');
+            newOption.setAttribute('value', speciality);
+            newOption.innerText = speciality;
+            referallOptions.appendChild(newOption);
+        }
+    }
+    referallOptions.firstElementChild.setAttribute('selected', true);
+}
+
+let addReferallBtn = document.getElementById('addReferall');
+
+addReferallBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let addReferallRequest = new XMLHttpRequest();
+    addReferallRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Referral created");
+            }
+        }
+    }
+    let valueOfReferallType = document.getElementById('referallType').value;
+    let referallOption = document.getElementById('referallOption').value;
+    console.log(currentMedicalRecord);
+    if(valueOfReferallType == 'doctor'){
+        currentMedicalRecord['referrals'].push({"doctorId":referallOption});
+    }
+    else{
+        currentMedicalRecord['referrals'].push({"speciality":referallOption});
+    }
+
+    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+    addReferallRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    addReferallRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    addReferallRequest.send(JSON.stringify(currentMedicalRecord));
+
+    let referallDiv= document.getElementById('referallDiv');
+    referallDiv.classList.add('off');
+    let popUp = document.getElementById('reviewExaminationDiv');
+    popUp.classList.remove("off");
+})
+
 function setUpDrugsForReview() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -1185,3 +1285,4 @@ function approveDrug(key){
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
 }
+

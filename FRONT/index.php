@@ -21,7 +21,7 @@
     <?php include 'header.html';?>
 
   <main id="first" class="myForm">
-      <h1 class="mainH">Medical Institution Team #9</h1>
+      <h1 id="hi" class="mainH">Medical Institution Team #9</h1>
     <div class="container container1" id="container">
       <div class="form-container sign-up-container">
         <form id="signUpForm">
