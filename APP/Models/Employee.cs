@@ -25,7 +25,6 @@ public class Employee
     [JsonPropertyName("id")]
     public int id { get; set; }
 
-
     [BsonElement("specialization")]
     [JsonPropertyName("specialization")]
     public string? specialization { get; set; }
