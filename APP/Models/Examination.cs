@@ -6,51 +6,51 @@ public class Examination
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int? id { get; set; }
+    public int? Id { get; set; }
 
     [BsonElement("done")]
     [JsonPropertyName("done")]
-    public bool isExaminationOver { get; set; }
+    public bool IsExaminationOver { get; set; }
 
     [BsonElement("date")]
     [JsonPropertyName("date")]
-    public string dateAndTimeOfExamination { get; set; }
+    public string DateAndTimeOfExamination { get; set; }
 
     [BsonElement("duration")]
     [JsonPropertyName("duration")]
-    public int durationOfExamination { get; set; }
+    public int DurationOfExamination { get; set; }
 
     [BsonElement("patient")]
     [JsonPropertyName("patient")]
-    public int patinetId { get; set; }
+    public int PatinetId { get; set; }
 
     [BsonElement("doctor")]
     [JsonPropertyName("doctor")]
-    public int doctorId { get; set; }
+    public int DoctorId { get; set; }
 
     [BsonElement("room")]
     [JsonPropertyName("room")]
-    public string roomName { get; set; }
+    public string RoomName { get; set; }
 
     [BsonElement("anamnesis")]
     [JsonPropertyName("anamnesis")]
-    public string? anamnesis {get; set;} = "";
+    public string? Anamnesis {get; set;} = "";
 
     [BsonElement("urgent")]
     [JsonPropertyName("urgent")]
-    public bool isUrgent { get; set; }
+    public bool IsUrgent { get; set; }
 
     [BsonElement("type")]
     [JsonPropertyName("type")]
-    public string typeOfExamination { get; set; }
+    public string TypeOfExamination { get; set; }
 
     [BsonElement("equipmentUsed")]
     [JsonPropertyName("equipmentUsed")]
 
-    public List<string>? equipmentUsed {get; set;} = new List<string>();
+    public List<string>? EquipmentUsed {get; set;} = new List<string>();
 }
 

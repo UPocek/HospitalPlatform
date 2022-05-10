@@ -7,25 +7,25 @@ public class Employee
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("firstName")]
     [JsonPropertyName("firstName")]
-    public string firstName { get; set; }
+    public string FirstName { get; set; }
 
     [BsonElement("lastName")]
     [JsonPropertyName("lastName")]
-    public string dateAndlastName { get; set; }
+    public string DateAndlastName { get; set; }
 
     [BsonElement("role")]
     [JsonPropertyName("role")]
-    public string role { get; set; }
+    public string Role { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
+    public int Id { get; set; }
 
     [BsonElement("specialization")]
     [JsonPropertyName("specialization")]
-    public string? specialization { get; set; }
+    public string? Specialization { get; set; }
 }

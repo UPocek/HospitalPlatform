@@ -6,20 +6,20 @@ public class Equipment
 {
     public Equipment(string name, string type, int quantity)
     {
-        this.name = name;
-        this.type = type;
-        this.quantity = quantity;
+        this.Name = name;
+        this.Type = type;
+        this.Quantity = quantity;
     }
 
     [BsonElement("name")]
     [JsonPropertyName("name")]
-    public string name { get; set; }
+    public string Name { get; set; }
 
     [BsonElement("type")]
     [JsonPropertyName("type")]
-    public string type { get; set; }
+    public string Type { get; set; }
 
     [BsonElement("quantity")]
     [JsonPropertyName("quantity")]
-    public int quantity { get; set; }
+    public int Quantity { get; set; }
 }

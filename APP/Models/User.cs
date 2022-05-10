@@ -7,26 +7,26 @@ public class User
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
+    public int Id { get; set; }
 
     [BsonElement("role")]
     [JsonPropertyName("role")]
-    public string role { get; set; }
+    public string Role { get; set; }
 
     [BsonElement("email")]
     [JsonPropertyName("email")]
-    public string email { get; set; }
+    public string Email { get; set; }
 
     [BsonElement("password")]
     [JsonPropertyName("password")]
-    public string password { get; set; }
+    public string Password { get; set; }
 
     [BsonElement("active")]
     [JsonPropertyName("active")]
-    public string? active { get; set; }
+    public string? Active { get; set; }
 
 }

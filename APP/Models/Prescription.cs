@@ -6,17 +6,17 @@ public class Prescription
 {
     [BsonElement("name")]
     [JsonPropertyName("name")]
-    public string drugName { get; set; }
+    public string DrugName { get; set; }
 
     [BsonElement("when")]
     [JsonPropertyName("when")]
-    public string whenPrescribed { get; set; }
+    public string WhenPrescribed { get; set; }
 
     [BsonElement("how")]
     [JsonPropertyName("how")]
-    public string howPrescribed { get; set; }
+    public string HowPrescribed { get; set; }
 
     [BsonElement("frequency")]
     [JsonPropertyName("frequency")]
-    public int frequency { get; set; }
+    public int Frequency { get; set; }
 }
