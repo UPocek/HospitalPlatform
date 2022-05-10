@@ -68,10 +68,11 @@ public class DoctorController : ControllerBase
     public async Task<List<Drug>> GetDrugsForReview()
     {
         var drugs = database.GetCollection<Drug>("Drugs");
+
         return drugs.Find(item => item.status == "inReview").ToList();
     }
 
-    bool IsRoomOccupied(Examination examination){
+    public bool IsRoomOccupied(Examination examination){
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         var possiblyOccupiedRooms = examinations.Find(item => true).ToList();
 
@@ -86,32 +87,28 @@ public class DoctorController : ControllerBase
                 }
             }  
         }
-        Console.Write("Room occupied");
         return false;
     }
 
-    bool IsRoomValid(string roomName){
+    public bool IsRoomValid(string roomName){
         var rooms = database.GetCollection<Room>("Rooms");
         var resultingRoom = rooms.Find(r => r.name == roomName && r.inRenovation == false);
         if(resultingRoom == null){
-            Console.Write("Room false");
             return false;
         }
         return true;
     }
 
-    bool IsValidPatient(int id){
+    public bool IsValidPatient(int id){
         var patients = database.GetCollection<Patient>("Patients");
         var resultingPatient = patients.Find(p => p.id == id).FirstOrDefault();
         if(resultingPatient == null){
-            Console.Write("Patient false");
             return false;
         }
         return true;
-
     }
 
-    bool IsRoomInRenovation(string roomName, string examinationDate){
+    public bool IsRoomInRenovation(string roomName, string examinationDate){
         var renovations = database.GetCollection<Renovation>("Renovations").Find(renovation => true).ToList();
 
         foreach(Renovation r in renovations){
@@ -119,7 +116,6 @@ public class DoctorController : ControllerBase
             DateTime renovationEnd = DateTime.Parse(r.endDate);
             DateTime examinationDateParsed = DateTime.Parse(examinationDate);
             if(renovationBegin <= examinationDateParsed && renovationEnd >= examinationDateParsed){
-                Console.Write("Renavtion false");
                 return true;
             }
         }
@@ -141,9 +137,7 @@ public class DoctorController : ControllerBase
 
             return Ok(); 
         }
-        else{
-            return BadRequest();       
-        }
+        return BadRequest();
     }
 
     [HttpPut("drugs/{id}")]
@@ -173,21 +167,15 @@ public class DoctorController : ControllerBase
     [HttpPut("examinations/{id}")]
     public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
     {
-        var patients = database.GetCollection<Patient>("Patients");
-        var resultingPatient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
-        var rooms = database.GetCollection<Room>("Rooms");
-        var resultingRoom = rooms.Find(r => r.name == examination.roomName).FirstOrDefault();
- 
-
-        if (resultingPatient == null | resultingRoom == null){
-            return BadRequest();
-        }
-        else{
+        if ((IsValidPatient(examination.patinetId) && IsRoomValid(examination.roomName)) && (!IsRoomOccupied(examination) &&
+        !IsRoomInRenovation(examination.roomName, examination.dateAndTimeOfExamination)))
+        {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
             examinations.FindOneAndReplace(e => e.id == id, examination);
             
             return Ok(); 
-        }   
+        } 
+        return BadRequest();
     }
 
     [HttpPut("examinations/room/{name}")]
@@ -213,6 +201,7 @@ public class DoctorController : ControllerBase
     {
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         examinations.DeleteOne(e => e.id == id);
+        
         return Ok();
     }
 }
