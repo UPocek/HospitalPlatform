@@ -137,7 +137,7 @@ public class PatientController : ControllerBase
         }
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         var oldExaminationData = examinations.Find(item => item.Id == int.Parse(id)).FirstOrDefault();
-        examination._Id = oldExaminationData._Id;
+        examination._id = oldExaminationData._id;
         examination.Id = oldExaminationData.Id;
 
         var doctorsExaminations = examinations.Find(item => item.DoctorId == examination.DoctorId).ToList();

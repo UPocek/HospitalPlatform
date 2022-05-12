@@ -165,7 +165,7 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPut("examinations/{id}")]
-    public async Task<IActionResult> UpdateExamination(int id, [FromBody] Examination examination)
+    public async Task<IActionResult> UpdateExamination(int id, Examination examination)
     {
         if ((IsValidPatient(examination.PatinetId) && IsRoomValid(examination.RoomName)) && (!IsRoomOccupied(examination) &&
         !IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination)))
@@ -179,7 +179,7 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPut("examinations/room/{name}")]
-    public async Task<IActionResult> UpdateExaminationRoom(string name, [FromBody] Room room)
+    public async Task<IActionResult> UpdateExaminationRoom(string name, Room room)
     {
         var rooms = database.GetCollection<Room>("Rooms");
         

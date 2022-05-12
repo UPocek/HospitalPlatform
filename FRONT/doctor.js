@@ -863,7 +863,9 @@ endReviewBtn.addEventListener('click', function(e){
             if (this.status == 200) {
                 alert("Successful review");
                 searchSchedule();
-            }
+            }else{
+            alert("Bad review");
+        }
         }
     }
 
@@ -877,9 +879,9 @@ endReviewBtn.addEventListener('click', function(e){
     }
 
     if (ok){
-        let popUp = document.getElementById('reviewExaminationDiv');
-        popUp.classList.add('off');
-        main.classList.remove('hideMain');
+        // let popUp = document.getElementById('reviewExaminationDiv');
+        // popUp.classList.add('off');
+        // main.classList.remove('hideMain');
         if (currentExamination['type'] == 'operation'){
             for (let i in roomOfExamination['equipment']){
                 for (let equipmentInUse of equipmentUsed){
@@ -911,6 +913,7 @@ endReviewBtn.addEventListener('click', function(e){
     reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
     reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    console.log(currentExamination);
     reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis'], 'equipmentUsed':currentExamination['equipmentUsed']}));
     
     }else{
@@ -1161,12 +1164,11 @@ addReferallBtn.addEventListener('click', function(e){
     }
     let valueOfReferallType = document.getElementById('referallType').value;
     let referallOption = document.getElementById('referallOption').value;
-    console.log(currentMedicalRecord);
     if(valueOfReferallType == 'doctor'){
-        currentMedicalRecord['referrals'].push({"doctorId":referallOption});
+        currentMedicalRecord['referrals'].push({"doctorId":referallOption, "referralId":Math.floor((Math.random() * 1000) + 1)});
     }
     else{
-        currentMedicalRecord['referrals'].push({"speciality":referallOption});
+        currentMedicalRecord['referrals'].push({"speciality":referallOption, "referralId":Math.floor((Math.random() * 1000) + 1)});
     }
 
     addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
@@ -1257,7 +1259,6 @@ function sendBackDrug(key){
             }
         }
         let message = document.getElementById('drugReviewMessage').value;
-        console.log(message);
         sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/' + key);
         sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);

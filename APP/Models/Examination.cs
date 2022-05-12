@@ -6,7 +6,7 @@ public class Examination
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _Id { get; set; }
+    public string? _id { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
