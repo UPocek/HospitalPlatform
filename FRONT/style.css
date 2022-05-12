@@ -1843,6 +1843,17 @@ footer {
     padding: 10px;
 }
 
+#urgentSecretary{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+}
+
+
+
 
 .unblockBtn {
     color: Green;
@@ -2386,6 +2397,7 @@ td button {
 #urgent {
     min-width: 30px;
 }
+
 
 .scheduleDiv {
     display: flex;

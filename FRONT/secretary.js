@@ -21,15 +21,36 @@ function showWindow(section) {
     let sectionOne = document.getElementById('one');
     let sectionTwo = document.getElementById('two');
     let sectionThree = document.getElementById('three');
+    let sectionFour = document.getElementById('four')
 
     sectionOne.classList.remove('active');
     sectionTwo.classList.remove('active');
     sectionThree.classList.remove('active');
+    sectionFour.classList.remove('active');
+
+    let hi = document.getElementById('hi');
 
     switch (section) {
-        case 1: sectionOne.classList.add('active'); break;
-        case 2: sectionTwo.classList.add('active'); break;
-        case 3: sectionThree.classList.add('active'); break;
+        case 1: 
+                sectionOne.classList.add('active'); 
+                hi.classList.remove('off');
+                hi.classList.add('active');
+                break;
+        case 2: 
+                sectionTwo.classList.add('active'); 
+                hi.classList.remove('off');
+                hi.classList.add('active'); 
+                break;
+        case 3: 
+                sectionThree.classList.add('active'); 
+                hi.classList.remove('off');
+                hi.classList.add('active');
+                break;
+        case 4: 
+                hi.classList.remove('active');
+                hi.classList.add('off')
+                sectionFour.classList.add('active'); 
+                break;
     }
 }
 
@@ -64,12 +85,16 @@ function setUpMenu() {
     <li id="option3" class="navbar__item">
         <a class="navbar__link"><i data-feather="inbox"></i><span>Examination requests</span></a>
     </li>
+    <li id="option4" class="navbar__item">
+        <a class="navbar__link"><i data-feather="alert-triangle"></i><span>Urgent examination</span></a>
+    </li>
     `;
     feather.replace();
 
-    let menuItem1 = document.getElementById("option1");
-    let menuItem2 = document.getElementById("option2");
-    let menuItem3 = document.getElementById("option3");
+    let menuItem1 = document.getElementById('option1');
+    let menuItem2 = document.getElementById('option2');
+    let menuItem3 = document.getElementById('option3');
+    let menuItem4 = document.getElementById('option4');
 
     menuItem1.addEventListener('click', (e) => {
         showWindow(1);
@@ -79,6 +104,9 @@ function setUpMenu() {
     });
     menuItem3.addEventListener('click', (e) => {
         showWindow(3);
+    });
+    menuItem4.addEventListener('click', (e) => {
+        showWindow(4);
     });
 }
 

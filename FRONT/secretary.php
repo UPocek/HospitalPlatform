@@ -153,6 +153,35 @@
     </section>
 
 
+    <section id="four">
+      <div id="urgentSecretary" class = "prompt">
+        <form id="createPatientForm" class="colDir myForm">
+          <h1 id="examinationFormId" >Create urgent examination</h1>
+          <div class="formDiv">
+              <label for="examinationType">Examination type:</label>
+              <select id="examinationType">
+                  <option value="visit" selected>Visit</option>
+                  <option value="operation">Operation</option>
+              </select>
+          </div>
+          <div class="formDiv">
+              <label for="examinationDuration">Duration:</label>
+              <input type="number" id="examinationDuration" min="15">
+          </div>
+          <div class="formDiv">
+              <label for="examinationPatient">Patient id:</label>
+              <input id="examinationPatient" type="number"/>
+          </div>
+          <div class="formDiv">
+              <label for="examinationPatient">Doctor id:</label>
+              <input id="examinationPatient" type="number"/>
+          </div>
+          <button class="mainBtn">OK</button>
+        </form>
+      </div>
+    </section>
+
+
       
   </main>
 
