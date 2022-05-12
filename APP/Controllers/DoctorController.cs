@@ -72,18 +72,18 @@ public class DoctorController : ControllerBase
         return drugs.Find(item => item.Status == "inReview").ToList();
     }
 
-    public bool IsRoomOccupied(Examination examination){
+    public bool IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination, int id){
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         var possiblyOccupiedRooms = examinations.Find(item => true).ToList();
 
         foreach (Examination item in possiblyOccupiedRooms){
-            if(item.RoomName == examination.RoomName){
+            if(item.RoomName == examinationRoomName){
                 DateTime itemBegin = DateTime.Parse(item.DateAndTimeOfExamination);
                 DateTime itemEnd = itemBegin.AddMinutes(item.DurationOfExamination);
-                DateTime examinationBegin = DateTime.Parse(examination.DateAndTimeOfExamination);
-                DateTime examinationEnd = examinationBegin.AddMinutes(examination.DurationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(dateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(durationOfExamination);
                 if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
-                        return true;
+                    if(id != item.Id )return true;
                 }
             }  
         }
@@ -119,7 +119,6 @@ public class DoctorController : ControllerBase
                 return true;
             }
         }
-
         return false;
 
     }
@@ -127,7 +126,7 @@ public class DoctorController : ControllerBase
     [HttpPost("examinations")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
-        if ((IsValidPatient(examination.PatinetId) && IsRoomValid(examination.RoomName)) && (!IsRoomOccupied(examination) &&
+        if ((IsValidPatient(examination.PatinetId) && IsRoomValid(examination.RoomName)) && (!IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination, 0) &&
         !IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination)))
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
@@ -167,8 +166,11 @@ public class DoctorController : ControllerBase
     [HttpPut("examinations/{id}")]
     public async Task<IActionResult> UpdateExamination(int id, Examination examination)
     {
-        if ((IsValidPatient(examination.PatinetId) && IsRoomValid(examination.RoomName)) && (!IsRoomOccupied(examination) &&
-        !IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination)))
+        var isValidPatient = IsValidPatient(examination.PatinetId);
+        var isValidRoom = IsRoomValid(examination.RoomName);
+        var isOccupiedRoom = IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int) examination.Id);
+        var isRoomInRenovation = IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination);
+        if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom)
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
             examinations.FindOneAndReplace(e => e.Id == id, examination);
@@ -190,6 +192,27 @@ public class DoctorController : ControllerBase
     [HttpPut("examinations/medicalrecord/{id}")]
     public async Task<IActionResult> UpdateMedicalCard(int id, MedicalRecord medicalRecord )
     {
+        var patients = database.GetCollection<Patient>("Patients");
+        var updatePatients = Builders<Patient>.Update.Set("medicalRecord", medicalRecord);
+        patients.UpdateOne(p => p.Id == id, updatePatients);
+        return Ok();    
+    }
+
+    public int FindReferralId(int patientId){
+        var patient = database.GetCollection<Patient>("Patients").Find(p => p.Id == patientId).FirstOrDefault();
+        if(patient.MedicalRecord.Referrals.Count() == 0){
+            return 1;
+        }else{
+            var lastReferralId = (int) patient.MedicalRecord.Referrals.Last().ReferralId;
+            return lastReferralId + 1;
+        }      
+    }
+
+    [HttpPut("examinations/referral/{id}")]
+    public async Task<IActionResult> CreateReferral(int id, MedicalRecord medicalRecord )
+    {
+        var referralId = FindReferralId(id);
+        medicalRecord.Referrals.Last().ReferralId = referralId;
         var patients = database.GetCollection<Patient>("Patients");
         var updatePatients = Builders<Patient>.Update.Set("medicalRecord", medicalRecord);
         patients.UpdateOne(p => p.Id == id, updatePatients);

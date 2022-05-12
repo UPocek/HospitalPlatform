@@ -879,9 +879,9 @@ endReviewBtn.addEventListener('click', function(e){
     }
 
     if (ok){
-        // let popUp = document.getElementById('reviewExaminationDiv');
-        // popUp.classList.add('off');
-        // main.classList.remove('hideMain');
+        let popUp = document.getElementById('reviewExaminationDiv');
+        popUp.classList.add('off');
+        main.classList.remove('hideMain');
         if (currentExamination['type'] == 'operation'){
             for (let i in roomOfExamination['equipment']){
                 for (let equipmentInUse of equipmentUsed){
@@ -1165,13 +1165,13 @@ addReferallBtn.addEventListener('click', function(e){
     let valueOfReferallType = document.getElementById('referallType').value;
     let referallOption = document.getElementById('referallOption').value;
     if(valueOfReferallType == 'doctor'){
-        currentMedicalRecord['referrals'].push({"doctorId":referallOption, "referralId":Math.floor((Math.random() * 1000) + 1)});
+        currentMedicalRecord['referrals'].push({"doctorId":referallOption});
     }
     else{
-        currentMedicalRecord['referrals'].push({"speciality":referallOption, "referralId":Math.floor((Math.random() * 1000) + 1)});
+        currentMedicalRecord['referrals'].push({"speciality":referallOption});
     }
 
-    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/referral/' + currentPatientMedicalRecord['id']);
     addReferallRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     addReferallRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     addReferallRequest.send(JSON.stringify(currentMedicalRecord));
