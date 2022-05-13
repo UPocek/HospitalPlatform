@@ -271,23 +271,38 @@
                 <div id="drugs">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Ingredients</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="drugTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Ingredients</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="drugTable">
 
-                        </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </section>
             <section id="four">
+                <div id="freeDays">
+                        <div class="tbl-content">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Begging</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="freeDayTable">
 
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
             </section>
         </main>
 

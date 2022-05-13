@@ -72,6 +72,14 @@ public class DoctorController : ControllerBase
         return drugs.Find(item => item.Status == "inReview").ToList();
     }
 
+    [HttpGet("freeDayRequests/{id}")]
+    public async Task<List<FreeDayRequest>> GetFreeDayRequest(int id)
+    {
+        var freeDaysRequests = database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
+
+        return freeDaysRequests.Find(day => day.DoctorId == id).ToList();
+    }
+
     public bool IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination, int id){
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         var possiblyOccupiedRooms = examinations.Find(item => true).ToList();

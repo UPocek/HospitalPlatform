@@ -31,15 +31,18 @@ function showWindow(section) {
     let sectionOne = document.getElementById('one');
     let sectionTwo = document.getElementById('two');
     let sectionThree = document.getElementById('three');
+    let sectionFour = document.getElementById('four');
 
     sectionOne.classList.remove('active');
     sectionTwo.classList.remove('active');
     sectionThree.classList.remove('active');
+    sectionFour.classList.remove('active');
 
     switch (section) {
         case 1: sectionOne.classList.add('active'); break;
         case 2: sectionTwo.classList.add('active'); break;
         case 3: sectionThree.classList.add('active'); break;
+        case 4: sectionFour.classList.add('active'); break;
     }
 }
 
@@ -119,6 +122,7 @@ function setUpMenu() {
     });
     item4.addEventListener('click', (e) => {
         showWindow(4);
+        displayFreeDayRequests();
     });
     
 }
@@ -1285,4 +1289,37 @@ function approveDrug(key){
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
 }
+
+function displayFreeDayRequests(){
+    let getFreeDayRequsts = new XMLHttpRequest();
+    getFreeDayRequsts.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let freeDayRequests = JSON.parse(this.responseText);
+                let table = document.getElementById('freeDayTable');
+                table.innerHTML = '';
+                for (let request of freeDayRequests) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataStart = document.createElement('td');
+                    tableDataStart.innerText = request['startDay'];
+                    let tableDataDuration = document.createElement('td');
+                    tableDataDuration.innerText = request['duration'];
+                    let tableDataStatus = document.createElement('td');
+                    tableDataStatus.innerText = request['status'];
+
+                    newRow.appendChild(tableDataStart);
+                    newRow.appendChild(tableDataDuration);
+                    newRow.appendChild(tableDataStatus);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+    getFreeDayRequsts.open('GET', 'https://localhost:7291/api/doctor/freeDayRequests/' + doctorId);
+    getFreeDayRequsts.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getFreeDayRequsts.send();
+}
+
 
