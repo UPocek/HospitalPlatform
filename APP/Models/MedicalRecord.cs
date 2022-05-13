@@ -8,44 +8,40 @@ public class MedicalRecord
 {
     [BsonElement("height")]
     [JsonPropertyName("height")]
-    public int height { get; set; }
+    public int Height { get; set; }
 
     [BsonElement("weight")]
     [JsonPropertyName("weight")]
-    public int weight { get; set; }
+    public int Weight { get; set; }
 
     [BsonElement("bloodType")]
     [JsonPropertyName("bloodType")]
-    public string bloodType { get; set; }
+    public string BloodType { get; set; }
 
     [BsonElement("diseases")]
     [JsonPropertyName("diseases")]
-    public List<string>? diseases { get; set; } = new List<string>();
+    public List<string>? Diseases { get; set; } = new List<string>();
 
     [BsonElement("alergies")]
     [JsonPropertyName("alergies")]
-    public List<string>? alergies { get; set; } = new List<string>();
+    public List<string>? Alergies { get; set; } = new List<string>();
 
     [BsonElement("drugs")]
     [JsonPropertyName("drugs")]
-    public List<Prescription>? prescriptions { get; set; } = new List<Prescription>();
+    public List<Prescription>? Prescriptions { get; set; } = new List<Prescription>();
 
     [BsonElement("examinations")]
     [JsonPropertyName("examinations")]
-    public List<int>? examinations { get; set; } = new List<int>();
+    public List<int>? Examinations { get; set; } = new List<int>();
 
     [BsonElement("referrals")]
     [JsonPropertyName("referrals")]
-    public List<Referral>? referrals{ get; set; } = new List<Referral>();
+    public List<Referral>? Referrals{ get; set; } = new List<Referral>();
 
 
     [BsonElement("medicalInstructions")]
     [JsonPropertyName("medicalInstructions")]
-    public List<MedicalInstruction>? medicalInstructions { get; set; } = new List<MedicalInstruction>();
-
-    [BsonElement("referrals")]
-    [JsonPropertyName("referrals")]
-    public List<Referral>? referrals {get; set;}
+    public List<MedicalInstruction>? MedicalInstructions { get; set; } = new List<MedicalInstruction>();
 
 }
 

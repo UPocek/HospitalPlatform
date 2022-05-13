@@ -11,15 +11,15 @@ public class Account
 
     public Account(string token, User user)
     {
-        this.token = token;
-        this.user = user;
+        this.Token = token;
+        this.User = user;
     }
 
     [BsonElement("token")]
     [JsonPropertyName("token")]
-    public string token { get; set; }
+    public string Token { get; set; }
 
     [BsonElement("user")]
     [JsonPropertyName("user")]
-    public User user { get; set; }
+    public User User { get; set; }
 }

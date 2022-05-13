@@ -32,7 +32,7 @@ namespace APP.Controllers
         public async Task<List<Employee>> GetDoctors()
         {
             var collection = database.GetCollection<Employee>("Employees");
-            return collection.Find(e => e.role == "doctor").ToList();
+            return collection.Find(e => e.Role == "doctor").ToList();
         }
 
         [HttpGet("users/doctors/{id}")]
@@ -40,7 +40,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Employee>("Employees");
 
-            return collection.Find(e => e.role == "doctor" && e.id == id).FirstOrDefault();
+            return collection.Find(e => e.Role == "doctor" && e.Id == id).FirstOrDefault();
         }
 
         // GET: api/My/users/id
@@ -68,7 +68,7 @@ namespace APP.Controllers
         public async Task<Account> Authenticate(string email, string password)
         {
             var collection = database.GetCollection<User>("Employees");
-            var user = collection.Find(item => item.email == email & item.password == password).FirstOrDefault();
+            var user = collection.Find(item => item.Email == email & item.Password == password).FirstOrDefault();
 
             if (user != null)
             {
@@ -79,8 +79,8 @@ namespace APP.Controllers
             else
             {
                 var collectionPatients = database.GetCollection<User>("Patients");
-                user = collectionPatients.Find(item => item.email == email & item.password == password).FirstOrDefault();
-                if (user != null && user.active == "0")
+                user = collectionPatients.Find(item => item.Email == email & item.Password == password).FirstOrDefault();
+                if (user != null && user.Active == "0")
                 {
                     var token = manager.GenereteToken(email);
                     var account = new Account(token, user);

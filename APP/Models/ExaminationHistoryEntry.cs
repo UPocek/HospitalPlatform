@@ -6,9 +6,9 @@ public class ExaminationHistoryEntry
 {
     [BsonElement("date")]
     [JsonPropertyName("date")]
-    public string date {get; set;}
+    public string Date {get; set;}
 
     [BsonElement("type")]
     [JsonPropertyName("type")]
-    public string type {get; set;}
+    public string Type {get; set;}
 }
