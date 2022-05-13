@@ -913,7 +913,6 @@ endReviewBtn.addEventListener('click', function(e){
     reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
     reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    console.log(currentExamination);
     reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done":true, "date": currentExamination['date'], "duration": currentExamination['duration'],"room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis":currentExamination['anamnesis'], 'equipmentUsed':currentExamination['equipmentUsed']}));
     
     }else{
