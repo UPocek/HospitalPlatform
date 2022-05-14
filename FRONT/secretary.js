@@ -843,7 +843,7 @@ urgentForm.addEventListener('submit', function (e) {
                 alert('Examination created sucessfuly');
                 setUpPatients();
             } else if(this.responseText == 'No free term found!'){
-                alert("Udji ovde ako nema u naredna 2 sata free termina");
+                setUpMovableExaminations();
             }
         }
     }
@@ -854,6 +854,22 @@ urgentForm.addEventListener('submit', function (e) {
     postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''}));
 
 });
+
+function setUpMovableExaminations(){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                patientsExaminations = JSON.parse(this.responseText);
+                displayExaminations();
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientId/' + patientId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
 
 // Main
 
