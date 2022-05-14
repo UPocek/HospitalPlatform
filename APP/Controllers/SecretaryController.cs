@@ -368,15 +368,15 @@ namespace APP.Controllers
             var newExaminationDate = DateTime.Now.AddDays(1);
             
 
-            DateTime upperlimit;
-            DateTime lowerlimit;
+            DateTime upperDateTimelimit;
+            DateTime lowerDateTimelimit;
 
             while(true){
                 newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
                 if (CheckExaminationTimeValidity(newExamination) && IsPatientFree(newExamination.PatinetId, newExamination.DateAndTimeOfExamination.ToString())){
-                    lowerlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,8,0,0);
-                    upperlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,23,59,0);
-                    if (newExaminationDate >= lowerlimit && newExaminationDate <= upperlimit){ 
+                    upperDateTimelimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,8,0,0);
+                    lowerDateTimelimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,23,59,0);
+                    if (newExaminationDate >= lowerDateTimelimit && newExaminationDate <= upperDateTimelimit){ 
                         break;
                     }
                     else{
@@ -463,11 +463,11 @@ namespace APP.Controllers
 
             var examinationsAfterNow = examinations.Find(filter).SortBy(e=>e.DateAndTimeOfExamination).ToList();
 
-            List<Examination> fiveExaminations = new List<Examination>();
+            List<Examination> fiveSortedExaminations = new List<Examination>();
 
-            fiveExaminations = examinationsAfterNow.Take(5).ToList();
+            fiveSortedExaminations = examinationsAfterNow.Take(5).ToList();
             
-            return fiveExaminations;
+            return fiveSortedExaminations;
         
         }
 
@@ -550,7 +550,7 @@ namespace APP.Controllers
             newExamination.Id = id + 1;
             examinations.InsertOne(newExamination);
 
-            var iterationDate = DateTime.Now;
+            var iterationDateTime = DateTime.Now;
 
             var patients = database.GetCollection<Patient>("Patients");
             var employees = database.GetCollection<Employee>("Employees");
@@ -559,7 +559,7 @@ namespace APP.Controllers
             foreach (Examination toMoveExamination in toMoveExaminations){
                 var oldDateAndTime = toMoveExamination.DateAndTimeOfExamination;
                 while(true){
-                    toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
+                    toMoveExamination.DateAndTimeOfExamination = iterationDateTime.ToString("yyyy-MM-ddTHH:mm");
                     if (CheckExaminationTimeValidity(toMoveExamination)){ 
                         Patient patient = patients.Find(p => p.Id == toMoveExamination.PatinetId).FirstOrDefault();
                         Employee employee = employees.Find(e => e.Id == toMoveExamination.DoctorId).FirstOrDefault();
@@ -573,7 +573,7 @@ namespace APP.Controllers
                     
 
                     else{
-                        iterationDate = iterationDate.AddMinutes(5);
+                        iterationDateTime = iterationDateTime.AddMinutes(5);
                     }
                 }
             }

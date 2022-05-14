@@ -69,12 +69,12 @@ function getParamValue(name) {
     }
 }
 
-var main = document.getElementsByTagName("main")[0];
+var main = document.getElementsByTagName('main')[0];
 var secretaryId = getParamValue('id');
 var jwtoken = getParamValue('token');
 
 function setUpMenu() {
-    let menu = document.getElementById("mainMenu");
+    let menu = document.getElementById('mainMenu');
     menu.innerHTML += `
     <li id="option1" class="navbar__item">
         <a class="navbar__link"><i data-feather="user"></i><span>Patient Managment</span></a>
@@ -676,7 +676,7 @@ function blockPatient(key){
             
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+'/1');
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -688,7 +688,7 @@ function unblockPatient(key,e){
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Patient sucessfuly unblocked");
+                alert('Patient sucessfuly unblocked');
                 setUpPatients();
             }else{
                 alert(this.responseText);
@@ -696,7 +696,7 @@ function unblockPatient(key,e){
             
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+'/0');
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -707,7 +707,7 @@ function acceptRequest(key){
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Examination request accepted");
+                alert('Examination request accepted');
                 setupExaminationRequests();
             }else{
                 alert(this.responseText);
@@ -726,7 +726,7 @@ function declineRequest(key){
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert("Examination request declined");
+                alert('Examination request declined');
                 setupExaminationRequests();
             }else{
                 alert(this.responseText);
@@ -762,8 +762,8 @@ function showOldExamination(newExamination,examRow){
                 let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
                 examinationPatient.innerHTML = oldExamination['patient'];
 
-                let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
-                let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+                let oldShowBtnContainer = examRow.getElementsByClassName('showBtnContainer')[0];
+                let oldShowBtn = examRow.getElementsByClassName('showBtn')[0];
 
                 let showBtn = document.createElement('button');
                 showBtn.innerHTML = '<i data-feather="arrow-down"></i>';
@@ -804,8 +804,8 @@ function showNewExamination(newExamination,examRow){
     let examinationPatient = examRow.getElementsByClassName('examinationPatient')[0];
     examinationPatient.innerHTML = newExamination['patient'];
 
-    let oldShowBtnContainer = examRow.getElementsByClassName("showBtnContainer")[0];
-    let oldShowBtn = examRow.getElementsByClassName("showBtn")[0];
+    let oldShowBtnContainer = examRow.getElementsByClassName('showBtnContainer')[0];
+    let oldShowBtn = examRow.getElementsByClassName('showBtn')[0];
 
     let showBtn = document.createElement('button');
     showBtn.innerHTML = '<i data-feather="arrow-up"></i>';
@@ -847,7 +847,7 @@ urgentForm.addEventListener('submit', async function (e) {
     getRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                var bool_value = this.responseText == "true" ? true : false
+                var bool_value = this.responseText == 'true' ? true : false
                 if(!bool_value){
                     alert('Error: Selected patient Id is invalid');
                 }
