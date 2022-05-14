@@ -372,16 +372,52 @@ namespace APP.Controllers
         
         } 
 
+        // GET: api/Secretary/examinations
+        [HttpGet("examination/movable")]
+        public async Task<List<Examination>> GetMovableExaminations(Examination newExamination)
+        {
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var dateFilter = Builders<Examination>.Filter.Gt(e=> e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+            var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName,newExamination.RoomName);
+            var urgentFilter = Builders<Examination>.Filter.Eq(e => e.IsUrgent,false);
+            var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId,newExamination.DoctorId);
+
+            var filter = dateFilter & roomFilter & urgentFilter & doctorFilter;
+
+            var examinationsAfterNow = examinations.Find(filter).SortBy(e=>e.DateAndTimeOfExamination).ToList();
+
+            List<Examination> fiveExaminations = new List<Examination>();
+
+            fiveExaminations = examinationsAfterNow.Take(5).ToList();
+            
+            return fiveExaminations;
+        }
 
 
 
-        [HttpPost("examination/referral/create/urgent/{specialization}")]
+
+
+        [HttpPost("examination/create/urgent/{specialization}")]
         public async Task<IActionResult> CreateUrgentExamination(Examination newExamination,string specialization)
         {
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
             var patients = database.GetCollection<Patient>("Patients");
+
+            string roomType;
+            if (newExamination.TypeOfExamination == "visit"){
+                roomType = "examination room";
+            }
+            else{
+                roomType = "operation room";
+            }
+
+            var room = database.GetCollection<Room>("Rooms").Find(r=>r.Type == roomType).FirstOrDefault();
+            
+            newExamination.RoomName = room.Name;
+
 
             if(patients.Find(p=>p.Id == newExamination.PatinetId).CountDocuments() == 0){
                 return BadRequest("Patient doesnt exist");
@@ -390,7 +426,7 @@ namespace APP.Controllers
             var employees = database.GetCollection<Employee>("Employees");
             List<Employee> specializedDoctors = employees.Find(e => e.Role == "doctor" && e.Specialization == specialization).ToList();
 
-            var urgentExaminationDate = DateTime.Now;
+            var urgentExaminationDate = DateTime.Now.AddMinutes(5);
             var urgentExaminationEnd = DateTime.Now.AddHours(2);
 
 
@@ -419,8 +455,7 @@ namespace APP.Controllers
                         return Ok();
                     }
                 }
-                urgentExaminationDate = urgentExaminationDate.AddMinutes(1);
-
+                urgentExaminationDate = urgentExaminationDate.AddMinutes(10);
             }
 
             
@@ -431,11 +466,26 @@ namespace APP.Controllers
 
 
         [HttpPost("examination/referral/create/urgent")]
-        public async Task<IActionResult> CreateUrgentExaminationWithDelay(Examination newExamination)
+        public async Task<IActionResult> CreateUrgentExaminationWithTermMoving(Examination newExamination)
         {
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            var filter = Builders<Examination>.Filter.Gt(e=> e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+
+            var reservedTimeFrames = examinations.Find(e=>e.RoomName == newExamination.RoomName && e.DoctorId == newExamination.DoctorId).ToList();
+
+            List<Examination> toMove = new List<Examination>();
+
+            var newExaminationBegin = DateTime.Parse(newExamination.DateAndTimeOfExamination);
+            var newExaminationEnd = newExaminationBegin.AddMinutes(newExamination.DurationOfExamination);
+
+            DateTime toMoveExamBegin;
+
+            foreach (Examination e in reservedTimeFrames){
+                toMoveExamBegin = DateTime.Parse(e.DateAndTimeOfExamination);
+                if(newExaminationBegin >= toMoveExamBegin && newExaminationEnd <= toMoveExamBegin){
+                    toMove.Add(e);
+                }
+            }
 
             var iterationDate = DateTime.Now;
 
@@ -466,10 +516,7 @@ namespace APP.Controllers
                     iterationDate = iterationDate.AddMinutes(1);
                 }
 
-            }
-
-            
-            
+            } 
         
         }   
 

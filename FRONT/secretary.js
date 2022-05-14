@@ -416,7 +416,7 @@ function setupExaminationRequests() {
 function setupUrgent(){
     let request = new XMLHttpRequest();
 
-    let selectSpeciality = document.getElementById('examinationSpeciality');
+    let selectSpeciality = document.getElementById('examinationSpecialityUrgent');
 
     selectSpeciality.innerHTML = '';
 
@@ -437,8 +437,6 @@ function setupUrgent(){
     request.open('GET', 'https://localhost:7291/api/secretary/doctors/speciality');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
-
-
 }
 
 function setUpPage() {
@@ -823,6 +821,39 @@ function showNewExamination(newExamination,examRow){
 
 }
 
+let urgentForm = document.getElementById('urgentForm');
+
+urgentForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    let postRequest = new XMLHttpRequest();
+
+    let selectedType = document.getElementById('examinationTypeUrgent').value;
+    let selectedDuration = document.getElementById('examinationDurationUrgent').value;
+    let selectedPatientId = document.getElementById('examinationPatienUrgent').value;
+    let selectedSpeciality = document.getElementById('examinationSpecialityUrgent').value;
+
+    if (selectedDuration >= 300 || selectedDuration <=15){
+        alert('Error: Selected duration is invalid');
+        return;
+    }
+
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Examination created sucessfuly');
+                setUpPatients();
+            } else if(this.responseText == 'No free term found!'){
+                alert("Udji ovde ako nema u naredna 2 sata free termina");
+            }
+        }
+    }
+
+    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/create/urgent/'+selectedSpeciality);
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''}));
+
+});
 
 // Main
 
