@@ -176,6 +176,20 @@ namespace APP.Controllers
             return examinations.Find(item => item.Id == id).FirstOrDefault();
         }
 
+        // GET: api/Secretary/patients/100
+        [HttpGet("patients/exists/{id}")]
+        public async Task<bool> PatientExists(int id)
+        {
+            var patients = database.GetCollection<Examination>("Patients");
+            
+            if(patients.Find(p => p.Id == id).CountDocuments() == 0){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+
         
         // PUT: api/Secretary/examinationRequests/accept/1
         [HttpPut("examinationRequests/accept/{id}")]
@@ -312,9 +326,8 @@ namespace APP.Controllers
             var isValidRoom = IsRoomValid(e.RoomName);
             var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
             var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
-            var isPatientFree = IsPatientFree(e.PatinetId, e.DateAndTimeOfExamination.ToString());
             var isDoctorFree = IsDoctorFree(e.DoctorId, e.DateAndTimeOfExamination.ToString());
-            if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
+            if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom  && isDoctorFree){
                 return true;
             }
             else{
@@ -358,7 +371,7 @@ namespace APP.Controllers
 
             while(true){
                 newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
-                if (CheckExaminationTimeValidity(newExamination)){
+                if (CheckExaminationTimeValidity(newExamination) && IsPatientFree(newExamination.PatinetId, newExamination.DateAndTimeOfExamination.ToString())){
                     lowerlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,8,0,0);
                     upperlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,23,59,0);
                     if (newExaminationDate >= lowerlimit && newExaminationDate <= upperlimit){ 
@@ -392,34 +405,8 @@ namespace APP.Controllers
         
         } 
 
-        // GET: api/Secretary/examinations
-        [HttpGet("examination/movable")]
-        public async Task<List<Examination>> GetMovableExaminations(Examination newExamination)
-        {
-            var examinations = database.GetCollection<Examination>("MedicalExaminations");
-
-            var dateFilter = Builders<Examination>.Filter.Gt(e=> e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
-            var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName,newExamination.RoomName);
-            var urgentFilter = Builders<Examination>.Filter.Eq(e => e.IsUrgent,false);
-            var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId,newExamination.DoctorId);
-
-            var filter = dateFilter & roomFilter & urgentFilter & doctorFilter;
-
-            var examinationsAfterNow = examinations.Find(filter).SortBy(e=>e.DateAndTimeOfExamination).ToList();
-
-            List<Examination> fiveExaminations = new List<Examination>();
-
-            fiveExaminations = examinationsAfterNow.Take(5).ToList();
-            
-            return fiveExaminations;
-        }
-
-
-
-
-
         [HttpPost("examination/create/urgent/{specialization}")]
-        public async Task<IActionResult> CreateUrgentExamination(Examination newExamination,string specialization)
+        public async Task<List<Examination>> CreateUrgentExamination(Examination newExamination,string specialization)
         {
 
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
@@ -434,19 +421,18 @@ namespace APP.Controllers
                 roomType = "operation room";
             }
 
+            if (patients.Find(p=> p.Id == newExamination.PatinetId).CountDocuments() == 0){
+                return new List<Examination>();
+            }
+
             var room = database.GetCollection<Room>("Rooms").Find(r=>r.Type == roomType).FirstOrDefault();
             
             newExamination.RoomName = room.Name;
 
-
-            if(patients.Find(p=>p.Id == newExamination.PatinetId).CountDocuments() == 0){
-                return BadRequest("Patient doesnt exist");
-            }
-
             var employees = database.GetCollection<Employee>("Employees");
             List<Employee> specializedDoctors = employees.Find(e => e.Role == "doctor" && e.Specialization == specialization).ToList();
 
-            var urgentExaminationDate = DateTime.Now.AddMinutes(5);
+            var urgentExaminationDate = DateTime.Now;
             var urgentExaminationEnd = DateTime.Now.AddHours(2);
 
 
@@ -458,22 +444,28 @@ namespace APP.Controllers
                     if (CheckExaminationTimeValidity(newExamination)){
                         var rooms = database.GetCollection<Room>("Rooms");
                         var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
-
-                        if (resultingRoom == null)
-                        {
-                            return BadRequest();
-                        }
                         var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
                         newExamination.Id = id + 1;
                         examinations.InsertOne(newExamination);
-                        return Ok();
+                        return null;
                     }
                 }
                 urgentExaminationDate = urgentExaminationDate.AddMinutes(10);
             }
 
+            var dateFilter = Builders<Examination>.Filter.Gt(e => e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+            var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName,newExamination.RoomName);
+            var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId,newExamination.DoctorId);
+
+            var filter = dateFilter & roomFilter & doctorFilter;
+
+            var examinationsAfterNow = examinations.Find(filter).SortBy(e=>e.DateAndTimeOfExamination).ToList();
+
+            List<Examination> fiveExaminations = new List<Examination>();
+
+            fiveExaminations = examinationsAfterNow.Take(5).ToList();
             
-            return BadRequest("No free term found!");
+            return fiveExaminations;
         
         }
 
@@ -490,7 +482,7 @@ namespace APP.Controllers
 
             var reservedTimeFrames = examinations.Find(e=>e.RoomName == newExamination.RoomName && e.DoctorId == newExamination.DoctorId).ToList();
 
-            List<Examination> toMove = new List<Examination>();
+            List<Examination> toMoveExaminations = new List<Examination>();
 
             var newExaminationBegin = DateTime.Parse(newExamination.DateAndTimeOfExamination);
             var newExaminationEnd = newExaminationBegin.AddMinutes(newExamination.DurationOfExamination);
@@ -499,31 +491,31 @@ namespace APP.Controllers
 
             foreach (Examination e in reservedTimeFrames){
                 toMoveExamBegin = DateTime.Parse(e.DateAndTimeOfExamination);
-                if(newExaminationBegin >= toMoveExamBegin && newExaminationEnd <= toMoveExamBegin){
-                    toMove.Add(e);
+                if(newExaminationBegin <= toMoveExamBegin && newExaminationEnd >= toMoveExamBegin){
+                    toMoveExaminations.Add(e);
                 }
             }
-            
-            foreach (Examination e in toMove){
-                examinations.DeleteOne(exam => exam.Id == e.Id);
-            }
+        
 
-            if (CheckExaminationTimeValidity(newExamination)){
-                examinations.InsertOne(newExamination);
-            }
-            else{
-                return BadRequest("NESTO NE NIJE DOBRO KOJE SRANJE");
-            }
+            var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+            newExamination.Id = id + 1;
+            examinations.InsertOne(newExamination);
+
+            
+
+            examinations = database.GetCollection<Examination>("MedicalExaminations");
+            
 
 
             var iterationDate = DateTime.Now;
 
 
-            foreach (Examination e in toMove){
+            foreach (Examination toMoveExamination in toMoveExaminations){
                 while(true){
-                    if (CheckExaminationTimeValidity(e)){
-                        e.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
-                        examinations.InsertOne(newExamination);
+                    toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
+                    if (CheckExaminationTimeValidity(toMoveExamination)){
+                        examinations = database.GetCollection<Examination>("MedicalExaminations");
+                        examinations.FindOneAndReplace(e => toMoveExamination.Id == e.Id,toMoveExamination);
                         break;
                     }
 

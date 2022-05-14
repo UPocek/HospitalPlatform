@@ -821,9 +821,29 @@ function showNewExamination(newExamination,examRow){
 
 }
 
+function PatientExists(id){
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var bool_value = this.responseText == "true" ? true : false
+                return new Promise((resolve,reject) =>{
+                    resolve(bool_value)
+                });
+            }else{
+                alert(this.responseText);
+            }
+            
+        }
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/patients/exists/'+id);
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+
+}
 let urgentForm = document.getElementById('urgentForm');
 
-urgentForm.addEventListener('submit', function (e) {
+urgentForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     let postRequest = new XMLHttpRequest();
 
@@ -832,18 +852,36 @@ urgentForm.addEventListener('submit', function (e) {
     let selectedPatientId = document.getElementById('examinationPatienUrgent').value;
     let selectedSpeciality = document.getElementById('examinationSpecialityUrgent').value;
 
+    if (!selectedPatientId){
+        alert('Error: Selected patient Id is invalid');
+        return;
+    }
+
+    var exists = await PatientExists(selectedPatientId);
+
+    if(exists){
+        alert('Error: Selected patient Id is invalid');
+        return;
+    }
+
     if (selectedDuration >= 300 || selectedDuration <=15){
         alert('Error: Selected duration is invalid');
         return;
     }
 
+    let urgentExamJSON = JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''});
+
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert('Examination created sucessfuly');
-                setUpPatients();
-            } else if(this.responseText == 'No free term found!'){
-                setUpMovableExaminations();
+                if (this.responseText == null){
+                    alert('Examination created sucessfuly');
+                    setUpPatients();
+                }
+                else{
+                    displayExaminations(JSON.parse(this.responseText),selectedPatientId,selectedType,selectedDuration);
+                }
+            
             }
         }
     }
@@ -851,24 +889,78 @@ urgentForm.addEventListener('submit', function (e) {
     postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/create/urgent/'+selectedSpeciality);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''}));
+    postRequest.send(urgentExamJSON);
 
 });
 
-function setUpMovableExaminations(){
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
+
+function displayExaminations(movableExaminations,selectedPatientId,examinationTypeOld,examinationDurationOld){
+    let table = document.getElementById('examinationsUrgentTable');
+
+    let hidden = document.getElementById('urgentContent');
+    main.classList.add('hideMain');
+    hidden.classList.remove('off');
+    table.innerHTML = '';
+    for (let examination of movableExaminations) {
+
+        let newRow = document.createElement('tr');
+
+        let examinationDate = document.createElement('td');
+        examinationDate.innerText = (new Date(examination['date'])).toLocaleString();
+        let examinationDone = document.createElement('td');
+        examinationDone.innerText = examination['done'];
+        let examinationDuration = document.createElement('td');
+        examinationDuration.innerText = examination['duration'];
+        let examinationRoom = document.createElement('td');
+        examinationRoom.innerText = examination['room'];
+        let examinationType = document.createElement('td');
+        examinationType.innerText = examination['type'];
+        let isUrgent = document.createElement('td');
+        isUrgent.innerText = examination['urgent'];
+
+        let chooseTermBtnContainer = document.createElement('td');
+        let chooseTermBtn = document.createElement('button');
+        chooseTermBtn.innerHTML = '<i data-feather="arrow-left-circle"></i>';
+        chooseTermBtn.classList.add('chooseBtn');
+        chooseTermBtn.addEventListener('click', function (e) {
+            createUrgentExaminationWithMovingTerms(examination,selectedPatientId,examinationTypeOld,examinationDurationOld);
+        });
+        chooseTermBtn.classList.add('smallerWidth');
+        chooseTermBtnContainer.appendChild(chooseTermBtn);
+
+        newRow.appendChild(examinationDate);
+        newRow.appendChild(examinationDuration);
+        newRow.appendChild(examinationDone);
+        newRow.appendChild(examinationRoom);
+        newRow.appendChild(examinationType);
+        newRow.appendChild(isUrgent);
+        newRow.appendChild(chooseTermBtnContainer);
+        table.appendChild(newRow);
+        feather.replace();
+    }
+}
+
+
+function createUrgentExaminationWithMovingTerms(selectedExamination,patientid,examinationType,examinationDuration){
+
+    postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                patientsExaminations = JSON.parse(this.responseText);
-                displayExaminations();
+                alert('Examination created sucessfuly');
+                main.classList.remove('hideMain');
+                let hidden = document.getElementById('urgentContent');
+                hidden.classList.add('off');
+                setUpPatients();
+            
             }
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientId/' + patientId);
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
+    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/create/urgent');
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({ 'done':false, 'date': selectedExamination['date'], 'duration': examinationDuration,'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis':''}));
 }
 
 // Main

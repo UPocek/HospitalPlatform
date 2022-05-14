@@ -72,6 +72,27 @@
         <button class="mainBtn">OK</button>
       </form>
 	  </div>
+    <div id = "urgentContent" class = 'off'>
+      <div id="urgentMovingTable">
+          <div id = "urgentOverlay" class="tbl-content">
+              <table  cellpadding="0" cellspacing="0" border="0">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>Duration</th>
+                          <th>Done</th>
+                          <th>Examination room</th>
+                          <th>Type</th>
+                          <th>Urgent</th>
+                      </tr>
+                  </thead>
+                  <tbody id="examinationsUrgentTable">
+                      <!-- this is where data from api comes -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+    </div>
 
     <main class='myMain'>
 
@@ -150,9 +171,7 @@
           </table>
         </div>
       </div>
-    </section>
-
-    <div id="urgentMovingTable" class = "off">
+      <div id="urgentMovingTable" class = "off">
       <div class="tbl-content">
           <h1>Couldn't find a free term in the next 2 hours,please select a term and the system will replace the term with an urgent one and move it"</h1>
           <table  cellpadding="0" cellspacing="0" border="0">
@@ -174,6 +193,9 @@
       </div>
     </div>
 
+    </section>
+
+  
 
     <section id="four">
       <div id="urgentSecretary" class = "prompt">
