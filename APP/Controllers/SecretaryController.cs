@@ -115,7 +115,7 @@ namespace APP.Controllers
 
         [HttpPut("patients/block/{id}/{activityValue}")]
         // PUT: api/Secretary/patients/901/1
-        public async Task<IActionResult> ChangePatientActivity(int id, string activityValue)
+        public async Task<IActionResult> UpdatePatientActivity(int id, string activityValue)
         {
             var patients = database.GetCollection<Patient>("Patients");
             Patient updatedPatient = patients.Find(p=> p.Id == id).FirstOrDefault();
@@ -308,7 +308,7 @@ namespace APP.Controllers
 
         }
 
-        public void RemovePatientReferral(int referralid,Examination newExamination){
+        public void DeletePatientReferral(int referralid,Examination newExamination){
             var patients = database.GetCollection<Patient>("Patients");
             Patient updatedPatient = patients.Find(p => p.Id == newExamination.PatinetId).FirstOrDefault();
 
@@ -351,7 +351,7 @@ namespace APP.Controllers
                 List<Employee> specializedDoctors = employees.Find(e => e.Role == "doctor" && e.Specialization == specialization).ToList();
                 if (specializedDoctors.Count()-1 < 0){
                     
-                    RemovePatientReferral(referralid,newExamination);
+                    DeletePatientReferral(referralid,newExamination);
 
                     return BadRequest("Error: No such specialist exists");
                 }
@@ -401,7 +401,7 @@ namespace APP.Controllers
             newExamination.Id = id + 1;
             examinations.InsertOne(newExamination);
 
-            RemovePatientReferral(referralid,newExamination);
+            DeletePatientReferral(referralid,newExamination);
             
             return Ok();
         
@@ -471,7 +471,57 @@ namespace APP.Controllers
         
         }
 
+        
+        public void SendTermNotificationEmailToPatient([FromRoute] Patient patient,[FromRoute] Employee employee,string oldDateAndTime,string newDateAndTime,int? examId){
+            var smptClient = new SmtpClient("smtp.gmail.com"){
+            Port = 587,
+            Credentials = new NetworkCredential("teamnineMedical@gmail.com","teamnine"),
+            EnableSsl = true,
+            };
 
+            string messageDoctor = "Hello " + employee.FirstName + " " + employee.DateAndlastName 
+                        + "\n\n\nYour examination id:" + examId + " has been moved from " + oldDateAndTime + " to " +
+                        newDateAndTime + ".\n\n\nPatient in question:\nid: " + patient.Id +
+                        "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
+
+
+            var mailMessageDoctor = new MailMessage
+                        {
+                            From = new MailAddress(employee.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messageDoctor,
+                            IsBodyHtml = true,
+                        };
+
+            mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+            smptClient.Send(mailMessageDoctor);
+        }
+
+
+        public void SendTermNotificationEmailToDoctor([FromRoute] Patient patient,[FromRoute] Employee employee,string oldDateAndTime,string newDateAndTime,int? examId){
+            var smptClient = new SmtpClient("smtp.gmail.com"){
+            Port = 587,
+            Credentials = new NetworkCredential("teamnineMedical@gmail.com","teamnine"),
+            EnableSsl = true,
+            };
+
+            string messagePatient = "Hello " + patient.FirstName + " " + patient.LastName 
+                        + "\n\n\nYour examination id:" + examId + " has been moved from " + oldDateAndTime + " to " +
+                        newDateAndTime + ".\n\n\nDoctor in question:"+
+                        "\nName: " + employee.FirstName + "\nSurname: " + employee.DateAndlastName + "\n Have a nice day!";
+
+
+            var mailMessagePatient = new MailMessage
+                        {
+                            From = new MailAddress(employee.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messagePatient,
+                            IsBodyHtml = true,
+                        };
+
+            mailMessagePatient.To.Add("teamnineMedical@gmail.com");
+            smptClient.Send(mailMessagePatient);
+        }
 
         [HttpPost("examination/create/urgent")]
         public async Task<IActionResult> CreateUrgentExaminationWithTermMoving(Examination newExamination)
@@ -504,54 +554,18 @@ namespace APP.Controllers
 
             var patients = database.GetCollection<Patient>("Patients");
             var employees = database.GetCollection<Employee>("Employees");
-
-            var smptClient = new SmtpClient("smtp.gmail.com"){
-                Port = 587,
-                Credentials = new NetworkCredential("teamnineMedical@gmail.com","teamnine"),
-                EnableSsl = true,
-            };
-
-            MailMessage mailMessageDoctor;
-            MailMessage mailMessagePatient;
+;
 
             foreach (Examination toMoveExamination in toMoveExaminations){
                 var oldDateAndTime = toMoveExamination.DateAndTimeOfExamination;
                 while(true){
                     toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
                     if (CheckExaminationTimeValidity(toMoveExamination)){ 
-                        var patient = patients.Find(p => p.Id == toMoveExamination.PatinetId).FirstOrDefault();
-                        var employee = employees.Find(e => e.Id == toMoveExamination.DoctorId).FirstOrDefault();
-                        string messageDoctor,messagePatient;
-                        messageDoctor = "Hello " + employee.FirstName + " " + employee.DateAndlastName 
-                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
-                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nPatient in question:\nid: " + patient.Id +
-                        "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
+                        Patient patient = patients.Find(p => p.Id == toMoveExamination.PatinetId).FirstOrDefault();
+                        Employee employee = employees.Find(e => e.Id == toMoveExamination.DoctorId).FirstOrDefault();
 
-                        messagePatient = "Hello " + patient.FirstName + " " + patient.LastName 
-                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
-                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nDoctor in question:"+
-                        "\nName: " + employee.FirstName + "\nSurname: " + employee.DateAndlastName + "\n Have a nice day!";
-
-                        mailMessageDoctor = new MailMessage
-                        {
-                            From = new MailAddress(employee.Email),
-                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
-                            Body = messageDoctor,
-                            IsBodyHtml = true,
-                        };
-
-                        mailMessagePatient = new MailMessage
-                        {
-                            From = new MailAddress(patient.Email),
-                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
-                            Body = messagePatient,
-                            IsBodyHtml = true,
-                        };
-
-                        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
-                        mailMessagePatient.To.Add("teamnineMedical@gmail.com");
-                        smptClient.Send(mailMessageDoctor);
-                        smptClient.Send(mailMessagePatient);
+                        SendTermNotificationEmailToPatient(patient,employee,oldDateAndTime,toMoveExamination.DateAndTimeOfExamination,toMoveExamination.Id);
+                        SendTermNotificationEmailToDoctor(patient,employee,oldDateAndTime,toMoveExamination.DateAndTimeOfExamination,toMoveExamination.Id);
 
                         examinations.FindOneAndReplace(e => toMoveExamination.Id == e.Id,toMoveExamination);
                         break;
