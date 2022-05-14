@@ -438,6 +438,7 @@ function deletePatient(key) {
 }
 
 
+
 function updatePatient(key) {
     let prompt = document.getElementById('editPatientPrompt');
     prompt.classList.remove('off');

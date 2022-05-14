@@ -173,8 +173,8 @@
               <input id="examinationPatient" type="number"/>
           </div>
           <div class="formDiv">
-              <label for="examinationPatient">Doctor id:</label>
-              <input id="examinationPatient" type="number"/>
+              <label for="examinationSpeciality">Doctor id:</label>
+              <input id="examinationSpeciality" type="number"/>
           </div>
           <button class="mainBtn">OK</button>
         </form>

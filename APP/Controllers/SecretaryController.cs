@@ -126,12 +126,31 @@ namespace APP.Controllers
 
 
         [HttpGet("patients/{id}/activity")]
-        // PUT: api/Secretary/patients/901/1
+        // GET: api/Secretary/patients/901/activity
         public async Task<String> GetPatientActivity(int id)
         {
             var patients = database.GetCollection<Patient>("Patients");;
 
             return patients.Find(p=> p.Id == id).FirstOrDefault().Active;   
+        }
+
+
+        [HttpGet("patients/doctors/speciality")]
+        // GET: api/Secretary/doctors/speciality
+        public async Task<List<String>> GetDoctorSpeciality(int id)
+        {
+            var collection = database.GetCollection<Employee>("Employees");
+            var doctors = collection.Find(d => d.Role == "doctor").ToList();
+
+            List<string> allSpecializations = new List<string>();
+            
+            foreach(Employee e in doctors){
+                allSpecializations.Append(e.Specialization);
+            }
+
+            allSpecializations = allSpecializations.Distinct().ToList();
+
+            return allSpecializations;   
         }
 
         // GET: api/Secretary/examinationRequests
@@ -351,7 +370,98 @@ namespace APP.Controllers
             
             return Ok();
         
-        }       
+        } 
+
+
+
+
+        [HttpPost("examination/referral/create/urgent")]
+        public async Task<IActionResult> CreateUrgentExamination(Examination newExamination)
+        {
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var urgentExaminationDate = DateTime.Now;
+            var urgentExaminationEnd = DateTime.Now.AddHours(2);
+
+
+            while(urgentExaminationDate <= urgentExaminationEnd){
+                var isValidPatient = IsValidPatient(newExamination.PatinetId);
+                var isValidRoom = IsRoomValid(newExamination.RoomName);
+                var isOccupiedRoom = IsRoomOccupied(newExamination.RoomName, urgentExaminationDate.ToString(), newExamination.DurationOfExamination);
+                var isRoomInRenovation = IsRoomInRenovation(newExamination.RoomName, urgentExaminationDate.ToString());
+                var isPatientFree = IsPatientFree(newExamination.PatinetId, urgentExaminationDate.ToString());
+                var isDoctorFree = IsDoctorFree(newExamination.DoctorId, urgentExaminationDate.ToString());
+                if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
+                    newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                    var rooms = database.GetCollection<Room>("Rooms");
+                    var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
+
+                    if (resultingRoom == null)
+                    {
+                        return BadRequest();
+                    }
+                    var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+                    newExamination.Id = id + 1;
+                    examinations.InsertOne(newExamination);
+                    return Ok();
+                 }
+
+                else{
+                    urgentExaminationDate = urgentExaminationDate.AddMinutes(1);
+                }
+
+            }
+
+            
+            return BadRequest("No free term found!");
+        
+        }
+
+
+
+        [HttpPost("examination/referral/create/urgent")]
+        public async Task<IActionResult> CreateUrgentExaminationWithDelay(Examination newExamination)
+        {
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var urgentExaminationDate = DateTime.Now;
+            var urgentExaminationEnd = DateTime.Now.AddHours(2);
+
+
+            while(urgentExaminationDate <= urgentExaminationEnd){
+                var isValidPatient = IsValidPatient(newExamination.PatinetId);
+                var isValidRoom = IsRoomValid(newExamination.RoomName);
+                var isOccupiedRoom = IsRoomOccupied(newExamination.RoomName, urgentExaminationDate.ToString(), newExamination.DurationOfExamination);
+                var isRoomInRenovation = IsRoomInRenovation(newExamination.RoomName, urgentExaminationDate.ToString());
+                var isPatientFree = IsPatientFree(newExamination.PatinetId, urgentExaminationDate.ToString());
+                var isDoctorFree = IsDoctorFree(newExamination.DoctorId, urgentExaminationDate.ToString());
+                if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
+                    newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                    var rooms = database.GetCollection<Room>("Rooms");
+                    var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
+
+                    if (resultingRoom == null)
+                    {
+                        return BadRequest();
+                    }
+                    var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+                    newExamination.Id = id + 1;
+                    examinations.InsertOne(newExamination);
+                    return Ok();
+                 }
+
+                else{
+                    urgentExaminationDate = urgentExaminationDate.AddMinutes(1);
+                }
+
+            }
+
+            
+            return BadRequest("No free term found!");
+        
+        }   
 
     }
 }
