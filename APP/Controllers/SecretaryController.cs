@@ -471,7 +471,6 @@ namespace APP.Controllers
         
         }
 
-    
 
 
         [HttpPost("examination/create/urgent")]
@@ -528,7 +527,7 @@ namespace APP.Controllers
                         toMoveExamination.DateAndTimeOfExamination + ".\n\n\nPatient in question:\nid: " + patient.Id +
                         "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
 
-                        messagePatient = "Hello " + patient.FirstName + " " + patient.FirstName 
+                        messagePatient = "Hello " + patient.FirstName + " " + patient.LastName 
                         + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
                         toMoveExamination.DateAndTimeOfExamination + ".\n\n\nDoctor in question:"+
                         "\nName: " + employee.FirstName + "\nSurname: " + employee.DateAndlastName + "\n Have a nice day!";
