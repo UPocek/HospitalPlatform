@@ -35,10 +35,7 @@ function getParamValue(name) {
     }
 }
 
-
-
 // Main
-
 document.addEventListener('DOMContentLoaded', function () {
     let request = new XMLHttpRequest();
 
@@ -52,12 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
     request.open('GET', 'https://localhost:7291/api/my/users/' + id);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
-
 
 function showWindow(section) {
     let s1 = document.getElementById('one');
@@ -115,7 +110,6 @@ function setUpMenu() {
     let item4 = document.getElementById('option4');
     let item5 = document.getElementById('option5');
 
-
     item1.addEventListener('click', (e) => {
         showWindow(1);
     });
@@ -140,7 +134,6 @@ function setUpPage() {
     setUpFunctionality();
 }
 
-
 function setUpFunctionality() {
     setUpDoctors('empty');
     setUpExaminations();
@@ -151,18 +144,17 @@ function setUpFunctionality() {
     setUpSearchExaminations('empty');
 }
 
-var mainResponse;
 function setUpExaminations() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
+                var response = JSON.parse(this.responseText);
                 let table = document.getElementById('examinationTable');
                 table.innerHTML = '';
-                for (let i in mainResponse) {
+                for (let i in response) {
 
-                    let examination = mainResponse[i];
+                    let examination = response[i];
                     let newRow = document.createElement('tr');
 
                     let cType = document.createElement('td');
@@ -234,11 +226,11 @@ function setUpSearchExaminations(myFilter) {
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
+                var response = JSON.parse(this.responseText);
                 let table = document.getElementById('searchExaminationTable');
                 table.innerHTML = '';
-                for (let i in mainResponse) {
-                    let examination = mainResponse[i];
+                for (let i in response) {
+                    let examination = response[i];
                     var doctor = doctors.get(examination['doctor']);
 
                     if (myFilter.includes('term')) {
@@ -355,11 +347,11 @@ advancedForm.addEventListener('submit', function (e) {
             if (this.readyState == 4) {
 
                 if (this.status == 200) {
-                    mainResponse = JSON.parse(this.responseText);
+                    var response = JSON.parse(this.responseText);
                     let table = document.getElementById('advancedExaminationTable');
                     table.innerHTML = '';
-                for (let i in mainResponse) {
-                    let examination = mainResponse[i];
+                for (let i in response) {
+                    let examination = response[i];
                     let newRow = document.createElement('tr');
 
                     let cType = document.createElement('td');
@@ -401,8 +393,6 @@ advancedForm.addEventListener('submit', function (e) {
 });
 
 function createAdvancedExamination(examination){
-    console.log(examination);
-    console.log(examination['doctor']);
     let postRequest = new XMLHttpRequest();
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -511,10 +501,10 @@ function doctorOptions(elementID){
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
+                var response = JSON.parse(this.responseText);
                 let options = document.getElementById(elementID);
-                for (var i in mainResponse) {
-                    let doctor = mainResponse[i];
+                for (var i in response) {
+                    let doctor = response[i];
                     let newOption = document.createElement('option');
                     newOption.id = doctor['id'];
                     newOption.value = doctor['id'];
@@ -537,11 +527,11 @@ function setUpDoctors(myFilter) {
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
+                var response = JSON.parse(this.responseText);
                 let table = document.getElementById('doctorsTable');
                 table.innerHTML = '';
-                for (let i in mainResponse) {
-                    let doctor = mainResponse[i];
+                for (let i in response) {
+                    let doctor = response[i];
 
                     var doc = new User(doctor);
                     doctors.set(doc.id, doc);
@@ -613,7 +603,7 @@ function setUpMedicalRecord(){
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     let patient = JSON.parse(this.responseText);
-                    currentMedicalRecord = patient['medicalRecord'];
+                    var currentMedicalRecord = patient['medicalRecord'];
                     
                     let patientFName = document.getElementById('patientFName');
                     patientFName.setAttribute('id', 'patientId')
