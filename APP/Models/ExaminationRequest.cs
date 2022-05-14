@@ -7,13 +7,13 @@ public class ExaminationRequest
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("_id")]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
     
     [BsonElement("examination")]
     [JsonPropertyName("examination")]
-    public Examination examination {get; set;}
+    public Examination Examination {get; set;}
 
     [BsonElement("status")]
     [JsonPropertyName("status")]
-    public int status {get; set;}
+    public int Status {get; set;}
 }

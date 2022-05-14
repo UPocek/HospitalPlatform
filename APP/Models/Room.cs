@@ -7,29 +7,29 @@ public class Room
 {
     public Room(string name, string type, bool inRenovation, List<Equipment> equipment)
     {
-        this.name = name;
-        this.type = type;
-        this.inRenovation = inRenovation;
-        this.equipment = equipment;
+        this.Name = name;
+        this.Type = type;
+        this.InRenovation = inRenovation;
+        this.Equipment = equipment;
     }
 
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("name")]
     [JsonPropertyName("name")]
-    public string name { get; set; }
+    public string Name { get; set; }
 
     [BsonElement("type")]
     [JsonPropertyName("type")]
-    public string type { get; set; }
+    public string Type { get; set; }
 
     [BsonElement("inRenovation")]
     [JsonPropertyName("inRenovation")]
-    public bool inRenovation { get; set; }
+    public bool InRenovation { get; set; }
 
     [BsonElement("equipment")]
     [JsonPropertyName("equipment")]
-    public List<Equipment> equipment { get; set; } = new List<Equipment>();
+    public List<Equipment> Equipment { get; set; } = new List<Equipment>();
 }

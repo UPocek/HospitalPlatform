@@ -6,40 +6,40 @@ public class Renovation
 {
     public Renovation(string room, string startDate, string endDate, bool done, string kind)
     {
-        this.room = room;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.done = done;
-        this.kind = kind;
+        this.Room = room;
+        this.StartDate = startDate;
+        this.EndDate = endDate;
+        this.Done = done;
+        this.Kind = kind;
     }
 
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("room")]
     [JsonPropertyName("room")]
-    public string room { get; set; }
+    public string Room { get; set; }
 
     [BsonElement("room2")]
     [JsonPropertyName("room2")]
-    public string? room2 { get; set; }
+    public string? Room2 { get; set; }
 
     [BsonElement("startDate")]
     [JsonPropertyName("startDate")]
-    public string startDate { get; set; }
+    public string StartDate { get; set; }
 
     [BsonElement("endDate")]
     [JsonPropertyName("endDate")]
-    public string endDate { get; set; }
+    public string EndDate { get; set; }
 
     [BsonElement("done")]
     [JsonPropertyName("done")]
-    public bool done { get; set; }
+    public bool Done { get; set; }
 
     [BsonElement("kind")]
     [JsonPropertyName("kind")]
-    public string kind { get; set; }
+    public string Kind { get; set; }
 }
 
 

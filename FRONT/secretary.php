@@ -73,7 +73,7 @@
       </form>
 	  </div>
 
-    <main>
+    <main class='myMain'>
 
     <div id="hi">
         <h1>Welcome back &nbsp; </h1>
@@ -87,11 +87,11 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
                   <thead>
                       <tr>
-                        <th >First Name</th>
-                        <th >Last Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
-                        <th >Password</th>
-                        <th >Id</th>
+                        <th>Password</th>
+                        <th>Id</th>
                         <th class="smallerWidth">Medical Record</th>
                         <th class="smallerWidth"></th>
                         <th class="smallerWidth"></th>

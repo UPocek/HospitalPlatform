@@ -6,9 +6,9 @@ public class DrugIngredients
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("ingredients")]
     [JsonPropertyName("ingredients")]
-    public List<string> ingredients { get; set; }
+    public List<string> Ingredients { get; set; }
 }

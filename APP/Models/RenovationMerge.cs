@@ -6,31 +6,31 @@ public class RenovationMerge
 {
     public RenovationMerge(string room1, string room2, string startDate, string endDate)
     {
-        this.room1 = room1;
-        this.room2 = room2;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.Room1 = room1;
+        this.Room2 = room2;
+        this.StartDate = startDate;
+        this.EndDate = endDate;
     }
 
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("room1")]
     [JsonPropertyName("room1")]
-    public string room1 { get; set; }
+    public string Room1 { get; set; }
 
     [BsonElement("room2")]
     [JsonPropertyName("room2")]
-    public string room2 { get; set; }
+    public string Room2 { get; set; }
 
     [BsonElement("startDate")]
     [JsonPropertyName("startDate")]
-    public string startDate { get; set; }
+    public string StartDate { get; set; }
 
     [BsonElement("endDate")]
     [JsonPropertyName("endDate")]
-    public string endDate { get; set; }
+    public string EndDate { get; set; }
 }
 
 

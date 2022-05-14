@@ -66,7 +66,7 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<PollForDoctors>("Employees");
 
-            return collection.Find(item => item.role == "doctor").ToList();
+            return collection.Find(item => item.Role == "doctor").ToList();
         }
 
         // POST: api/Manager/rooms
@@ -76,7 +76,7 @@ namespace APP.Controllers
             var collection = database.GetCollection<Room>("Rooms");
 
             // If room with that name already exists abort action
-            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            if (collection.Find(item => item.Name == data.Name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -91,12 +91,12 @@ namespace APP.Controllers
         public async Task<IActionResult> CreateRenovation(Renovation data)
         {
             var collection = database.GetCollection<Examination>("MedicalExaminations");
-            var examinationsInRoom = collection.Find(item => item.roomName == data.room).ToList();
+            var examinationsInRoom = collection.Find(item => item.RoomName == data.Room).ToList();
 
             // Check if some examinations are already scheduled at that time and if so abort action 
             foreach (var el in examinationsInRoom)
             {
-                if (DateTime.Parse(el.dateAndTimeOfExamination) >= DateTime.Parse(data.startDate) && DateTime.Parse(el.dateAndTimeOfExamination) <= DateTime.Parse(data.endDate))
+                if (DateTime.Parse(el.DateAndTimeOfExamination) >= DateTime.Parse(data.StartDate) && DateTime.Parse(el.DateAndTimeOfExamination) <= DateTime.Parse(data.EndDate))
                 {
                     return BadRequest();
                 }
@@ -109,11 +109,11 @@ namespace APP.Controllers
             string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
             // If renovation starts now update data in DB
-            if (dateToday == data.startDate)
+            if (dateToday == data.StartDate)
             {
                 var collectionRooms = database.GetCollection<Room>("Rooms");
                 var update = Builders<Room>.Update.Set("inRenovation", true);
-                collectionRooms.UpdateMany(item => item.name == data.room, update);
+                collectionRooms.UpdateMany(item => item.Name == data.Room, update);
             }
 
             return Ok();
@@ -124,12 +124,12 @@ namespace APP.Controllers
         public async Task<IActionResult> DevideRenovation(Renovation data)
         {
             var collection = database.GetCollection<Examination>("MedicalExaminations");
-            var examinationsInRoom = collection.Find(item => item.roomName == data.room).ToList();
+            var examinationsInRoom = collection.Find(item => item.RoomName == data.Room).ToList();
 
             // Check if some examinations are already scheduled at that time and if so abort action 
             foreach (var el in examinationsInRoom)
             {
-                if (DateTime.Parse(el.dateAndTimeOfExamination) >= DateTime.Parse(data.startDate) && DateTime.Parse(el.dateAndTimeOfExamination) <= DateTime.Parse(data.endDate))
+                if (DateTime.Parse(el.DateAndTimeOfExamination) >= DateTime.Parse(data.StartDate) && DateTime.Parse(el.DateAndTimeOfExamination) <= DateTime.Parse(data.EndDate))
                 {
                     return BadRequest();
                 }
@@ -137,23 +137,23 @@ namespace APP.Controllers
 
             string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            if (dateToday == data.startDate)
+            if (dateToday == data.StartDate)
             {
                 var collectionRooms = database.GetCollection<Room>("Rooms");
-                var roomFilter = Builders<Room>.Filter.Eq("name", data.room);
+                var roomFilter = Builders<Room>.Filter.Eq("name", data.Room);
                 var roomToBeDevided = collectionRooms.Find(roomFilter).FirstOrDefault();
 
                 List<Equipment> equipmentForRoom1 = new List<Equipment>();
                 List<Equipment> equipmentForRoom2 = new List<Equipment>();
 
-                foreach (var el in roomToBeDevided.equipment)
+                foreach (var el in roomToBeDevided.Equipment)
                 {
-                    equipmentForRoom1.Add(new Equipment(el.name, el.type, el.quantity / 2));
-                    equipmentForRoom2.Add(new Equipment(el.name, el.type, el.quantity - el.quantity / 2));
+                    equipmentForRoom1.Add(new Equipment(el.Name, el.Type, el.Quantity / 2));
+                    equipmentForRoom2.Add(new Equipment(el.Name, el.Type, el.Quantity - el.Quantity / 2));
                 }
 
-                var room1 = new Room(roomToBeDevided.name + ".1", roomToBeDevided.type, true, equipmentForRoom1);
-                var room2 = new Room(roomToBeDevided.name + ".2", roomToBeDevided.type, true, equipmentForRoom2);
+                var room1 = new Room(roomToBeDevided.Name + ".1", roomToBeDevided.Type, true, equipmentForRoom1);
+                var room2 = new Room(roomToBeDevided.Name + ".2", roomToBeDevided.Type, true, equipmentForRoom2);
 
                 collectionRooms.InsertOne(room1);
                 collectionRooms.InsertOne(room2);
@@ -161,16 +161,16 @@ namespace APP.Controllers
 
                 // Delete it also from everywhere elese
                 var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
-                collectionTransfer.DeleteMany(item => item.room1 == data.room | item.room2 == data.room);
+                collectionTransfer.DeleteMany(item => item.Room1 == data.Room | item.Room2 == data.Room);
 
-                var updateRoom = Builders<Examination>.Update.Set("room", roomToBeDevided.name + ".1");
-                collection.UpdateMany(item => item.roomName == data.room, updateRoom);
+                var updateRoom = Builders<Examination>.Update.Set("room", roomToBeDevided.Name + ".1");
+                collection.UpdateMany(item => item.RoomName == data.Room, updateRoom);
 
                 var collectionRenovations = database.GetCollection<Renovation>("Renovations");
-                collectionRenovations.DeleteMany(item => item.room == data.room);
+                collectionRenovations.DeleteMany(item => item.Room == data.Room);
 
-                var renovation1 = new Renovation(data.room + ".1", data.startDate, data.endDate, false, "simple");
-                var renovation2 = new Renovation(data.room + ".2", data.startDate, data.endDate, false, "simple");
+                var renovation1 = new Renovation(data.Room + ".1", data.StartDate, data.EndDate, false, "simple");
+                var renovation2 = new Renovation(data.Room + ".2", data.StartDate, data.EndDate, false, "simple");
 
                 collectionRenovations.InsertOne(renovation1);
                 collectionRenovations.InsertOne(renovation2);
@@ -189,12 +189,12 @@ namespace APP.Controllers
         public async Task<IActionResult> MergeRenovation(Renovation data)
         {
             var collection = database.GetCollection<Examination>("MedicalExaminations");
-            var examinationsInRooms = collection.Find(item => item.roomName == data.room | item.roomName == data.room2).ToList();
+            var examinationsInRooms = collection.Find(item => item.RoomName == data.Room | item.RoomName == data.Room2).ToList();
 
             // Check if some examinations are already scheduled at that time and if so abort action 
             foreach (var el in examinationsInRooms)
             {
-                if (DateTime.Parse(el.dateAndTimeOfExamination) >= DateTime.Parse(data.startDate) && DateTime.Parse(el.dateAndTimeOfExamination) <= DateTime.Parse(data.endDate))
+                if (DateTime.Parse(el.DateAndTimeOfExamination) >= DateTime.Parse(data.StartDate) && DateTime.Parse(el.DateAndTimeOfExamination) <= DateTime.Parse(data.EndDate))
                 {
                     return BadRequest();
                 }
@@ -202,25 +202,25 @@ namespace APP.Controllers
 
             string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            if (dateToday == data.startDate)
+            if (dateToday == data.StartDate)
             {
                 var collectionRooms = database.GetCollection<Room>("Rooms");
-                var room1 = collectionRooms.Find(item => item.name == data.room).FirstOrDefault();
-                var room2 = collectionRooms.Find(item => item.name == data.room2).FirstOrDefault();
+                var room1 = collectionRooms.Find(item => item.Name == data.Room).FirstOrDefault();
+                var room2 = collectionRooms.Find(item => item.Name == data.Room2).FirstOrDefault();
 
                 List<Equipment> equipmentOfNewRoom = new List<Equipment>();
 
-                foreach (var el in room1.equipment)
+                foreach (var el in room1.Equipment)
                 {
                     equipmentOfNewRoom.Add(el);
                 }
 
-                foreach (var el in room2.equipment)
+                foreach (var el in room2.Equipment)
                 {
-                    int index = equipmentOfNewRoom.FindIndex(item => item.name == el.name);
+                    int index = equipmentOfNewRoom.FindIndex(item => item.Name == el.Name);
                     if (index != -1)
                     {
-                        equipmentOfNewRoom[index].quantity += el.quantity;
+                        equipmentOfNewRoom[index].Quantity += el.Quantity;
                     }
                     else
                     {
@@ -228,23 +228,23 @@ namespace APP.Controllers
                     }
                 }
 
-                var newRoom = new Room(room1.name, room1.type, false, equipmentOfNewRoom);
+                var newRoom = new Room(room1.Name, room1.Type, false, equipmentOfNewRoom);
 
-                collectionRooms.DeleteOne(item => item.name == room1.name);
-                collectionRooms.DeleteOne(item => item.name == room2.name);
+                collectionRooms.DeleteOne(item => item.Name == room1.Name);
+                collectionRooms.DeleteOne(item => item.Name == room2.Name);
                 collectionRooms.InsertOne(newRoom);
 
                 // Delete them also from everywhere elese
                 var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
-                collectionTransfer.DeleteMany(item => item.room1 == room1.name | item.room1 == room2.name | item.room2 == room1.name | item.room2 == room2.name);
+                collectionTransfer.DeleteMany(item => item.Room1 == room1.Name | item.Room1 == room2.Name | item.Room2 == room1.Name | item.Room2 == room2.Name);
 
-                var updateRoom = Builders<Examination>.Update.Set("room", room1.name);
-                collection.UpdateMany(item => item.roomName == room2.name, updateRoom);
+                var updateRoom = Builders<Examination>.Update.Set("room", room1.Name);
+                collection.UpdateMany(item => item.RoomName == room2.Name, updateRoom);
 
                 var collectionRenovations = database.GetCollection<Renovation>("Renovations");
-                collectionRenovations.DeleteMany(item => item.room == room1.name | item.room == room2.name);
+                collectionRenovations.DeleteMany(item => item.Room == room1.Name | item.Room == room2.Name);
 
-                var renovation = new Renovation(room1.name, data.startDate, data.endDate, false, "simple");
+                var renovation = new Renovation(room1.Name, data.StartDate, data.EndDate, false, "simple");
 
                 collectionRenovations.InsertOne(renovation);
             }
@@ -263,29 +263,29 @@ namespace APP.Controllers
         {
             string dateToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            if (dateToday == data.date)
+            if (dateToday == data.Date)
             {
                 var collection = database.GetCollection<Room>("Rooms");
-                foreach (var item in data.equipment)
+                foreach (var item in data.Equipment)
                 {
-                    var filter1 = Builders<Room>.Filter.Eq("name", data.room1) & Builders<Room>.Filter.Eq("equipment.name", item.name);
-                    var filter2 = Builders<Room>.Filter.Eq("name", data.room2) & Builders<Room>.Filter.Eq("equipment.name", item.name);
+                    var filter1 = Builders<Room>.Filter.Eq("name", data.Room1) & Builders<Room>.Filter.Eq("equipment.name", item.Name);
+                    var filter2 = Builders<Room>.Filter.Eq("name", data.Room2) & Builders<Room>.Filter.Eq("equipment.name", item.Name);
 
-                    var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.quantity);
+                    var update1 = Builders<Room>.Update.Inc("equipment.$.quantity", -1 * item.Quantity);
                     collection.UpdateOne(filter1, update1);
 
                     if (collection.Find(filter2).FirstOrDefault() != null)
                     {
-                        var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.quantity);
+                        var update2 = Builders<Room>.Update.Inc("equipment.$.quantity", item.Quantity);
                         collection.UpdateOne(filter2, update2);
                     }
                     else
                     {
                         var update2 = Builders<Room>.Update.Push("equipment", item);
-                        collection.UpdateOne(Builders<Room>.Filter.Eq("name", data.room2), update2);
+                        collection.UpdateOne(Builders<Room>.Filter.Eq("name", data.Room2), update2);
                     }
                 }
-                data.done = true;
+                data.Done = true;
             }
 
             var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
@@ -301,7 +301,7 @@ namespace APP.Controllers
             var collection = database.GetCollection<Drug>("Drugs");
 
             // If drug with that name already exists abort action
-            if (collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            if (collection.Find(item => item.Name == data.Name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
@@ -319,7 +319,7 @@ namespace APP.Controllers
             var result = collection.Find(item => true).FirstOrDefault();
 
             // If drug with that name already exists abort action
-            if (result.ingredients.Contains(data["name"]))
+            if (result.Ingredients.Contains(data["name"]))
             {
                 return BadRequest();
             }
@@ -337,29 +337,29 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Room>("Rooms");
 
-            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            if (data.Name != id && collection.Find(item => item.Name == data.Name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
 
             // Update informations about the room wherever it is located
             var filter = Builders<Room>.Filter.Eq("name", id);
-            var update = Builders<Room>.Update.Set("type", data.type);
+            var update = Builders<Room>.Update.Set("type", data.Type);
             collection.UpdateOne(filter, update);
-            update = Builders<Room>.Update.Set("name", data.name);
+            update = Builders<Room>.Update.Set("name", data.Name);
             collection.UpdateOne(filter, update);
 
             var collectionRenovations = database.GetCollection<Renovation>("Renovations");
-            var updateRenovations = Builders<Renovation>.Update.Set("room", data.name);
-            collectionRenovations.UpdateMany(item => item.room == id, updateRenovations);
+            var updateRenovations = Builders<Renovation>.Update.Set("room", data.Name);
+            collectionRenovations.UpdateMany(item => item.Room == id, updateRenovations);
 
             var collectionExaminations = database.GetCollection<Examination>("MedicalExaminations");
-            var updateExaminations = Builders<Examination>.Update.Set("room", data.name);
-            collectionExaminations.UpdateMany(item => item.roomName == id, updateExaminations);
+            var updateExaminations = Builders<Examination>.Update.Set("room", data.Name);
+            collectionExaminations.UpdateMany(item => item.RoomName == id, updateExaminations);
 
             var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
-            var updateTransfer = Builders<Transfer>.Update.Set("room1", data.name);
-            collectionTransfer.UpdateMany(item => item.room1 == id | item.room2 == id, updateTransfer);
+            var updateTransfer = Builders<Transfer>.Update.Set("room1", data.Name);
+            collectionTransfer.UpdateMany(item => item.Room1 == id | item.Room2 == id, updateTransfer);
 
             return Ok();
         }
@@ -370,17 +370,17 @@ namespace APP.Controllers
         {
             var collection = database.GetCollection<Drug>("Drugs");
 
-            if (data.name != id && collection.Find(item => item.name == data.name).FirstOrDefault() != null)
+            if (data.Name != id && collection.Find(item => item.Name == data.Name).FirstOrDefault() != null)
             {
                 return BadRequest();
             }
 
             var filter = Builders<Drug>.Filter.Eq("name", id);
-            var update = Builders<Drug>.Update.Set("ingredients", data.ingredients);
+            var update = Builders<Drug>.Update.Set("ingredients", data.Ingredients);
             collection.UpdateOne(filter, update);
-            update = Builders<Drug>.Update.Set("name", data.name);
+            update = Builders<Drug>.Update.Set("name", data.Name);
             collection.UpdateOne(filter, update);
-            update = Builders<Drug>.Update.Set("status", data.status);
+            update = Builders<Drug>.Update.Set("status", data.Status);
             collection.UpdateOne(filter, update);
 
             return Ok();
@@ -393,15 +393,15 @@ namespace APP.Controllers
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
             var result = collection.Find(item => true).FirstOrDefault();
 
-            if (id != data["name"] && result.ingredients.Contains(data["name"]))
+            if (id != data["name"] && result.Ingredients.Contains(data["name"]))
             {
                 return BadRequest();
             }
 
-            result.ingredients.Remove(id);
-            result.ingredients.Add(data["name"]);
+            result.Ingredients.Remove(id);
+            result.Ingredients.Add(data["name"]);
 
-            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.ingredients);
+            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.Ingredients);
             collection.UpdateMany(item => true, update);
 
             return Ok();
@@ -412,13 +412,13 @@ namespace APP.Controllers
         public async Task<IActionResult> DeleteRoom(string id)
         {
             var collection = database.GetCollection<Room>("Rooms");
-            collection.DeleteOne(item => item.name == id);
+            collection.DeleteOne(item => item.Name == id);
 
             var collectionRenovations = database.GetCollection<Renovation>("Renovations");
-            collectionRenovations.DeleteMany(item => item.room == id);
+            collectionRenovations.DeleteMany(item => item.Room == id);
 
             var collectionTransfer = database.GetCollection<Transfer>("RelocationOfEquipment");
-            collectionTransfer.DeleteMany(item => item.room1 == id | item.room2 == id);
+            collectionTransfer.DeleteMany(item => item.Room1 == id | item.Room2 == id);
 
             return Ok();
         }
@@ -428,7 +428,7 @@ namespace APP.Controllers
         public async Task<IActionResult> DeleteDrug(string id)
         {
             var collection = database.GetCollection<Drug>("Drugs");
-            collection.DeleteOne(item => item.name == id);
+            collection.DeleteOne(item => item.Name == id);
 
             return Ok();
         }
@@ -440,9 +440,9 @@ namespace APP.Controllers
             var collection = database.GetCollection<DrugIngredients>("DrugIngredients");
             var result = collection.Find(item => true).FirstOrDefault();
 
-            result.ingredients.Remove(id);
+            result.Ingredients.Remove(id);
 
-            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.ingredients);
+            var update = Builders<DrugIngredients>.Update.Set("ingredients", result.Ingredients);
             collection.UpdateMany(item => true, update);
 
             return Ok();

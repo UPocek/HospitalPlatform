@@ -10,17 +10,17 @@ public class Drug
 
     [BsonElement("name")]
     [JsonPropertyName("name")]
-    public string name { get; set; }
+    public string Name { get; set; }
 
     [BsonElement("ingredients")]
     [JsonPropertyName("ingredients")]
-    public List<string> ingredients { get; set; }
+    public List<string> Ingredients { get; set; }
 
     [BsonElement("status")]
     [JsonPropertyName("status")]
-    public string status { get; set; }
+    public string Status { get; set; }
 
     [BsonElement("comment")]
     [JsonPropertyName("comment")]
-    public string? comment { get; set; }
+    public string? Comment { get; set; }
 }

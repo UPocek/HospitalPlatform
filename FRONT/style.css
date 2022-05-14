@@ -31,12 +31,23 @@ body {
 #five {
     display: none;
     margin-bottom: 10vh;
-    transition: all 500ms ease-in;
     max-width: 100%;
 }
 
 .active {
     display: block !important;
+    opacity: 0;
+    animation: fadeIn 750ms ease-in-out 250ms forwards;
+    /* transform: translateY(200px); */
+    /* transform: scale(0); */
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+        /* transform: translateY(0); */
+        /* transform: scale(1); */
+    }
 }
 
 /* LOGIN FORM */
@@ -1848,6 +1859,13 @@ footer {
 
 .showBtn {
     color: Blue;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.referralBtn {
+    color: darkcyan;
     border: none;
     background: transparent;
     padding: 10px;

@@ -6,42 +6,42 @@ public class Patient
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("firstName")]
     [JsonPropertyName("firstName")]
-    public string firstName { get; set; }
+    public string FirstName { get; set; }
 
     [BsonElement("lastName")]
     [JsonPropertyName("lastName")]
-    public string lastName { get; set; }
+    public string LastName { get; set; }
 
     [BsonElement("role")]
     [JsonPropertyName("role")]
-    public string role { get; set; }
+    public string Role { get; set; }
 
     [BsonElement("email")]
     [JsonPropertyName("email")]
-    public string email { get; set; }
+    public string Email { get; set; }
 
     [BsonElement("password")]
     [JsonPropertyName("password")]
-    public string password { get; set; }
+    public string Password { get; set; }
 
     [BsonElement("active")]
     [JsonPropertyName("active")]
-    public string active { get; set; }
+    public string Active { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
+    public int Id { get; set; }
 
     [BsonElement("medicalRecord")]
     [JsonPropertyName("medicalRecord")]
-    public MedicalRecord medicalRecord {get; set;}
+    public MedicalRecord MedicalRecord {get; set;}
 
     [BsonElement("examinationHistory")]
     [JsonPropertyName("examinationHistory")]
-    public List<ExaminationHistoryEntry>? examinationHistory {get; set;} = new List<ExaminationHistoryEntry>();
+    public List<ExaminationHistoryEntry>? ExaminationHistory {get; set;} = new List<ExaminationHistoryEntry>();
 
 }

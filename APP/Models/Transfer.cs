@@ -6,27 +6,27 @@ public class Transfer
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("date")]
     [JsonPropertyName("date")]
-    public string date { get; set; }
+    public string Date { get; set; }
 
     [BsonElement("room1")]
     [JsonPropertyName("room1")]
-    public string room1 { get; set; }
+    public string Room1 { get; set; }
 
     [BsonElement("room2")]
     [JsonPropertyName("room2")]
-    public string room2 { get; set; }
+    public string Room2 { get; set; }
 
     [BsonElement("done")]
     [JsonPropertyName("done")]
-    public bool done { get; set; }
+    public bool Done { get; set; }
 
     [BsonElement("equipment")]
     [JsonPropertyName("equipment")]
-    public List<Equipment> equipment { get; set; }
+    public List<Equipment> Equipment { get; set; }
 }
 
 
