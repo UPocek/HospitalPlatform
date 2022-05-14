@@ -949,8 +949,8 @@ function createUrgentExaminationWithMovingTerms(selectedExamination,patientid,ex
             if (this.status == 200) {
                 alert('Examination created sucessfuly');
                 main.classList.remove('hideMain');
-                let hidden = document.getElementById('urgentContent');
-                hidden.classList.add('off');
+                let urgentTable = document.getElementById('urgentContent');
+                urgentTable.classList.add('off');
                 setUpPatients();
             
             }
@@ -962,6 +962,13 @@ function createUrgentExaminationWithMovingTerms(selectedExamination,patientid,ex
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done':false, 'date': selectedExamination['date'], 'duration': examinationDuration,'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis':''}));
 }
+
+urgentBackBtn.addEventListener('click', function (e) {
+    main.classList.remove('hideMain');
+    let urgentTable = document.getElementById('urgentContent');
+    urgentTable.classList.add('off');
+    setUpPatients();
+});
 
 // Main
 

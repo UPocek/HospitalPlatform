@@ -92,6 +92,9 @@
               </table>
           </div>
       </div>
+      <div id="urgentBackContainer">
+        <button id="urgentBackBtn" class="urgentBack"><i data-feather="x-square"></i></button>
+      </div>
     </div>
 
     <main class='myMain'>

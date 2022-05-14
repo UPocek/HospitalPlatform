@@ -1854,10 +1854,6 @@ footer {
 
 #urgentMovingTable{
     align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 
@@ -2103,7 +2099,13 @@ td button {
     display: none !important;
 }
 
-#urgentBackBtn{
+#urgentBackContainer{
+    margin-top:10px;
+    
+}
+
+.urgentBack{
+    color: gray;
     width:20%;
 }
 
@@ -2113,6 +2115,11 @@ td button {
     justify-content: center;
     align-items: center;
     text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 1300px;
 }
 
 .hideMain {
