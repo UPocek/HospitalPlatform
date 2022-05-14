@@ -173,8 +173,9 @@
               <input id="examinationPatient" type="number"/>
           </div>
           <div class="formDiv">
-              <label for="examinationSpeciality">Doctor id:</label>
-              <input id="examinationSpeciality" type="number"/>
+              <label for="examinationSpeciality">Specialization</label>
+              <select id="examinationSpeciality">
+              </select>
           </div>
           <button class="mainBtn">OK</button>
         </form>

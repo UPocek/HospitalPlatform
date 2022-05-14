@@ -112,7 +112,8 @@ function setUpMenu() {
 
 function setUpFunctionality() {
     setUpBlockedPatients();
-    setupExaminationRequests()
+    setupExaminationRequests();
+    setupUrgent();
 }
 
 var mainResponse;
@@ -410,6 +411,34 @@ function setupExaminationRequests() {
     request.open('GET', 'https://localhost:7291/api/secretary/examinationRequests');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+}
+
+function setupUrgent(){
+    let request = new XMLHttpRequest();
+
+    let selectSpeciality = document.getElementById('examinationSpeciality');
+
+    selectSpeciality.innerHTML = '';
+
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                for (elem in response){
+                    let newOption = document.createElement('option');
+                    newOption.setAttribute('value', response[elem]);
+                    newOption.innerText = response[elem];
+                    selectSpeciality.appendChild(newOption);
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/doctors/speciality');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+
+
 }
 
 function setUpPage() {
