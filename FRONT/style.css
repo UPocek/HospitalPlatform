@@ -1849,6 +1849,23 @@ footer {
     padding: 10px;
 }
 
+#urgentSecretary{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+}
+
+#urgentMovingTable{
+    align-items: center;
+}
+
+
+
+
+
 
 .unblockBtn {
     color: Green;
@@ -2021,6 +2038,7 @@ input[type="radio" i] {
 #advancedExaminations,
 #doctors,
 #patients,
+#urgentMovingTable,
 #equipment,
 #drugs,
 #ingredients,
@@ -2146,7 +2164,29 @@ td button {
 }
 
 .off {
-    display: none;
+    display: none !important;
+}
+
+#urgentBackContainer{
+    margin-top:10px;
+    
+}
+
+.urgentBack{
+    width:20%;
+}
+
+#urgentContent{
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 1300px;
 }
 
 .hideMain {
@@ -2454,6 +2494,7 @@ td button {
 #urgent {
     min-width: 30px;
 }
+
 
 .scheduleDiv {
     display: flex;

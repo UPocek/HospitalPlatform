@@ -17,6 +17,10 @@ public class Employee
     [JsonPropertyName("lastName")]
     public string DateAndlastName { get; set; }
 
+    [BsonElement("email")]
+    [JsonPropertyName("email")]
+    public string Email { get; set; }
+
     [BsonElement("role")]
     [JsonPropertyName("role")]
     public string Role { get; set; }
