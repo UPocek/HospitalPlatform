@@ -253,7 +253,7 @@ public class PatientController : ControllerBase
     }
     public void UpdateExaminationHistory(string type, IMongoCollection<Patient> patients, int id){
                 ExaminationHistoryEntry newEntry = new ExaminationHistoryEntry();
-                newEntry.Date = DateTime.Today.ToString();
+                newEntry.Date = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
                 newEntry.Type = type;
                 var update = Builders<Patient>.Update.Push("examinationHistory", newEntry);
                 patients.UpdateOne(p => p.Id == id, update);
