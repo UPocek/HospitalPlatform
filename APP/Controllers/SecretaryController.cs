@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
+using System.Net;
+using System.Net.Mail;
 
 namespace APP.Controllers
 {
@@ -105,7 +107,7 @@ namespace APP.Controllers
             patients.DeleteOne(p => p.Id == id);
             
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            var filter = Builders<Examination>.Filter.Gt(e=> e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm")) & Builders<Examination>.Filter.Eq("patient", id);
+            var filter = Builders<Examination>.Filter.Lt(e=> e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm")) & Builders<Examination>.Filter.Eq("patient", id);
             examinations.DeleteMany(filter);
 
             return Ok(); 
@@ -126,12 +128,31 @@ namespace APP.Controllers
 
 
         [HttpGet("patients/{id}/activity")]
-        // PUT: api/Secretary/patients/901/1
+        // GET: api/Secretary/patients/901/activity
         public async Task<String> GetPatientActivity(int id)
         {
             var patients = database.GetCollection<Patient>("Patients");;
 
             return patients.Find(p=> p.Id == id).FirstOrDefault().Active;   
+        }
+
+
+        [HttpGet("doctors/speciality")]
+        // GET: api/Secretary/doctors/speciality
+        public async Task<List<String>> GetDoctorSpeciality(int id)
+        {
+            var collection = database.GetCollection<Employee>("Employees");
+            var doctors = collection.Find(d => d.Role == "doctor").ToList();
+
+            List<string> allSpecializations = new List<string>();
+            
+            foreach(Employee e in doctors){
+                allSpecializations.Add(e.Specialization);
+            }
+
+            allSpecializations = allSpecializations.Distinct().ToList();
+
+            return allSpecializations;   
         }
 
         // GET: api/Secretary/examinationRequests
@@ -141,7 +162,7 @@ namespace APP.Controllers
             var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
             
             //Delete deprecated requests
-            var filter = Builders<ExaminationRequest>.Filter.Gt(e=>e.Examination.DateAndTimeOfExamination,DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+            var filter = Builders<ExaminationRequest>.Filter.Lt(e=>e.Examination.DateAndTimeOfExamination,DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
             requests.DeleteMany(filter);
 
             return requests.Find(item => true).ToList();
@@ -155,6 +176,20 @@ namespace APP.Controllers
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
             
             return examinations.Find(item => item.Id == id).FirstOrDefault();
+        }
+
+        // GET: api/Secretary/patients/100
+        [HttpGet("patients/exists/{id}")]
+        public async Task<bool> PatientExists(int id)
+        {
+            var patients = database.GetCollection<Patient>("Patients");
+            
+            if(patients.Find(p => p.Id == id && p.Active == "0" ).CountDocuments() == 0){
+                return false;
+            }
+            else{
+                return true;
+            }
         }
 
         
@@ -192,44 +227,85 @@ namespace APP.Controllers
             return Ok();
         }
 
-        public bool validateTimeOfExamination(DateTime date,int duration,string roomName,int doctorId){
+        public bool IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination){
+        var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        var possiblyOccupiedRooms = examinations.Find(item => true).ToList();
 
-            var currentDate = DateTime.Now;
-            var newExaminationBegging = date;
-            var newExaminationEnding = date.AddMinutes(duration);
-            
-            if (currentDate > newExaminationBegging){
+        foreach (Examination item in possiblyOccupiedRooms){
+            if(item.RoomName == examinationRoomName){
+                DateTime itemBegin = DateTime.Parse(item.DateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.DurationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(dateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(durationOfExamination);
+                if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
+                    return true;
+                }  
+            }
+        }
+        return false;
+        }
+
+        public bool IsRoomValid(string roomName){
+            var rooms = database.GetCollection<Room>("Rooms");
+            var resultingRoom = rooms.Find(r => r.Name == roomName && r.InRenovation == false);
+            if(resultingRoom == null){
                 return false;
             }
+            return true;
+        }
 
-            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+        public bool IsValidPatient(int id){
+            var patients = database.GetCollection<Patient>("Patients");
+            var resultingPatient = patients.Find(p => p.Id == id).FirstOrDefault();
+            if(resultingPatient == null){
+                return false;
+            }
+            return true;
+        }
 
-            var examinationsInRoom = examinations.Find(e => e.RoomName == roomName).ToList();
-            
-            foreach (Examination examinationRoom in examinationsInRoom){
+        public bool IsDoctorFree(int doctorId, string examinationDate){
+            var doctorsExaminations = database.GetCollection<Examination>("MedicalExamination").Find(e => e.DoctorId == doctorId).ToList();
 
-                var examinationBeggingRoom = DateTime.Parse(examinationRoom.DateAndTimeOfExamination);
-                var examinationEndingRoom = DateTime.Parse(examinationRoom.DateAndTimeOfExamination).AddMinutes(examinationRoom.DurationOfExamination);
-
-                if ((newExaminationBegging >= examinationBeggingRoom && newExaminationBegging <= examinationEndingRoom) 
-                    | (newExaminationEnding >= examinationBeggingRoom && newExaminationEnding <= examinationEndingRoom)){
-
-                    var examinationsWithDoctor = examinations.Find(e => e.DoctorId == doctorId).ToList();
-                    
-                    foreach (Examination examinationDoctor in examinationsWithDoctor){
-
-                    var examinationBeggingDoctor = DateTime.Parse(examinationDoctor.DateAndTimeOfExamination);
-                    var examinationEndingDoctor = DateTime.Parse(examinationDoctor.DateAndTimeOfExamination).AddMinutes(examinationDoctor.DurationOfExamination);
-
-                    if ((newExaminationBegging >= examinationBeggingDoctor && newExaminationBegging <= examinationEndingDoctor) 
-                        |(newExaminationEnding >= examinationBeggingDoctor && newExaminationEnding <= examinationEndingDoctor)){
-                            return false;
-                        }
-                    }
+            foreach(Examination e in doctorsExaminations){
+                DateTime doctorsExaminationBegin = DateTime.Parse(e.DateAndTimeOfExamination);
+                DateTime doctorsExaminationEnd = doctorsExaminationBegin.AddMinutes(e.DurationOfExamination);
+                DateTime examinationDateParsed = DateTime.Parse(examinationDate);
+                if(doctorsExaminationBegin <= examinationDateParsed && doctorsExaminationEnd >= examinationDateParsed){
+                    return false;
                 }
             }
-
             return true;
+
+        }
+
+        public bool IsPatientFree(int patientId, string examinationDate){
+            var patientsExaminations = database.GetCollection<Examination>("MedicalExamination").Find(e => e.PatinetId == patientId).ToList();
+
+            foreach(Examination e in patientsExaminations){
+                DateTime patientsExaminationBegin = DateTime.Parse(e.DateAndTimeOfExamination);
+                DateTime patientsExaminationEnd = patientsExaminationBegin.AddMinutes(e.DurationOfExamination);
+                DateTime examinationDateParsed = DateTime.Parse(examinationDate);
+                if(patientsExaminationBegin <= examinationDateParsed && patientsExaminationEnd >= examinationDateParsed){
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
+        public bool IsRoomInRenovation(string doctorid, string examinationDate){
+            var renovations = database.GetCollection<Renovation>("Renovations").Find(renovation => true).ToList();
+
+            foreach(Renovation r in renovations){
+                DateTime renovationBegin = DateTime.Parse(r.StartDate);
+                DateTime renovationEnd = DateTime.Parse(r.EndDate);
+                DateTime examinationDateParsed = DateTime.Parse(examinationDate);
+                if(renovationBegin <= examinationDateParsed && renovationEnd >= examinationDateParsed){
+                    return true;
+                }
+            }
+            return false;
+
         }
 
         public void RemovePatientReferral(int referralid,Examination newExamination){
@@ -246,6 +322,21 @@ namespace APP.Controllers
             patients.ReplaceOne(p => p.Id == newExamination.PatinetId, updatedPatient);
         }
 
+
+        public bool CheckExaminationTimeValidity(Examination e){
+             var isValidPatient = IsValidPatient(e.PatinetId);
+            var isValidRoom = IsRoomValid(e.RoomName);
+            var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
+            var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
+            var isDoctorFree = IsDoctorFree(e.DoctorId, e.DateAndTimeOfExamination.ToString());
+            if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom  && isDoctorFree){
+                return true;
+            }
+            else{
+                return false;
+            }
+            
+        }
 
 
 
@@ -275,13 +366,22 @@ namespace APP.Controllers
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
             var newExaminationDate = DateTime.Now.AddDays(1);
+            
 
+            DateTime upperlimit;
+            DateTime lowerlimit;
 
             while(true){
-                
-                if (validateTimeOfExamination(newExaminationDate,newExamination.DurationOfExamination,newExamination.RoomName,newExamination.DoctorId)){
-                     newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
-                     break;
+                newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                if (CheckExaminationTimeValidity(newExamination) && IsPatientFree(newExamination.PatinetId, newExamination.DateAndTimeOfExamination.ToString())){
+                    lowerlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,8,0,0);
+                    upperlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,23,59,0);
+                    if (newExaminationDate >= lowerlimit && newExaminationDate <= upperlimit){ 
+                        break;
+                    }
+                    else{
+                        continue;
+                    }
                  }
 
                 else{
@@ -305,7 +405,168 @@ namespace APP.Controllers
             
             return Ok();
         
-        }       
+        } 
+
+        [HttpPost("examination/create/urgent/{specialization}")]
+        public async Task<List<Examination>> CreateUrgentExamination(Examination newExamination,string specialization)
+        {
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var patients = database.GetCollection<Patient>("Patients");
+
+            string roomType;
+            if (newExamination.TypeOfExamination == "visit"){
+                roomType = "examination room";
+            }
+            else{
+                roomType = "operation room";
+            }
+
+            if (patients.Find(p=> p.Id == newExamination.PatinetId).CountDocuments() == 0){
+                return new List<Examination>();
+            }
+
+            var room = database.GetCollection<Room>("Rooms").Find(r=>r.Type == roomType).FirstOrDefault();
+            
+            newExamination.RoomName = room.Name;
+
+            var employees = database.GetCollection<Employee>("Employees");
+            List<Employee> specializedDoctors = employees.Find(e => e.Role == "doctor" && e.Specialization == specialization).ToList();
+
+            var urgentExaminationDate = DateTime.Now;
+            var urgentExaminationEnd = DateTime.Now.AddHours(2);
+
+
+            while(urgentExaminationDate <= urgentExaminationEnd){
+                newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                foreach(Employee doctor in specializedDoctors){
+                    newExamination.DoctorId = doctor.Id;
+
+                    if (CheckExaminationTimeValidity(newExamination)){
+                        var rooms = database.GetCollection<Room>("Rooms");
+                        var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
+                        var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+                        newExamination.Id = id + 1;
+                        examinations.InsertOne(newExamination);
+                        return null;
+                    }
+                }
+                urgentExaminationDate = urgentExaminationDate.AddMinutes(10);
+            }
+
+            var dateFilter = Builders<Examination>.Filter.Gt(e => e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+            var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName,newExamination.RoomName);
+            var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId,newExamination.DoctorId);
+
+            var filter = dateFilter & roomFilter & doctorFilter;
+
+            var examinationsAfterNow = examinations.Find(filter).SortBy(e=>e.DateAndTimeOfExamination).ToList();
+
+            List<Examination> fiveExaminations = new List<Examination>();
+
+            fiveExaminations = examinationsAfterNow.Take(5).ToList();
+            
+            return fiveExaminations;
+        
+        }
+
+
+
+        [HttpPost("examination/create/urgent")]
+        public async Task<IActionResult> CreateUrgentExaminationWithTermMoving(Examination newExamination)
+        {
+
+            var examinations = database.GetCollection<Examination>("MedicalExaminations");
+
+            var reservedTimeFrames = examinations.Find(e=>e.RoomName == newExamination.RoomName && e.DoctorId == newExamination.DoctorId).ToList();
+
+            List<Examination> toMoveExaminations = new List<Examination>();
+
+            var newExaminationBegin = DateTime.Parse(newExamination.DateAndTimeOfExamination);
+            var newExaminationEnd = newExaminationBegin.AddMinutes(newExamination.DurationOfExamination);
+
+            DateTime toMoveExamBegin;
+
+            foreach (Examination e in reservedTimeFrames){
+                toMoveExamBegin = DateTime.Parse(e.DateAndTimeOfExamination);
+                if(newExaminationBegin <= toMoveExamBegin && newExaminationEnd >= toMoveExamBegin){
+                    toMoveExaminations.Add(e);
+                }
+            }
+        
+
+            var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+            newExamination.Id = id + 1;
+            examinations.InsertOne(newExamination);
+
+            var iterationDate = DateTime.Now;
+
+            var patients = database.GetCollection<Patient>("Patients");
+            var employees = database.GetCollection<Employee>("Employees");
+
+            var smptClient = new SmtpClient("smtp.gmail.com"){
+                Port = 587,
+                Credentials = new NetworkCredential("teamnineMedical@gmail.com","teamnine"),
+                EnableSsl = true,
+            };
+
+            MailMessage mailMessageDoctor;
+            MailMessage mailMessagePatient;
+
+            foreach (Examination toMoveExamination in toMoveExaminations){
+                var oldDateAndTime = toMoveExamination.DateAndTimeOfExamination;
+                while(true){
+                    toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
+                    if (CheckExaminationTimeValidity(toMoveExamination)){ 
+                        var patient = patients.Find(p => p.Id == toMoveExamination.PatinetId).FirstOrDefault();
+                        var employee = employees.Find(e => e.Id == toMoveExamination.DoctorId).FirstOrDefault();
+                        string messageDoctor,messagePatient;
+                        messageDoctor = "Hello " + employee.FirstName + " " + employee.DateAndlastName 
+                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
+                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nPatient in question:\nid: " + patient.Id +
+                        "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
+
+                        messagePatient = "Hello " + patient.FirstName + " " + patient.LastName 
+                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
+                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nDoctor in question:"+
+                        "\nName: " + employee.FirstName + "\nSurname: " + employee.DateAndlastName + "\n Have a nice day!";
+
+                        mailMessageDoctor = new MailMessage
+                        {
+                            From = new MailAddress(employee.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messageDoctor,
+                            IsBodyHtml = true,
+                        };
+
+                        mailMessagePatient = new MailMessage
+                        {
+                            From = new MailAddress(patient.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messagePatient,
+                            IsBodyHtml = true,
+                        };
+
+                        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+                        mailMessagePatient.To.Add("teamnineMedical@gmail.com");
+                        smptClient.Send(mailMessageDoctor);
+                        smptClient.Send(mailMessagePatient);
+
+                        examinations.FindOneAndReplace(e => toMoveExamination.Id == e.Id,toMoveExamination);
+                        break;
+                    }
+                    
+
+                    else{
+                        iterationDate = iterationDate.AddMinutes(5);
+                    }
+                }
+            }
+
+
+            return Ok();
+        }
 
     }
 }
