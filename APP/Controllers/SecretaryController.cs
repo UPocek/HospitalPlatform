@@ -307,6 +307,22 @@ namespace APP.Controllers
         }
 
 
+        public bool CheckExaminationTimeValidity(Examination e){
+             var isValidPatient = IsValidPatient(e.PatinetId);
+            var isValidRoom = IsRoomValid(e.RoomName);
+            var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
+            var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
+            var isPatientFree = IsPatientFree(e.PatinetId, e.DateAndTimeOfExamination.ToString());
+            var isDoctorFree = IsDoctorFree(e.DoctorId, e.DateAndTimeOfExamination.ToString());
+            if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
+                return true;
+            }
+            else{
+                return false;
+            }
+            
+        }
+
 
 
          // GET: api/Secretary/examination/referral/create/none
@@ -335,18 +351,22 @@ namespace APP.Controllers
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
             var newExaminationDate = DateTime.Now.AddDays(1);
+            
 
+            DateTime upperlimit;
+            DateTime lowerlimit;
 
             while(true){
-                var isValidPatient = IsValidPatient(newExamination.PatinetId);
-                var isValidRoom = IsRoomValid(newExamination.RoomName);
-                var isOccupiedRoom = IsRoomOccupied(newExamination.RoomName, newExaminationDate.ToString(), newExamination.DurationOfExamination);
-                var isRoomInRenovation = IsRoomInRenovation(newExamination.RoomName, newExaminationDate.ToString());
-                var isPatientFree = IsPatientFree(newExamination.PatinetId, newExaminationDate.ToString());
-                var isDoctorFree = IsDoctorFree(newExamination.DoctorId, newExaminationDate.ToString());
-                if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
-                     newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
-                     break;
+                newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                if (CheckExaminationTimeValidity(newExamination)){
+                    lowerlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,8,0,0);
+                    upperlimit = new DateTime(newExaminationDate.Year,newExaminationDate.Month,newExaminationDate.Day,23,59,0);
+                    if (newExaminationDate >= lowerlimit && newExaminationDate <= upperlimit){ 
+                        break;
+                    }
+                    else{
+                        continue;
+                    }
                  }
 
                 else{
@@ -431,17 +451,11 @@ namespace APP.Controllers
 
 
             while(urgentExaminationDate <= urgentExaminationEnd){
+                newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
                 foreach(Employee doctor in specializedDoctors){
                     newExamination.DoctorId = doctor.Id;
 
-                    var isValidPatient = IsValidPatient(newExamination.PatinetId);
-                    var isValidRoom = IsRoomValid(newExamination.RoomName);
-                    var isOccupiedRoom = IsRoomOccupied(newExamination.RoomName, urgentExaminationDate.ToString(), newExamination.DurationOfExamination);
-                    var isRoomInRenovation = IsRoomInRenovation(newExamination.RoomName, urgentExaminationDate.ToString());
-                    var isPatientFree = IsPatientFree(newExamination.PatinetId, urgentExaminationDate.ToString());
-                    var isDoctorFree = IsDoctorFree(newExamination.DoctorId, urgentExaminationDate.ToString());
-                    if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
-                        newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+                    if (CheckExaminationTimeValidity(newExamination)){
                         var rooms = database.GetCollection<Room>("Rooms");
                         var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
 
@@ -465,7 +479,10 @@ namespace APP.Controllers
 
 
 
-        [HttpPost("examination/referral/create/urgent")]
+
+
+
+        [HttpPost("examination/create/urgent")]
         public async Task<IActionResult> CreateUrgentExaminationWithTermMoving(Examination newExamination)
         {
 
@@ -486,39 +503,38 @@ namespace APP.Controllers
                     toMove.Add(e);
                 }
             }
+            
+            foreach (Examination e in toMove){
+                examinations.DeleteOne(exam => exam.Id == e.Id);
+            }
+
+            if (CheckExaminationTimeValidity(newExamination)){
+                examinations.InsertOne(newExamination);
+            }
+            else{
+                return BadRequest("NESTO NE NIJE DOBRO KOJE SRANJE");
+            }
+
 
             var iterationDate = DateTime.Now;
 
 
-            while(true){
-                var isValidPatient = IsValidPatient(newExamination.PatinetId);
-                var isValidRoom = IsRoomValid(newExamination.RoomName);
-                var isOccupiedRoom = IsRoomOccupied(newExamination.RoomName, iterationDate.ToString(), newExamination.DurationOfExamination);
-                var isRoomInRenovation = IsRoomInRenovation(newExamination.RoomName, iterationDate.ToString());
-                var isPatientFree = IsPatientFree(newExamination.PatinetId, iterationDate.ToString());
-                var isDoctorFree = IsDoctorFree(newExamination.DoctorId, iterationDate.ToString());
-                if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree && isDoctorFree){
-                    newExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
-                    var rooms = database.GetCollection<Room>("Rooms");
-                    var resultingRoom = rooms.Find(r => r.Name == newExamination.RoomName);
-
-                    if (resultingRoom == null)
-                    {
-                        return BadRequest();
+            foreach (Examination e in toMove){
+                while(true){
+                    if (CheckExaminationTimeValidity(e)){
+                        e.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
+                        examinations.InsertOne(newExamination);
+                        break;
                     }
-                    var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
-                    newExamination.Id = id + 1;
-                    examinations.InsertOne(newExamination);
-                    return Ok();
-                 }
 
-                else{
-                    iterationDate = iterationDate.AddMinutes(1);
+                    else{
+                        iterationDate = iterationDate.AddMinutes(5);
+                    }
                 }
-
             } 
-        
-        }   
+
+            return Ok();
+        }
 
     }
 }
