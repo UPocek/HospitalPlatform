@@ -7,21 +7,21 @@ public class MedicalCard
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("id")]
     [JsonPropertyName("id")]
-    public int id { get; set; }
+    public int Id { get; set; }
 
     [BsonElement("firstName")]
     [JsonPropertyName("firstName")]
-    public string firstName { get; set; }
+    public string FirstName { get; set; }
 
     [BsonElement("lastName")]
     [JsonPropertyName("lastName")]
-    public string lastName { get; set; }
+    public string LastName { get; set; }
 
     [BsonElement("medicalRecord")]
     [JsonPropertyName("medicalRecord")]
-    public MedicalRecord medicalRecord { get; set; }
+    public MedicalRecord MedicalRecord { get; set; }
 }

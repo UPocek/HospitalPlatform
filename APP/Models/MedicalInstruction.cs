@@ -6,17 +6,17 @@ public class MedicalInstruction
 {
     [BsonElement("startDate")]
     [JsonPropertyName("startDate")]
-    public string startDate { get; set; }
+    public string StartDate { get; set; }
 
     [BsonElement("endDate")]
     [JsonPropertyName("endDate")]
-    public string endtDate { get; set; }
+    public string EndtDate { get; set; }
 
     [BsonElement("drug")]
     [JsonPropertyName("drug")]
-    public string drugName { get; set; }
+    public string DrugName { get; set; }
 
     [BsonElement("doctor")]
     [JsonPropertyName("doctor")]
-    public int doctorId { get; set; }
+    public int DoctorId { get; set; }
 }

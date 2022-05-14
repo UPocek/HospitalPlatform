@@ -47,7 +47,7 @@ public class PatientController : ControllerBase
 
     public async  Task<List<Examination>> GetPatientsExaminations(int id){
           var examinations = database.GetCollection<Examination>("MedicalExaminations");
-          List<Examination> patientsExaminations = examinations.Find(e => e.patinetId == id).ToList();
+          List<Examination> patientsExaminations = examinations.Find(e => e.PatinetId == id).ToList();
         return patientsExaminations;
   }
 
@@ -56,7 +56,7 @@ public class PatientController : ControllerBase
 
     public async  Task<Examination> GetExamination(int id){
           var examinations = database.GetCollection<Examination>("MedicalExaminations");
-          Examination patientsExaminations = examinations.Find(e => e.id == id).FirstOrDefault();
+          Examination patientsExaminations = examinations.Find(e => e.Id == id).FirstOrDefault();
         return patientsExaminations;
   }
 
@@ -67,7 +67,7 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        Patient patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+        Patient patient = patients.Find(p => p.Id == examination.PatinetId).FirstOrDefault();
 
         var isTroll = trollCheck(patient, "created", 8);
         if(!isTroll){
@@ -76,40 +76,40 @@ public class PatientController : ControllerBase
         }
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
 
-        var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
+        var doctorsExaminations = examinations.Find(item => item.DoctorId == examination.DoctorId).ToList();
         foreach (var item in doctorsExaminations){
-                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
-                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
-                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
-                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+                DateTime itemBegin = DateTime.Parse(item.DateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.DurationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(examination.DateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(examination.DurationOfExamination);
                 if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
                         return BadRequest();
                 }
         }        
 
         var rooms = database.GetCollection<Room>("Rooms");
-        var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
+        var validRooms = rooms.Find(room => room.InRenovation == false && room.Type == "examination room").ToList();
         
         foreach (var room  in validRooms)
         {
-            var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
+            var examinationsInRoom = examinations.Find(item => item.RoomName == room.Name && item.DateAndTimeOfExamination != examination.DateAndTimeOfExamination).ToList();
             if(examinationsInRoom != null){
-                examination.roomName = room.name;
+                examination.RoomName = room.Name;
                 break;
             }
              
         }
 
 
-        var id = examinations.Find(e => true).SortByDescending(e => e.id).FirstOrDefault().id;
-        examination.id = id + 1;
+        var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
+        examination.Id = id + 1;
         examinations.InsertOne(examination);
 
         ExaminationHistoryEntry newEntry = new ExaminationHistoryEntry();
-        newEntry.date = DateTime.Today.ToString();
-        newEntry.type = "created";
+        newEntry.Date = DateTime.Today.ToString();
+        newEntry.Type = "created";
         var update = Builders<Patient>.Update.Push("examinationHistory", newEntry);
-        patients.UpdateOne(p => p.id == patient.id, update);
+        patients.UpdateOne(p => p.Id == patient.Id, update);
 
         return Ok();       
     }
@@ -128,7 +128,7 @@ public class PatientController : ControllerBase
         public async Task<IActionResult> UpdateExamination(string id,[FromBody] Examination examination)
     {
         var patients = database.GetCollection<Patient>("Patients");
-        Patient patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+        Patient patient = patients.Find(p => p.Id == examination.PatinetId).FirstOrDefault();
 
         var isTroll = trollCheck(patient, "deleted/updated", 5);
         if(!isTroll){
@@ -136,55 +136,53 @@ public class PatientController : ControllerBase
             //blokiraj pacijenta
         }
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
-        var oldExaminationData = examinations.Find(item => item.id == int.Parse(id)).FirstOrDefault();
+        var oldExaminationData = examinations.Find(item => item.Id == int.Parse(id)).FirstOrDefault();
         examination._id = oldExaminationData._id;
-        examination.id = oldExaminationData.id;
+        examination.Id = oldExaminationData.Id;
 
-        var doctorsExaminations = examinations.Find(item => item.doctorId == examination.doctorId).ToList();
+        var doctorsExaminations = examinations.Find(item => item.DoctorId == examination.DoctorId).ToList();
         foreach (var item in doctorsExaminations){
-                DateTime itemBegin = DateTime.Parse(item.dateAndTimeOfExamination);
-                DateTime itemEnd = itemBegin.AddMinutes(item.durationOfExamination);
-                DateTime examinationBegin = DateTime.Parse(examination.dateAndTimeOfExamination);
-                DateTime examinationEnd = examinationBegin.AddMinutes(examination.durationOfExamination);
+                DateTime itemBegin = DateTime.Parse(item.DateAndTimeOfExamination);
+                DateTime itemEnd = itemBegin.AddMinutes(item.DurationOfExamination);
+                DateTime examinationBegin = DateTime.Parse(examination.DateAndTimeOfExamination);
+                DateTime examinationEnd = examinationBegin.AddMinutes(examination.DurationOfExamination);
                 if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
                         return BadRequest();
                 }
         }        
 
         var rooms = database.GetCollection<Room>("Rooms");
-        var validRooms = rooms.Find(room => room.inRenovation == false && room.type == "examination room").ToList();
+        var validRooms = rooms.Find(room => room.InRenovation == false && room.Type == "examination room").ToList();
 
         foreach (var room  in validRooms)
         {
-            var examinationsInRoom = examinations.Find(item => item.roomName == room.name && item.dateAndTimeOfExamination != examination.dateAndTimeOfExamination).ToList();
+            var examinationsInRoom = examinations.Find(item => item.RoomName == room.Name && item.DateAndTimeOfExamination != examination.DateAndTimeOfExamination).ToList();
             if(examinationsInRoom != null){
-                examination.roomName = room.name;
+                examination.RoomName = room.Name;
                 break;
             }
              
         }
 
         DateTime dt = DateTime.Today;
-        DateTime dtOfExamination = DateTime.Parse(oldExaminationData.dateAndTimeOfExamination);
+        DateTime dtOfExamination = DateTime.Parse(oldExaminationData.DateAndTimeOfExamination);
         
         if(dt.AddDays(2) >= dtOfExamination){
             ExaminationRequest request = new ExaminationRequest();
-            request.examination = examination;
-            request.status = 1;
+            request.Examination = examination;
+            request.Status = 1;
             await createRequest(request);
             return Ok();
         } 
-        examinations.FindOneAndReplace(e => e.id == int.Parse(id), examination);
+        examinations.FindOneAndReplace(e => e.Id == int.Parse(id), examination);
         
         ExaminationHistoryEntry newEntry = new ExaminationHistoryEntry();
-        newEntry.date = DateTime.Today.ToString();
-        newEntry.type = "updated";
+        newEntry.Date = DateTime.Today.ToString();
+        newEntry.Type = "updated";
         var update = Builders<Patient>.Update.Push("examinationHistory", newEntry);
-        patients.UpdateOne(p => p.id == patient.id, update);
+        patients.UpdateOne(p => p.Id == patient.Id, update);
     
         return Ok();
-        
-
      
     }
 
@@ -193,9 +191,9 @@ public class PatientController : ControllerBase
         public async Task<IActionResult> DeleteExamination(string id)
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
-            Examination examination = examinations.Find(item => item.id == int.Parse(id)).FirstOrDefault();
+            Examination examination = examinations.Find(item => item.Id == int.Parse(id)).FirstOrDefault();
             var patients = database.GetCollection<Patient>("Patients");
-            Patient patient = patients.Find(p => p.id == examination.patinetId).FirstOrDefault();
+            Patient patient = patients.Find(p => p.Id == examination.PatinetId).FirstOrDefault();
 
             var isTroll = trollCheck(patient, "deleted/updated", 5);
             if(!isTroll){
@@ -204,24 +202,24 @@ public class PatientController : ControllerBase
 
             
             DateTime dt = DateTime.Today;
-            DateTime dtOfExamination = DateTime.Parse(examination.dateAndTimeOfExamination);
+            DateTime dtOfExamination = DateTime.Parse(examination.DateAndTimeOfExamination);
 
         if(dt.AddDays(2) >= dtOfExamination){
             ExaminationRequest request = new ExaminationRequest();
-            request.examination = examination;
-            request.status = 0;
+            request.Examination = examination;
+            request.Status = 0;
             await createRequest(request);
             return Ok();
         }
                 
-            examinations.DeleteOne(item => item.id == int.Parse(id));
+            examinations.DeleteOne(item => item.Id == int.Parse(id));
 
 
             ExaminationHistoryEntry newEntry = new ExaminationHistoryEntry();
-            newEntry.date = DateTime.Today.ToString();
-            newEntry.type = "deleted";
+            newEntry.Date = DateTime.Today.ToString();
+            newEntry.Type = "deleted";
             var update = Builders<Patient>.Update.Push("examinationHistory", newEntry);
-            patients.UpdateOne(p => p.id == patient.id, update);
+            patients.UpdateOne(p => p.Id == patient.Id, update);
     
 
             return Ok();
@@ -234,20 +232,20 @@ public Boolean trollCheck(Patient patient,String type, int n){
     var patients = database.GetCollection<Patient>("Patients");
     DateTime checkDate = DateTime.Today.AddDays(-30);
     int counter = 0;
-    foreach(var entry in patient.examinationHistory){
-        DateTime entryDate = DateTime.Parse(entry.date);
-        if (entryDate > checkDate && type.Contains(entry.type)){
+    foreach(var entry in patient.ExaminationHistory){
+        DateTime entryDate = DateTime.Parse(entry.Date);
+        if (entryDate > checkDate && type.Contains(entry.Type)){
             counter++;
         }
         if (entryDate < checkDate){
             var update = Builders<Patient>.Update.PopFirst("examinationHistory");
-            patients.UpdateOne(p => p.id == patient.id, update);
+            patients.UpdateOne(p => p.Id == patient.Id, update);
         }
     }
 
     if (counter>n){
         var block = Builders<Patient>.Update.Set("active", "2");
-        patients.UpdateOne(p => p.id == patient.id, block);
+        patients.UpdateOne(p => p.Id == patient.Id, block);
         return false;
     }
     return true;

@@ -7,13 +7,13 @@ public class Hospital
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? _id { get; set; }
+    public string? _Id { get; set; }
 
     [BsonElement("name")]
     [JsonPropertyName("name")]
-    public string name { get; set; }
+    public string Name { get; set; }
 
     [BsonElement("polls")]
     [JsonPropertyName("polls")]
-    public List<Dictionary<string, string>> polls { get; set; }
+    public List<Dictionary<string, string>> Polls { get; set; }
 }

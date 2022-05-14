@@ -584,6 +584,9 @@ function submitForm(e) {
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done":false, "date": selectedDate, "duration": selectedDuration,"room": selectedRoom, "patient": selectedPatient, "doctor": doctorId, "urgent": isUrgent, "type": selectedType, "anamnesis":""}));       
     }
+    else{
+        alert("Error: Entered examination informations are invalid");
+    }
 }
 
 var rooms;
@@ -860,7 +863,9 @@ endReviewBtn.addEventListener('click', function(e){
             if (this.status == 200) {
                 alert("Successful review");
                 searchSchedule();
-            }
+            }else{
+            alert("Bad review");
+        }
         }
     }
 
@@ -1158,7 +1163,6 @@ addReferallBtn.addEventListener('click', function(e){
     }
     let valueOfReferallType = document.getElementById('referallType').value;
     let referallOption = document.getElementById('referallOption').value;
-    console.log(currentMedicalRecord);
     if(valueOfReferallType == 'doctor'){
         currentMedicalRecord['referrals'].push({"doctorId":referallOption});
     }
@@ -1166,7 +1170,7 @@ addReferallBtn.addEventListener('click', function(e){
         currentMedicalRecord['referrals'].push({"speciality":referallOption});
     }
 
-    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/referral/' + currentPatientMedicalRecord['id']);
     addReferallRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     addReferallRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     addReferallRequest.send(JSON.stringify(currentMedicalRecord));
@@ -1254,7 +1258,6 @@ function sendBackDrug(key){
             }
         }
         let message = document.getElementById('drugReviewMessage').value;
-        console.log(message);
         sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/' + key);
         sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
