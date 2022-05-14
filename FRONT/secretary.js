@@ -821,26 +821,7 @@ function showNewExamination(newExamination,examRow){
 
 }
 
-function PatientExists(id){
-    let getRequest = new XMLHttpRequest();
-    getRequest.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                var bool_value = this.responseText == "true" ? true : false
-                return new Promise((resolve,reject) =>{
-                    resolve(bool_value)
-                });
-            }else{
-                alert(this.responseText);
-            }
-            
-        }
-    }
-    getRequest.open('GET', 'https://localhost:7291/api/secretary/patients/exists/'+id);
-    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    getRequest.send();
 
-}
 let urgentForm = document.getElementById('urgentForm');
 
 urgentForm.addEventListener('submit', async function (e) {
@@ -857,40 +838,51 @@ urgentForm.addEventListener('submit', async function (e) {
         return;
     }
 
-    var exists = await PatientExists(selectedPatientId);
-
-    if(exists){
-        alert('Error: Selected patient Id is invalid');
-        return;
-    }
-
     if (selectedDuration >= 300 || selectedDuration <=15){
         alert('Error: Selected duration is invalid');
         return;
     }
 
-    let urgentExamJSON = JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''});
-
-    postRequest.onreadystatechange = function () {
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                if (this.responseText == null){
-                    alert('Examination created sucessfuly');
-                    setUpPatients();
+                var bool_value = this.responseText == "true" ? true : false
+                if(!bool_value){
+                    alert('Error: Selected patient Id is invalid');
                 }
                 else{
-                    displayExaminations(JSON.parse(this.responseText),selectedPatientId,selectedType,selectedDuration);
+                let urgentExamJSON = JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis':''});
+
+                postRequest.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            if (this.responseText == null){
+                                alert('Examination created sucessfuly');
+                                setUpPatients();
+                            }
+                            else{
+                                displayExaminations(JSON.parse(this.responseText),selectedPatientId,selectedType,selectedDuration);
+                            }
+                        
+                        }
+                    }
                 }
-            
+
+                postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/create/urgent/'+selectedSpeciality);
+                postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+                postRequest.send(urgentExamJSON);
+                }
+            }else{
+                alert(this.responseText);
             }
+            
         }
     }
-
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/create/urgent/'+selectedSpeciality);
-    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(urgentExamJSON);
-
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/patients/exists/'+selectedPatientId);
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
 });
 
 

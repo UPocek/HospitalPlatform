@@ -180,9 +180,9 @@ namespace APP.Controllers
         [HttpGet("patients/exists/{id}")]
         public async Task<bool> PatientExists(int id)
         {
-            var patients = database.GetCollection<Examination>("Patients");
+            var patients = database.GetCollection<Patient>("Patients");
             
-            if(patients.Find(p => p.Id == id).CountDocuments() == 0){
+            if(patients.Find(p => p.Id == id && p.Active == "0" ).CountDocuments() == 0){
                 return false;
             }
             else{
@@ -513,8 +513,7 @@ namespace APP.Controllers
             foreach (Examination toMoveExamination in toMoveExaminations){
                 while(true){
                     toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
-                    if (CheckExaminationTimeValidity(toMoveExamination)){
-                        examinations = database.GetCollection<Examination>("MedicalExaminations");
+                    if (CheckExaminationTimeValidity(toMoveExamination)){   
                         examinations.FindOneAndReplace(e => toMoveExamination.Id == e.Id,toMoveExamination);
                         break;
                     }
