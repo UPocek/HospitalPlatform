@@ -939,11 +939,7 @@ function createUrgentExaminationWithMovingTerms(selectedExamination,patientid,ex
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                alert('Examination created sucessfuly');
-                main.classList.remove('hideMain');
-                let urgentTable = document.getElementById('urgentContent');
-                urgentTable.classList.add('off');
-                setUpPatients();
+                alert('Examination created and terms moved sucessfuly!');
             
             }
         }
@@ -953,6 +949,9 @@ function createUrgentExaminationWithMovingTerms(selectedExamination,patientid,ex
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done':false, 'date': selectedExamination['date'], 'duration': examinationDuration,'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis':''}));
+    main.classList.remove('hideMain');
+    let urgentTable = document.getElementById('urgentContent');
+    urgentTable.classList.add('off');
 }
 
 urgentBackBtn.addEventListener('click', function (e) {

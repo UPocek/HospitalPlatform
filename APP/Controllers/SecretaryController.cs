@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Cors;
+using System.Net;
+using System.Net.Mail;
 
 namespace APP.Controllers
 {
@@ -469,9 +471,7 @@ namespace APP.Controllers
         
         }
 
-
-
-
+    
 
 
         [HttpPost("examination/create/urgent")]
@@ -501,28 +501,70 @@ namespace APP.Controllers
             newExamination.Id = id + 1;
             examinations.InsertOne(newExamination);
 
-            
-
-            examinations = database.GetCollection<Examination>("MedicalExaminations");
-            
-
-
             var iterationDate = DateTime.Now;
 
+            var patients = database.GetCollection<Patient>("Patients");
+            var employees = database.GetCollection<Employee>("Employees");
+
+            var smptClient = new SmtpClient("smtp.gmail.com"){
+                Port = 587,
+                Credentials = new NetworkCredential("teamnineMedical@gmail.com","teamnine"),
+                EnableSsl = true,
+            };
+
+            MailMessage mailMessageDoctor;
+            MailMessage mailMessagePatient;
 
             foreach (Examination toMoveExamination in toMoveExaminations){
+                var oldDateAndTime = toMoveExamination.DateAndTimeOfExamination;
                 while(true){
                     toMoveExamination.DateAndTimeOfExamination = iterationDate.ToString("yyyy-MM-ddTHH:mm");
-                    if (CheckExaminationTimeValidity(toMoveExamination)){   
+                    if (CheckExaminationTimeValidity(toMoveExamination)){ 
+                        var patient = patients.Find(p => p.Id == toMoveExamination.PatinetId).FirstOrDefault();
+                        var employee = employees.Find(e => e.Id == toMoveExamination.DoctorId).FirstOrDefault();
+                        string messageDoctor,messagePatient;
+                        messageDoctor = "Hello " + employee.FirstName + " " + employee.DateAndlastName 
+                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
+                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nPatient in question:\nid: " + patient.Id +
+                        "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
+
+                        messagePatient = "Hello " + patient.FirstName + " " + patient.FirstName 
+                        + "\n\n\nYour examination id:" + toMoveExamination.Id + " has been moved from " + oldDateAndTime + " to " +
+                        toMoveExamination.DateAndTimeOfExamination + ".\n\n\nDoctor in question:"+
+                        "\nName: " + employee.FirstName + "\nSurname: " + employee.DateAndlastName + "\n Have a nice day!";
+
+                        mailMessageDoctor = new MailMessage
+                        {
+                            From = new MailAddress(employee.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messageDoctor,
+                            IsBodyHtml = true,
+                        };
+
+                        mailMessagePatient = new MailMessage
+                        {
+                            From = new MailAddress(patient.Email),
+                            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+                            Body = messagePatient,
+                            IsBodyHtml = true,
+                        };
+
+                        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+                        mailMessagePatient.To.Add("teamnineMedical@gmail.com");
+                        smptClient.Send(mailMessageDoctor);
+                        smptClient.Send(mailMessagePatient);
+
                         examinations.FindOneAndReplace(e => toMoveExamination.Id == e.Id,toMoveExamination);
                         break;
                     }
+                    
 
                     else{
                         iterationDate = iterationDate.AddMinutes(5);
                     }
                 }
-            } 
+            }
+
 
             return Ok();
         }
