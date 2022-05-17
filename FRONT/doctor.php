@@ -237,6 +237,7 @@
                     </div>
                 </div>
             </section>
+
             <section id="two">
             <div class="tableHeaderDiv">
                 <div id="scheduleOption" class="scheduleDiv">
@@ -267,6 +268,7 @@
                 </div>
             </div>
             </section>
+
             <section id="three">
                 <div id="drugs">
                     <div class="tbl-content">
@@ -286,25 +288,14 @@
                     </div>
                 </div>
             </section>
+            
             <section id="four">
 
             </section>
         </main>
 
-        <!-- <?php include 'footer.html';?> -->
-
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-            integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
+        <script src="helper.js"></script>
         <script src="doctor.js"></script>
-        <script>
-            $(window).on("load resize ", function() {
-            var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-            $('.tbl-header').css({'padding-right':scrollWidth});
-            }).resize();
-        </script>
+
     </body>
 </html>

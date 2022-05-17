@@ -42,12 +42,33 @@
 
   <main class="myMain">
  
-<div id="hi">
-  <h1>Welcome back &nbsp; </h1>
-</div>
- <section id="one" class="active">
-        <div class="plusDiv">
-            <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+    <div id="hi">
+      <h1>Welcome back &nbsp; </h1>
+    </div>
+    <section id="one" class="active">
+      <div class="plusDiv">
+          <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+      </div>
+      <div id="examinations">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0">
+          <thead>
+            <tr>
+                <th>Type</th>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Date</th>
+                <th>Room</th>
+                <!-- <th>Anamnesis</th> -->
+                <th>Urgent</th>
+                <th>Delete</th>
+                <th>Update</th>
+            </tr>
+          </thead>
+          <tbody id="examinationTable">
+
+          </tbody>
+          </table>
         </div>
         <div id="examinations">
             <div class="tbl-content">
@@ -138,18 +159,16 @@
               <!-- patients diseases -->
             </ul>
           </div>
-        </div>
       </div>
-   </div>
 
-   <form id="patientFilters" class="myForm ">
+      <form id="patientFilters" class="myForm ">
         <div>
-        <label for="examinationSearch">Search:</label>
-        <input id="examinationSearch" type="text" value="" placeholder="Enter search term">
-      </div>
+          <label for="examinationSearch">Search:</label>
+          <input id="examinationSearch" type="text" value="" placeholder="Enter search term">
+        </div>
       </form>
-  <div id="examinations">
-      <div class="tbl-content">
+      <div id="examinations">
+        <div class="tbl-content">
           <table id="searchExaminations" cellpadding="0" cellspacing="0" border="0">
               <thead>
                   <tr>
@@ -197,33 +216,13 @@
             </div>
         </div>
 
-    </div>
-</section>
-
-   <section id="five">
-</section>
+      </div>
+    </section>
       
   </main>
 
- 
-
-  <!-- <?php include 'footer.html';?> -->
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-    integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="patient.js">
-  </script>
-  <script>
-    $(window).on("load resize ", function() {
-    var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-    $('.tbl-header').css({'padding-right':scrollWidth});
-    }).resize();
-  </script>
+  <script src="helper.js"></script>
+  <script src="patient.js"></script>
 </body>
 
 </html>

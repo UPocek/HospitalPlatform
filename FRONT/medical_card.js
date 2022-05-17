@@ -1,43 +1,16 @@
-function getParamValue(name) {
-    var location = decodeURI(window.location.toString());
-    var index = location.indexOf('?') + 1;
-    var subs = location.substring(index, location.length);
-    var splitted = subs.split('&');
-
-    for (var i = 0; i < splitted.length; i++) {
-        var s = splitted[i].split('=');
-        var pName = s[0];
-        var pValue = s[1];
-        if (pName == name)
-            return pValue;
-    }
-};
-
-//*helper functions
-function removeAllChildNodes(parent) {
-    try{
-        while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-        }
-    }catch{
-        ;
-    }    
-}
-
 var patient;
 var patientActivity;
 var patientId = getParamValue('patientId');
 var doctorId = getParamValue('doctorId');
 var secretaryId = getParamValue('secretaryId');
-var jwtoken = getParamValue('token');
 var patientsExaminations;
 
-function setupPatientBasicInfo(){
+function setupPatientBasicInfo() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                
+
                 patient = JSON.parse(this.responseText);
 
                 let patientFName = document.getElementById('patientFName');
@@ -52,14 +25,14 @@ function setupPatientBasicInfo(){
                 patientBlood.innerText = patient['medicalRecord']['bloodType'];
                 let patientDiseases = document.getElementById('diseasesList');
                 patientDiseases.innerHTML = '';
-                for (let disease of patient['medicalRecord']['diseases']){
+                for (let disease of patient['medicalRecord']['diseases']) {
                     let diseaseItem = document.createElement('li');
                     diseaseItem.innerText = disease;
                     patientDiseases.appendChild(diseaseItem);
                 }
                 let patientAlergies = document.getElementById('alergiesList');
                 patientAlergies.innerHTML = '';
-                for (let alergie of patient['medicalRecord']['alergies']){
+                for (let alergie of patient['medicalRecord']['alergies']) {
                     let alergieItem = document.createElement('li');
                     alergieItem.innerText = alergie;
                     patientAlergies.appendChild(alergieItem);
@@ -76,7 +49,7 @@ function setupPatientBasicInfo(){
     request.send();
 }
 
-function displayExaminations(){
+function displayExaminations() {
     let table = document.getElementById('examinationsTable');
     table.innerHTML = '';
     for (let examination of patientsExaminations) {
@@ -107,7 +80,7 @@ function displayExaminations(){
     }
 }
 
-function setUpPatientExaminations(){
+function setUpPatientExaminations() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -123,10 +96,10 @@ function setUpPatientExaminations(){
     request.send();
 }
 
-function displayInstructions(doctors){
+function displayInstructions(doctors) {
     let table = document.getElementById('instructionsTable');
-    
-    for (let instruction of patient['medicalRecord']['medicalInstructions']){
+
+    for (let instruction of patient['medicalRecord']['medicalInstructions']) {
         let newRow = document.createElement('tr');
 
         let instructionStartDate = document.createElement('td');
@@ -141,25 +114,25 @@ function displayInstructions(doctors){
         drugName.innerText = instruction['drug'];
         newRow.appendChild(drugName);
 
-        for(let doctor of doctors){
-            if (doctor['id'] == instruction['doctor']){
+        for (let doctor of doctors) {
+            if (doctor['id'] == instruction['doctor']) {
                 let instructionOfDoctor = document.createElement('td');
                 instructionOfDoctor.innerText = doctor['firstName'] + ' ' + doctor['lastName'];
                 newRow.appendChild(instructionOfDoctor);
             }
         }
-        
+
         table.appendChild(newRow);
 
     }
 }
 
-function displayReferrals(){
+function displayReferrals() {
     let table = document.getElementById('referralsTable');
 
     table.innerHTML = ''
-    
-    for (let referral of patient['medicalRecord']['referrals']){
+
+    for (let referral of patient['medicalRecord']['referrals']) {
         let newRow = document.createElement('tr');
 
         let anyConst = 'ANY ';
@@ -177,37 +150,37 @@ function displayReferrals(){
                     var response = JSON.parse(this.responseText);
                     patientActivity = response['active'];
 
-                    if (referral['doctorId'] == null){
+                    if (referral['doctorId'] == null) {
                         doctorId.innerText = anyConst;
                         doctorSpeciality.innerText = referral['speciality'];
-                        
+
                         referralBtn.setAttribute('key', referral['speciality']);
                         referralBtn.addEventListener('click', function (e) {
-                            createRefferedExaminationBySpeciality(this.getAttribute('key'),this.getAttribute('id'));
+                            createRefferedExaminationBySpeciality(this.getAttribute('key'), this.getAttribute('id'));
                         });
-            
+
                         newRow.appendChild(doctorId);
                         newRow.appendChild(doctorSpeciality);
 
                         table.appendChild(newRow);
                     }
-            
-                    else{
+
+                    else {
                         doctorId.innerText = referral['doctorId'];
                         doctorSpeciality.innerText = anyConst;
-                
+
                         referralBtn.setAttribute('key', referral['doctorId']);
                         referralBtn.addEventListener('click', function (e) {
-                            createRefferedExaminationByDoctorId(this.getAttribute('key'),this.getAttribute('id'));
+                            createRefferedExaminationByDoctorId(this.getAttribute('key'), this.getAttribute('id'));
                         });
-                
+
                         newRow.appendChild(doctorId);
                         newRow.appendChild(doctorSpeciality);
-                
+
                         table.appendChild(newRow);
-            
+
                     }
-            
+
 
                     referralBtnContainer = document.createElement('td');
                     referralBtn.innerHTML = '<i data-feather="paperclip"></i>';
@@ -229,7 +202,7 @@ function displayReferrals(){
     }
 }
 
-function createRefferedExaminationByDoctorId(doctorid,referralid){
+function createRefferedExaminationByDoctorId(doctorid, referralid) {
     let getRequest = new XMLHttpRequest();
     getRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -248,16 +221,16 @@ function createRefferedExaminationByDoctorId(doctorid,referralid){
 
                 let form = document.getElementById('examinationRefForm');
 
-                form.addEventListener('submit', function(e){
-                    submitDoctorIdForm(e,doctorid,referralid)
+                form.addEventListener('submit', function (e) {
+                    submitDoctorIdForm(e, doctorid, referralid)
                 });
 
                 addOptions(eType, eRoom);
-                eType.addEventListener('change', function(e){
+                eType.addEventListener('change', function (e) {
                     removeAllChildNodes(eRoom);
                     addOptions(eType, eRoom);
                 })
-                
+
             }
         }
     }
@@ -268,7 +241,7 @@ function createRefferedExaminationByDoctorId(doctorid,referralid){
 }
 
 
-function createRefferedExaminationBySpeciality(doctorSpeciality,referralid){
+function createRefferedExaminationBySpeciality(doctorSpeciality, referralid) {
     let getRequest = new XMLHttpRequest();
     getRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -287,16 +260,16 @@ function createRefferedExaminationBySpeciality(doctorSpeciality,referralid){
 
                 let form = document.getElementById('examinationRefForm');
 
-                form.addEventListener('submit', function(e){
-                    submitSpecialityForm(e,doctorSpeciality,referralid)
+                form.addEventListener('submit', function (e) {
+                    submitSpecialityForm(e, doctorSpeciality, referralid)
                 });
 
                 addOptions(eType, eRoom);
-                eType.addEventListener('change', function(e){
+                eType.addEventListener('change', function (e) {
                     removeAllChildNodes(eRoom);
                     addOptions(eType, eRoom);
                 })
-                
+
             }
         }
     }
@@ -307,7 +280,7 @@ function createRefferedExaminationBySpeciality(doctorSpeciality,referralid){
 }
 
 
-function submitDoctorIdForm(e,doctorid,referralid) {
+function submitDoctorIdForm(e, doctorid, referralid) {
     let popUp = document.getElementById('examinationRefPopUp');
     let main = document.getElementById('medCardMain');
     popUp.classList.add('off');
@@ -318,7 +291,7 @@ function submitDoctorIdForm(e,doctorid,referralid) {
     let selectedType = document.getElementById('examinationRefType').value;
     let selectedDuration = document.getElementById('examinationRefDuration').value;
 
-      
+
     let postRequest = new XMLHttpRequest();
 
     postRequest.onreadystatechange = function () {
@@ -334,14 +307,14 @@ function submitDoctorIdForm(e,doctorid,referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/'+referralid);
+    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis':''}));       
+    postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
 }
 
 
-function submitSpecialityForm(e,speciality,referralid) {
+function submitSpecialityForm(e, speciality, referralid) {
     let popUp = document.getElementById('examinationRefPopUp');
     let main = document.getElementById('medCardMain');
     popUp.classList.add('off');
@@ -352,7 +325,7 @@ function submitSpecialityForm(e,speciality,referralid) {
     let selectedType = document.getElementById('examinationRefType').value;
     let selectedDuration = document.getElementById('examinationRefDuration').value;
 
-      
+
     let postRequest = new XMLHttpRequest();
 
     postRequest.onreadystatechange = function () {
@@ -368,27 +341,27 @@ function submitSpecialityForm(e,speciality,referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/'+speciality+'/'+referralid);
+    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/' + speciality + '/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({ 'done':false, 'date': "", 'duration': selectedDuration,'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis':''}));       
+    postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
 }
 
 
-function addOptions(element, roomOptions){
+function addOptions(element, roomOptions) {
     let valueOfType = element.value;
-    if (valueOfType == 'visit'){
-        for (let room of rooms){
-            if (room['type'] == 'examination room'){
+    if (valueOfType == 'visit') {
+        for (let room of rooms) {
+            if (room['type'] == 'examination room') {
                 let newOption = document.createElement('option');
                 newOption.setAttribute('value', room['name']);
                 newOption.innerText = room['name'];
                 roomOptions.appendChild(newOption);
             }
         }
-    }else{
-        for (let room of rooms){
-            if (room['type'] == 'operation room'){
+    } else {
+        for (let room of rooms) {
+            if (room['type'] == 'operation room') {
                 let newOption = document.createElement('option');
                 newOption.setAttribute('value', room['name']);
                 newOption.innerText = room['name'];
@@ -398,10 +371,7 @@ function addOptions(element, roomOptions){
     }
 }
 
-
-
-
-function setUpPatientInstructions(){
+function setUpPatientInstructions() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -417,14 +387,12 @@ function setUpPatientInstructions(){
     request.send();
 }
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     setupPatientBasicInfo();
 });
 
 function setUpMenu() {
-    
+
     let menu = document.getElementById('mainMenu');
     menu.innerHTML = `
     <li id='option1' class='navbar__item'>
@@ -435,12 +403,12 @@ function setUpMenu() {
 
     let item1 = document.getElementById('option1');
 
-    if (doctorId != undefined){
+    if (doctorId != undefined) {
         item1.addEventListener('click', (e) => {
             window.location.replace('doctor.php' + '?id=' + doctorId + '&token=' + jwtoken);
         });
     }
-    else if(secretaryId != undefined){
+    else if (secretaryId != undefined) {
         let referralSection = document.getElementById('referralSection');
         referralSection.classList.remove('off');
         displayReferrals();

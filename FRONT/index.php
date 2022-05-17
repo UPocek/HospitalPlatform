@@ -89,7 +89,6 @@
   <?php include 'footer.html';?>
 
   <script src="app.js"></script>
-  <script src="helper.js"></script>
   
   <script>
     const signUpButton = document.getElementById('signUp');

@@ -1,70 +1,83 @@
-// Globals
-class User {
-    constructor(data) {
-        this.id = data['id'];
-        this.firstName = data['firstName'];
-        this.lastName = data['lastName'];
-        this.email = data['email'];
-        this.role = data['role'];
-        if (this.role == 'doctor') {
-            this.specialization = data['specialization'];
-            this.score = data['score'];
-            this.freeDays = data['freeDays'];
-            this.examinations = data['examinations'];
-        } else if (this.role == 'patient') {
-            this.medicalRecord = data['medicalRecord'];
+var mainResponse;
+function setUpRooms() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                let table = document.getElementById('roomTable');
+                table.innerHTML = '';
+                for (let room of mainResponse) {
+                    let newRow = document.createElement('tr');
+
+                    let tableDataName = document.createElement('td');
+                    tableDataName.innerText = room['name'];
+                    let tableDataType = document.createElement('td');
+                    tableDataType.innerText = room['type'];
+                    let tableDataRenovation = document.createElement('td');
+                    tableDataRenovation.innerText = room['inRenovation'];
+
+                    let tableDataDeleteButton = document.createElement('td');
+                    let tableDataPutButton = document.createElement('td');
+                    let tableDataRenovateButton = document.createElement('td');
+                    if (room['type'] != 'warehouse') {
+                        let delBtn = document.createElement('button');
+                        delBtn.innerHTML = `<i data-feather='trash'></i>`;
+                        delBtn.classList.add('delBtn');
+                        delBtn.setAttribute('key', room['name']);
+                        delBtn.addEventListener('click', function (e) {
+                            deleteRoom(this.getAttribute('key'));
+                        });
+                        tableDataDeleteButton.appendChild(delBtn);
+
+                        let putBtn = document.createElement('button');
+                        putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
+                        putBtn.classList.add('updateBtn');
+                        putBtn.setAttribute('key', room['name']);
+                        putBtn.addEventListener('click', function (e) {
+                            updateRoom(this.getAttribute('key'));
+                        });
+                        tableDataPutButton.appendChild(putBtn);
+
+                        let renovateBtn = document.createElement('button');
+                        renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
+                        renovateBtn.classList.add('renovateBtn');
+                        renovateBtn.setAttribute('key', room['name']);
+                        renovateBtn.addEventListener('click', function (e) {
+                            renovateRoom(this.getAttribute('key'));
+                        });
+                        tableDataRenovateButton.appendChild(renovateBtn);
+                    }
+
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataType);
+                    newRow.appendChild(tableDataRenovation);
+                    newRow.appendChild(tableDataDeleteButton);
+                    newRow.appendChild(tableDataPutButton);
+                    newRow.appendChild(tableDataRenovateButton);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+                setUpFunctionality();
+            }
         }
     }
-}
-var user;
 
-// Helpers
-function getParamValue(name) {
-    let location = decodeURI(window.location.toString());
-    let index = location.indexOf('?') + 1;
-    let subs = location.substring(index, location.length);
-    let splitted = subs.split('&');
-
-    for (let item of splitted) {
-        let s = item.split('=');
-        let pName = s[0];
-        let pValue = s[1];
-        if (pName == name)
-            return pValue;
-    }
+    request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
 }
 
-function isDateFormatOk(testDate) {
-    return /^2[0-9]{3}-([0][1-9]|1[0-2])-([0][1-9]|[1-2]\d|3[01])$/.test(testDate);
+function setUpFunctionality() {
+    setUpRenovations();
+    setUpEquipment('empty');
+    setUpTransfer();
+    setUpDrugs();
+    setUpIngredients();
+    setUpCharts();
 }
 
-function areDatesValid(from, to) {
-    return (isDateFormatOk(from) && isDateFormatOk(to) && from >= date.toISOString().split('T')[0] && to > from);
-}
-
-function showWindow(section) {
-    let sectionOne = document.getElementById('one');
-    let sectionTwo = document.getElementById('two');
-    let sectionThree = document.getElementById('three');
-    let sectionFour = document.getElementById('four');
-
-    sectionOne.classList.remove('active');
-    sectionTwo.classList.remove('active');
-    sectionThree.classList.remove('active');
-    sectionFour.classList.remove('active');
-
-    switch (section) {
-        case 1: sectionOne.classList.add('active'); break;
-        case 2: sectionTwo.classList.add('active'); break;
-        case 3: sectionThree.classList.add('active'); break;
-        case 4: sectionFour.classList.add('active'); break;
-    }
-}
-
-var main = document.getElementsByTagName('main')[0];
-var id = getParamValue('id');
-var jwtoken = getParamValue('token');
-var date = new Date();
+// Room management
 
 // POST - Room
 var createRoomBtn = document.getElementById('addBtn');
@@ -209,149 +222,6 @@ function deleteRoom(key) {
     deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/rooms/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
-}
-
-// Main
-
-document.addEventListener('DOMContentLoaded', function () {
-    let request = new XMLHttpRequest();
-
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                let response = JSON.parse(this.responseText);
-                user = new User(response);
-                setUpMenu();
-                setUpPage();
-            }
-        }
-    }
-
-    request.open('GET', 'https://localhost:7291/api/my/users/' + id);
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
-});
-
-function setUpMenu() {
-    let menu = document.getElementById('mainMenu');
-    menu.innerHTML += `
-    <li id='option1' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='log-in'></i><span>Room Management</span></a>
-    </li>
-    <li id='option2' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='tool'></i><span>Equipment Management</span></a>
-    </li>
-    <li id='option3' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='shield'></i><span>Drug Management</span></a>
-    </li>
-    <li id='option4' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='file-text'></i><span>Polls</span></a>
-    </li>
-    `;
-    feather.replace();
-
-    let menuItem1 = document.getElementById('option1');
-    let menuItem2 = document.getElementById('option2');
-    let menuItem3 = document.getElementById('option3');
-    let menuItem4 = document.getElementById('option4');
-
-    menuItem1.addEventListener('click', (e) => {
-        showWindow(1);
-    });
-    menuItem2.addEventListener('click', (e) => {
-        showWindow(2);
-    });
-    menuItem3.addEventListener('click', (e) => {
-        showWindow(3);
-    });
-    menuItem4.addEventListener('click', (e) => {
-        showWindow(4);
-    });
-}
-
-var mainResponse;
-function setUpRooms() {
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                mainResponse = JSON.parse(this.responseText);
-                let table = document.getElementById('roomTable');
-                table.innerHTML = '';
-                for (let room of mainResponse) {
-                    let newRow = document.createElement('tr');
-
-                    let tableDataName = document.createElement('td');
-                    tableDataName.innerText = room['name'];
-                    let tableDataType = document.createElement('td');
-                    tableDataType.innerText = room['type'];
-                    let tableDataRenovation = document.createElement('td');
-                    tableDataRenovation.innerText = room['inRenovation'];
-
-                    let tableDataDeleteButton = document.createElement('td');
-                    let tableDataPutButton = document.createElement('td');
-                    let tableDataRenovateButton = document.createElement('td');
-                    if (room['type'] != 'warehouse') {
-                        let delBtn = document.createElement('button');
-                        delBtn.innerHTML = `<i data-feather='trash'></i>`;
-                        delBtn.classList.add('delBtn');
-                        delBtn.setAttribute('key', room['name']);
-                        delBtn.addEventListener('click', function (e) {
-                            deleteRoom(this.getAttribute('key'));
-                        });
-                        tableDataDeleteButton.appendChild(delBtn);
-
-                        let putBtn = document.createElement('button');
-                        putBtn.innerHTML = `<i data-feather='edit-2'></i>`;
-                        putBtn.classList.add('updateBtn');
-                        putBtn.setAttribute('key', room['name']);
-                        putBtn.addEventListener('click', function (e) {
-                            updateRoom(this.getAttribute('key'));
-                        });
-                        tableDataPutButton.appendChild(putBtn);
-
-                        let renovateBtn = document.createElement('button');
-                        renovateBtn.innerHTML = `<i data-feather='refresh-ccw'></i>`;
-                        renovateBtn.classList.add('renovateBtn');
-                        renovateBtn.setAttribute('key', room['name']);
-                        renovateBtn.addEventListener('click', function (e) {
-                            renovateRoom(this.getAttribute('key'));
-                        });
-                        tableDataRenovateButton.appendChild(renovateBtn);
-                    }
-
-                    newRow.appendChild(tableDataName);
-                    newRow.appendChild(tableDataType);
-                    newRow.appendChild(tableDataRenovation);
-                    newRow.appendChild(tableDataDeleteButton);
-                    newRow.appendChild(tableDataPutButton);
-                    newRow.appendChild(tableDataRenovateButton);
-                    table.appendChild(newRow);
-                    feather.replace();
-                }
-                setUpFunctionality();
-            }
-        }
-    }
-
-    request.open('GET', 'https://localhost:7291/api/manager/rooms');
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
-}
-
-function setUpPage() {
-    let hi = document.querySelector('#hi h1');
-    hi.innerText += `${user.firstName} ${user.lastName}`;
-    setUpRooms();
-}
-
-function setUpFunctionality() {
-    setUpRenovations();
-    setUpEquipment('empty');
-    setUpTransfer();
-    setUpDrugs();
-    setUpIngredients();
-    setUpCharts();
 }
 
 // ComplexRenovations
@@ -1093,7 +963,6 @@ function deleteIngredient(key) {
 }
 
 // Polls
-
 function setUpCharts() {
 
     let getRequestHospital = new XMLHttpRequest();
