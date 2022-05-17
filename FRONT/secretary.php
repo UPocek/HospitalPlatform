@@ -79,31 +79,31 @@
         <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
-        <div class="plusDiv">
-            <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
-        </div>
-        <div id="patients">
-            <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-                  <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Id</th>
-                        <th class="smallerWidth">Medical Record</th>
-                        <th class="smallerWidth"></th>
-                        <th class="smallerWidth"></th>
-                        <th class="smallerWidth"></th>
-                      </tr>
-                  </thead>
-                  <tbody id="patientTable">
+      <div class="plusDiv">
+          <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+      </div>
+      <div id="patients">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Id</th>
+                <th class="smallerWidth">Medical Record</th>
+                <th class="smallerWidth"></th>
+                <th class="smallerWidth"></th>
+                <th class="smallerWidth"></th>
+              </tr>
+            </thead>
+            <tbody id="patientTable">
 
-                  </tbody>
-                </table>
-            </div>
+            </tbody>
+          </table>
         </div>
+      </div>
     </section>
 
     <section id="two">
@@ -111,23 +111,23 @@
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
           <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th width = 150>Password</th>
-                <th>Id</th>
-                <th>Medical Record</th>
-                <th>Blocked by</th>
-                <th class="smallerWidth"></th>
-              </tr>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th width = 150>Password</th>
+              <th>Id</th>
+              <th>Medical Record</th>
+              <th>Blocked by</th>
+              <th class="smallerWidth"></th>
+            </tr>
           </thead>
           <tbody id="blockedPatientTable">
 
           </tbody>
           </table>
         </div>
-    </div>
+      </div>
     </section>
 
     <section id="three">
@@ -152,27 +152,14 @@
       </div>
     </section>
 
+    <section id="four">
 
-      
+    </section>
+
   </main>
 
-  <!-- <?php include 'footer.html';?> -->
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-    integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="secretary.js">
-  </script>
-  <script>
-    $(window).on("load resize ", function() {
-    var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-    $('.tbl-header').css({'padding-right':scrollWidth});
-    }).resize();
-  </script>
+  <script src="helper.js"></script>
+  <script src="secretary.js"></script>
 </body>
 
 </html>

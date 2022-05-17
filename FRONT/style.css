@@ -36,7 +36,7 @@ body {
 .active {
     display: block !important;
     opacity: 0;
-    animation: fadeIn 750ms ease-in-out 250ms forwards;
+    animation: fadeIn 750ms ease-in-out 50ms forwards;
     /* transform: translateY(200px); */
     /* transform: scale(0); */
 }

@@ -1,92 +1,3 @@
-class User {
-    constructor(data) {
-        this.id = data['id']
-        this.firstName = data['firstName'];
-        this.lastName = data['lastName'];
-        this.email = data['email'];
-        this.role = data['role'];
-        if (this.role == 'doctor') {
-            this.specialization = data['specialization'];
-            this.score = data['score'];
-            this.freeDays = data['freeDays'];
-            this.examinations = data['examinations'];
-        } else if (this.role == 'patient') {
-            this.medicalRecord = data['medicalRecord'];
-        }
-    }
-}
-var user;
-
-function showWindow(section) {
-    let sectionOne = document.getElementById('one');
-    let sectionTwo = document.getElementById('two');
-    let sectionThree = document.getElementById('three');
-
-    sectionOne.classList.remove('active');
-    sectionTwo.classList.remove('active');
-    sectionThree.classList.remove('active');
-
-    switch (section) {
-        case 1: sectionOne.classList.add('active'); break;
-        case 2: sectionTwo.classList.add('active'); break;
-        case 3: sectionThree.classList.add('active'); break;
-    }
-}
-
-function getParamValue(name) {
-    let location = decodeURI(window.location.toString());
-    let index = location.indexOf('?') + 1;
-    let subs = location.substring(index, location.length);
-    let splitted = subs.split('&');
-
-    for (let i = 0; i < splitted.length; i++) {
-        let s = splitted[i].split('=');
-        let pName = s[0];
-        let pValue = s[1];
-        if (pName == name)
-            return pValue;
-    }
-}
-
-var main = document.getElementsByTagName("main")[0];
-var secretaryId = getParamValue('id');
-var jwtoken = getParamValue('token');
-
-function setUpMenu() {
-    let menu = document.getElementById("mainMenu");
-    menu.innerHTML += `
-    <li id="option1" class="navbar__item">
-        <a class="navbar__link"><i data-feather="user"></i><span>Patient Managment</span></a>
-    </li>
-    <li id="option2" class="navbar__item">
-        <a class="navbar__link"><i data-feather="user-x"></i><span>Blocked Patients</span></a>
-    </li>
-    <li id="option3" class="navbar__item">
-        <a class="navbar__link"><i data-feather="inbox"></i><span>Examination requests</span></a>
-    </li>
-    `;
-    feather.replace();
-
-    let menuItem1 = document.getElementById("option1");
-    let menuItem2 = document.getElementById("option2");
-    let menuItem3 = document.getElementById("option3");
-
-    menuItem1.addEventListener('click', (e) => {
-        showWindow(1);
-    });
-    menuItem2.addEventListener('click', (e) => {
-        showWindow(2);
-    });
-    menuItem3.addEventListener('click', (e) => {
-        showWindow(3);
-    });
-}
-
-function setUpFunctionality() {
-    setUpBlockedPatients();
-    setupExaminationRequests()
-}
-
 var mainResponse;
 function setUpPatients() {
     let request = new XMLHttpRequest();
@@ -121,7 +32,7 @@ function setUpPatients() {
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
-                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
+                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + userId);
                     });
 
                     pMedRecord.appendChild(recordBtn);
@@ -187,7 +98,12 @@ function setUpPatients() {
     request.send();
 }
 
-function setUpBlockedPatients(){
+function setUpFunctionality() {
+    setUpBlockedPatients();
+    setupExaminationRequests()
+}
+
+function setUpBlockedPatients() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -221,17 +137,17 @@ function setUpBlockedPatients(){
                     recordBtn.innerHTML = '<i data-feather="user"></i>';
                     recordBtn.setAttribute('key', patient['id']);
                     recordBtn.addEventListener('click', function (e) {
-                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + secretaryId);
+                        window.location.replace('patientMedicalCard.php' + '?patientId=' + recordBtn.getAttribute('key') + '&token=' + jwtoken + '&secretaryId=' + userId);
                     });
 
                     pMedRecord.appendChild(recordBtn);
 
                     let pBlockedBy = document.createElement('td');
 
-                    if (patient['active'] == "1"){
+                    if (patient['active'] == "1") {
                         pBlockedBy.innerText = 'SECRETARY'
                     }
-                    else if(patient['active'] == "2"){
+                    else if (patient['active'] == "2") {
                         pBlockedBy.innerText = 'SYSTEM';
                     }
 
@@ -243,7 +159,7 @@ function setUpBlockedPatients(){
                     unblockBtn.classList.add('unblockBtn');
                     unblockBtn.setAttribute('key', patient['id']);
                     unblockBtn.addEventListener('click', function (e) {
-                        unblockPatient(this.getAttribute('key'),e);
+                        unblockPatient(this.getAttribute('key'), e);
                     });
 
                     unblockBtnContainer.appendChild(unblockBtn);
@@ -282,7 +198,6 @@ function setUpBlockedPatients(){
     request.send();
 }
 
-
 function setupExaminationRequests() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -320,19 +235,19 @@ function setupExaminationRequests() {
 
                     let examinationChange = document.createElement('td');
 
-                    let oldExaminationContainer  = document.createElement('td');
+                    let oldExaminationContainer = document.createElement('td');
 
-                    if (examinationRequest['status'] == '0'){
+                    if (examinationRequest['status'] == '0') {
                         examinationChange.innerText = 'DELETION'
                     }
-                    else{
+                    else {
                         examinationChange.innerText = 'MODIFICATION'
                         let oldExamination = document.createElement('button');
                         oldExamination.innerHTML = '<i data-feather="arrow-up"></i>';
                         oldExamination.classList.add('showBtn');
                         oldExaminationContainer.classList.add('showBtnContainer')
                         oldExamination.addEventListener('click', function (e) {
-                        showOldExamination(examination,newRow);
+                            showOldExamination(examination, newRow);
                         });
                         oldExaminationContainer.appendChild(oldExamination);
                     }
@@ -384,12 +299,6 @@ function setupExaminationRequests() {
     request.send();
 }
 
-function setUpPage() {
-    let hi = document.querySelector('#hi h1');
-    hi.innerText += `${user.firstName} ${user.lastName}`;
-    setUpPatients();
-}
-
 function deletePatient(key) {
     let deleteRequest = new XMLHttpRequest();
 
@@ -409,7 +318,6 @@ function deletePatient(key) {
     deleteRequest.send();
 }
 
-
 function updatePatient(key) {
     let prompt = document.getElementById('editPatientPrompt');
     prompt.classList.remove('off');
@@ -420,7 +328,7 @@ function updatePatient(key) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 patient = JSON.parse(this.responseText);
-                
+
                 let fFirstName = document.getElementById('editPatientFirstName');
                 fFirstName.value = patient['firstName'];
 
@@ -442,7 +350,7 @@ function updatePatient(key) {
                 fWeight.value = medRecord['weight'];
 
                 let fBloodType = document.getElementById('editPatientBloodType');
-                fBloodType.value = medRecord['bloodType'];  
+                fBloodType.value = medRecord['bloodType'];
 
                 let form = document.getElementById('editPatientForm');
 
@@ -458,15 +366,15 @@ function updatePatient(key) {
                             if (this.status == 200) {
                                 alert('Patient sucessfuly updated');
                                 setUpPatients();
-                            }else{
-                                if (this.responseText == ''){
+                            } else {
+                                if (this.responseText == '') {
                                     alert('Error: Entered patient information is invalid');
                                 }
-                                else{
+                                else {
                                     alert(this.responseText);
                                 }
                             }
-                            
+
                         }
                     }
 
@@ -480,23 +388,23 @@ function updatePatient(key) {
 
                     if (finalName.length == 0 || finalLastName.length == 0) {
                         alert("Error: Name can't be empty!");
-                    } else if(/\S+@\S+\.\S+/.test(toString(finalEmail))) {
+                    } else if (/\S+@\S+\.\S+/.test(toString(finalEmail))) {
                         alert('Error: Email in wrong format! (example:markomarkovic@gmail.com)');
-                    } else if(finalPassword.length == 0){
+                    } else if (finalPassword.length == 0) {
                         alert("Error: Password can't be empty!");
                     } else {
-                        postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/'+key);
+                        postRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/' + key);
                         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                         postRequest.send(JSON.stringify(
-                            { 
-                            'firstName': finalName, 
-                            'lastName': finalLastName,
-                            'role': 'patient',
-                            'email': finalEmail,
-                            'password': finalPassword,
-                            'active' : '0',
-                            'id' : 0,
-                            'medicalRecord':
+                            {
+                                'firstName': finalName,
+                                'lastName': finalLastName,
+                                'role': 'patient',
+                                'email': finalEmail,
+                                'password': finalPassword,
+                                'active': '0',
+                                'id': 0,
+                                'medicalRecord':
                                 {
                                     'height': finalHeight,
                                     'weight': finalWeight,
@@ -509,14 +417,10 @@ function updatePatient(key) {
             }
         }
     }
-    request.open('GET', 'https://localhost:7291/api/secretary/patients/'+key);
+    request.open('GET', 'https://localhost:7291/api/secretary/patients/' + key);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
-
-    
-    
 }
-
 
 //POST Patient
 let createBtn = document.getElementById('addBtn');
@@ -539,7 +443,7 @@ createBtn.addEventListener('click', function (e) {
 
     let fHeight = document.getElementById('createPatientHeight');
     fHeight.setAttribute('placeholder', 'Height');
-    
+
     let fWeight = document.getElementById('createPatientWeight');
     fWeight.setAttribute('placeholder', 'Weight');
 
@@ -557,15 +461,14 @@ createBtn.addEventListener('click', function (e) {
                 if (this.status == 200) {
                     alert('Patient sucessfuly created');
                     setUpPatients();
-                }else{
-                    if (this.responseText == ''){
+                } else {
+                    if (this.responseText == '') {
                         alert('Error: Entered patient information is invalid');
                     }
-                    else{
+                    else {
                         alert(this.responseText);
                     }
                 }
-                
             }
         }
 
@@ -579,23 +482,23 @@ createBtn.addEventListener('click', function (e) {
 
         if (finalName.length == 0 || finalLastName.length == 0) {
             alert("Error: Name can't be empty!");
-        } else if(/\S+@\S+\.\S+/.test(toString(finalEmail))) {
+        } else if (/\S+@\S+\.\S+/.test(toString(finalEmail))) {
             alert('Error: Email in wrong format! (example:markomarkovic@gmail.com)');
-        } else if(finalPassword.length == 0){
+        } else if (finalPassword.length == 0) {
             alert("Error: Password can't be empty!");
         } else {
             postRequest.open('POST', 'https://localhost:7291/api/secretary/patients');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify(
-                { 
-                'firstName': finalName, 
-                'lastName': finalLastName,
-                'role': 'patient',
-                'email': finalEmail,
-                'password': finalPassword,
-                'active' : '0',
-                'id' : 0,
-                'medicalRecord':
+                {
+                    'firstName': finalName,
+                    'lastName': finalLastName,
+                    'role': 'patient',
+                    'email': finalEmail,
+                    'password': finalPassword,
+                    'active': '0',
+                    'id': 0,
+                    'medicalRecord':
                     {
                         'height': finalHeight,
                         'weight': finalWeight,
@@ -607,25 +510,25 @@ createBtn.addEventListener('click', function (e) {
     });
 });
 
-function blockPatient(key){
+function blockPatient(key) {
     let putRequest = new XMLHttpRequest();
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Patient sucessfuly blocked");
                 setUpPatients();
-            }else{
+            } else {
                 alert(this.responseText);
             }
-            
+
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/1");
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/' + key + "/1");
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
 
-function unblockPatient(key,e){
+function unblockPatient(key, e) {
     e.stopImmediatePropagation();
     e.preventDefault();
     let putRequest = new XMLHttpRequest();
@@ -634,57 +537,54 @@ function unblockPatient(key,e){
             if (this.status == 200) {
                 alert("Patient sucessfuly unblocked");
                 setUpPatients();
-            }else{
+            } else {
                 alert(this.responseText);
             }
-            
+
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/'+key+"/0");
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/patients/block/' + key + "/0");
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
 
-
-function acceptRequest(key){
+function acceptRequest(key) {
     let putRequest = new XMLHttpRequest();
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination request accepted");
                 setupExaminationRequests();
-            }else{
+            } else {
                 alert(this.responseText);
             }
-            
+
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/accept/'+key);
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/accept/' + key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
 
-
-function declineRequest(key){
+function declineRequest(key) {
     let putRequest = new XMLHttpRequest();
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 alert("Examination request declined");
                 setupExaminationRequests();
-            }else{
+            } else {
                 alert(this.responseText);
             }
-            
+
         }
     }
-    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/decline/'+key);
+    putRequest.open('PUT', 'https://localhost:7291/api/secretary/examinationRequests/decline/' + key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
 
-
-function showOldExamination(newExamination,examRow){
+function showOldExamination(newExamination, examRow) {
     let putRequest = new XMLHttpRequest();
     putRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -713,26 +613,25 @@ function showOldExamination(newExamination,examRow){
                 showBtn.innerHTML = '<i data-feather="arrow-down"></i>';
                 showBtn.classList.add('showBtn');
                 showBtn.addEventListener('click', function (e) {
-                showNewExamination(newExamination,examRow);
+                    showNewExamination(newExamination, examRow);
                 });
 
-                oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+                oldShowBtnContainer.replaceChild(showBtn, oldShowBtn);
 
                 feather.replace();
-                
-            }else{
+
+            } else {
                 alert(this.responseText);
             }
-            
+
         }
     }
-    putRequest.open('GET', 'https://localhost:7291/api/secretary/examination/'+newExamination['id']);
+    putRequest.open('GET', 'https://localhost:7291/api/secretary/examination/' + newExamination['id']);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
 
-
-function showNewExamination(newExamination,examRow){
+function showNewExamination(newExamination, examRow) {
     let examinationType = examRow.getElementsByClassName('examinationType')[0];
     examinationType.innerHTML = newExamination['type'];
 
@@ -755,34 +654,10 @@ function showNewExamination(newExamination,examRow){
     showBtn.innerHTML = '<i data-feather="arrow-up"></i>';
     showBtn.classList.add('showBtn');
     showBtn.addEventListener('click', function (e) {
-    showOldExamination(newExamination,examRow);
+        showOldExamination(newExamination, examRow);
     });
 
-    oldShowBtnContainer.replaceChild(showBtn,oldShowBtn);
+    oldShowBtnContainer.replaceChild(showBtn, oldShowBtn);
 
     feather.replace();
-    
-
 }
-
-
-// Main
-
-window.addEventListener('load', function () {
-    let request = new XMLHttpRequest();
-
-    request.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                let response = JSON.parse(this.responseText);
-                user = new User(response);
-                setUpMenu();
-                setUpPage();
-            }
-        }
-    }
-
-    request.open('GET', 'https://localhost:7291/api/my/users/' + secretaryId);
-    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    request.send();
-});

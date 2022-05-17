@@ -1,5 +1,11 @@
-var loginForm = document.getElementById('signInForm');
 var jwtoken;
+var loginForm
+if (window.innerWidth > 768) {
+    loginForm = document.getElementById('signInForm');
+}
+else {
+    loginForm = document.getElementById("signInForm2");
+}
 
 // Login
 loginForm.addEventListener('submit', function (e) {
@@ -31,8 +37,14 @@ loginForm.addEventListener('submit', function (e) {
         }
     }
 
-    let finalEmail = document.getElementById('signInEmail').value;
-    let finalPassword = document.getElementById('signInPassword').value;
+    if (window.innerWidth > 768) {
+        var finalEmail = document.getElementById('signInEmail').value;
+        var finalPassword = document.getElementById('signInPassword').value;
+    }
+    else {
+        var finalEmail = document.getElementById("signInEmail2").value;
+        var finalPassword = document.getElementById("signInPassword2").value;
+    }
 
     loginRequest.open('POST', 'https://localhost:7291/api/my/authenticate/' + finalEmail + '&' + finalPassword);
     loginRequest.send();
