@@ -46,29 +46,8 @@
       <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
-      <div class="plusDiv">
-          <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
-      </div>
-      <div id="examinations">
-        <div class="tbl-content">
-          <table cellpadding="0" cellspacing="0" border="0">
-          <thead>
-            <tr>
-                <th>Type</th>
-                <th>Doctor</th>
-                <th>Specialization</th>
-                <th>Date</th>
-                <th>Room</th>
-                <!-- <th>Anamnesis</th> -->
-                <th>Urgent</th>
-                <th>Delete</th>
-                <th>Update</th>
-            </tr>
-          </thead>
-          <tbody id="examinationTable">
-
-          </tbody>
-          </table>
+        <div class="plusDiv">
+            <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
         <div id="examinations">
             <div class="tbl-content">
@@ -159,16 +138,18 @@
               <!-- patients diseases -->
             </ul>
           </div>
-      </div>
-
-      <form id="patientFilters" class="myForm ">
-        <div>
-          <label for="examinationSearch">Search:</label>
-          <input id="examinationSearch" type="text" value="" placeholder="Enter search term">
         </div>
+      </div>
+   </div>
+
+   <form id="patientFilters" class="myForm ">
+        <div>
+        <label for="examinationSearch">Search:</label>
+        <input id="examinationSearch" type="text" value="" placeholder="Enter search term">
+      </div>
       </form>
-      <div id="examinations">
-        <div class="tbl-content">
+  <div id="examinations">
+      <div class="tbl-content">
           <table id="searchExaminations" cellpadding="0" cellspacing="0" border="0">
               <thead>
                   <tr>
@@ -216,8 +197,13 @@
             </div>
         </div>
 
-      </div>
-    </section>
+    </div>
+</section>
+
+   <section id="five">
+</section>
+      
+  </main>
       
   </main>
 

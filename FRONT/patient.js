@@ -81,6 +81,7 @@ function setUpFunctionality() {
     setUpMedicalRecord();
     doctorOptions('doctorCreateExamination');
     doctorOptions('doctorEditExamination');
+    doctorOptions('doctorAdvancedCreateExamination');
     setUpSearchExaminations('empty');
 }
 
@@ -153,7 +154,7 @@ createBtn.addEventListener('click', function (e) {
     createExamination(0);
 });
 
-function creareExamination(doctorId) {
+function createExamination(doctorId) {
     let prompt = document.getElementById('createExaminationPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -540,7 +541,7 @@ function updateDoctorsTable(e) {
     setUpDoctors(finalFilter);
 }
 
-function sortTable(n, table) {
+function sortTable(n, tableName) {
 
     var table, rows, switching, i, x, y, compareA, compareB, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById(tableName);

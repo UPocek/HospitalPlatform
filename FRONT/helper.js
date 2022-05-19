@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setUpPatients();
                 }
                 else if (user['role'] == 'patient') {
-                    setUpMenu('Examinations', 'Profile', 'Doctors', 'Polls', 'activity', 'user', 'users', 'file-text');
+                    setUpMenu('Examinations', 'Advanced examination scheduler', 'Profile', 'Doctors', 'activity', 'file-plus', 'user', 'users');
                     setUpFunctionality();
                 }
                 else if (user['role'] == 'doctor') {
