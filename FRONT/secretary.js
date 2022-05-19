@@ -100,7 +100,8 @@ function setUpPatients() {
 
 function setUpFunctionality() {
     setUpBlockedPatients();
-    setupExaminationRequests()
+    setupExaminationRequests();
+    setupUrgent();
 }
 
 function setUpBlockedPatients() {
@@ -325,11 +326,6 @@ function setupUrgent(){
     request.send();
 }
 
-function setUpPage() {
-    let hi = document.querySelector('#hi h1');
-    hi.innerText += `${user.firstName} ${user.lastName}`;
-    setUpPatients();
-}
 
 function deletePatient(key) {
     let deleteRequest = new XMLHttpRequest();
@@ -729,7 +725,7 @@ urgentForm.addEventListener('submit', async function (e) {
                 postRequest.onreadystatechange = function () {
                     if (this.readyState == 4) {
                         if (this.status == 200) {
-                            if (this.responseText == null){
+                            if (JSON.parse(this.responseText)[0] == null){
                                 alert('Examination created sucessfuly');
                                 setUpPatients();
                             }

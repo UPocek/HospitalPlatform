@@ -324,7 +324,7 @@ namespace APP.Controllers
 
 
         public bool CheckExaminationTimeValidity(Examination e){
-             var isValidPatient = IsValidPatient(e.PatinetId);
+            var isValidPatient = IsValidPatient(e.PatinetId);
             var isValidRoom = IsRoomValid(e.RoomName);
             var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
             var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
@@ -449,7 +449,7 @@ namespace APP.Controllers
                         var id = examinations.Find(e => true).SortByDescending(e => e.Id).FirstOrDefault().Id;
                         newExamination.Id = id + 1;
                         examinations.InsertOne(newExamination);
-                        return null;
+                        return new List<Examination>();
                     }
                 }
                 urgentExaminationDate = urgentExaminationDate.AddMinutes(10);

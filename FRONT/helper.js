@@ -94,11 +94,35 @@ function showWindow(section) {
     sectionThree.classList.remove('active');
     sectionFour.classList.remove('active');
 
-    switch (section) {
-        case 1: sectionOne.classList.add('active'); break;
-        case 2: sectionTwo.classList.add('active'); break;
-        case 3: sectionThree.classList.add('active'); break;
-        case 4: sectionFour.classList.add('active'); break;
+    if(user['role'] == 'secretary'){
+        let welcomeHeader = document.getElementById("hi");
+        switch (section) {
+            case 1: 
+            sectionOne.classList.add('active'); 
+            welcomeHeader.classList.remove('off');
+            break;
+            case 2: 
+            sectionTwo.classList.add('active'); 
+            welcomeHeader.classList.remove('off');
+            break;
+            case 3: 
+            sectionThree.classList.add('active'); 
+            welcomeHeader.classList.remove('off');
+            break;
+            case 4: 
+            sectionFour.classList.add('active');
+            welcomeHeader.classList.add('off');
+            break;
+        }
+    }
+
+    else{
+        switch (section) {
+            case 1: sectionOne.classList.add('active'); break;
+            case 2: sectionTwo.classList.add('active'); break;
+            case 3: sectionThree.classList.add('active'); break;
+            case 4: sectionFour.classList.add('active'); break;
+        }
     }
 }
 
@@ -126,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setUpRooms();
                 }
                 else if (user['role'] == 'secretary') {
-                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Polls', 'user', 'user-x', 'inbox', 'file-text');
+                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Urgent Examination', 'user', 'user-x', 'inbox', 'alert-triangle');
                     setUpPatients();
                 }
                 else if (user['role'] == 'patient') {
