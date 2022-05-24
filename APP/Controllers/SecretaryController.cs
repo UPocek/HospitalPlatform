@@ -668,7 +668,7 @@ namespace APP.Controllers
             Purchase newPurchase = new Purchase();
             newPurchase.Deadline = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm");
             newPurchase.Done = false;
-            newPurchase.What.Append(purchasedEquipment);
+            newPurchase.What.Add(purchasedEquipment);
 
             var purchases = database.GetCollection<Purchase>("Purchases");
             purchases.InsertOne(newPurchase);

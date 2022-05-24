@@ -4,6 +4,10 @@ using System.Text.Json.Serialization;
 
 public class Purchase
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? id { get; set; }
+    
     [BsonElement("deadline")]
     [JsonPropertyName("deadline")]
     public string Deadline { get; set; }
