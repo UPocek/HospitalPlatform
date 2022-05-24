@@ -198,9 +198,25 @@
 
     </section>
 
-  
-
     <section id="four">
+      <div id="expendedDynamicEquipment" class = "off">
+      <div class="tbl-content">
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Expended</th>
+                  </tr>
+              </thead>
+              <tbody id="expendedDynamicEquipmentTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+      </div>
+      </div>
+    </section>
+
+
+    <section id="five">
       <div id="urgentSecretary" class = "prompt">
         <form id="urgentForm" class="colDir myForm">
           <h1 id="examinationFormId" >Create urgent examination</h1>
@@ -229,9 +245,6 @@
       </div>
     </section>
 
-    <section id="four">
-
-    </section>
 
   </main>
 

@@ -102,6 +102,7 @@ function setUpFunctionality() {
     setUpBlockedPatients();
     setupExaminationRequests();
     setupUrgent();
+    setupExpendedDynamicEquipment();
 }
 
 function setUpBlockedPatients() {
@@ -324,6 +325,54 @@ function setupUrgent(){
     request.open('GET', 'https://localhost:7291/api/secretary/doctors/speciality');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+}
+
+
+function setupExpendedDynamicEquipment(){
+    let getRequest = new XMLHttpRequest();
+
+    let dynamicEquipmentTable = document.getElementById('expendedDynamicEquipmentTable');
+
+    dynamicEquipmentTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                if (response[0] != null){
+                    dynamicEquipmentTable.classList.remove('off');
+                    for (let i in response) {
+                        let expendedEquipmentName = response[i];
+
+                        let newRow = document.createElement('tr');
+    
+                        let expendedEquipmentNameContainer = document.createElement('td');
+                        expendedEquipmentNameContainer.classList.add("expendedequipment");
+                        examinatioexpendedEquipmentNameContainernType.innerText = expendedEquipmentName;
+
+                        let requestExpendedContainer = document.createElement('td');
+                        let requestExpendedBtn = document.createElement('button');
+                        requestExpendedBtn.innerHTML = '<i data-feather="corner-left-down"></i>';
+                        requestExpendedBtn.classList.add('requestExpendedBtn');
+                        requestExpendedBtn.setAttribute('key', expendedEquipmentName);
+                        requestExpendedContainer.classList.add('smallerWidth')
+                        requestExpendedContainer.appendChild(declineBtn);
+
+
+                        newRow.append(expendedEquipmentNameContainer);
+                        newRow.append(requestExpendedBtnContainer);
+                    }
+                }
+                else{
+                    dynamicEquipmentTable.classList.add('off');
+                }
+            }
+        }
+    }
+
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/expendedDynamicEquipment');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
 }
 
 
