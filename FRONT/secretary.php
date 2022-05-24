@@ -46,6 +46,17 @@
       </form>
 	  </div>
 
+    <div id="dynamicPurchasePopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicPurchaseForm" class="colDir myForm">
+          <h1 id="dynamicPurchaseFormId" >Create purchase</h1>
+          <div class="formDiv">
+              <label for="PurchaseQuantity">Quantity:</label>
+              <input id="PurchaseQuantity" type="number" max=300 min=1 placeholder="" />
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
     <div id="editPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
       <form id="editPatientForm" class="colDir myForm patientForm">
         <h1 class="editPatientHeader">Create patient</h1>

@@ -661,6 +661,22 @@ namespace APP.Controllers
         }
 
 
+        // GET: api/Secretary/purchaseDynamicEquipment
+        [HttpPost("purchaseDynamicEquipment")]
+        public async Task<IActionResult> CreateDynamicEquipmentPurchase(Equipment purchasedEquipment)
+        {
+            Purchase newPurchase = new Purchase();
+            newPurchase.Deadline = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm");
+            newPurchase.Done = false;
+            newPurchase.What.Append(purchasedEquipment);
+
+            var purchases = database.GetCollection<Purchase>("Purchases");
+            purchases.InsertOne(newPurchase);
+            
+            return Ok();
+        }
+
+
 
 
 

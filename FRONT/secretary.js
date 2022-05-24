@@ -352,17 +352,20 @@ function setupExpendedDynamicEquipment(){
                         expendedEquipmentNameContainer.classList.add("expendedequipment");
                         expendedEquipmentNameContainer.innerText = expendedEquipmentName;
 
-                        let requestExpendedContainer = document.createElement('td');
-                        let requestExpendedBtn = document.createElement('button');
-                        requestExpendedBtn.innerHTML = '<i data-feather="corner-left-down"></i>';
-                        requestExpendedBtn.classList.add('requestExpendedBtn');
-                        requestExpendedBtn.setAttribute('key', expendedEquipmentName);
-                        requestExpendedContainer.classList.add('smallerWidth')
-                        requestExpendedContainer.appendChild(requestExpendedBtn);
+                        let purchaseExpendedContainer = document.createElement('td');
+                        let purchaseExpendedBtn = document.createElement('button');
+                        purchaseExpendedBtn.innerHTML = '<i data-feather="corner-left-down"></i>';
+                        purchaseExpendedBtn.classList.add('requestExpendedBtn');
+                        purchaseExpendedBtn.setAttribute('key', expendedEquipmentName);
+                        purchaseExpendedBtn.addEventListener('click', function (e) {
+                            createDynamicEquipmentPurchase(this.getAttribute('key'));
+                        });
+                        purchaseExpendedContainer.classList.add('smallerWidth')
+                        purchaseExpendedContainer.appendChild(purchaseExpendedBtn);
 
 
                         newRow.appendChild(expendedEquipmentNameContainer);
-                        newRow.appendChild(requestExpendedContainer);
+                        newRow.appendChild(purchaseExpendedContainer);
                         dynamicEquipmentTable.appendChild(newRow);
                     }
                     feather.replace();
@@ -881,3 +884,39 @@ urgentBackBtn.addEventListener('click', function (e) {
     urgentTable.classList.add('off');
     setUpPatients();
 });
+
+function createDynamicEquipmentPurchase(equipmentName){
+    postRequest = new XMLHttpRequest();
+    main.classList.add('hideMain');
+    let dynamicEquipmentPrompt = document.getElementById('dynamicPurchasePopUp');
+    dynamicEquipmentPrompt.classList.remove('off')
+    let dynamicEquipmentForm = document.getElementById('dynamicPurchaseForm');
+
+    dynamicEquipmentForm.addEventListener('submit', function (e) {
+        dynamicEquipmentPrompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let eQuantity = document.getElementById('PurchaseQuantity').value;
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Dynamic equipment purchase completed successfuly!');
+                
+                }
+            }
+        }
+        if(eQuantity <= 0){
+            alert("Error: Quantity must be a number more than 0 and less than 300!");
+        }
+        else{
+        postRequest.open('POST', 'https://localhost:7291/api/secretary/purchaseDynamicEquipment');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({'name':equipmentName,'type':'operation equipment','quantity':eQuantity}));
+        }
+    });
+
+}
