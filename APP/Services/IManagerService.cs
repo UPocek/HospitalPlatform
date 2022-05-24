@@ -2,17 +2,54 @@ using MongoDB.Driver;
 
 public interface IManagerService
 {
-    public bool IsRoomNameValid(IMongoCollection<Room> collection, Room data);
+    public Task<List<Room>> GetAllRooms();
 
-    public bool IsDrugNameValid(IMongoCollection<Drug> collection, Drug data);
+    public Task<List<Drug>> GetAllDrugs();
 
-    public bool IsIngredientNameValid(DrugIngredients allIngredients, Dictionary<string, string> data);
+    public Task<DrugIngredients> GetAllIngredients();
 
-    public bool ExaminationScheduledAtThatTime(List<Examination> examinationsInRoom, Renovation data);
+    public Task<Hospital> GetHospitalPolls();
 
-    public bool RenovationScheduledAtThatTime(List<Renovation> examinationsInRoom, Renovation data);
+    public Task<List<PollForDoctors>> GetDoctorPolls();
 
-    public void DevideEquipment(Room roomToBeDevided, List<Equipment> equipmentForRoom1, List<Equipment> equipmentForRoom2);
+    public Task SaveRoom(Room room);
 
-    public List<Equipment> GetMergedRoomsEquipment(Room room1, Room room2);
+    public Task SaveRenovation(Renovation renovation);
+
+    public Task SaveTransfer(Transfer transfer);
+
+    public Task SaveDrug(Drug drug);
+
+    public Task SaveIngredients(string ingredientName);
+
+    public Task UpdateRoom(string id, Room room);
+
+    public Task UpdateDrug(string id, Drug drug);
+
+    public Task UpdateIngredients(string oldIngredient, string newIngredient);
+
+    public Task DeleteRoom(string roomName);
+
+    public Task DeleteDrug(string drugName);
+
+    public Task DeleteIngredient(string ingredientName);
+
+    public Task StartSimpleRenovation(Renovation renovation);
+
+    public Task StartDevideRenovation(Renovation renovation);
+
+    public Task StartMergeRenovation(Renovation renovation);
+
+    public Task StartTransfer(Transfer transfer);
+
+    public Task<bool> IsRoomNameValid(Room room);
+
+    public Task<bool> IsDrugNameValid(Drug drug);
+
+    public Task<bool> IngredientAlreadyExists(string name);
+
+    public Task<bool> ExaminationScheduledAtThatTime(Renovation renovation);
+
+    public Task<bool> RenovationScheduledAtThatTime(Renovation renovation);
+
 }
