@@ -640,7 +640,7 @@ namespace APP.Controllers
                     if (e.Type == "operation equipment"){
                         int oldQuantity;
                         if(dynamicEquipmentQuantity.TryGetValue(e.Name,out oldQuantity)){
-                            dynamicEquipmentQuantity.Add(e.Name,oldQuantity+e.Quantity);
+                            dynamicEquipmentQuantity[e.Name] = oldQuantity+e.Quantity;
                         }
                         else{
                             dynamicEquipmentQuantity.Add(e.Name,e.Quantity);

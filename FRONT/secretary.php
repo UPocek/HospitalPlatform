@@ -200,7 +200,7 @@
 
     <section id="four">
       <div id="expendedDynamicEquipment" class = "off">
-      <div class="tbl-content">
+        <div class="tbl-content">
           <table  cellpadding="0" cellspacing="0" border="0">
               <thead>
                   <tr>
@@ -211,7 +211,7 @@
                   <!-- this is where data from api comes -->
               </tbody>
           </table>
-      </div>
+        </div>
       </div>
     </section>
 

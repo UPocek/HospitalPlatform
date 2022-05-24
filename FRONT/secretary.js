@@ -332,6 +332,8 @@ function setupExpendedDynamicEquipment(){
     let getRequest = new XMLHttpRequest();
 
     let dynamicEquipmentTable = document.getElementById('expendedDynamicEquipmentTable');
+    
+    let expendedDynamicEquipmentContainer = document.getElementById('expendedDynamicEquipment');
 
     dynamicEquipmentTable.innerHTML = '';
 
@@ -340,7 +342,7 @@ function setupExpendedDynamicEquipment(){
             if (this.status == 200) {
                 var response = JSON.parse(this.responseText);
                 if (response[0] != null){
-                    dynamicEquipmentTable.classList.remove('off');
+                    expendedDynamicEquipmentContainer.classList.remove('off');
                     for (let i in response) {
                         let expendedEquipmentName = response[i];
 
@@ -348,7 +350,7 @@ function setupExpendedDynamicEquipment(){
     
                         let expendedEquipmentNameContainer = document.createElement('td');
                         expendedEquipmentNameContainer.classList.add("expendedequipment");
-                        examinatioexpendedEquipmentNameContainernType.innerText = expendedEquipmentName;
+                        expendedEquipmentNameContainer.innerText = expendedEquipmentName;
 
                         let requestExpendedContainer = document.createElement('td');
                         let requestExpendedBtn = document.createElement('button');
@@ -356,15 +358,17 @@ function setupExpendedDynamicEquipment(){
                         requestExpendedBtn.classList.add('requestExpendedBtn');
                         requestExpendedBtn.setAttribute('key', expendedEquipmentName);
                         requestExpendedContainer.classList.add('smallerWidth')
-                        requestExpendedContainer.appendChild(declineBtn);
+                        requestExpendedContainer.appendChild(requestExpendedBtn);
 
 
-                        newRow.append(expendedEquipmentNameContainer);
-                        newRow.append(requestExpendedBtnContainer);
+                        newRow.appendChild(expendedEquipmentNameContainer);
+                        newRow.appendChild(requestExpendedContainer);
+                        dynamicEquipmentTable.appendChild(newRow);
                     }
+                    feather.replace();
                 }
                 else{
-                    dynamicEquipmentTable.classList.add('off');
+                    expendedDynamicEquipmentContainer.classList.add('off');
                 }
             }
         }
