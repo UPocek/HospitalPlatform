@@ -356,9 +356,7 @@ namespace APP.Controllers
             var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
             var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
             var isDoctorFree = IsDoctorFree(e.DoctorId, e.DateAndTimeOfExamination.ToString());
-            return (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isDoctorFree);
-
-
+            return isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isDoctorFree;
         }
 
 
@@ -597,7 +595,6 @@ namespace APP.Controllers
 
             var patients = database.GetCollection<Patient>("Patients");
             var employees = database.GetCollection<Employee>("Employees");
-            ;
 
             foreach (Examination toMoveExamination in toMoveExaminations)
             {
@@ -628,6 +625,44 @@ namespace APP.Controllers
 
             return Ok();
         }
+
+
+        // GET: api/Secretary/expendedDynamicEquipment
+        [HttpGet("expendedDynamicEquipment")]
+        public async Task<List<string>> GetExpendedDynamicEquipment()
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+
+            Dictionary<string,int> dynamicEquipmentQuantity = new Dictionary<string, int>();
+            
+            foreach (Room r in rooms.Find(item => true).ToList()){
+                foreach(Equipment e in r.Equipment){
+                    if (e.Type == "operation equipment"){
+                        int oldQuantity;
+                        if(dynamicEquipmentQuantity.TryGetValue(e.Name,out oldQuantity)){
+                            dynamicEquipmentQuantity.Add(e.Name,oldQuantity+e.Quantity);
+                        }
+                        else{
+                            dynamicEquipmentQuantity.Add(e.Name,e.Quantity);
+                        }
+                    }
+                }
+            }
+
+            List<string> expendedDynamicEquipment = new List<string>();
+
+            foreach(KeyValuePair<string,int> equipmentQuantityEntry in dynamicEquipmentQuantity){
+                if( equipmentQuantityEntry.Value == 0){
+                expendedDynamicEquipment.Add(equipmentQuantityEntry.Key);
+                }
+            }
+
+            return expendedDynamicEquipment;
+        }
+
+
+
+
 
     }
 }
