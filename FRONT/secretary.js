@@ -103,6 +103,7 @@ function setUpFunctionality() {
     setupExaminationRequests();
     setupUrgent();
     setupExpendedDynamicEquipment();
+    setupDynamicEquipmentTransfers();
 }
 
 function setUpBlockedPatients() {
@@ -378,6 +379,72 @@ function setupExpendedDynamicEquipment(){
     }
 
     getRequest.open('GET', 'https://localhost:7291/api/secretary/expendedDynamicEquipment');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+}
+
+
+function setupDynamicEquipmentTransfers(){
+    let getRequest = new XMLHttpRequest();
+
+    let dynamicEquipmentTransferTable = document.getElementById('dynamicEquipmentTransferTable');
+
+    dynamicEquipmentTransferTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                for (let i in response) {
+                    let roomEquipmentPair = response[i];
+
+                    let roomName = roomEquipmentPair['key'];
+                    let equipment = roomEquipmentPair['value'];
+
+                    let newRow = document.createElement('tr');
+
+                    let roomNameContainer = document.createElement('td');
+                    roomNameContainer.innerText = roomName;
+                    let equipmentNameContainer = document.createElement('td');
+                    equipmentNameContainer.innerText = equipment['name'];
+                    let equipmentQuantityContainer = document.createElement('td');
+                    equipmentQuantityContainer.innerText = equipment['quantity'];
+
+                    let transferBtnContainer = document.createElement('td');
+                    let transferBtn = document.createElement('button');
+                    transferBtn.innerHTML = '<i data-feather="refresh-ccw"></i>';
+                    transferBtn.classList.add('requestExpendedBtn');
+                    transferBtn.setAttribute('roomName', roomName);
+                    transferBtn.setAttribute('equipment',equipment)
+                    transferBtnContainer.classList.add('smallerWidth')
+                    transferBtnContainer.appendChild(transferBtn);
+
+                    let alertContainer = document.createElement('td');
+                    let alertIcon = document.createElement('button');
+                    alertIcon.innerHTML = '<i data-feather="alert-circle"></i>';
+                    alertIcon.setAttribute('title',"Room is out of this type of equipment!")
+                    alertIcon.classList.add('declineBtn');
+                    alertContainer.appendChild(alertIcon);
+
+
+                    newRow.appendChild(roomNameContainer);
+                    newRow.appendChild(equipmentNameContainer);
+                    newRow.appendChild(equipmentQuantityContainer);
+                    if (equipment['quantity'] == 0){
+                        newRow.appendChild(alertContainer);
+                    }
+                    else{
+                        newRow.appendChild(document.createElement('td'));
+                    }
+                    newRow.appendChild(transferBtnContainer);
+                    dynamicEquipmentTransferTable.appendChild(newRow);
+                }
+                feather.replace();
+            }
+        }
+    }
+
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/roomLowDynamicEquipment');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }

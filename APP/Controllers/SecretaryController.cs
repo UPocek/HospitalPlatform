@@ -676,8 +676,26 @@ namespace APP.Controllers
             return Ok();
         }
 
+        // GET: api/Secretary/roomLowDynamicEquipment
+        [HttpGet("roomLowDynamicEquipment")]
+        public async Task<List<KeyValuePair<string,Equipment>>> GetRoomLowDynamicEquipment()
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
 
+            List<KeyValuePair<string,Equipment>> lowDynamicEquipment = new List<KeyValuePair<string,Equipment>>();
+            
+            foreach (Room r in rooms.Find(item => item.Name != "Main warehouse").ToList()){
+                foreach(Equipment e in r.Equipment){
+                    if (e.Type == "operation equipment" && e.Quantity <= 5){
+                        lowDynamicEquipment.Add(new KeyValuePair<string,Equipment>(r.Name,e));
+                    }
+                }
+            }
 
+            lowDynamicEquipment.Sort((x,y) => x.Value.Quantity.CompareTo(y.Value.Quantity));
+
+            return lowDynamicEquipment;
+        }
 
 
     }

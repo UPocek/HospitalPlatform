@@ -1839,6 +1839,7 @@ footer {
 
 /* Secretary */
 
+
 .blockBtn {
     color: Red;
     border: none;
@@ -2050,6 +2051,7 @@ input[type="radio" i] {
 #patients,
 #urgentMovingTable,
 #expendedDynamicEquipment,
+#dynamicEquipmentTransfer,
 #equipment,
 #drugs,
 #ingredients,
@@ -2059,6 +2061,10 @@ input[type="radio" i] {
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#dynamicEquipmentTransfer{
+    margin-top:100px;
 }
 
 #expendedDynamicEquipment{
