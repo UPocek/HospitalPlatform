@@ -697,6 +697,55 @@ namespace APP.Controllers
             return lowDynamicEquipment;
         }
 
+        // GET: api/Secretary/roomEquipmentQuantity/{roomName}/{equipmentName}
+        [HttpGet("roomEquipmentQuantity")]
+        public async Task<int> GetEquipmentQuantityRoom(string roomName,string equipmentName)
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+            
+            var room = rooms.Find(r => r.Name == roomName).FirstOrDefault();
+
+            foreach(Equipment roomEquipment in room.Equipment){
+                if (roomEquipment.Name == equipmentName){
+                    return roomEquipment.Quantity;
+                }
+            }
+
+            return 0;
+        }
+        
+
+        [HttpPut("transferEquipment/{equipmentName}/{fromRoomName}/{toRoomName}/{quantity}")]
+        public async Task<IActionResult> TransferDynamicEquipment(string equipmentName,string fromRoomName, string toRoomName,int quantity)
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+
+            var transferFromRoom = rooms.Find(r=>r.Name == fromRoomName).FirstOrDefault();
+
+            var transferToRoom = rooms.Find(r=>r.Name == toRoomName).FirstOrDefault();
+
+            foreach(Equipment fromRoomEquipment in transferFromRoom.Equipment){
+                if(fromRoomEquipment.Name == equipmentName){
+                    if(fromRoomEquipment.Quantity - quantity < 0){
+                        return BadRequest();
+                    }
+                    else{
+                        fromRoomEquipment.Quantity -= quantity;
+                        rooms.ReplaceOne(r=>r.Id == transferFromRoom.Id,transferFromRoom);
+                    }
+                }
+            }
+
+            foreach(Equipment toRoomEquipment in transferToRoom.Equipment){
+                if(toRoomEquipment.Name == equipmentName){
+                    toRoomEquipment.Quantity += quantity;
+                    rooms.ReplaceOne(r=>r.Id == transferToRoom.Id,transferToRoom);
+                }
+            }
+
+            return Ok();
+        }
+
 
     }
 }
