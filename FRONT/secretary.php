@@ -128,6 +128,33 @@
       </div>
     </div>
 
+    <div id="urgentSecretary" class = "prompt off">
+      <form id="urgentForm" class="colDir myForm">
+        <h1 id="examinationFormId" >Create urgent examination</h1>
+        <div class="formDiv">
+            <label for="examinationTypeUrgent">Examination type:</label>
+            <select id="examinationTypeUrgent">
+                <option value="visit" selected>Visit</option>
+                <option value="operation">Operation</option>
+            </select>
+        </div>
+        <div class="formDiv">
+            <label for="examinationDurationUrgent">Duration:</label>
+            <input type="number" id="examinationDurationUrgent" min="15">
+        </div>
+        <div class="formDiv">
+            <label for="examinationPatienUrgent">Patient id:</label>
+            <input id="examinationPatienUrgent" type="number"/>
+        </div>
+        <div class="formDiv">
+            <label for="examinationSpecialityUrgent">Specialization</label>
+            <select id="examinationSpecialityUrgent">
+            </select>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
     <main class='myMain'>
 
     <div id="hi">
@@ -262,36 +289,6 @@
               </tbody>
           </table>
         </div>
-      </div>
-    </section>
-
-
-    <section id="five">
-      <div id="urgentSecretary" class = "prompt">
-        <form id="urgentForm" class="colDir myForm">
-          <h1 id="examinationFormId" >Create urgent examination</h1>
-          <div class="formDiv">
-              <label for="examinationTypeUrgent">Examination type:</label>
-              <select id="examinationTypeUrgent">
-                  <option value="visit" selected>Visit</option>
-                  <option value="operation">Operation</option>
-              </select>
-          </div>
-          <div class="formDiv">
-              <label for="examinationDurationUrgent">Duration:</label>
-              <input type="number" id="examinationDurationUrgent" min="15">
-          </div>
-          <div class="formDiv">
-              <label for="examinationPatienUrgent">Patient id:</label>
-              <input id="examinationPatienUrgent" type="number"/>
-          </div>
-          <div class="formDiv">
-              <label for="examinationSpecialityUrgent">Specialization</label>
-              <select id="examinationSpecialityUrgent">
-              </select>
-          </div>
-          <button class="mainBtn">OK</button>
-        </form>
       </div>
     </section>
 

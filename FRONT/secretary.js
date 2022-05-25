@@ -816,7 +816,16 @@ function showNewExamination(newExamination, examRow) {
     feather.replace();
 }
 
+let urgentBtn = document.getElementById('urgentBtn');
+
+let urgentPrompt = document.getElementById('urgentSecretary');
+
 let urgentForm = document.getElementById('urgentForm');
+
+urgentBtn.addEventListener('click',function(e){
+    urgentPrompt.classList.remove('off');
+    main.classList.add('hideMain');
+})
 
 urgentForm.addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -853,9 +862,12 @@ urgentForm.addEventListener('submit', async function (e) {
                         if (this.status == 200) {
                             if (JSON.parse(this.responseText)[0] == null){
                                 alert('Examination created sucessfuly');
-                                setUpPatients();
+                                main.classList.remove('hideMain');
+                                urgentPrompt.classList.add('off')
+                                setUpFunctionality();
                             }
                             else{
+                                urgentPrompt.classList.add('off')
                                 displayExaminations(JSON.parse(this.responseText),selectedPatientId,selectedType,selectedDuration);
                             }
                         
