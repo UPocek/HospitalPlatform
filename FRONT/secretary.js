@@ -1076,7 +1076,7 @@ function transferEquipment(roomName,equipmentName){
             }
         }
         
-        if(transferQuantity < 0 || transferQuantity > parseInt(roomQuantity)){
+        if(transferQuantity < 0 || transferQuantity > parseInt(roomQuantity) || transferQuantity == null){
             alert("Error: Transfer quantity must be a number between 0 and roomQuantity value");
         }
         else if(transferRoom == null){
