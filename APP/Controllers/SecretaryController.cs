@@ -356,9 +356,7 @@ namespace APP.Controllers
             var isOccupiedRoom = IsRoomOccupied(e.RoomName, e.DateAndTimeOfExamination.ToString(), e.DurationOfExamination);
             var isRoomInRenovation = IsRoomInRenovation(e.RoomName, e.DateAndTimeOfExamination.ToString());
             var isDoctorFree = IsDoctorFree(e.DoctorId, e.DateAndTimeOfExamination.ToString());
-            return (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isDoctorFree);
-
-
+            return isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isDoctorFree;
         }
 
 
@@ -597,7 +595,6 @@ namespace APP.Controllers
 
             var patients = database.GetCollection<Patient>("Patients");
             var employees = database.GetCollection<Employee>("Employees");
-            ;
 
             foreach (Examination toMoveExamination in toMoveExaminations)
             {
@@ -628,6 +625,127 @@ namespace APP.Controllers
 
             return Ok();
         }
+
+
+        // GET: api/Secretary/expendedDynamicEquipment
+        [HttpGet("expendedDynamicEquipment")]
+        public async Task<List<string>> GetExpendedDynamicEquipment()
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+
+            Dictionary<string,int> dynamicEquipmentQuantity = new Dictionary<string, int>();
+            
+            foreach (Room r in rooms.Find(item => true).ToList()){
+                foreach(Equipment e in r.Equipment){
+                    if (e.Type == "operation equipment"){
+                        int oldQuantity;
+                        if(dynamicEquipmentQuantity.TryGetValue(e.Name,out oldQuantity)){
+                            dynamicEquipmentQuantity[e.Name] = oldQuantity+e.Quantity;
+                        }
+                        else{
+                            dynamicEquipmentQuantity.Add(e.Name,e.Quantity);
+                        }
+                    }
+                }
+            }
+
+            List<string> expendedDynamicEquipment = new List<string>();
+
+            foreach(KeyValuePair<string,int> equipmentQuantityEntry in dynamicEquipmentQuantity){
+                if( equipmentQuantityEntry.Value == 0){
+                expendedDynamicEquipment.Add(equipmentQuantityEntry.Key);
+                }
+            }
+
+            return expendedDynamicEquipment;
+        }
+
+
+        // GET: api/Secretary/purchaseDynamicEquipment
+        [HttpPost("purchaseDynamicEquipment")]
+        public async Task<IActionResult> CreateDynamicEquipmentPurchase(Equipment purchasedEquipment)
+        {
+            Purchase newPurchase = new Purchase();
+            newPurchase.Deadline = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm");
+            newPurchase.Done = false;
+            newPurchase.What.Add(purchasedEquipment);
+
+            var purchases = database.GetCollection<Purchase>("Purchases");
+            purchases.InsertOne(newPurchase);
+            
+            return Ok();
+        }
+
+        // GET: api/Secretary/roomLowDynamicEquipment
+        [HttpGet("roomLowDynamicEquipment")]
+        public async Task<List<KeyValuePair<string,Equipment>>> GetRoomLowDynamicEquipment()
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+
+            List<KeyValuePair<string,Equipment>> lowDynamicEquipment = new List<KeyValuePair<string,Equipment>>();
+            
+            foreach (Room r in rooms.Find(item => item.Name != "Main warehouse").ToList()){
+                foreach(Equipment e in r.Equipment){
+                    if (e.Type == "operation equipment" && e.Quantity <= 5){
+                        lowDynamicEquipment.Add(new KeyValuePair<string,Equipment>(r.Name,e));
+                    }
+                }
+            }
+
+            lowDynamicEquipment.Sort((x,y) => x.Value.Quantity.CompareTo(y.Value.Quantity));
+
+            return lowDynamicEquipment;
+        }
+
+        // GET: api/Secretary/roomEquipmentQuantity/{roomName}/{equipmentName}
+        [HttpGet("roomEquipmentQuantity/{roomName}/{equipmentName}")]
+        public async Task<int> GetEquipmentQuantityRoom(string roomName,string equipmentName)
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+            
+            var room = rooms.Find(r => r.Name == roomName).FirstOrDefault();
+
+            foreach(Equipment roomEquipment in room.Equipment){
+                if (roomEquipment.Name == equipmentName){
+                    return roomEquipment.Quantity;
+                }
+            }
+
+            return 0;
+        }
+        
+
+        [HttpPut("transferEquipment/{equipmentName}/{fromRoomName}/{toRoomName}/{quantity}")]
+        public async Task<IActionResult> TransferDynamicEquipment(string equipmentName,string fromRoomName, string toRoomName,int quantity)
+        {
+            var rooms = database.GetCollection<Room>("Rooms");
+
+            var transferFromRoom = rooms.Find(r=>r.Name == fromRoomName).FirstOrDefault();
+
+            var transferToRoom = rooms.Find(r=>r.Name == toRoomName).FirstOrDefault();
+
+            foreach(Equipment fromRoomEquipment in transferFromRoom.Equipment){
+                if(fromRoomEquipment.Name == equipmentName){
+                    if(fromRoomEquipment.Quantity - quantity < 0){
+                        return BadRequest();
+                    }
+                    else{
+                        fromRoomEquipment.Quantity -= quantity;
+                        rooms.ReplaceOne(r=>r.Id == transferFromRoom.Id,transferFromRoom);
+                    }
+                }
+            }
+
+            foreach(Equipment toRoomEquipment in transferToRoom.Equipment){
+                if(toRoomEquipment.Name == equipmentName){
+                    toRoomEquipment.Quantity += quantity;
+                    rooms.ReplaceOne(r=>r.Id == transferToRoom.Id,transferToRoom);
+                }
+            }
+
+            return Ok();
+        }
+
 
     }
 }

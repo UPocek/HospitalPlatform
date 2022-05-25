@@ -1839,6 +1839,7 @@ footer {
 
 /* Secretary */
 
+
 .blockBtn {
     color: Red;
     border: none;
@@ -1895,6 +1896,13 @@ footer {
 
 .declineBtn {
     color: Red;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.requestExpendedBtn{
+    color: rgb(0, 62, 133);
     border: none;
     background: transparent;
     padding: 10px;
@@ -1977,6 +1985,10 @@ footer {
     cursor: pointer;
 }
 
+#urgentBtn{
+    margin-right:30px;
+}
+
 tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
@@ -2042,6 +2054,8 @@ input[type="radio" i] {
 #doctors,
 #patients,
 #urgentMovingTable,
+#expendedDynamicEquipment,
+#dynamicEquipmentTransfer,
 #equipment,
 #drugs,
 #ingredients,
@@ -2051,6 +2065,15 @@ input[type="radio" i] {
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#dynamicEquipmentTransfer{
+    margin-top:100px;
+}
+
+#expendedDynamicEquipment{
+    max-width: 700px;
+    max-height: 300px;
 }
 
 table {
@@ -2489,11 +2512,6 @@ td button {
     text-align: left;
 }
 
-.urgentDiv {
-    display: flex;
-    justify-content: flex-start;
-    margin: 10px 10px;
-}
 
 #urgent {
     min-width: 30px;

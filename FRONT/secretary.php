@@ -46,6 +46,37 @@
       </form>
 	  </div>
 
+    <div id="dynamicPurchasePopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicPurchaseForm" class="colDir myForm">
+          <h1 id="dynamicPurchaseFormId" >Create purchase</h1>
+          <div class="formDiv">
+              <label for="PurchaseQuantity">Quantity:</label>
+              <input id="PurchaseQuantity" type="number" max=300 min=1 placeholder="" />
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
+    <div id="dynamicEquipmentTransferPopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicEquipmentTransferForm" class="colDir myForm">
+          <h1 id="dynamicEquipmentTransferFormId" >Create transfer</h1>
+          <div class="formDiv">
+              <label for="selectRoomTransfer">Room:</label>
+              <select id="selectRoomTransfer">
+              </select>
+          </div>
+          <div class="formDiv">
+              <label for="roomQuantity">Room Quantity:</label>
+              <input id="roomQuantity" type="number" max=300 min=1 disabled/>
+          </div>
+          <div class="formDiv">
+              <label for="transferQuantity">To Transfer:</label>
+              <input id="transferQuantity" type="number" max=300 min=1/>
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
     <div id="editPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
       <form id="editPatientForm" class="colDir myForm patientForm">
         <h1 class="editPatientHeader">Create patient</h1>
@@ -97,14 +128,44 @@
       </div>
     </div>
 
+    <div id="urgentSecretary" class = "prompt off">
+      <form id="urgentForm" class="colDir myForm">
+        <h1 id="examinationFormId" >Create urgent examination</h1>
+        <div class="formDiv">
+            <label for="examinationTypeUrgent">Examination type:</label>
+            <select id="examinationTypeUrgent">
+                <option value="visit" selected>Visit</option>
+                <option value="operation">Operation</option>
+            </select>
+        </div>
+        <div class="formDiv">
+            <label for="examinationDurationUrgent">Duration:</label>
+            <input type="number" id="examinationDurationUrgent" min="15">
+        </div>
+        <div class="formDiv">
+            <label for="examinationPatienUrgent">Patient id:</label>
+            <input id="examinationPatienUrgent" type="number"/>
+        </div>
+        <div class="formDiv">
+            <label for="examinationSpecialityUrgent">Specialization</label>
+            <select id="examinationSpecialityUrgent">
+            </select>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
     <main class='myMain'>
 
     <div id="hi">
         <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
-      <div class="plusDiv">
+      <div class = "patientHeader">
+        <div class="plusDiv">
+          <button id="urgentBtn" class="delBtn"><i data-feather="alert-triangle"></i></button>
           <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+        </div>
       </div>
       <div id="patients">
         <div class="tbl-content">
@@ -198,40 +259,39 @@
 
     </section>
 
-  
-
     <section id="four">
-      <div id="urgentSecretary" class = "prompt">
-        <form id="urgentForm" class="colDir myForm">
-          <h1 id="examinationFormId" >Create urgent examination</h1>
-          <div class="formDiv">
-              <label for="examinationTypeUrgent">Examination type:</label>
-              <select id="examinationTypeUrgent">
-                  <option value="visit" selected>Visit</option>
-                  <option value="operation">Operation</option>
-              </select>
-          </div>
-          <div class="formDiv">
-              <label for="examinationDurationUrgent">Duration:</label>
-              <input type="number" id="examinationDurationUrgent" min="15">
-          </div>
-          <div class="formDiv">
-              <label for="examinationPatienUrgent">Patient id:</label>
-              <input id="examinationPatienUrgent" type="number"/>
-          </div>
-          <div class="formDiv">
-              <label for="examinationSpecialityUrgent">Specialization</label>
-              <select id="examinationSpecialityUrgent">
-              </select>
-          </div>
-          <button class="mainBtn">OK</button>
-        </form>
+      <div id="expendedDynamicEquipment" class = "off">
+        <div class="tbl-content">
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Expended</th>
+                  </tr>
+              </thead>
+              <tbody id="expendedDynamicEquipmentTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="dynamicEquipmentTransfer">
+        <div class="tbl-content">
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Room Name</th>
+                      <th>Equipment</th>
+                      <th>Quantity</th>
+                  </tr>
+              </thead>
+              <tbody id="dynamicEquipmentTransferTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <section id="four">
-
-    </section>
 
   </main>
 

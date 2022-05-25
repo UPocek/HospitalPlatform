@@ -70,6 +70,8 @@ function setUpMenu(text1, text2, text3, text4, icon1, icon2, icon3, icon4) {
     });
 }
 
+
+
 function setUpPage() {
     let hi = document.querySelector('#hi h1');
     hi.innerText += `${user.firstName} ${user.lastName}`;
@@ -109,9 +111,9 @@ function showWindow(section) {
             sectionThree.classList.add('active'); 
             welcomeHeader.classList.remove('off');
             break;
-            case 4: 
+            case 4:
             sectionFour.classList.add('active');
-            welcomeHeader.classList.add('off');
+            welcomeHeader.classList.remove('off');
             break;
         }
     }
@@ -150,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setUpRooms();
                 }
                 else if (user['role'] == 'secretary') {
-                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Urgent Examination', 'user', 'user-x', 'inbox', 'alert-triangle');
+                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Dynamic Equipment', 'user', 'user-x', 'inbox', 'truck');
                     setUpPatients();
                 }
                 else if (user['role'] == 'patient') {

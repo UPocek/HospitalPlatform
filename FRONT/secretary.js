@@ -102,6 +102,8 @@ function setUpFunctionality() {
     setUpBlockedPatients();
     setupExaminationRequests();
     setupUrgent();
+    setupExpendedDynamicEquipment();
+    setupDynamicEquipmentTransfers();
 }
 
 function setUpBlockedPatients() {
@@ -324,6 +326,130 @@ function setupUrgent(){
     request.open('GET', 'https://localhost:7291/api/secretary/doctors/speciality');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+}
+
+
+function setupExpendedDynamicEquipment(){
+    let getRequest = new XMLHttpRequest();
+
+    let dynamicEquipmentTable = document.getElementById('expendedDynamicEquipmentTable');
+    
+    let expendedDynamicEquipmentContainer = document.getElementById('expendedDynamicEquipment');
+
+    dynamicEquipmentTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                if (response[0] != null){
+                    expendedDynamicEquipmentContainer.classList.remove('off');
+                    for (let i in response) {
+                        let expendedEquipmentName = response[i];
+
+                        let newRow = document.createElement('tr');
+    
+                        let expendedEquipmentNameContainer = document.createElement('td');
+                        expendedEquipmentNameContainer.classList.add("expendedequipment");
+                        expendedEquipmentNameContainer.innerText = expendedEquipmentName;
+
+                        let purchaseExpendedContainer = document.createElement('td');
+                        let purchaseExpendedBtn = document.createElement('button');
+                        purchaseExpendedBtn.innerHTML = '<i data-feather="corner-left-down"></i>';
+                        purchaseExpendedBtn.classList.add('requestExpendedBtn');
+                        purchaseExpendedBtn.setAttribute('key', expendedEquipmentName);
+                        purchaseExpendedBtn.addEventListener('click', function (e) {
+                            createDynamicEquipmentPurchase(this.getAttribute('key'));
+                        });
+                        purchaseExpendedContainer.classList.add('smallerWidth')
+                        purchaseExpendedContainer.appendChild(purchaseExpendedBtn);
+
+
+                        newRow.appendChild(expendedEquipmentNameContainer);
+                        newRow.appendChild(purchaseExpendedContainer);
+                        dynamicEquipmentTable.appendChild(newRow);
+                    }
+                    feather.replace();
+                }
+                else{
+                    expendedDynamicEquipmentContainer.classList.add('off');
+                }
+            }
+        }
+    }
+
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/expendedDynamicEquipment');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+}
+
+
+function setupDynamicEquipmentTransfers(){
+    let getRequest = new XMLHttpRequest();
+
+    let dynamicEquipmentTransferTable = document.getElementById('dynamicEquipmentTransferTable');
+
+    dynamicEquipmentTransferTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                for (let i in response) {
+                    let roomEquipmentPair = response[i];
+
+                    let roomName = roomEquipmentPair['key'];
+                    let equipment = roomEquipmentPair['value'];
+
+                    let newRow = document.createElement('tr');
+
+                    let roomNameContainer = document.createElement('td');
+                    roomNameContainer.innerText = roomName;
+                    let equipmentNameContainer = document.createElement('td');
+                    equipmentNameContainer.innerText = equipment['name'];
+                    let equipmentQuantityContainer = document.createElement('td');
+                    equipmentQuantityContainer.innerText = equipment['quantity'];
+
+                    let transferBtnContainer = document.createElement('td');
+                    let transferBtn = document.createElement('button');
+                    transferBtn.innerHTML = '<i data-feather="refresh-ccw"></i>';
+                    transferBtn.classList.add('requestExpendedBtn');
+                    transferBtn.setAttribute('roomName', roomName);
+                    transferBtn.setAttribute('equipment',equipment['name']);
+                    transferBtn.addEventListener('click', function (e) {
+                        transferEquipment(this.getAttribute('roomName'),this.getAttribute('equipment'));
+                    });
+                    transferBtnContainer.classList.add('smallerWidth');
+                    transferBtnContainer.appendChild(transferBtn);
+
+                    let alertContainer = document.createElement('td');
+                    let alertIcon = document.createElement('button');
+                    alertIcon.innerHTML = '<i data-feather="alert-circle"></i>';
+                    alertIcon.setAttribute('title',"Room is out of this type of equipment!")
+                    alertIcon.classList.add('declineBtn');
+                    alertContainer.appendChild(alertIcon);
+
+
+                    newRow.appendChild(roomNameContainer);
+                    newRow.appendChild(equipmentNameContainer);
+                    newRow.appendChild(equipmentQuantityContainer);
+                    if (equipment['quantity'] == 0){
+                        newRow.appendChild(alertContainer);
+                    }
+                    else{
+                        newRow.appendChild(document.createElement('td'));
+                    }
+                    newRow.appendChild(transferBtnContainer);
+                    dynamicEquipmentTransferTable.appendChild(newRow);
+                }
+                feather.replace();
+            }
+        }
+    }
+
+    getRequest.open('GET', 'https://localhost:7291/api/secretary/roomLowDynamicEquipment');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
 }
 
 
@@ -690,7 +816,16 @@ function showNewExamination(newExamination, examRow) {
     feather.replace();
 }
 
+let urgentBtn = document.getElementById('urgentBtn');
+
+let urgentPrompt = document.getElementById('urgentSecretary');
+
 let urgentForm = document.getElementById('urgentForm');
+
+urgentBtn.addEventListener('click',function(e){
+    urgentPrompt.classList.remove('off');
+    main.classList.add('hideMain');
+})
 
 urgentForm.addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -727,9 +862,12 @@ urgentForm.addEventListener('submit', async function (e) {
                         if (this.status == 200) {
                             if (JSON.parse(this.responseText)[0] == null){
                                 alert('Examination created sucessfuly');
-                                setUpPatients();
+                                main.classList.remove('hideMain');
+                                urgentPrompt.classList.add('off')
+                                setUpFunctionality();
                             }
                             else{
+                                urgentPrompt.classList.add('off')
                                 displayExaminations(JSON.parse(this.responseText),selectedPatientId,selectedType,selectedDuration);
                             }
                         
@@ -828,3 +966,131 @@ urgentBackBtn.addEventListener('click', function (e) {
     urgentTable.classList.add('off');
     setUpPatients();
 });
+
+function createDynamicEquipmentPurchase(equipmentName){
+    postRequest = new XMLHttpRequest();
+    main.classList.add('hideMain');
+    let dynamicEquipmentPrompt = document.getElementById('dynamicPurchasePopUp');
+    dynamicEquipmentPrompt.classList.remove('off')
+    let dynamicEquipmentForm = document.getElementById('dynamicPurchaseForm');
+
+    dynamicEquipmentForm.addEventListener('submit', function (e) {
+        dynamicEquipmentPrompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let eQuantity = document.getElementById('PurchaseQuantity').value;
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Dynamic equipment purchase completed successfuly!');
+                
+                }
+            }
+        }
+        if(eQuantity <= 0){
+            alert("Error: Quantity must be a number more than 0 and less than 300!");
+        }
+        else{
+        postRequest.open('POST', 'https://localhost:7291/api/secretary/purchaseDynamicEquipment');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({'name':equipmentName,'type':'operation equipment','quantity':eQuantity}));
+        }
+    });
+
+}
+
+function getEquipmentQuantityInRoom(roomName,equipmentName){
+    let request = new XMLHttpRequest();
+    let roomQuantity = document.getElementById('roomQuantity')
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                roomQuantity.value = JSON.parse(this.responseText);
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/roomEquipmentQuantity/'+roomName+"/"+equipmentName);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function getTransferableRooms(roomName,equipmentName){
+    let request = new XMLHttpRequest();
+    let roomOptions = document.getElementById('selectRoomTransfer')
+    roomOptions.innerHTML = '';
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                for(let i in mainResponse){
+                    if(roomName != mainResponse[i]['name']){
+                        let newOption = document.createElement('option');
+                        newOption.setAttribute('value', mainResponse[i]['name']);
+                        newOption.innerText = mainResponse[i]['name'];
+                        roomOptions.appendChild(newOption);
+                    }
+                }
+                getEquipmentQuantityInRoom(roomOptions.value,equipmentName);
+                roomOptions.addEventListener('change', function (e) {
+                    getEquipmentQuantityInRoom(roomOptions.value,equipmentName);
+                })
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function transferEquipment(roomName,equipmentName){
+    let request = new XMLHttpRequest()
+    main.classList.add('hideMain');
+    let dynamicEquipmentPrompt = document.getElementById('dynamicEquipmentTransferPopUp');
+    dynamicEquipmentPrompt.classList.remove('off')
+    let dynamicEquipmentForm = document.getElementById('dynamicEquipmentTransferForm');
+
+    getTransferableRooms(roomName,equipmentName);
+
+    dynamicEquipmentForm.addEventListener('submit', function (e) {
+        dynamicEquipmentPrompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let transferRoom = document.getElementById('selectRoomTransfer').value;
+        let transferQuantity = document.getElementById('transferQuantity').value;
+        let roomQuantity = document.getElementById('roomQuantity').value;
+
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Equipment successfuly transfered!");
+                    setUpFunctionality();
+                }
+            }
+        }
+        
+        if(transferQuantity < 0 || transferQuantity > parseInt(roomQuantity) || transferQuantity == null){
+            alert("Error: Transfer quantity must be a number between 0 and roomQuantity value");
+        }
+        else if(transferRoom == null){
+            alert("Error: No room is selected");
+        }
+        else{
+            request.open('PUT', 'https://localhost:7291/api/secretary/transferEquipment/'+equipmentName+'/'+transferRoom+"/"+roomName+"/"+transferQuantity);
+            request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            request.send();
+        }
+
+    });
+
+
+
+
+}

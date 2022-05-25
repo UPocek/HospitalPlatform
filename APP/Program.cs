@@ -46,6 +46,12 @@ builder.Services.AddCronJob<RenovationService>(c =>
     c.CronExpression = @"0 0 * * *";
 });
 
+builder.Services.AddCronJob<PurchaseService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"* * * * *";
+});
+
 // Cors policy
 builder.Services.AddCors(options =>
 {
