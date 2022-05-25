@@ -57,6 +57,26 @@
       </form>
 	  </div>
 
+    <div id="dynamicEquipmentTransferPopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicEquipmentTransferForm" class="colDir myForm">
+          <h1 id="dynamicEquipmentTransferFormId" >Create transfer</h1>
+          <div class="formDiv">
+              <label for="selectRoomTransfer">Room:</label>
+              <select id="selectRoomTransfer">
+              </select>
+          </div>
+          <div class="formDiv">
+              <label for="roomQuantity">Room Quantity:</label>
+              <input id="roomQuantity" type="number" max=300 min=1 disabled/>
+          </div>
+          <div class="formDiv">
+              <label for="transferQuantity">To Transfer:</label>
+              <input id="transferQuantity" type="number" max=300 min=1/>
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
     <div id="editPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
       <form id="editPatientForm" class="colDir myForm patientForm">
         <h1 class="editPatientHeader">Create patient</h1>
@@ -114,8 +134,11 @@
         <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
-      <div class="plusDiv">
+      <div class = "patientHeader">
+        <div class="plusDiv">
+          <button id="urgentBtn" class="delBtn"><i data-feather="alert-triangle"></i></button>
           <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+        </div>
       </div>
       <div id="patients">
         <div class="tbl-content">

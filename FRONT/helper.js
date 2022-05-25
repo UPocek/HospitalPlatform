@@ -72,50 +72,6 @@ function setUpMenu(text1, text2, text3, text4, icon1, icon2, icon3, icon4) {
 
 
 
-function setUpSecretaryMenu(text1, text2, text3, text4, text5, icon1, icon2, icon3, icon4, icon5) {
-    let menu = document.getElementById('mainMenu');
-    menu.innerHTML += `
-    <li id='option1' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='${icon1}'></i><span>${text1}</span></a>
-    </li>
-    <li id='option2' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='${icon2}'></i><span>${text2}</span></a>
-    </li>
-    <li id='option3' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='${icon3}'></i><span>${text3}</span></a>
-    </li>
-    <li id='option4' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='${icon4}'></i><span>${text4}</span></a>
-    </li>
-    <li id='option5' class='navbar__item'>
-        <a class='navbar__link'><i data-feather='${icon5}'></i><span>${text5}</span></a>
-    </li>
-    `;
-    feather.replace();
-
-    let menuItem1 = document.getElementById('option1');
-    let menuItem2 = document.getElementById('option2');
-    let menuItem3 = document.getElementById('option3');
-    let menuItem4 = document.getElementById('option4');
-    let menuItem5 = document.getElementById('option5');
-
-    menuItem1.addEventListener('click', (e) => {
-        showWindow(1);
-    });
-    menuItem2.addEventListener('click', (e) => {
-        showWindow(2);
-    });
-    menuItem3.addEventListener('click', (e) => {
-        showWindow(3);
-    });
-    menuItem4.addEventListener('click', (e) => {
-        showWindow(4);
-    });
-    menuItem5.addEventListener('click', (e) => {
-        showWindow(5);
-    });
-}
-
 function setUpPage() {
     let hi = document.querySelector('#hi h1');
     hi.innerText += `${user.firstName} ${user.lastName}`;
@@ -141,8 +97,6 @@ function showWindow(section) {
     sectionFour.classList.remove('active');
 
     if(user['role'] == 'secretary'){
-        let sectionFive = document.getElementById('five');
-        sectionFive.classList.remove('active');
         let welcomeHeader = document.getElementById("hi");
         switch (section) {
             case 1: 
@@ -160,10 +114,6 @@ function showWindow(section) {
             case 4:
             sectionFour.classList.add('active');
             welcomeHeader.classList.remove('off');
-            break;
-            case 5: 
-            sectionFive.classList.add('active');
-            welcomeHeader.classList.add('off');
             break;
         }
     }
@@ -202,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setUpRooms();
                 }
                 else if (user['role'] == 'secretary') {
-                    setUpSecretaryMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Dynamic Equipment', 'Urgent Examination', 'user', 'user-x', 'inbox', 'truck', 'alert-triangle');
+                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Dynamic Equipment', 'user', 'user-x', 'inbox', 'truck');
                     setUpPatients();
                 }
                 else if (user['role'] == 'patient') {

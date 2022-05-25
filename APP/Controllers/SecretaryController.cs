@@ -698,7 +698,7 @@ namespace APP.Controllers
         }
 
         // GET: api/Secretary/roomEquipmentQuantity/{roomName}/{equipmentName}
-        [HttpGet("roomEquipmentQuantity")]
+        [HttpGet("roomEquipmentQuantity/{roomName}/{equipmentName}")]
         public async Task<int> GetEquipmentQuantityRoom(string roomName,string equipmentName)
         {
             var rooms = database.GetCollection<Room>("Rooms");

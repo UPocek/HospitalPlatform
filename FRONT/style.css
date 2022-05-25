@@ -1985,6 +1985,10 @@ footer {
     cursor: pointer;
 }
 
+#urgentBtn{
+    margin-right:30px;
+}
+
 tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
@@ -2508,11 +2512,6 @@ td button {
     text-align: left;
 }
 
-.urgentDiv {
-    display: flex;
-    justify-content: flex-start;
-    margin: 10px 10px;
-}
 
 #urgent {
     min-width: 30px;

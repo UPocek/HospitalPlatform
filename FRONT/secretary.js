@@ -415,8 +415,11 @@ function setupDynamicEquipmentTransfers(){
                     transferBtn.innerHTML = '<i data-feather="refresh-ccw"></i>';
                     transferBtn.classList.add('requestExpendedBtn');
                     transferBtn.setAttribute('roomName', roomName);
-                    transferBtn.setAttribute('equipment',equipment)
-                    transferBtnContainer.classList.add('smallerWidth')
+                    transferBtn.setAttribute('equipment',equipment['name']);
+                    transferBtn.addEventListener('click', function (e) {
+                        transferEquipment(this.getAttribute('roomName'),this.getAttribute('equipment'));
+                    });
+                    transferBtnContainer.classList.add('smallerWidth');
                     transferBtnContainer.appendChild(transferBtn);
 
                     let alertContainer = document.createElement('td');
@@ -985,5 +988,97 @@ function createDynamicEquipmentPurchase(equipmentName){
         postRequest.send(JSON.stringify({'name':equipmentName,'type':'operation equipment','quantity':eQuantity}));
         }
     });
+
+}
+
+function getEquipmentQuantityInRoom(roomName,equipmentName){
+    let request = new XMLHttpRequest();
+    let roomQuantity = document.getElementById('roomQuantity')
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                roomQuantity.value = JSON.parse(this.responseText);
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/secretary/roomEquipmentQuantity/'+roomName+"/"+equipmentName);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function getTransferableRooms(roomName,equipmentName){
+    let request = new XMLHttpRequest();
+    let roomOptions = document.getElementById('selectRoomTransfer')
+    roomOptions.innerHTML = '';
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                mainResponse = JSON.parse(this.responseText);
+                for(let i in mainResponse){
+                    if(roomName != mainResponse[i]['name']){
+                        let newOption = document.createElement('option');
+                        newOption.setAttribute('value', mainResponse[i]['name']);
+                        newOption.innerText = mainResponse[i]['name'];
+                        roomOptions.appendChild(newOption);
+                    }
+                }
+                getEquipmentQuantityInRoom(roomOptions.value,equipmentName);
+                roomOptions.addEventListener('change', function (e) {
+                    getEquipmentQuantityInRoom(roomOptions.value,equipmentName);
+                })
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function transferEquipment(roomName,equipmentName){
+    let request = new XMLHttpRequest()
+    main.classList.add('hideMain');
+    let dynamicEquipmentPrompt = document.getElementById('dynamicEquipmentTransferPopUp');
+    dynamicEquipmentPrompt.classList.remove('off')
+    let dynamicEquipmentForm = document.getElementById('dynamicEquipmentTransferForm');
+
+    getTransferableRooms(roomName,equipmentName);
+
+    dynamicEquipmentForm.addEventListener('submit', function (e) {
+        dynamicEquipmentPrompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let transferRoom = document.getElementById('selectRoomTransfer').value;
+        let transferQuantity = document.getElementById('transferQuantity').value;
+        let roomQuantity = document.getElementById('roomQuantity').value;
+
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Equipment successfuly transfered!");
+                    setUpFunctionality();
+                }
+            }
+        }
+        
+        if(transferQuantity < 0 || transferQuantity > parseInt(roomQuantity)){
+            alert("Error: Transfer quantity must be a number between 0 and roomQuantity value");
+        }
+        else if(transferRoom == null){
+            alert("Error: No room is selected");
+        }
+        else{
+            request.open('PUT', 'https://localhost:7291/api/secretary/transferEquipment/'+equipmentName+'/'+transferRoom+"/"+roomName+"/"+transferQuantity);
+            request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            request.send();
+        }
+
+    });
+
+
+
 
 }
