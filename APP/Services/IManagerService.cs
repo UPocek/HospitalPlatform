@@ -1,5 +1,3 @@
-using MongoDB.Driver;
-
 public interface IManagerService
 {
     public Task<List<Room>> GetAllRooms();

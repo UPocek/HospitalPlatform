@@ -1,5 +1,3 @@
-using MongoDB.Driver;
-
 public class ManagerService : IManagerService
 {
     private IManagerRepository repository;
