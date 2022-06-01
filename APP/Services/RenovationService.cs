@@ -1,7 +1,7 @@
 using MongoDB.Driver;
 public class RenovationService : CronJobService
 {
-    public RenovationService(IScheduleConfig<TransferService> config)
+    public RenovationService(IScheduleConfig<RenovationService> config)
         : base(config.CronExpression, config.TimeZoneInfo)
     {
     }
