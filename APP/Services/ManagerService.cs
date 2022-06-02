@@ -6,35 +6,35 @@ public class ManagerService : IManagerService
         repository = new ManagerRepository();
     }
 
-    public async Task<List<Room>> GetAllRooms()
-    {
-        return await repository.GetAllRooms();
-    }
+    // public async Task<List<Room>> GetAllRooms()
+    // {
+    //     return await repository.GetAllRooms();
+    // }
 
-    public async Task<List<Drug>> GetAllDrugs()
-    {
-        return await repository.GetAllDrugs();
-    }
+    // public async Task<List<Drug>> GetAllDrugs()
+    // {
+    //     return await repository.GetAllDrugs();
+    // }
 
-    public async Task<DrugIngredients> GetAllIngredients()
-    {
-        return await repository.GetAllIngredients();
-    }
+    // public async Task<DrugIngredients> GetAllIngredients()
+    // {
+    //     return await repository.GetAllIngredients();
+    // }
 
-    public async Task<Hospital> GetHospitalPolls()
-    {
-        return await repository.GetHospital();
-    }
+    // public async Task<Hospital> GetHospitalPolls()
+    // {
+    //     return await repository.GetHospital();
+    // }
 
-    public async Task<List<PollForDoctors>> GetDoctorPolls()
-    {
-        return await repository.GetAllDoctors();
-    }
+    // public async Task<List<PollForDoctors>> GetDoctorPolls()
+    // {
+    //     return await repository.GetAllDoctors();
+    // }
 
-    public async Task SaveRoom(Room room)
-    {
-        await repository.InsertRoom(room);
-    }
+    // public async Task SaveRoom(Room room)
+    // {
+    //     await repository.InsertRoom(room);
+    // }
 
     public async Task SaveRenovation(Renovation renovation)
     {
@@ -140,10 +140,10 @@ public class ManagerService : IManagerService
         }
     }
 
-    public async Task<bool> IsRoomNameValid(Room room)
-    {
-        return await repository.GetRoomByName(room.Name) == null;
-    }
+    // public async Task<bool> IsRoomNameValid(Room room)
+    // {
+    //     return await repository.GetRoomByName(room.Name) == null;
+    // }
 
     public async Task<bool> IsDrugNameValid(Drug drug)
     {

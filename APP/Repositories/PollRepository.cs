@@ -1,11 +1,12 @@
 using MongoDB.Driver;
 
-public class DoctorRepository : IDoctorRepository
+
+public class PollRepository : IPollRepository
 {
 
     private IMongoDatabase database;
 
-    public DoctorRepository()
+    public PollRepository()
     {
 
         var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
@@ -14,10 +15,10 @@ public class DoctorRepository : IDoctorRepository
 
     }
 
-    public async Task<List<PollForDoctors>> GetAllDoctors()
+    public async Task<Hospital> GetHospital()
     {
-        var employees = database.GetCollection<PollForDoctors>("Employees");
-        return await employees.Find(item => item.Role == "doctor").ToListAsync();
+        var hospital = database.GetCollection<Hospital>("Hospital");
+        return await hospital.Find(item => true).FirstOrDefaultAsync();
     }
 
 }

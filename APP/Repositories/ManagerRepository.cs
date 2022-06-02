@@ -14,29 +14,29 @@ public class ManagerRepository : IManagerRepository
 
     }
 
-    public async Task<List<Room>> GetAllRooms()
-    {
-        var rooms = database.GetCollection<Room>("Rooms");
-        return await rooms.Find(item => true).ToListAsync();
-    }
+    // public async Task<List<Room>> GetAllRooms()
+    // {
+    //     var rooms = database.GetCollection<Room>("Rooms");
+    //     return await rooms.Find(item => true).ToListAsync();
+    // }
 
-    public async Task<List<Drug>> GetAllDrugs()
-    {
-        var drugs = database.GetCollection<Drug>("Drugs");
-        return await drugs.Find(item => true).ToListAsync();
-    }
+    // public async Task<List<Drug>> GetAllDrugs()
+    // {
+    //     var drugs = database.GetCollection<Drug>("Drugs");
+    //     return await drugs.Find(item => true).ToListAsync();
+    // }
 
-    public async Task<DrugIngredients> GetAllIngredients()
-    {
-        var drugIngredients = database.GetCollection<DrugIngredients>("DrugIngredients");
-        return await drugIngredients.Find(item => true).FirstOrDefaultAsync();
-    }
+    // public async Task<DrugIngredients> GetAllIngredients()
+    // {
+    //     var drugIngredients = database.GetCollection<DrugIngredients>("DrugIngredients");
+    //     return await drugIngredients.Find(item => true).FirstOrDefaultAsync();
+    // }
 
-    public async Task<List<PollForDoctors>> GetAllDoctors()
-    {
-        var employees = database.GetCollection<PollForDoctors>("Employees");
-        return await employees.Find(item => item.Role == "doctor").ToListAsync();
-    }
+    // public async Task<List<PollForDoctors>> GetAllDoctors()
+    // {
+    //     var employees = database.GetCollection<PollForDoctors>("Employees");
+    //     return await employees.Find(item => item.Role == "doctor").ToListAsync();
+    // }
 
     public async Task<List<Examination>> GetAllExaminationsInRoom(string roomName)
     {
@@ -50,11 +50,11 @@ public class ManagerRepository : IManagerRepository
         return await renovations.Find(item => item.Room == roomName).ToListAsync();
     }
 
-    public async Task<Hospital> GetHospital()
-    {
-        var hospital = database.GetCollection<Hospital>("Hospital");
-        return await hospital.Find(item => true).FirstOrDefaultAsync();
-    }
+    // public async Task<Hospital> GetHospital()
+    // {
+    //     var hospital = database.GetCollection<Hospital>("Hospital");
+    //     return await hospital.Find(item => true).FirstOrDefaultAsync();
+    // }
 
     public async Task<Room> GetRoomByName(string name)
     {
@@ -68,11 +68,11 @@ public class ManagerRepository : IManagerRepository
         return await drugs.Find(item => item.Name == name).FirstOrDefaultAsync();
     }
 
-    public async Task InsertRoom(Room room)
-    {
-        var rooms = database.GetCollection<Room>("Rooms");
-        await rooms.InsertOneAsync(room);
-    }
+    // public async Task InsertRoom(Room room)
+    // {
+    //     var rooms = database.GetCollection<Room>("Rooms");
+    //     await rooms.InsertOneAsync(room);
+    // }
 
     public async Task InsertDrug(Drug drug)
     {

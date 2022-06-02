@@ -21,4 +21,14 @@ public class RoomService : IRoomService
     {
         await roomRepository.UpdateRoom(name, room);
     }
+
+    public async Task<bool> IsRoomNameValid(Room room)
+    {
+        return await roomRepository.GetRoomByName(room.Name) == null;
+    }
+
+    public async Task SaveRoom(Room room)
+    {
+        await roomRepository.InsertRoom(room);
+    }
 }

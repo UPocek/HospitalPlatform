@@ -30,6 +30,19 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> UpdateRoom(string name, Room room)
     {
         await service.UpdateRoom(name, room);
-        return Ok();    
+        return Ok();
+    }
+
+    [HttpPost("all")]
+    public async Task<IActionResult> CreateRoom(Room room)
+    {
+        if (!await service.IsRoomNameValid(room))
+        {
+            return BadRequest();
+        }
+
+        await service.SaveRoom(room);
+
+        return Ok();
     }
 }

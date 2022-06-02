@@ -1,11 +1,11 @@
 using MongoDB.Driver;
 
-public class DoctorRepository : IDoctorRepository
+public class IngredientRepository : IIngredientRepository
 {
 
     private IMongoDatabase database;
 
-    public DoctorRepository()
+    public IngredientRepository()
     {
 
         var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
@@ -14,10 +14,10 @@ public class DoctorRepository : IDoctorRepository
 
     }
 
-    public async Task<List<PollForDoctors>> GetAllDoctors()
+    public async Task<DrugIngredients> GetAllIngredients()
     {
-        var employees = database.GetCollection<PollForDoctors>("Employees");
-        return await employees.Find(item => item.Role == "doctor").ToListAsync();
+        var drugIngredients = database.GetCollection<DrugIngredients>("DrugIngredients");
+        return await drugIngredients.Find(item => true).FirstOrDefaultAsync();
     }
 
 }

@@ -15,54 +15,54 @@ public class ManagerController : ControllerBase
         dateToday = DateTime.Now.ToString("yyyy-MM-dd");
     }
 
-    // GET: api/Manager/rooms
-    [HttpGet("rooms")]
-    public async Task<List<Room>> GetRooms()
-    {
-        return await service.GetAllRooms();
-    }
+    // // GET: api/Manager/rooms
+    // [HttpGet("rooms")]
+    // public async Task<List<Room>> GetRooms()
+    // {
+    //     return await service.GetAllRooms();
+    // }
 
-    // GET: api/Manager/drugs
-    [HttpGet("drugs")]
-    public async Task<List<Drug>> GetDrugs()
-    {
-        return await service.GetAllDrugs();
-    }
+    // // GET: api/Manager/drugs
+    // [HttpGet("drugs")]
+    // public async Task<List<Drug>> GetDrugs()
+    // {
+    //     return await service.GetAllDrugs();
+    // }
 
-    // GET: api/Manager/ingredients
-    [HttpGet("ingredients")]
-    public async Task<DrugIngredients> GetIngredients()
-    {
-        return await service.GetAllIngredients();
-    }
+    // // GET: api/Manager/ingredients
+    // [HttpGet("ingredients")]
+    // public async Task<DrugIngredients> GetIngredients()
+    // {
+    //     return await service.GetAllIngredients();
+    // }
 
-    // GET: api/Manager/polls
-    [HttpGet("polls")]
-    public async Task<Hospital> GetHospitalPolls()
-    {
-        return await service.GetHospitalPolls();
-    }
+    // // GET: api/Manager/polls
+    // [HttpGet("polls")]
+    // public async Task<Hospital> GetHospitalPolls()
+    // {
+    //     return await service.GetHospitalPolls();
+    // }
 
-    // GET: api/Manager/doctorpolls
-    [HttpGet("doctorpolls")]
-    public async Task<List<PollForDoctors>> GetDoctorPolls()
-    {
-        return await service.GetDoctorPolls();
-    }
+    // // GET: api/Manager/doctorpolls
+    // [HttpGet("doctorpolls")]
+    // public async Task<List<PollForDoctors>> GetDoctorPolls()
+    // {
+    //     return await service.GetDoctorPolls();
+    // }
 
-    // POST: api/Manager/rooms
-    [HttpPost("rooms")]
-    public async Task<IActionResult> CreateRoom(Room room)
-    {
-        if (!await service.IsRoomNameValid(room))
-        {
-            return BadRequest();
-        }
+    // // POST: api/Manager/rooms
+    // [HttpPost("rooms")]
+    // public async Task<IActionResult> CreateRoom(Room room)
+    // {
+    //     if (!await service.IsRoomNameValid(room))
+    //     {
+    //         return BadRequest();
+    //     }
 
-        await service.SaveRoom(room);
+    //     await service.SaveRoom(room);
 
-        return Ok();
-    }
+    //     return Ok();
+    // }
 
     // POST: api/Manager/renovations
     [HttpPost("renovations")]

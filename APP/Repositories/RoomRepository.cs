@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 
-public class RoomRepository:IRoomRepository{
+public class RoomRepository : IRoomRepository
+{
     private IMongoDatabase database;
 
     public RoomRepository()
@@ -11,7 +12,8 @@ public class RoomRepository:IRoomRepository{
         database = client.GetDatabase("USI");
 
     }
-    public async Task<List<Room>> GetAllRooms(){
+    public async Task<List<Room>> GetAllRooms()
+    {
 
         var rooms = database.GetCollection<Room>("Rooms");
         return await rooms.Find(item => true).ToListAsync();
@@ -30,6 +32,12 @@ public class RoomRepository:IRoomRepository{
     {
         var rooms = database.GetCollection<Room>("Rooms");
         await rooms.FindOneAndReplaceAsync(r => r.Name == name, room);
-        
+
+    }
+
+    public async Task InsertRoom(Room room)
+    {
+        var rooms = database.GetCollection<Room>("Rooms");
+        await rooms.InsertOneAsync(room);
     }
 }
