@@ -91,7 +91,7 @@ function setUpPatientExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientId/' + patientId);
+    request.open('GET', 'https://localhost:7291/api/examination/patient/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
