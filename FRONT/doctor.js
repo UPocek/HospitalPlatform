@@ -183,7 +183,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/MedicalCard/' + currentExamination['patient']);
+        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/medicalcard/' + currentExamination['patient']);
         getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getMedicalRecordRequest.send();
     } else {
@@ -277,7 +277,7 @@ function searchSchedule() {
                 for (let i in response) {
                     let examination = response[i];
                     let newRow = document.createElement("tr");
-        
+
                     let examinationDate = document.createElement("td");
                     examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
                     let examinationDuration = document.createElement("td");
@@ -290,7 +290,7 @@ function searchSchedule() {
                     examinationType.innerText = examination["type"];
                     let isUrgent = document.createElement("td");
                     isUrgent.innerText = examination["urgent"];
-        
+
                     let one = document.createElement("td");
                     let patientBtn = document.createElement("button");
                     patientBtn.innerHTML = '<i data-feather="user"></i>';
@@ -300,7 +300,7 @@ function searchSchedule() {
                         window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
                     });
                     one.appendChild(patientBtn);
-        
+
                     let two = document.createElement("td");
                     let reviewBtn = document.createElement("button");
                     reviewBtn.innerHTML = '<i data-feather="check-square"></i>';
@@ -310,7 +310,7 @@ function searchSchedule() {
                         reviewExamination(parseInt(reviewBtn.getAttribute('key')));
                     });
                     two.appendChild(reviewBtn);
-        
+
                     newRow.appendChild(examinationDate);
                     newRow.appendChild(examinationDuration);
                     newRow.appendChild(examinationDone);
@@ -325,7 +325,7 @@ function searchSchedule() {
             }
         }
 
-        scheduleRequest.open('GET', 'https://localhost:7291/api/examination/doctorSchedule/' + doctorId);
+        scheduleRequest.open('GET', 'https://localhost:7291/api/examination/doctorschedule/' + doctorId);
         scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         scheduleRequest.send(JSON.stringify(inputDate));
     }
@@ -561,7 +561,7 @@ function createExamination() {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room/all');
+    getRequest.open('GET', 'https://localhost:7291/api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -654,7 +654,7 @@ function updateExamination(id) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room/all');
+    getRequest.open('GET', 'https://localhost:7291/api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -868,7 +868,7 @@ percsriptionBtn.addEventListener('click', function (e) {
         }
     }
 
-    getDrugsRequest.open('GET', 'https://localhost:7291/api/drug/all');
+    getDrugsRequest.open('GET', 'https://localhost:7291/api/drug');
     getDrugsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDrugsRequest.send();
 })
@@ -1029,7 +1029,7 @@ function getDoctors() {
             }
         }
     }
-    getDoctorsRequest.open('GET', 'https://localhost:7291/api/my/users/doctors');
+    getDoctorsRequest.open('GET', 'https://localhost:7291/api/user/doctors');
     getDoctorsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDoctorsRequest.send();
 }
@@ -1082,7 +1082,7 @@ addReferallBtn.addEventListener('click', function (e) {
     let referallOption = document.getElementById('referallOption').value;
     let referralNew;
     if (valueOfReferallType == 'doctor') {
-        referralNew= { "doctorId": referallOption };
+        referralNew = { "doctorId": referallOption };
     }
     else {
         referralNew = { "speciality": referallOption };

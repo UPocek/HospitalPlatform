@@ -46,6 +46,6 @@ loginForm.addEventListener('submit', function (e) {
         var finalPassword = document.getElementById("signInPassword2").value;
     }
 
-    loginRequest.open('POST', 'https://localhost:7291/api/my/authenticate/' + finalEmail + '&' + finalPassword);
+    loginRequest.open('POST', 'https://localhost:7291/api/user/login/' + finalEmail + '&' + finalPassword);
     loginRequest.send();
 });

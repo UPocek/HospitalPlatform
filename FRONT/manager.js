@@ -63,7 +63,7 @@ function setUpRooms() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/manager/rooms');
+    request.open('GET', 'https://localhost:7291/api/room');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -111,7 +111,7 @@ createRoomBtn.addEventListener('click', function (e) {
         let finalName = document.getElementById('createRoomName').value;
         let finalType = document.getElementById('createRoomType').value;
         if (finalName && finalType) {
-            postRequest.open('POST', 'https://localhost:7291/api/manager/rooms');
+            postRequest.open('POST', 'https://localhost:7291/api/room');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
@@ -151,7 +151,7 @@ function renovateRoom(key) {
         let finalToDate = document.getElementById('toRenovation').value;
 
         if (areDatesValid(finalFromDate, finalToDate)) {
-            postRequest.open('POST', 'https://localhost:7291/api/manager/renovations');
+            postRequest.open('POST', 'https://localhost:7291/api/renovation/simple');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'room': key, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'simple' }));
@@ -194,7 +194,7 @@ function updateRoom(key) {
         let finalType = document.getElementById('roomType').value;
 
         if (finalName && finalType) {
-            putRequest.open('PUT', 'https://localhost:7291/api/manager/rooms/' + key);
+            putRequest.open('PUT', 'https://localhost:7291/api/room/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName, 'type': finalType, 'inRenovation': false, 'equipment': [] }));
@@ -219,7 +219,7 @@ function deleteRoom(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/rooms/' + key);
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/room/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -286,7 +286,7 @@ function makeDevide(e) {
     let finalToDate = document.getElementById('toComplexRenovation').value;
 
     if (areDatesValid(finalFromDate, finalToDate)) {
-        devideRequest.open('POST', 'https://localhost:7291/api/manager/renovationdevide');
+        devideRequest.open('POST', 'https://localhost:7291/api/renovation/devide');
         devideRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         devideRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         devideRequest.send(JSON.stringify({ 'room': finalRoom, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'devide' }));
@@ -317,7 +317,7 @@ function makeMerge(e) {
     let finalToDate = document.getElementById('toComplexRenovation1').value;
 
     if (finalRoom1 != finalRoom2 && isDateFormatOk(finalFromDate) && isDateFormatOk(finalToDate) && finalFromDate >= date.toISOString().split('T')[0] && finalToDate > finalFromDate) {
-        mergeRequest.open('POST', 'https://localhost:7291/api/manager/renovationmerge');
+        mergeRequest.open('POST', 'https://localhost:7291/api/renovation/merge');
         mergeRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         mergeRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         mergeRequest.send(JSON.stringify({ 'room': finalRoom1, 'room2': finalRoom2, 'startDate': finalFromDate, 'endDate': finalToDate, 'done': false, 'kind': 'merge' }));
@@ -565,7 +565,7 @@ transferForm.addEventListener('submit', function (e) {
 
     let validTransfer = ok && finalRoom1 != finalRoom2 && arr.length != 0 && isDateFormatOk(finalDate) && finalDate >= date.toISOString().split('T')[0];
     if (validTransfer) {
-        transferRequest.open('POST', 'https://localhost:7291/api/manager/transfer');
+        transferRequest.open('POST', 'https://localhost:7291/api/transfer');
         transferRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         transferRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         transferRequest.send(JSON.stringify({ 'room1': finalRoom1, 'room2': finalRoom2, 'date': finalDate, 'done': false, 'equipment': arr }));
@@ -641,7 +641,7 @@ function setUpDrugs() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/manager/drugs');
+    request.open('GET', 'https://localhost:7291/api/drug');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -700,7 +700,7 @@ createDrug.addEventListener('click', function (e) {
         }
 
         if (finalName && finalIngredients.length != 0) {
-            postRequest.open('POST', 'https://localhost:7291/api/manager/drugs');
+            postRequest.open('POST', 'https://localhost:7291/api/drug');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
@@ -757,7 +757,7 @@ function setUpIngredients() {
         }
     }
 
-    getIngredientsRequest.open('GET', 'https://localhost:7291/api/manager/ingredients');
+    getIngredientsRequest.open('GET', 'https://localhost:7291/api/ingredient');
     getIngredientsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getIngredientsRequest.send();
 }
@@ -793,7 +793,7 @@ createIngredientBtn.addEventListener('click', function (e) {
         let finalName = document.getElementById('createIngredientName').value;
 
         if (finalName) {
-            postRequest.open('POST', 'https://localhost:7291/api/manager/ingredients');
+            postRequest.open('POST', 'https://localhost:7291/api/ingredient');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': finalName }));
@@ -866,7 +866,7 @@ function updateDrug(key, myIngredients, comment) {
         }
 
         if (finalName && finalIngredients.length != 0) {
-            putRequest.open('PUT', 'https://localhost:7291/api/manager/drugs/' + key);
+            putRequest.open('PUT', 'https://localhost:7291/api/drug/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName, 'ingredients': finalIngredients, 'status': 'inReview' }));
@@ -912,7 +912,7 @@ function updateIngredient(key) {
         let finalName = document.getElementById('updateIngredientName').value;
 
         if (finalName) {
-            putRequest.open('PUT', 'https://localhost:7291/api/manager/ingredients/' + key);
+            putRequest.open('PUT', 'https://localhost:7291/api/ingredient/' + key);
             putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             putRequest.send(JSON.stringify({ 'name': finalName }));
@@ -937,7 +937,7 @@ function deleteDrug(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/drugs/' + key);
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/drug/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -957,7 +957,7 @@ function deleteIngredient(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/manager/ingredients/' + key);
+    deleteRequest.open('DELETE', 'https://localhost:7291/api/ingredient/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -1154,11 +1154,11 @@ function setUpCharts() {
         }
     }
 
-    getRequestHospital.open('GET', 'https://localhost:7291/api/manager/polls');
+    getRequestHospital.open('GET', 'https://localhost:7291/api/poll/hospital');
     getRequestHospital.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequestHospital.send();
 
-    getRequestDoctors.open('GET', 'https://localhost:7291/api/manager/doctorpolls');
+    getRequestDoctors.open('GET', 'https://localhost:7291/api/poll/doctor');
     getRequestDoctors.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequestDoctors.send();
 }

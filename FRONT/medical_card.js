@@ -44,7 +44,7 @@ function setupPatientBasicInfo() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + patientId);
+    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientmedicalcard/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -195,7 +195,7 @@ function displayReferrals() {
             }
         }
 
-        request.open('GET', 'https://localhost:7291/api/Secretary/patients/' + patientId);
+        request.open('GET', 'https://localhost:7291/api/secretary/patients/' + patientId);
         request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         request.send();
 
@@ -234,7 +234,7 @@ function createRefferedExaminationByDoctorId(doctorid, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', 'https://localhost:7291/api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -273,7 +273,7 @@ function createRefferedExaminationBySpeciality(doctorSpeciality, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', 'https://localhost:7291/api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -382,7 +382,7 @@ function setUpPatientInstructions() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/my/users/doctors');
+    request.open('GET', 'https://localhost:7291/api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }

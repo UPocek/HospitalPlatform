@@ -40,7 +40,7 @@ builder.Services.AddCronJob<TransferService>(c =>
     c.CronExpression = @"0 0 * * *";
 });
 
-builder.Services.AddCronJob<RenovationService>(c =>
+builder.Services.AddCronJob<CronRenovationService>(c =>
 {
     c.TimeZoneInfo = TimeZoneInfo.Local;
     c.CronExpression = @"0 0 * * *";
