@@ -35,7 +35,7 @@ public class IngredientController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateIngredinet(string id, Dictionary<string, string> data)
     {
-        if (!await _ingredientService.IngredientAlreadyExists(data["name"]))
+        if (await _ingredientService.IngredientAlreadyExists(data["name"]))
         {
             return BadRequest();
         }
