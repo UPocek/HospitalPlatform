@@ -83,6 +83,7 @@ function setUpFunctionality() {
     doctorOptions('doctorEditExamination');
     doctorOptions('doctorAdvancedCreateExamination');
     setUpSearchExaminations('empty');
+    setUpDrugs();
 }
 
 function setUpSearchExaminations(myFilter) {
@@ -495,6 +496,97 @@ function setUpMedicalRecord() {
     getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + userId);
     getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getMedicalRecordRequest.send();
+}
+
+function setUpDrugs() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                let table = document.getElementById('medicalInstructions');
+                table.innerHTML = '';
+                for (let i in response) {
+
+                    let instruction = response[i];
+                    let newRow = document.createElement('tr');
+
+                    let cDrug = document.createElement('td');
+                    cDrug.innerText = instruction['drug'];
+
+                    let cFrom = document.createElement('td');
+                    var instructionFrom = new Date(instruction['startDate']);
+                    cFrom.innerText = instructionFrom.toLocaleString();
+                    
+                    let cTo = document.createElement('td');
+                    var instructionTo = new Date(instruction['endDate']);
+                    cTo.innerText = instructionTo.toLocaleString();
+
+                    let one = document.createElement('td');
+                    let putBtn = document.createElement('button');
+
+                    putBtn.innerHTML = '<i data-feather="file-text"></i>';
+                    putBtn.classList.add('putBtn');
+                    putBtn.setAttribute('key', instruction['drug']);
+                    putBtn.addEventListener('click', function (e) {
+                        drugInstruction(this.getAttribute('key'));
+                    });
+
+                    one.appendChild(putBtn);
+                        
+                    newRow.appendChild(cDrug)
+                    newRow.appendChild(cFrom);
+                    newRow.appendChild(cTo);
+                    newRow.appendChild(one);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/patient/drugs/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function drugInstruction(drug){
+    let prompt = document.getElementById('drugInstructionPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('drugInstructionForm');
+
+
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                console.log(response);
+                let cDrug = document.getElementById('drug');
+                cDrug.innerText = 'Drug: ' + `${drug}`;
+                    
+                let time = document.getElementById('when');
+                time.innerText = 'Time: ' + `${response['when']}`;
+
+                let frequency = document.getElementById('frequency');
+                frequency.innerText  = 'Frequency: ' + `${response['frequency']}`;
+
+                let note = document.getElementById('note');
+                note.innerText  ='Note: ' +  `${response['how']}`;      
+                }
+            }
+        }
+    request.open('GET', 'https://localhost:7291/api/patient/drugs/'+ drug + '/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+
+    form.addEventListener('submit', function (e) {  
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+     });
 }
 
 var examinationSearchFilter = document.getElementById('examinationSearch');
