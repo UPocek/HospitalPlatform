@@ -18,17 +18,17 @@ loginForm.addEventListener('submit', function (e) {
                 let response = JSON.parse(this.responseText);
                 jwtoken = response['token'];
                 let user = response['user'];
-                if (user['role'] == 'manager') {
-                    window.location.replace('manager.php' + '?id=' + user['id'] + '&token=' + jwtoken);
+                if (user.role == 'manager') {
+                    window.location.replace('manager.php' + '?id=' + user.id + '&token=' + jwtoken);
                 }
-                else if (user['role'] == 'secretary') {
-                    window.location.replace('secretary.php' + '?id=' + user['id'] + '&token=' + jwtoken);
+                else if (user.role == 'secretary') {
+                    window.location.replace('secretary.php' + '?id=' + user.id + '&token=' + jwtoken);
                 }
-                else if (user['role'] == 'patient') {
-                    window.location.replace('patient.php' + '?id=' + user['id'] + '&token=' + jwtoken);
+                else if (user.role == 'patient') {
+                    window.location.replace('patient.php' + '?id=' + user.id + '&token=' + jwtoken);
                 }
-                else if (user['role'] == 'doctor') {
-                    window.location.replace('doctor.php' + '?id=' + user['id'] + '&token=' + jwtoken);
+                else if (user.role == 'doctor') {
+                    window.location.replace('doctor.php' + '?id=' + user.id + '&token=' + jwtoken);
                 }
             }
             else {
