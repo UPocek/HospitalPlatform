@@ -44,7 +44,7 @@ function setupPatientBasicInfo() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientmedicalcard/' + patientId);
+    request.open('GET', url + 'api/doctor/examinations/patientmedicalcard/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -91,7 +91,7 @@ function setUpPatientExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/examination/patient/' + patientId);
+    request.open('GET', url + 'api/examination/patient/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -195,7 +195,7 @@ function displayReferrals() {
             }
         }
 
-        request.open('GET', 'https://localhost:7291/api/secretary/patients/' + patientId);
+        request.open('GET', url + 'api/secretary/patients/' + patientId);
         request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         request.send();
 
@@ -234,7 +234,7 @@ function createRefferedExaminationByDoctorId(doctorid, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -273,7 +273,7 @@ function createRefferedExaminationBySpeciality(doctorSpeciality, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -307,7 +307,7 @@ function submitDoctorIdForm(e, doctorid, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/' + referralid);
+    postRequest.open('POST', url + 'api/secretary/examination/referral/create/none/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
@@ -341,7 +341,7 @@ function submitSpecialityForm(e, speciality, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/' + speciality + '/' + referralid);
+    postRequest.open('POST', url + 'api/secretary/examination/referral/create/' + speciality + '/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
@@ -382,7 +382,7 @@ function setUpPatientInstructions() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/user/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }

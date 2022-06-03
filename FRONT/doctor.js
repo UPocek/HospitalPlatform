@@ -15,7 +15,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/examination/doctor/' + userId);
+    request.open('GET', url + 'api/examination/doctor/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -141,7 +141,7 @@ function reviewExamination(id) {
                     }
                 }
             }
-            getEquipmentRequest.open('GET', 'https://localhost:7291/api/room/' + currentExamination['room']);
+            getEquipmentRequest.open('GET', url + 'api/room/' + currentExamination['room']);
             getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             getEquipmentRequest.send();
         }
@@ -183,7 +183,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/medicalcard/' + currentExamination['patient']);
+        getMedicalRecordRequest.open('GET', url + 'api/medicalcard/' + currentExamination['patient']);
         getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getMedicalRecordRequest.send();
     } else {
@@ -208,7 +208,7 @@ updateMedicalCardBtn.addEventListener('click', function (e) {
             }
         }
     }
-    request.open('PUT', 'https://localhost:7291/api/doctor/medicalrecord/' + currentPatientMedicalRecord['id']);
+    request.open('PUT', url + 'api/doctor/medicalrecord/' + currentPatientMedicalRecord['id']);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send(JSON.stringify(currentMedicalRecord));
@@ -325,7 +325,7 @@ function searchSchedule() {
             }
         }
 
-        scheduleRequest.open('GET', 'https://localhost:7291/api/examination/doctorschedule/' + doctorId);
+        scheduleRequest.open('GET', url + 'api/examination/doctorschedule/' + doctorId);
         scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         scheduleRequest.send(JSON.stringify(inputDate));
     }
@@ -402,7 +402,7 @@ function deleteExamination(id) {
             }
         }
     }
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/examination/' + id);
+    deleteRequest.open('DELETE', url + 'api/examination/' + id);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 };
@@ -494,7 +494,7 @@ function submitForm(e) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('POST', 'https://localhost:7291/api/examination/new');
+        postRequest.open('POST', url + 'api/examination/new');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -561,7 +561,7 @@ function createExamination() {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -596,7 +596,7 @@ function submitUpdate(e, updatedExamination, id) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('PUT', 'https://localhost:7291/api/examination/update/' + id);
+        postRequest.open('PUT', url + 'api/examination/update/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -654,7 +654,7 @@ function updateExamination(id) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/room');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -814,7 +814,7 @@ endReviewBtn.addEventListener('click', function (e) {
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
-            roomRequest.open('PUT', 'https://localhost:7291/api/room/' + roomOfExamination['name']);
+            roomRequest.open('PUT', url + 'api/room/' + roomOfExamination['name']);
             roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name": roomOfExamination["name"], "type": roomOfExamination["type"], "inRenovation": roomOfExamination["inRenovation"], "equipment": roomOfExamination["equipment"] }));
@@ -827,7 +827,7 @@ endReviewBtn.addEventListener('click', function (e) {
                 break;
             }
         }
-        reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/examination/' + currentExamination['id']);
+        reviewExaminationRequest.open('PUT', url + 'api/examination/' + currentExamination['id']);
         reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], 'equipmentUsed': currentExamination['equipmentUsed'] }));
@@ -868,7 +868,7 @@ percsriptionBtn.addEventListener('click', function (e) {
         }
     }
 
-    getDrugsRequest.open('GET', 'https://localhost:7291/api/drug');
+    getDrugsRequest.open('GET', url + 'api/drug');
     getDrugsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDrugsRequest.send();
 })
@@ -904,7 +904,7 @@ addpercsriptionBtn.addEventListener('click', function (e) {
             }
         }
 
-        request.open('PUT', 'https://localhost:7291/api/medicalrecord/' + currentPatientMedicalRecord['id']);
+        request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         request.send(JSON.stringify({}));
@@ -1029,7 +1029,7 @@ function getDoctors() {
             }
         }
     }
-    getDoctorsRequest.open('GET', 'https://localhost:7291/api/user/doctors');
+    getDoctorsRequest.open('GET', url + 'api/user/doctors');
     getDoctorsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDoctorsRequest.send();
 }
@@ -1088,7 +1088,7 @@ addReferallBtn.addEventListener('click', function (e) {
         referralNew = { "speciality": referallOption };
     }
 
-    addReferallRequest.open('PUT', 'https://localhost:7291/api/referral/' + currentPatientMedicalRecord['id']);
+    addReferallRequest.open('PUT', url + 'api/referral/' + currentPatientMedicalRecord['id']);
     addReferallRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     addReferallRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     addReferallRequest.send(JSON.stringify(referralNew));
@@ -1152,7 +1152,7 @@ function setUpDrugsForReview() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/drug/review');
+    request.open('GET', url + 'api/drug/review');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -1176,7 +1176,7 @@ function sendBackDrug(key) {
             }
         }
         let message = document.getElementById('drugReviewMessage').value;
-        sendMessageRequest.open('PUT', 'https://localhost:7291/api/drug/message/' + key);
+        sendMessageRequest.open('PUT', url + 'api/drug/message/' + key);
         sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         sendMessageRequest.send(JSON.stringify({ "message": message }));
@@ -1198,7 +1198,7 @@ function approveDrug(key) {
             }
         }
     }
-    sendMessageRequest.open('PUT', 'https://localhost:7291/api/drug/approve/' + key);
+    sendMessageRequest.open('PUT', url + 'api/drug/approve/' + key);
     sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
