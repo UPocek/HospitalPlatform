@@ -26,7 +26,6 @@ public class UserController : ControllerBase
         return await userService.GetDoctor(doctorId);
     }
 
-    // GET: api/My/users/id
     [HttpGet("{id}")]
     public IActionResult GetUser(int id)
     {
