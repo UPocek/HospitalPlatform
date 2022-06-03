@@ -167,12 +167,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/user/' + userId);
+    request.open('GET', `${url}api/user/${userId}`);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
 
 // Global variables
+var url = 'https://localhost:7291/'
 var user;
 var main = document.getElementsByTagName('main')[0];
 var userId = getParamValue('id');
