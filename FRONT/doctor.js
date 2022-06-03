@@ -54,7 +54,7 @@ function displayExaminations() {
         patientBtn.setAttribute("key", examination["patient"]);
         patientBtn.classList.add('send');
         patientBtn.addEventListener('click', function (e) {
-            window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
+            window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&id=' + userId);
         });
         one.appendChild(patientBtn);
 
@@ -259,21 +259,16 @@ var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
 function searchSchedule() {
     let inputDate = document.getElementById("scheduleDateOption").value;
-
-    // const convertedInputDate = new Date(inputDate);
-    // const lastDayInSchedule = new Date(inputDate);
-    // lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
-    // convertedInputDate.setHours(7, 0, 0);
-    // lastDayInSchedule.setHours(23, 0, 0);
-
     let table = document.getElementById("examinationsTableSchedule");
     removeAllChildNodes(table);
 
     let scheduleRequest = new XMLHttpRequest();
     scheduleRequest.onreadystatechange = function () {
+        
         if (this.readyState == 4) {
             if (this.status == 200) {
                 let response = JSON.parse(this.responseText);
+                
                 for (let i in response) {
                     let examination = response[i];
                     let newRow = document.createElement("tr");
@@ -297,7 +292,7 @@ function searchSchedule() {
                     patientBtn.setAttribute("key", examination["patient"]);
                     patientBtn.classList.add('send');
                     patientBtn.addEventListener('click', function (e) {
-                        window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
+                        window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&id=' + userId);
                     });
                     one.appendChild(patientBtn);
 
@@ -324,66 +319,11 @@ function searchSchedule() {
                 }
             }
         }
-
-        scheduleRequest.open('GET', url + 'api/examination/doctorschedule/' + doctorId);
-        scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        scheduleRequest.send(JSON.stringify(inputDate));
     }
-
-    // for (let i in doctorsExaminations) {
-
-    //     let examinationDate = new Date(doctorsExaminations[i]['date']);
-    //     if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule) {
-
-    //         let examination = doctorsExaminations[i];
-    //         let newRow = document.createElement("tr");
-
-    //         let examinationDate = document.createElement("td");
-    //         examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
-    //         let examinationDuration = document.createElement("td");
-    //         examinationDuration.innerText = examination["duration"];
-    //         let examinationDone = document.createElement("td");
-    //         examinationDone.innerText = examination["done"];
-    //         let examinationRoom = document.createElement("td");
-    //         examinationRoom.innerText = examination["room"];
-    //         let examinationType = document.createElement("td");
-    //         examinationType.innerText = examination["type"];
-    //         let isUrgent = document.createElement("td");
-    //         isUrgent.innerText = examination["urgent"];
-
-    //         let one = document.createElement("td");
-    //         let patientBtn = document.createElement("button");
-    //         patientBtn.innerHTML = '<i data-feather="user"></i>';
-    //         patientBtn.setAttribute("key", examination["patient"]);
-    //         patientBtn.classList.add('send');
-    //         patientBtn.addEventListener('click', function (e) {
-    //             window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
-    //         });
-    //         one.appendChild(patientBtn);
-
-    //         let two = document.createElement("td");
-    //         let reviewBtn = document.createElement("button");
-    //         reviewBtn.innerHTML = '<i data-feather="check-square"></i>';
-    //         reviewBtn.classList.add("add");
-    //         reviewBtn.setAttribute("key", examination["id"]);
-    //         reviewBtn.addEventListener('click', function (e) {
-    //             reviewExamination(parseInt(reviewBtn.getAttribute('key')));
-    //         });
-    //         two.appendChild(reviewBtn);
-
-    //         newRow.appendChild(examinationDate);
-    //         newRow.appendChild(examinationDuration);
-    //         newRow.appendChild(examinationDone);
-    //         newRow.appendChild(examinationRoom);
-    //         newRow.appendChild(examinationType);
-    //         newRow.appendChild(isUrgent);
-    //         newRow.appendChild(one);
-    //         newRow.appendChild(two);
-    //         table.appendChild(newRow);
-    //         feather.replace();
-    //     }
-    // }
-}
+    scheduleRequest.open('GET', url + 'api/examination/doctorSchedule/' + userId + "&" + inputDate);
+    scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    scheduleRequest.send();
+} 
 
 scheduleDateButton.addEventListener("click", function (e) {
     searchSchedule();

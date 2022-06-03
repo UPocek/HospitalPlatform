@@ -134,7 +134,6 @@
                 
         </main>
 
-        <script src="helper.js"></script>
         <script src="medical_card.js"></script>
     </body>
 </html>

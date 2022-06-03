@@ -26,19 +26,19 @@ public class ExaminationService : IExaminationService
     public async Task<List<Examination>> GetDoctorsExaminationsSchedule(int doctorId, string dateOfSearch)
     {
         var doctorsExaminations = await examinationRepository.GetAllDoctorsExaminations(doctorId);
-
+        List<Examination> doctorsExaminationsInDateRange = new List<Examination>(); 
         DateTime firstDay = DateTime.Parse(dateOfSearch);
         string threeDaysAfter = firstDay.AddDays(3).ToString();
         foreach (Examination examination in doctorsExaminations)
         {
             var answer = IsDateInBetween(dateOfSearch, threeDaysAfter, examination.DateAndTimeOfExamination);
-            if (!answer)
+            if (answer)
             {
-                doctorsExaminations.Remove(examination);
+                doctorsExaminationsInDateRange.Add(examination);
             }
         }
 
-        return doctorsExaminations;
+        return doctorsExaminationsInDateRange;
     }
 
     public async Task<List<Examination>> GetAllPatientsExaminations(int patientId)

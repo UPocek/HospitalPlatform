@@ -1,9 +1,26 @@
+var url = 'https://localhost:7291/';
 var patient;
 var patientActivity;
 var patientId = getParamValue('patientId');
 var doctorId = getParamValue('doctorId');
 var secretaryId = getParamValue('secretaryId');
+var jwtoken = getParamValue('token');
 var patientsExaminations;
+
+function getParamValue(name) {
+    let location = decodeURI(window.location.toString());
+    let index = location.indexOf('?') + 1;
+    let subs = location.substring(index, location.length);
+    let splitted = subs.split('&');
+
+    for (let item of splitted) {
+        let s = item.split('=');
+        let pName = s[0];
+        let pValue = s[1];
+        if (pName == name)
+            return pValue;
+    }
+}
 
 function setupPatientBasicInfo() {
     let request = new XMLHttpRequest();
@@ -44,7 +61,7 @@ function setupPatientBasicInfo() {
         }
     }
 
-    request.open('GET', url + 'api/doctor/examinations/patientmedicalcard/' + patientId);
+    request.open('GET', url + 'api/medicalcard/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
