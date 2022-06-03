@@ -17,19 +17,19 @@ public class ExaminationController : ControllerBase
         return await _examinationService.GetAllExaminations();
     }
 
-    [HttpGet("doctor/{id}")]
+    [HttpGet("doctor/{doctorId}")]
     public async Task<List<Examination>> GetAllDoctorsExaminations(int doctorId)
     {
         return await _examinationService.GetAllDoctorsExaminations(doctorId);
     }
 
-    [HttpGet("doctorSchedule/{id}")]
+    [HttpGet("doctorSchedule/{doctorId}")]
     public async Task<List<Examination>> GetAllDoctorsExaminationsSchedule(int doctorId, string dateOfSearch)
     {
         return await _examinationService.GetDoctorsExaminationsSchedule(doctorId, dateOfSearch);
     }
 
-    [HttpGet("patient/{id}")]
+    [HttpGet("patient/{patientId}")]
     public async Task<List<Examination>> GetAllPatientsExaminations(int patientId)
     {
         return await _examinationService.GetAllPatientsExaminations(patientId);

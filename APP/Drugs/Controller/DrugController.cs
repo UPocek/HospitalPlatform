@@ -57,7 +57,7 @@ public class DrugController : ControllerBase
         return await _drugService.GetAllDrugsForReview();
     }
 
-    [HttpGet("ingredients/{id}")]
+    [HttpGet("ingredients/{name}")]
     public async Task<List<string>> GetDrugIngredients(string name)
     {
         return await _drugService.GetDrugIngredients(name);

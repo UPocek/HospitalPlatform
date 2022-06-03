@@ -11,7 +11,7 @@ public class MedicalCardController : ControllerBase
         _medicalCardService = new MedicalCardService();
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{patientId}")]
     public async Task<MedicalCard> GetPatientsMedicalCard(int patientId)
     {
         return await _medicalCardService.GetMedicalCard(patientId);

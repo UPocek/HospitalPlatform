@@ -25,6 +25,7 @@ public class ExaminationRepository : IExaminationRepository
 
     public async Task<List<Examination>> GetAllDoctorsExaminations(int doctorId)
     {
+        Console.Write(doctorId);
         var examinations = _database.GetCollection<Examination>("MedicalExaminations");
         return await examinations.Find(e => e.DoctorId == doctorId).ToListAsync();
     }
