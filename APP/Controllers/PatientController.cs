@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-
+using System.Net.Mail;
 
 namespace APP.Controllers{
 [ApiController]
@@ -34,6 +34,43 @@ public class PatientController : ControllerBase
         var examinations = database.GetCollection<Examination>("MedicalExaminations");
         List<Examination> patientsExaminations = examinations.Find(e => e.PatinetId == id).ToList();
         return patientsExaminations;
+  }
+
+        // GET: api/Patient/examinations/id
+    [HttpGet("drugs/{drug}/{id}")]
+    public async  Task<Prescription> GetPrescription(string drug, int id){
+        var patients = database.GetCollection<Patient>("Patients");
+        Patient patient = patients.Find(e => e.Id == id).FirstOrDefault();
+        Prescription prescription = patient.MedicalRecord.Prescriptions.Find(e => e.DrugName == drug);        
+        return prescription;
+  }
+
+      // GET: api/Patient/examinations/id
+    [HttpGet("drugs/{id}")]
+    public async  Task<List<MedicalInstruction>> GetMedicalInstructions(int id){
+        var patients = database.GetCollection<Patient>("Patients");
+        Patient patient = patients.Find(e => e.Id == id).FirstOrDefault();
+        List<MedicalInstruction> medicalInstructions = new List<MedicalInstruction>();
+
+        foreach(MedicalInstruction instruction in patient.MedicalRecord.MedicalInstructions){
+            if(checkDate(instruction)){
+                medicalInstructions.Add(instruction);
+            }
+        }
+        
+        return medicalInstructions;
+  }
+
+  public bool checkDate(MedicalInstruction instruction){
+      var startDate = DateTime.Parse(instruction.StartDate) ;
+      var endDate = DateTime.Parse(instruction.EndtDate) ;
+      DateTime today = DateTime.Today;
+
+      if(startDate <=today && today <= endDate){
+          return true;
+      }
+
+      return false;
   }
 
     // GET: api/Patient/examination/id
@@ -140,6 +177,18 @@ public class PatientController : ControllerBase
     {
         var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
         requests.InsertOne(request);
+        return Ok(); 
+    }
+
+    [HttpPost("notifications")]
+    public async Task<IActionResult> CreateNotification(DrugNotification notification)
+    {
+        if(notification.Time == ""){
+            return BadRequest();
+        }
+        var notifications = database.GetCollection<DrugNotification>("Notifications");
+        notifications.InsertOne(notification);
+
         return Ok(); 
     }
 
