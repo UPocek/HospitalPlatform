@@ -529,7 +529,7 @@ function setUpDrugs() {
                     putBtn.classList.add('putBtn');
                     putBtn.setAttribute('key', instruction['drug']);
                     putBtn.addEventListener('click', function (e) {
-                        drugInstruction(this.getAttribute('key'));
+                        drugInstruction(this.getAttribute('key'), instructionTo);
                     });
 
                     one.appendChild(putBtn);
@@ -550,7 +550,7 @@ function setUpDrugs() {
     request.send();
 }
 
-function drugInstruction(drug){
+function drugInstruction(drug, endDate){
     let prompt = document.getElementById('drugInstructionPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -562,7 +562,6 @@ function drugInstruction(drug){
         if (this.readyState == 4) {
             if (this.status == 200) {
                 var response = JSON.parse(this.responseText);
-                console.log(response);
                 let cDrug = document.getElementById('drug');
                 cDrug.innerText = 'Drug: ' + `${drug}`;
                     
@@ -586,6 +585,27 @@ function drugInstruction(drug){
         main.classList.remove('hideMain');
         e.preventDefault();
         e.stopImmediatePropagation();
+        
+        console.log(user.email);
+        let time = document.getElementById('notifyTime').value;
+    
+        let postRequest = new XMLHttpRequest();
+    
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                        alert('Notification sucessfuly created');
+                    } else {
+                        alert('Error: Entered notification informations are invalid');
+                    }
+                }
+            };
+            postRequest.open('POST', 'https://localhost:7291/api/patient/notifications');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            postRequest.send(JSON.stringify({ 'drug': drug, 'time': time , 'patient': user.email, 'endDate': endDate}));
+      
+
      });
 }
 

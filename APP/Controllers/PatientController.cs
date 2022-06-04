@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-
+using System.Net.Mail;
 
 namespace APP.Controllers{
 [ApiController]
@@ -177,6 +177,18 @@ public class PatientController : ControllerBase
     {
         var requests = database.GetCollection<ExaminationRequest>("ExaminationRequests");
         requests.InsertOne(request);
+        return Ok(); 
+    }
+
+    [HttpPost("notifications")]
+    public async Task<IActionResult> CreateNotification(DrugNotification notification)
+    {
+        if(notification.Time == ""){
+            return BadRequest();
+        }
+        var notifications = database.GetCollection<DrugNotification>("Notifications");
+        notifications.InsertOne(notification);
+
         return Ok(); 
     }
 
