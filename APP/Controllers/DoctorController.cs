@@ -69,7 +69,7 @@ public class DoctorController : ControllerBase
     {
         var drugs = database.GetCollection<Drug>("Drugs");
 
-        return drugs.Find(item => item.Status == "inReview").ToList();
+        return drugs.Find(item => true).ToList();
     }
 
     public bool IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination, int id){
@@ -123,17 +123,17 @@ public class DoctorController : ControllerBase
 
     }
 
-    public bool IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination){
+    public bool IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId){
         var patientsExaminations = database.GetCollection<Examination>("MedicalExaminations").Find(e => e.PatinetId == id).ToList();
 
         foreach(Examination examination in patientsExaminations){
             DateTime itemBegin = DateTime.Parse(examination.DateAndTimeOfExamination);
-                DateTime itemEnd = itemBegin.AddMinutes(examination.DurationOfExamination);
-                DateTime examinationBegin = DateTime.Parse(dateAndTimeOfExamination);
-                DateTime examinationEnd = examinationBegin.AddMinutes(durationOfExamination);
-                if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
-                    return false;
-                }
+            DateTime itemEnd = itemBegin.AddMinutes(examination.DurationOfExamination);
+            DateTime examinationBegin = DateTime.Parse(dateAndTimeOfExamination);
+            DateTime examinationEnd = examinationBegin.AddMinutes(durationOfExamination);
+            if(examinationBegin >= itemBegin && examinationBegin <= itemEnd || examinationEnd >= itemBegin && examinationEnd <= itemEnd){
+                if(examination.Id != examinationId )return false;
+            }
         }
         return true;
     }
@@ -145,7 +145,7 @@ public class DoctorController : ControllerBase
         var isValidRoom = IsRoomValid(examination.RoomName);
         var isOccupiedRoom = IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination, 0);
         var isRoomInRenovation = IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination);
-        var isPatientFree = IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
+        var isPatientFree = IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, 0);
         if(isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree)
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
@@ -187,9 +187,9 @@ public class DoctorController : ControllerBase
     {
         var isValidPatient = IsValidPatient(examination.PatinetId);
         var isValidRoom = IsRoomValid(examination.RoomName);
-        var isOccupiedRoom = IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int) examination.Id);
+        var isOccupiedRoom = IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination, id);
         var isRoomInRenovation = IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination);
-        var isPatientFree = IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
+        var isPatientFree = IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, id);
         if (isValidRoom && isValidPatient && !isRoomInRenovation && !isOccupiedRoom && isPatientFree)
         {
             var examinations = database.GetCollection<Examination>("MedicalExaminations");
