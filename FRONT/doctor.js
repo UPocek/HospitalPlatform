@@ -3,6 +3,7 @@ var currentPatientMedicalRecord;
 var currentExamination;
 var roomOfExamination;
 
+//function for setting up doctors view
 function setUpExaminations() {
 
     let request = new XMLHttpRequest();
@@ -20,6 +21,7 @@ function setUpExaminations() {
     request.send();
 }
 
+//function apstracts all work for setting up doctors view
 function setUpFunctionality() {
     displayExaminations();
     document.getElementById('scheduleDate').value = (new Date()).toDateString;
@@ -28,13 +30,14 @@ function setUpFunctionality() {
     setUpDrugsForReview();
 }
 
+//function thath dispays examination table of examinations for currently logged doctor
 function displayExaminations() {
     let table = document.getElementById('examinationsTable');
     table.innerHTML = "";
     for (let examination of doctorsExaminations) {
-
         let newRow = document.createElement("tr");
 
+        //creating row for one examination
         let examinationDate = document.createElement("td");
         examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
         let examinationDone = document.createElement("td");
@@ -48,6 +51,7 @@ function displayExaminations() {
         let isUrgent = document.createElement("td");
         isUrgent.innerText = examination["urgent"];
 
+        //button for displaying patients medical card
         let one = document.createElement("td");
         let patientBtn = document.createElement("button");
         patientBtn.innerHTML = '<i data-feather="user"></i>';
@@ -58,6 +62,7 @@ function displayExaminations() {
         });
         one.appendChild(patientBtn);
 
+        //button for dispalying report for current examination
         let two = document.createElement("td");
         let reportBtn = document.createElement("button");
         reportBtn.innerHTML = '<i data-feather="clipboard"></i>';
@@ -68,6 +73,7 @@ function displayExaminations() {
         });
         two.appendChild(reportBtn);
 
+        //button for deleting current examination
         let three = document.createElement("td");
         let delBtn = document.createElement("button");
         delBtn.innerHTML = '<i data-feather="trash"></i>';
@@ -78,6 +84,7 @@ function displayExaminations() {
         });
         three.appendChild(delBtn);
 
+        //button for updating current examination
         let four = document.createElement("td");
         let updateBtn = document.createElement("button");
         updateBtn.innerHTML = '<i data-feather="upload"></i>';
@@ -103,7 +110,10 @@ function displayExaminations() {
     }
 }
 
+/*function for reviewing examination,
+ setting up pop-up for it*/
 function reviewExamination(id) {
+    //find examination that doctor wants to review
     for (let examination of doctorsExaminations) {
         if (examination["id"] == id) {
             currentExamination = examination;
@@ -111,6 +121,8 @@ function reviewExamination(id) {
         }
     }
 
+    //if the examination is not yet reviewed, show pop-up for reviewing it
+    //hide other content on page that isn't pop-up
     if (currentExamination['done'] != true) {
         let popUp = document.getElementById('reviewExaminationDiv');
         popUp.classList.remove("off");
@@ -118,37 +130,38 @@ function reviewExamination(id) {
 
         document.getElementById("reportDescription").innerText = currentExamination['anamnesis'];
 
-        if (currentExamination['type'] == "operation") {
-            let getEquipmentRequest = new XMLHttpRequest();
-            getEquipmentRequest.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        let equipmentDiv = document.getElementById('equipmentDiv');
-                        roomOfExamination = JSON.parse(this.responseText);
-                        equipmentDiv.innerHTML = '';
-                        for (let equipment of roomOfExamination['equipment']) {
-                            let equipmentField = document.createElement('p');
-                            equipmentField.innerText = `${equipment['name']} ( quantity: ${equipment['quantity']} )`;
-                            equipmentField.setAttribute('equipmentType', equipment['type'])
-                            equipmentField.classList.add('pushLeft');
-                            let quantityField = document.createElement('input');
-                            quantityField.setAttribute('type', 'text');
-                            quantityField.setAttribute('autocomplete', 'off')
-                            quantityField.setAttribute('placeholder', 'Enter how much to transfer');
-                            equipmentDiv.appendChild(equipmentField);
-                            equipmentDiv.appendChild(quantityField);
-                        }
+        //let doctor enter equipment used in that examination
+        let getEquipmentRequest = new XMLHttpRequest();
+        getEquipmentRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    let equipmentDiv = document.getElementById('equipmentDiv');
+                    roomOfExamination = JSON.parse(this.responseText);
+                    equipmentDiv.innerHTML = '';
+                    for (let equipment of roomOfExamination['equipment']) {
+                        let equipmentField = document.createElement('p');
+                        equipmentField.innerText = `${equipment['name']} ( quantity: ${equipment['quantity']} )`;
+                        equipmentField.setAttribute('equipmentType', equipment['type'])
+                        equipmentField.classList.add('pushLeft');
+                        let quantityField = document.createElement('input');
+                        quantityField.setAttribute('type', 'text');
+                        quantityField.setAttribute('autocomplete', 'off')
+                        quantityField.setAttribute('placeholder', 'Enter how much to transfer');
+                        equipmentDiv.appendChild(equipmentField);
+                        equipmentDiv.appendChild(quantityField);
                     }
                 }
             }
-            getEquipmentRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/room/' + currentExamination['room']);
-            getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-            getEquipmentRequest.send();
         }
+        getEquipmentRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/room/' + currentExamination['room']);
+        getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        getEquipmentRequest.send();
+        
         feather.replace();
 
         let getMedicalRecordRequest = new XMLHttpRequest();
 
+        //display patient medical record and let doctor update it
         getMedicalRecordRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
@@ -157,7 +170,6 @@ function reviewExamination(id) {
                     currentMedicalRecord = patient["medicalRecord"];
 
                     let patientFName = document.getElementById("patientFName");
-                    patientFName.setAttribute('id', 'patientId')
                     patientFName.setAttribute('key', patient['id']);
                     patientFName.innerText = patient["firstName"];
                     let patientLName = document.getElementById("patientLName");
@@ -187,11 +199,14 @@ function reviewExamination(id) {
         getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getMedicalRecordRequest.send();
     } else {
+        //if examination is already reviewed
         alert('Examination already reviewed.');
     }
 }
 
 var updateMedicalCardBtn = document.getElementById("updateMedicalCard");
+
+//action when doctor wants to update patients medical card while reviewing examination
 updateMedicalCardBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -214,6 +229,7 @@ updateMedicalCardBtn.addEventListener('click', function (e) {
     request.send(JSON.stringify(currentMedicalRecord));
 })
 
+//if doctor wants to see report made for current, already reviewed examination
 function reviewReport(id) {
     let currentExamination;
     for (let examination of doctorsExaminations) {
@@ -232,31 +248,31 @@ function reviewReport(id) {
         popUp.classList.add('off');
         main.classList.remove('hideMain');
         alert("No report present");
-    } else {
+    } 
+    else {
 
         document.getElementById("reportDescriptionNew").innerText = currentExamination['anamnesis'];
         let equipmentDiv = document.getElementById('reportEquipmentNew');
         removeAllChildNodes(equipmentDiv);
-        if (currentExamination['type'] == "operation") {
-            equipmentDiv.classList.add('divList');
-            let equipmentList = document.createElement('ul');
-            let title = document.createElement('h3');
-            title.innerText = "Equipment used:";
-            equipmentDiv.appendChild(title);
-            for (let equipment of currentExamination['equipmentUsed']) {
-                let item = document.createElement('li');
-                item.innerText = equipment;
-                equipmentList.appendChild(item);
-            }
-            equipmentDiv.appendChild(equipmentList);
-            popUp.appendChild(equipmentDiv);
+        
+        equipmentDiv.classList.add('divList');
+        let equipmentList = document.createElement('ul');
+        let title = document.createElement('h3');
+        title.innerText = "Equipment used:";
+        equipmentDiv.appendChild(title);
+        for (let equipment of currentExamination['equipmentUsed']) {
+            let item = document.createElement('li');
+            item.innerText = equipment;
+            equipmentList.appendChild(item);
         }
-
+        equipmentDiv.appendChild(equipmentList);
+        popUp.appendChild(equipmentDiv);
     }
 }
 
 var scheduleDateButton = document.getElementById("scheduleDateBtn");
 
+//function for showing doctors examinations based on the date he selects
 function searchSchedule() {
     let inputDate = document.getElementById("scheduleDateOption").value;
 
@@ -328,6 +344,7 @@ scheduleDateButton.addEventListener("click", function (e) {
     searchSchedule();
 });
 
+//function for deleting examination
 function deleteExamination(id) {
     let deleteRequest = new XMLHttpRequest();
     deleteRequest.onreadystatechange = function () {
@@ -346,6 +363,7 @@ function deleteExamination(id) {
     deleteRequest.send();
 };
 
+//helper function for checking if time of examination is not ovelaping with others
 function validateTimeOfExamination(date, duration) {
 
     let currentDate = new Date();
@@ -373,6 +391,8 @@ function validateTimeOfExamination(date, duration) {
     return true;
 }
 
+//helper function for checking if time of examination is not ovelaping with others
+//this one is used when updating because we don't want to take the updated examination in consideration 
 function validateTimeOfExaminationPut(date, duration, id) {
 
     let currentDate = new Date();
@@ -402,6 +422,45 @@ function validateTimeOfExaminationPut(date, duration, id) {
     return true;
 }
 
+//function that sets up pop-up for creating new examination
+function createExamination() {
+    let getRequest = new XMLHttpRequest();
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                rooms = JSON.parse(this.responseText);
+                let popUp = document.getElementById("examinationPopUp");
+                popUp.classList.remove("off");
+                main.classList.add("hideMain");
+
+                document.getElementById("examinationDuration").value = 15;
+                document.getElementById("examinationPatient").value = "";
+                document.getElementById("urgent").checked = false;
+
+                let form = document.getElementById("examinationForm");
+                let title = document.getElementById("examinationFormId");
+                title.innerText = "Create examination";
+
+                let roomOptions = document.getElementById("examinationRoom");
+                let examinationType = document.getElementById("examinationType");
+                addOptions(examinationType, roomOptions);
+                examinationType.addEventListener('change', function (e) {
+                    removeAllChildNodes(roomOptions);
+                    addOptions(examinationType, roomOptions);
+                })
+
+                form.addEventListener('submit', function (e) {
+                    submitForm(e)
+                });
+            }
+        }
+    }
+    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+}
+
+//submiting form when creating new examination
 function submitForm(e) {
     let popUp = document.getElementById("examinationPopUp");
     popUp.classList.add("off");
@@ -445,6 +504,7 @@ function submitForm(e) {
 
 var rooms;
 
+//helper function when filtering rooms only used for certain type of examination
 function addOptions(element, roomOptions) {
     let valueOfType = element.value;
     if (valueOfType == "visit") {
@@ -468,87 +528,7 @@ function addOptions(element, roomOptions) {
     }
 }
 
-function createExamination() {
-    let getRequest = new XMLHttpRequest();
-    getRequest.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                rooms = JSON.parse(this.responseText);
-                let popUp = document.getElementById("examinationPopUp");
-                popUp.classList.remove("off");
-                main.classList.add("hideMain");
-
-                document.getElementById("examinationDuration").value = 15;
-                document.getElementById("examinationPatient").value = "";
-                document.getElementById("urgent").checked = false;
-
-                let form = document.getElementById("examinationForm");
-                let title = document.getElementById("examinationFormId");
-                title.innerText = "Create examination";
-
-                let roomOptions = document.getElementById("examinationRoom");
-                let examinationType = document.getElementById("examinationType");
-                addOptions(examinationType, roomOptions);
-                examinationType.addEventListener('change', function (e) {
-                    removeAllChildNodes(roomOptions);
-                    addOptions(examinationType, roomOptions);
-                })
-
-                form.addEventListener('submit', function (e) {
-                    submitForm(e)
-                });
-            }
-        }
-    }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
-    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    getRequest.send();
-}
-
-function submitUpdate(e, updatedExamination, id) {
-    let popUp = document.getElementById('examinationPopUp');
-    popUp.classList.add("off");
-    main.classList.remove("hideMain");
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    let selectedType = document.getElementById("examinationType").value;
-    let selectedDate = document.getElementById("scheduleDate").value;
-    let selectedDuration = document.getElementById("examinationDuration").value;
-    if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
-        && !(selectedType == "visit" && selectedDuration != 15)) {
-
-        let postRequest = new XMLHttpRequest();
-
-        postRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    alert("Examination sucessfuly updated");
-                    setUpExaminations();
-                } else {
-                    alert("Error: Entered examination informations are invalid");
-                }
-            }
-        };
-
-        let selectedRoom = document.getElementById("examinationRoom").value;
-        let selectedPatient = document.getElementById("examinationPatient").value;
-        let isUrgent = document.getElementById("urgent").checked ? true : false;
-
-        postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
-        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
-    }
-    else {
-        alert("Error: Entered examination informations are invalid");
-        popUp.classList.remove("off");
-        main.classList.add("hideMain");
-        let title = document.getElementById("examinationFormId");
-        title.innerText = "Update examination"
-    }
-}
-
+//function for setting up pop-up for updating examination
 function updateExamination(id) {
     let getRequest = new XMLHttpRequest();
     getRequest.onreadystatechange = function () {
@@ -598,12 +578,58 @@ function updateExamination(id) {
     getRequest.send();
 }
 
+//action when submitting an update for examination
+function submitUpdate(e, updatedExamination, id) {
+    let popUp = document.getElementById('examinationPopUp');
+    popUp.classList.add("off");
+    main.classList.remove("hideMain");
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let selectedType = document.getElementById("examinationType").value;
+    let selectedDate = document.getElementById("scheduleDate").value;
+    let selectedDuration = document.getElementById("examinationDuration").value;
+    if (validateTimeOfExaminationPut(selectedDate, selectedDuration, id)
+        && !(selectedType == "visit" && selectedDuration != 15)) {
+
+        let postRequest = new XMLHttpRequest();
+
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Examination sucessfuly updated");
+                    setUpExaminations();
+                } else {
+                    alert("Error: Entered examination informations are invalid");
+                }
+            }
+        };
+
+        let selectedRoom = document.getElementById("examinationRoom").value;
+        let selectedPatient = document.getElementById("examinationPatient").value;
+        let isUrgent = document.getElementById("urgent").checked ? true : false;
+
+        postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
+        postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
+    }
+    else {
+        alert("Error: Entered examination informations are invalid");
+        popUp.classList.remove("off");
+        main.classList.add("hideMain");
+        let title = document.getElementById("examinationFormId");
+        title.innerText = "Update examination"
+    }
+}
+
 var createBtn = document.getElementById("addBtn");
 
 createBtn.addEventListener("click", createExamination);
 
 var closeReportBtn = document.getElementById('closeReportBtn');
 
+//action when doctor wants to exit report of current examination
 closeReportBtn.addEventListener('click', function (e) {
     let equipment = document.getElementById('reportEquipment');
     removeAllChildNodes(equipment);
@@ -616,6 +642,7 @@ closeReportBtn.addEventListener('click', function (e) {
 
 var diseaseDelBtn = document.getElementById('deleteDiseases');
 
+//action for deleting diseases to patients medical record
 diseaseDelBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -634,6 +661,7 @@ diseaseDelBtn.addEventListener('click', function (e) {
 
 var alergiesDelBtn = document.getElementById('deleteAlergies');
 
+//action for deleting alergies to patients medical record
 alergiesDelBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -652,6 +680,7 @@ alergiesDelBtn.addEventListener('click', function (e) {
 
 var diseaseAddBtn = document.getElementById('addDiseases');
 
+//action for adding diseases to patients medical record
 diseaseAddBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -670,6 +699,7 @@ diseaseAddBtn.addEventListener('click', function (e) {
 
 var alergiesAddBtn = document.getElementById('addAlergies');
 
+//action for adding alergies to patients medical record
 alergiesAddBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -688,31 +718,33 @@ alergiesAddBtn.addEventListener('click', function (e) {
 
 var endReviewBtn = document.getElementById('endReview');
 
+//action when doctor wants to end reviewing some examination
 endReviewBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
     currentExamination['anamnesis'] = document.getElementById('reportDescription').value;
     let ok = true;
     let equipmentUsed = [];
-    if (currentExamination['type'] == "operation") {
-        let children = document.getElementById('equipmentDiv').children
-        for (let i = 0; i < children.length; i += 2) {
-            if (children[i + 1].value) {
-                if (+children[i].innerText.split(' ')[3] >= +children[i + 1].value) {
-                    let el = {
-                        name: children[i].innerText.split(' ')[0],
-                        type: children[i].getAttribute('equipmentType'),
-                        quantity: children[i + 1].value
-                    };
-                    equipmentUsed.push(el);
-                } else {
-                    ok = false;
-                    break;
-                }
+    
+    //gethering equipment used
+    let children = document.getElementById('equipmentDiv').children
+    for (let i = 0; i < children.length; i += 2) {
+        if (children[i + 1].value) {
+            if (+children[i].innerText.split(' ')[3] >= +children[i + 1].value) {
+                let el = {
+                    name: children[i].innerText.split(' ')[0],
+                    type: children[i].getAttribute('equipmentType'),
+                    quantity: children[i + 1].value
+                };
+                equipmentUsed.push(el);
+            } else {
+                ok = false;
+                break;
             }
         }
     }
 
+    //updating examination
     let reviewExaminationRequest = new XMLHttpRequest();
     reviewExaminationRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -725,41 +757,44 @@ endReviewBtn.addEventListener('click', function (e) {
         }
     }
 
+    //updating equipment in room of current examination
     let roomRequest = new XMLHttpRequest();
     roomRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-
+                alert("Successful room equipment");
+                searchSchedule();
+            } else {
+                alert("Bad room equipment");
             }
         }
     }
 
+    //if the quantity used is valid update
     if (ok) {
         let popUp = document.getElementById('reviewExaminationDiv');
         popUp.classList.add('off');
         main.classList.remove('hideMain');
-        if (currentExamination['type'] == 'operation') {
-            for (let i in roomOfExamination['equipment']) {
-                for (let equipmentInUse of equipmentUsed) {
-                    if (roomOfExamination['equipment'][i]['name'] == equipmentInUse['name']) {
-                        roomOfExamination['equipment'][i]['quantity'] -= +equipmentInUse['quantity'];
-                    }
+    
+        for (let i in roomOfExamination['equipment']) {
+            for (let equipmentInUse of equipmentUsed) {
+                if (roomOfExamination['equipment'][i]['name'] == equipmentInUse['name']) {
+                    roomOfExamination['equipment'][i]['quantity'] -= +equipmentInUse['quantity'];
                 }
             }
-
-            let equipmenForExamination = []
-
-            for (let equipmentItem of equipmentUsed) {
-                equipmenForExamination.push(equipmentItem['name']);
-            }
-            currentExamination['equipmentUsed'] = equipmenForExamination;
-            roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
-            roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-            roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name": roomOfExamination["name"], "type": roomOfExamination["type"], "inRenovation": roomOfExamination["inRenovation"], "equipment": roomOfExamination["equipment"] }));
-        } else {
-            currentExamination['equipmentUsed'] = [];
         }
+
+        let equipmenForExamination = []
+
+        for (let equipmentItem of equipmentUsed) {
+            equipmenForExamination.push(equipmentItem['name']);
+        }
+        currentExamination['equipmentUsed'] = equipmenForExamination;
+        roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
+        roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name": roomOfExamination["name"], "type": roomOfExamination["type"], "inRenovation": roomOfExamination["inRenovation"], "equipment": roomOfExamination["equipment"] }));
+    
         for (let examination of doctorsExaminations) {
             if (examination["id"] == currentExamination['id']) {
                 examination["done"] = true;
@@ -769,7 +804,7 @@ endReviewBtn.addEventListener('click', function (e) {
         reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
         reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], 'equipmentUsed': currentExamination['equipmentUsed'] }));
+        reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], "equipmentUsed": currentExamination['equipmentUsed'] }));
 
     } else {
         alert('Quantity inputed badly.');
@@ -779,6 +814,8 @@ endReviewBtn.addEventListener('click', function (e) {
 var drugs;
 var percsriptionBtn = document.getElementById('prescribeReviews');
 
+//action for enabling doctor to perscribe medication when reviewing examination
+// setting pop-up for it
 percsriptionBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -814,6 +851,7 @@ percsriptionBtn.addEventListener('click', function (e) {
 
 var addpercsriptionBtn = document.getElementById('addPrescription');
 
+//action for submiting perscription
 addpercsriptionBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -856,6 +894,8 @@ addpercsriptionBtn.addEventListener('click', function (e) {
     popUp.classList.remove('off');
 })
 
+//helper function for checking the status of perscription
+// modified, alergic or new
 function validationOfPrescription(drug) {
     let patientAllergies = currentMedicalRecord["alergies"];
     let isAllergic = checkIfAllergicToIngredients(patientAllergies, drug['ingredients'], drug['name']);
@@ -868,6 +908,7 @@ function validationOfPrescription(drug) {
     }
 }
 
+//helper function for finding the enterd drug
 function findDrug(drugName) {
     for (let drug of drugs) {
         if (drug['name'] == drugName) {
@@ -877,6 +918,7 @@ function findDrug(drugName) {
     return NaN;
 }
 
+//helper function for checking if the patient is already taken that medication and updating it
 function checkIfDrugPerscribed(drugName) {
     for (let drug of currentMedicalRecord['drugs']) {
         if (drugName == drug['name']) {
@@ -886,6 +928,7 @@ function checkIfDrugPerscribed(drugName) {
     return false;
 }
 
+//helper function for finding drugs that patient has taken before
 function getDrugPerscribed(drugName) {
     for (let drug of currentMedicalRecord['drugs']) {
         if (drugName == drug['name']) {
@@ -895,6 +938,7 @@ function getDrugPerscribed(drugName) {
     return Nan;
 }
 
+//helper function for checking if patinet is alergic to the drug perscribed
 function checkIfAllergicToIngredients(allergies, ingredients, drugName) {
     if (allergies.includes(drugName)) {
         return true;
@@ -907,6 +951,7 @@ function checkIfAllergicToIngredients(allergies, ingredients, drugName) {
     return false;
 }
 
+//heleper function for updating the perscription if patinet has taken the same drug before in past
 function modifyLastPerscription(drugName) {
     let drugPerscription = getDrugPerscribed(drugName);
     let time = document.getElementById('perscriptionTime').value;
@@ -917,6 +962,7 @@ function modifyLastPerscription(drugName) {
     drugPerscription['how'] = when;
 }
 
+//function for adding perscription to patients medical instructions history
 function addMedicalInstruction(drugName) {
     let perscriptionDuration = document.getElementById('perscriptionDuration').value;
     let start = new Date();
@@ -929,6 +975,7 @@ function addMedicalInstruction(drugName) {
     currentMedicalRecord['medicalInstructions'].push(medicalInstruction);
 }
 
+// helper function for adding new perscription to patients medical record
 function addPerscriptionToRecord(drugName) {
     let time = document.getElementById('perscriptionTime').value;
     let frequency = document.getElementById('perscriptionFrequency').value;
@@ -942,6 +989,7 @@ var referallBtn = document.getElementById('createReferall');
 var doctors;
 var specialities;
 
+//action for creating referral
 referallBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -956,6 +1004,7 @@ referallBtn.addEventListener('click', function (e) {
     })
 })
 
+//helper function for getting all possible doctors for wich referral can be directed
 function getDoctors() {
     let getDoctorsRequest = new XMLHttpRequest();
     getDoctorsRequest.onreadystatechange = function () {
@@ -973,6 +1022,7 @@ function getDoctors() {
     getDoctorsRequest.send();
 }
 
+//helper function for getting all possible specialities for wich referral can be directed
 function getSpecialities() {
     specialities = [];
     for (let doctor of doctors) {
@@ -982,6 +1032,7 @@ function getSpecialities() {
     }
 }
 
+//helper function for setting options on pop-up for creating referral
 function addReferallOptions() {
     let valueOfReferallType = document.getElementById('referallType').value;
     let referallOptions = document.getElementById('referallOption');
@@ -1006,6 +1057,7 @@ function addReferallOptions() {
 
 let addReferallBtn = document.getElementById('addReferall');
 
+//action when referral is created
 addReferallBtn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -1037,6 +1089,7 @@ addReferallBtn.addEventListener('click', function (e) {
     popUp.classList.remove("off");
 })
 
+//showing doctor drugs
 function setUpDrugsForReview() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -1059,6 +1112,10 @@ function setUpDrugsForReview() {
                         tableDataIngredients.innerText = tableDataIngredients.innerText.slice(0, -2);
                     }
 
+                    newRow.appendChild(tableDataName);
+                    newRow.appendChild(tableDataIngredients);
+                    
+                    if(drug['status'] == "inReview"){
                     let tableSendBackButton = document.createElement('td');
                     let sendBackBtn = document.createElement('button');
                     sendBackBtn.innerHTML = `<i data-feather='edit-2'></i>`;
@@ -1079,10 +1136,10 @@ function setUpDrugsForReview() {
                     });
                     tableDataApproveButton.appendChild(approveBtn);
 
-                    newRow.appendChild(tableDataName);
-                    newRow.appendChild(tableDataIngredients);
                     newRow.appendChild(tableSendBackButton);
                     newRow.appendChild(tableDataApproveButton);
+                }
+
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -1095,6 +1152,7 @@ function setUpDrugsForReview() {
     request.send();
 }
 
+//function that allowes doctor to send back some drug if he isn't satisfied with it
 function sendBackDrug(key) {
     let sendBtn = document.getElementById('sendDrugMessage');
     sendBtn.setAttribute('key', key);
@@ -1124,6 +1182,7 @@ function sendBackDrug(key) {
     messageDiv.classList.remove('off');
 }
 
+//function for allowing doctor to approve some new drug and let it be in useg from now on
 function approveDrug(key) {
     let sendMessageRequest = new XMLHttpRequest();
     sendMessageRequest.onreadystatechange = function () {
