@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 public class NotificationService : CronJobService
 {
-    public NotificationService(IScheduleConfig<TransferService> config)
+    public NotificationService(IScheduleConfig<NotificationService> config)
         : base(config.CronExpression, config.TimeZoneInfo)
     {
     }
