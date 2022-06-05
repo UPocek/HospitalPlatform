@@ -93,7 +93,7 @@ function setUpPatients() {
         }
     }
 
-    request.open('GET', url + 'api/secretary/patients');
+    request.open('GET', url + 'api/patient/unblocked');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -196,7 +196,7 @@ function setUpBlockedPatients() {
         }
     }
 
-    request.open('GET', url + 'api/secretary/patients/blocked');
+    request.open('GET', url + 'api/patient/blocked');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -297,7 +297,7 @@ function setupExaminationRequests() {
         }
     }
 
-    request.open('GET', url + 'api/secretary/examinationRequests');
+    request.open('GET', url + 'api/examinationRequest');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -323,7 +323,7 @@ function setupUrgent() {
         }
     }
 
-    request.open('GET', url + 'api/secretary/doctors/speciality');
+    request.open('GET', url + 'api/user/doctors/specializations');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -378,7 +378,7 @@ function setupExpendedDynamicEquipment() {
         }
     }
 
-    getRequest.open('GET', url + 'api/secretary/expendedDynamicEquipment');
+    getRequest.open('GET', url + 'api/dynamicEquipment/expended/');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -447,7 +447,7 @@ function setupDynamicEquipmentTransfers() {
         }
     }
 
-    getRequest.open('GET', url + 'api/secretary/roomLowDynamicEquipment');
+    getRequest.open('GET', url + 'api/dynamicEquipment/low/');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -467,7 +467,7 @@ function deletePatient(key) {
         }
     }
 
-    deleteRequest.open('DELETE', url + 'api/secretary/patients/' + key)
+    deleteRequest.open('DELETE', url + 'api/patient/' + key)
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -547,7 +547,7 @@ function updatePatient(key) {
                     } else if (finalPassword.length == 0) {
                         alert("Error: Password can't be empty!");
                     } else {
-                        postRequest.open('PUT', url + 'api/secretary/patients/' + key);
+                        postRequest.open('PUT', url + 'api/patient/' + key);
                         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                         postRequest.send(JSON.stringify(
                             {
@@ -571,7 +571,7 @@ function updatePatient(key) {
             }
         }
     }
-    request.open('GET', url + 'api/secretary/patients/' + key);
+    request.open('GET', url + 'api/patient/' + key);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -641,7 +641,7 @@ createBtn.addEventListener('click', function (e) {
         } else if (finalPassword.length == 0) {
             alert("Error: Password can't be empty!");
         } else {
-            postRequest.open('POST', url + 'api/secretary/patients');
+            postRequest.open('POST', url + 'api/patient/create/');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.send(JSON.stringify(
                 {
@@ -677,7 +677,7 @@ function blockPatient(key) {
 
         }
     }
-    putRequest.open('PUT', url + 'api/secretary/patients/block/' + key + "/1");
+    putRequest.open('PUT', url + 'api/patient/activity/' + key + "/1");
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -697,7 +697,7 @@ function unblockPatient(key, e) {
 
         }
     }
-    putRequest.open('PUT', url + 'api/secretary/patients/block/' + key + "/0");
+    putRequest.open('PUT', url + 'api/patient/activity/' + key + "/0");
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -715,7 +715,7 @@ function acceptRequest(key) {
 
         }
     }
-    putRequest.open('PUT', url + 'api/secretary/examinationRequests/accept/' + key);
+    putRequest.open('PUT', url + 'api/examinationRequest/accept/' + key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -733,7 +733,7 @@ function declineRequest(key) {
 
         }
     }
-    putRequest.open('PUT', url + 'api/secretary/examinationRequests/decline/' + key);
+    putRequest.open('PUT', url + 'api/examinationRequest/accept/' + key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -780,7 +780,7 @@ function showOldExamination(newExamination, examRow) {
 
         }
     }
-    putRequest.open('GET', url + 'api/secretary/examination/' + newExamination['id']);
+    putRequest.open('GET', url + 'api/examination' + newExamination['id']);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -850,43 +850,40 @@ urgentForm.addEventListener('submit', async function (e) {
     getRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                var bool_value = this.responseText == 'true' ? true : false
-                if (!bool_value) {
-                    alert('Error: Selected patient Id is invalid');
-                }
-                else {
-                    let urgentExamJSON = JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis': '' });
+                let urgentExamJSON = JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': "", 'patient': selectedPatientId, 'doctor': -1, 'urgent': true, 'type': selectedType, 'anamnesis': '' });
 
-                    postRequest.onreadystatechange = function () {
-                        if (this.readyState == 4) {
-                            if (this.status == 200) {
-                                if (JSON.parse(this.responseText)[0] == null) {
-                                    alert('Examination created sucessfuly');
-                                    main.classList.remove('hideMain');
-                                    urgentPrompt.classList.add('off')
-                                    setUpFunctionality();
-                                }
-                                else {
-                                    urgentPrompt.classList.add('off')
-                                    displayExaminations(JSON.parse(this.responseText), selectedPatientId, selectedType, selectedDuration);
-                                }
-
+                postRequest.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            if (JSON.parse(this.responseText)[0] == null) {
+                                alert('Examination created sucessfuly');
+                                main.classList.remove('hideMain');
+                                urgentPrompt.classList.add('off')
+                                setUpFunctionality();
                             }
+                            else {
+                                urgentPrompt.classList.add('off')
+                                displayExaminations(JSON.parse(this.responseText), selectedPatientId, selectedType, selectedDuration);
+                            }
+
                         }
                     }
-
-                    postRequest.open('POST', url + 'api/secretary/examination/create/urgent/' + selectedSpeciality);
-                    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-                    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-                    postRequest.send(urgentExamJSON);
                 }
-            } else {
+
+                postRequest.open('POST', url + 'api/examination/urgent/' + selectedSpeciality);
+                postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+                postRequest.send(urgentExamJSON);
+            } else if(this.status == 204){
+                alert('Error: Selected patient Id is invalid');
+            }
+            else{
                 alert(this.responseText);
             }
 
         }
     }
-    getRequest.open('GET', url + 'api/secretary/patients/exists/' + selectedPatientId);
+    getRequest.open('GET', url + 'api/patient/' + selectedPatientId);
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 });
@@ -951,7 +948,7 @@ function createUrgentExaminationWithMovingTerms(selectedExamination, patientid, 
         }
     }
 
-    postRequest.open('POST', url + 'api/secretary/examination/create/urgent');
+    postRequest.open('POST', url + 'api/examination/urgent/termMoving');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': selectedExamination['date'], 'duration': examinationDuration, 'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis': '' }));
@@ -991,10 +988,10 @@ function createDynamicEquipmentPurchase(equipmentName) {
             }
         }
         if (eQuantity <= 0) {
-            alert("Error: Quantity must be a number more than 0 and less than 300!");
+            alert("Error: Quantity must be a number more than 0 and less or equal to the amount available!");
         }
         else {
-            postRequest.open('POST', url + 'api/secretary/purchaseDynamicEquipment');
+            postRequest.open('POST', url + 'api/purchase/create/');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'name': equipmentName, 'type': 'operation equipment', 'quantity': eQuantity }));
@@ -1014,7 +1011,7 @@ function getEquipmentQuantityInRoom(roomName, equipmentName) {
         }
     }
 
-    request.open('GET', url + 'api/secretary/roomEquipmentQuantity/' + roomName + "/" + equipmentName);
+    request.open('GET', url + 'api/dynamicequipment/quantity/' + roomName + "/" + equipmentName);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -1043,7 +1040,7 @@ function getTransferableRooms(roomName, equipmentName) {
         }
     }
 
-    request.open('GET', url + 'api/manager/rooms');
+    request.open('GET', url + 'api/room/');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -1083,7 +1080,7 @@ function transferEquipment(roomName, equipmentName) {
             alert("Error: No room is selected");
         }
         else {
-            request.open('PUT', url + 'api/secretary/transferEquipment/' + equipmentName + '/' + transferRoom + "/" + roomName + "/" + transferQuantity);
+            request.open('PUT', url + 'api/equipmenttransfer/dynamicTransfer/' + equipmentName + '/' + transferRoom + "/" + roomName + "/" + transferQuantity);
             request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             request.send();
         }

@@ -57,4 +57,29 @@ public class UserRepository : IUserRepository
         return await collectionPatients.Find(item => item.Email == email & item.Password == password).FirstOrDefaultAsync();
     }
 
+    public async Task<List<Employee>> GetSpecializedDoctors(string specialization){
+        var collectionDoctors = _database.GetCollection<Employee>("Employees");
+        return await collectionDoctors.Find(e => e.Role == "doctor" && e.Specialization == specialization).ToListAsync();
+
+    }
+
+    public async Task<List<String>> GetDoctorSpecializations()
+    {
+        var collection = _database.GetCollection<Employee>("Employees");
+        var doctors = await collection.Find(d => d.Role == "doctor").ToListAsync();
+
+        List<string> allSpecializations = new List<string>();
+
+        foreach (Employee e in doctors)
+        {
+            allSpecializations.Add(e.Specialization);
+        }
+
+        allSpecializations = allSpecializations.Distinct().ToList();
+
+        return allSpecializations;
+    }
+
+    
+
 }

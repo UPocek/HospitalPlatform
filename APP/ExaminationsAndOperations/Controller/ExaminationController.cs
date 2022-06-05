@@ -17,6 +17,12 @@ public class ExaminationController : ControllerBase
         return await _examinationService.GetAllExaminations();
     }
 
+    [HttpGet("{id}")]
+    public async Task<Examination> GetExamination(int id){
+        return await _examinationService.GetExamination(id);
+    }
+
+
     [HttpGet("doctor/{doctorId}")]
     public async Task<List<Examination>> GetAllDoctorsExaminations(int doctorId)
     {
@@ -69,5 +75,35 @@ public class ExaminationController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("reffered/{specialization}/{referralid}")]
+
+    public async Task<IActionResult> CreateRefferedExamination(Examination newExamination, string specialization, int referralid){
+
+        var roomValidation = await _examinationService.doesRoomExist(newExamination.RoomName);
+        var doctorValidation = await _examinationService.doesSpecializedDoctorExist(newExamination.DoctorId,specialization);
+        var durationValidation = _examinationService.isDurationValid(newExamination);
+
+        if(!(roomValidation && doctorValidation && durationValidation)){
+            return BadRequest();
+        }
+
+        await _examinationService.CreateRefferedExamination(newExamination,specialization,referralid);
+        return Ok();
+    }
+
+    [HttpPost("urgent/{specialization}")]
+    public async Task<List<Examination>> CreateUrgentExamination(Examination newExamination, string specialization){
+        return await _examinationService.CreateUrgentExamination(newExamination,specialization);
+    }
+
+    [HttpPost("urgent/termMoving")]
+    public async Task<IActionResult> CreateUrgentExaminationWithTermMoving(Examination newExamination){
+        await _examinationService.CreateUrgentExaminationWithTermMoving(newExamination);
+        return Ok();
+    }
+
+
+
 
 }

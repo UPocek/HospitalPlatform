@@ -9,4 +9,8 @@ public interface IUserService
     public IActionResult GetUser(int id);
 
     public Task<Account> Authenticate(string email, string password);
+
+    public Task<List<Employee>> GetSpecializedDoctors(string specialization);
+
+    public Task<List<String>> GetDoctorSpecializations();
 }

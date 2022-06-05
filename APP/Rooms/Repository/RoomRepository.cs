@@ -23,6 +23,11 @@ public class RoomRepository : IRoomRepository
         return await rooms.Find(room => room.Name == roomName).FirstOrDefaultAsync();
     }
 
+    public async Task<Room> GetRoomByType(string roomType){
+        var rooms = _database.GetCollection<Room>("Rooms");
+        return await rooms.Find(room => room.Type == roomType).FirstOrDefaultAsync();
+    }
+
     public async Task UpdateRoomInformation(string nameOfRoomToUpdate, string name, string type)
     {
         var rooms = _database.GetCollection<Room>("Rooms");
@@ -54,6 +59,7 @@ public class RoomRepository : IRoomRepository
         await rooms.InsertOneAsync(room);
     }
 
+
     public async Task DeleteRoom(string name)
     {
         var rooms = _database.GetCollection<Room>("Rooms");
@@ -68,6 +74,12 @@ public class RoomRepository : IRoomRepository
 
         var renovations = _database.GetCollection<Renovation>("Renovations");
         await renovations.DeleteManyAsync(item => item.Room == name);
+    }
+
+    public async Task UpdateRoom(Room room)
+    {
+        var rooms = _database.GetCollection<Room>("Rooms");
+        await rooms.ReplaceOneAsync(r => r.Id == room.Id,room);
     }
 
 }

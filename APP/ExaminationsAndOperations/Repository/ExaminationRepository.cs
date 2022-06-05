@@ -17,6 +17,13 @@ public class ExaminationRepository : IExaminationRepository
         return await examinations.Find(e => true).ToListAsync();
     }
 
+    public async Task<Examination> GetExamination(int id)
+    {
+        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
+
+        return await examinations.Find(item => item.Id == id).FirstOrDefaultAsync();
+    }
+
     public async Task<List<Examination>> GetAllExaminationsInRoom(string roomName)
     {
         var medicalExaminations = _database.GetCollection<Examination>("MedicalExaminations");
@@ -54,6 +61,18 @@ public class ExaminationRepository : IExaminationRepository
     {
         var examinations = _database.GetCollection<Examination>("MedicalExaminations");
         await examinations.DeleteOneAsync(e => e.Id == id);
+    }
+
+    public async Task<List<Examination>> GetExaminationsAfterNow(Examination examination){
+
+        var dateFilter = Builders<Examination>.Filter.Gt(e => e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
+        var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName, examination.RoomName);
+        var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId, examination.DoctorId);
+        var patientFilter = Builders<Examination>.Filter.Eq(e => e.PatinetId, examination.PatinetId);
+
+        var filter = dateFilter & roomFilter & doctorFilter & patientFilter;
+
+        return await _database.GetCollection<Examination>("MedicalExaminations").Find(filter).SortBy(e => e.DateAndTimeOfExamination).ToListAsync();
     }
 
 }

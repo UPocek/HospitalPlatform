@@ -39,4 +39,6 @@ public class EquipmentTransferRepository : IEquipmentTransferRepository
         }
     }
 
+
+
 }

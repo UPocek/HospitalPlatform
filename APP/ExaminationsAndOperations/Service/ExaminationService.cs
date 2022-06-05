@@ -1,9 +1,13 @@
+using System.Net.Mail;
+using System.Net;
 public class ExaminationService : IExaminationService
 {
     private IExaminationRepository examinationRepository;
     private IRoomRepository roomRepository;
     private IPatientRepository patientRepository;
     private IRenovationRepository renovationRepository;
+    private IUserRepository userRepository;
+    private IReferralRepository referralRepository;
 
     public ExaminationService()
     {
@@ -11,6 +15,8 @@ public class ExaminationService : IExaminationService
         roomRepository = new RoomRepository();
         patientRepository = new PatientRepository();
         renovationRepository = new RenovationRepository();
+        userRepository = new UserRepository();
+        referralRepository = new ReferralRepository();
     }
 
     public async Task<List<Examination>> GetAllExaminations()
@@ -49,6 +55,10 @@ public class ExaminationService : IExaminationService
     public async Task SaveExamination(Examination examination)
     {
         await examinationRepository.InsertExamination(examination);
+    }
+
+    public async Task<Examination> GetExamination(int id){
+        return await examinationRepository.GetExamination(id);
     }
 
     public async Task UpdateExamination(int id, Examination examination)
@@ -235,5 +245,261 @@ public class ExaminationService : IExaminationService
 
         return false;
     }
+
+
+
+    public bool isDurationValid(Examination newExamination){
+        if (newExamination.DurationOfExamination <= 15 || newExamination.DurationOfExamination >= 200)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public async Task<bool> doesSpecializedDoctorExist(int doctorId,string specialization){
+        if(specialization == "none"){
+            return true;
+        }
+        List<Employee> specializedDoctors = await userRepository.GetSpecializedDoctors(specialization);
+        if(specializedDoctors.Count() == 0){
+            return false;
+        }
+        return true;
+    }
+
+    public async Task<bool> doesRoomExist(string roomName){
+        Room room = await roomRepository.GetRoomByName(roomName);
+        if (room == null){
+            return false;
+        }
+        return true;
+    }
+
+    public async Task CreateRefferedExamination(Examination newExamination, string specialization, int referralid)
+    {
+
+        if (specialization != "none")
+        {
+            List<Employee> specializedDoctors = await userRepository.GetSpecializedDoctors(specialization);
+            Random rnd = new Random();
+            newExamination.DoctorId = specializedDoctors[rnd.Next(0, specializedDoctors.Count() - 1)].Id;
+        }
+
+
+        var examinations = examinationRepository.GetAllExaminations();
+
+        var newExaminationDate = DateTime.Now.AddDays(1);
+
+
+        DateTime upperDateTimelimit;
+        DateTime lowerDateTimelimit;
+
+        while (true)
+        {
+            newExamination.DateAndTimeOfExamination = newExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+            if (await IsExaminationValid(newExamination))
+            {
+                lowerDateTimelimit = new DateTime(newExaminationDate.Year, newExaminationDate.Month, newExaminationDate.Day, 8, 0, 0);
+                upperDateTimelimit = new DateTime(newExaminationDate.Year, newExaminationDate.Month, newExaminationDate.Day, 23, 59, 0);
+                if (newExaminationDate >= lowerDateTimelimit && newExaminationDate <= upperDateTimelimit)
+                {
+                    break;
+                }
+                else
+                {
+                    newExaminationDate = newExaminationDate.AddMinutes(30);
+                    continue;
+                }
+            }
+
+            else
+            {
+                newExaminationDate = newExaminationDate.AddMinutes(30);
+            }
+
+        }
+        await examinationRepository.InsertExamination(newExamination);
+
+        referralRepository.DeletePatientReferral(referralid, newExamination);
+
+    }
+
+    public void SendTermNotificationEmailToPatient(Patient patient,Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
+    {
+        var smptClient = new SmtpClient("smtp.gmail.com")
+        {
+            Port = 587,
+            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
+            EnableSsl = true,
+        };
+
+        string messageDoctor = "Hello " + employee.FirstName + " " + employee.LastName
+                    + "\n\n\nYour examination id:" + examId + " has been moved from " + oldDateAndTime + " to " +
+                    newDateAndTime + ".\n\n\nPatient in question:\nid: " + patient.Id +
+                    "\nName: " + patient.FirstName + "\nSurname: " + patient.LastName + "\n Have a nice day!";
+
+
+        var mailMessageDoctor = new MailMessage
+        {
+            From = new MailAddress(employee.Email),
+            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+            Body = messageDoctor,
+            IsBodyHtml = true,
+        };
+
+        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+        smptClient.Send(mailMessageDoctor);
+    }
+
+    public void SendTermNotificationEmailToDoctor(Patient patient,Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
+    {
+        var smptClient = new SmtpClient("smtp.gmail.com")
+        {
+            Port = 587,
+            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
+            EnableSsl = true,
+        };
+
+        string messagePatient = "Hello " + patient.FirstName + " " + patient.LastName
+                    + "\n\n\nYour examination id:" + examId + " has been moved from " + oldDateAndTime + " to " +
+                    newDateAndTime + ".\n\n\nDoctor in question:" +
+                    "\nName: " + employee.FirstName + "\nSurname: " + employee.LastName + "\n Have a nice day!";
+
+
+        var mailMessagePatient = new MailMessage
+        {
+            From = new MailAddress(employee.Email),
+            Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
+            Body = messagePatient,
+            IsBodyHtml = true,
+        };
+
+        mailMessagePatient.To.Add("teamnineMedical@gmail.com");
+        smptClient.Send(mailMessagePatient);
+    }
+
+
+    public async Task<List<Examination>> CreateUrgentExamination(Examination newExamination, string specialization)
+    {
+
+        string roomType;
+        if (newExamination.TypeOfExamination == "visit")
+        {
+            roomType = "examination room";
+        }
+        else
+        {
+            roomType = "operation room";
+        }
+
+        if (await patientRepository.GetPatientById(newExamination.PatinetId) == null)
+        {
+            return new List<Examination>();
+        }
+
+        var room = await roomRepository.GetRoomByType(roomType);
+
+        newExamination.RoomName = room.Name;
+
+        List<Employee> specializedDoctors = new List<Employee>();
+        specializedDoctors = await userRepository.GetSpecializedDoctors(specialization);
+
+        var urgentExaminationDate = DateTime.Now;
+        var urgentExaminationEnd = DateTime.Now.AddHours(2);
+
+        var patient = patientRepository.GetPatientById(newExamination.PatinetId);
+
+
+        while (urgentExaminationDate <= urgentExaminationEnd)
+        {
+            newExamination.DateAndTimeOfExamination = urgentExaminationDate.ToString("yyyy-MM-ddTHH:mm");
+            foreach (Employee doctor in specializedDoctors)
+            {
+                newExamination.DoctorId = doctor.Id;
+
+                if (await IsExaminationValid(newExamination))
+                {
+                    await examinationRepository.InsertExamination(newExamination);
+                    return new List<Examination>();
+                }
+            }
+            urgentExaminationDate = urgentExaminationDate.AddMinutes(10);
+        }
+
+        var examinationsAfterNow = await examinationRepository.GetExaminationsAfterNow(newExamination);
+
+        List<Examination> fiveSortedExaminations = new List<Examination>();
+
+        fiveSortedExaminations = examinationsAfterNow.Take(5).ToList();
+
+        return fiveSortedExaminations;
+
+    }
+
+    public async Task CreateUrgentExaminationWithTermMoving(Examination newExamination)
+    {
+
+        var examinations = await examinationRepository.GetAllExaminations();
+
+        List<Examination> reservedTimeFrames = new List<Examination>();
+
+        foreach(Examination e in examinations){
+            if(e.RoomName == newExamination.RoomName && e.DoctorId == newExamination.DoctorId){
+                reservedTimeFrames.Add(e);
+            }
+        }
+
+        List<Examination> toMoveExaminations = new List<Examination>();
+
+        var newExaminationBegin = DateTime.Parse(newExamination.DateAndTimeOfExamination);
+        var newExaminationEnd = newExaminationBegin.AddMinutes(newExamination.DurationOfExamination);
+
+        DateTime toMoveExamBegin;
+
+        foreach (Examination e in reservedTimeFrames)
+        {
+            toMoveExamBegin = DateTime.Parse(e.DateAndTimeOfExamination);
+            if (newExaminationBegin <= toMoveExamBegin && newExaminationEnd >= toMoveExamBegin)
+            {
+                toMoveExaminations.Add(e);
+            }
+        }
+
+
+        await examinationRepository.InsertExamination(newExamination);
+
+        var iterationDateTime = DateTime.Now;
+
+        foreach (Examination toMoveExamination in toMoveExaminations)
+        {
+            var oldDateAndTime = toMoveExamination.DateAndTimeOfExamination;
+            while (true)
+            {
+                toMoveExamination.DateAndTimeOfExamination = iterationDateTime.ToString("yyyy-MM-ddTHH:mm");
+                if (await IsExaminationValid(toMoveExamination))
+                {
+                    Patient patient = await patientRepository.GetPatientById(toMoveExamination.PatinetId);
+                    Employee employee = await userRepository.GetDoctor(toMoveExamination.DoctorId);
+
+                    SendTermNotificationEmailToPatient(patient, employee, oldDateAndTime, toMoveExamination.DateAndTimeOfExamination, toMoveExamination.Id);
+                    SendTermNotificationEmailToDoctor(patient, employee, oldDateAndTime, toMoveExamination.DateAndTimeOfExamination, toMoveExamination.Id);
+
+                    await examinationRepository.UpdateExamination((int)toMoveExamination.Id,toMoveExamination);
+                    break;
+                }
+
+
+                else
+                {
+                    iterationDateTime = iterationDateTime.AddMinutes(5);
+                }
+            }
+        }
+    }
+
+
+
+
+
 
 }
