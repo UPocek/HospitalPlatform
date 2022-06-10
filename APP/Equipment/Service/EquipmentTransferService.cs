@@ -20,4 +20,8 @@ public class EquipmentTransferService : IEquipmentTransferService
         }
     }
 
+    public async Task UseEquipment(Room room)
+    {
+        await _equipmentTransferRepository.UseEquipment(room);
+    }
 }

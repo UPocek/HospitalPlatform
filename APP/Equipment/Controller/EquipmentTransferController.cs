@@ -29,4 +29,11 @@ public class EquipmentTransferController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("use")]
+    public async Task<IActionResult> UseEquipment(Room room)
+    {
+        await _equipmentTransferService.UseEquipment(room);
+        return Ok();
+    }
+
 }

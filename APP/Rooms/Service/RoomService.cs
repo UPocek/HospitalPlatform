@@ -19,7 +19,7 @@ public class RoomService : IRoomService
 
     public async Task UpdateRoom(string id, Room room)
     {
-        await _roomRepository.UpdateRoomInformation(id, room.Name, room.Type);
+        await _roomRepository.UpdateRoomInformation(id, room);
     }
 
     public async Task<bool> IsRoomNameValid(Room room)

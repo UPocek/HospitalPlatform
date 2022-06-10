@@ -24,9 +24,9 @@ public interface IExaminationService
 
     public Task<bool> IsRoomInRenovation(string roomName, string examinationDate);
 
-    public Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination);
+    public Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId);
 
-    public Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination);
+    public Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId);
 
     public Task<bool> ExaminationScheduledAtThatTime(Renovation renovation);
 }

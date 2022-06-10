@@ -26,7 +26,6 @@ public class ExaminationController : ControllerBase
     [HttpGet("doctorSchedule/{doctorId}&{dateOfSearch}")]
     public async Task<List<Examination>> GetAllDoctorsExaminationsSchedule(int doctorId, string dateOfSearch)
     {
-        Console.Write(await _examinationService.GetDoctorsExaminationsSchedule(doctorId, dateOfSearch));
         return await _examinationService.GetDoctorsExaminationsSchedule(doctorId, dateOfSearch);
     }
 

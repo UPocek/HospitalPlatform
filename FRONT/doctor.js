@@ -754,7 +754,7 @@ endReviewBtn.addEventListener('click', function (e) {
                 equipmenForExamination.push(equipmentItem['name']);
             }
             currentExamination['equipmentUsed'] = equipmenForExamination;
-            roomRequest.open('PUT', url + 'api/room/' + roomOfExamination['name']);
+            roomRequest.open('PUT', url + 'api/equipmenttransfer/use');
             roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name": roomOfExamination["name"], "type": roomOfExamination["type"], "inRenovation": roomOfExamination["inRenovation"], "equipment": roomOfExamination["equipment"] }));
