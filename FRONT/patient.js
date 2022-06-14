@@ -70,7 +70,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/examination/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -83,6 +83,7 @@ function setUpFunctionality() {
     doctorOptions('doctorEditExamination');
     doctorOptions('doctorAdvancedCreateExamination');
     setUpSearchExaminations('empty');
+    setUpDrugs();
 }
 
 function setUpSearchExaminations(myFilter) {
@@ -143,7 +144,7 @@ function setUpSearchExaminations(myFilter) {
         }
     }
 
-    request.open('GET', url + 'api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/examination/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -305,7 +306,7 @@ function editExamination(editId) {
             }
         }
     }
-    request.open('GET', url + 'api/patient/examination/' + editId);
+    request.open('GET', url + 'api/examination/' + editId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -331,7 +332,7 @@ function editExamination(editId) {
                 }
             }
         };
-        putRequest.open('PUT', url + 'api/patient/examinations/' + userId);
+        putRequest.open('PUT', url + 'api/examination/' + userId);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         putRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -379,7 +380,7 @@ function doctorOptions(elementID) {
         }
     }
 
-    request.open('GET', url + 'api/patient/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -395,7 +396,6 @@ function setUpDoctors(myFilter) {
                 table.innerHTML = '';
                 for (let i in response) {
                     let doctor = response[i];
-
                     var doc = new User(doctor);
                     doctors.set(doc.id, doc);
 
@@ -453,7 +453,7 @@ function setUpDoctors(myFilter) {
         }
     }
 
-    request.open('GET', url + 'api/patient/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -494,9 +494,124 @@ function setUpMedicalRecord() {
             }
         }
     }
-    getMedicalRecordRequest.open('GET', url + 'api/doctor/examinations/patientMedicalCard/' + userId);
+    getMedicalRecordRequest.open('GET', url + 'api/medicalcard/' + userId);
     getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getMedicalRecordRequest.send();
+}
+
+
+function setUpDrugs() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                let table = document.getElementById('medicalInstructions');
+                table.innerHTML = '';
+                for (let i in response) {
+
+                    let instruction = response[i];
+                    let newRow = document.createElement('tr');
+
+                    let cDrug = document.createElement('td');
+                    cDrug.innerText = instruction['drug'];
+
+                    let cFrom = document.createElement('td');
+                    var instructionFrom = new Date(instruction['startDate']);
+                    cFrom.innerText = instructionFrom.toLocaleString();
+                    
+                    let cTo = document.createElement('td');
+                    var instructionTo = new Date(instruction['endDate']);
+                    cTo.innerText = instructionTo.toLocaleString();
+
+                    let one = document.createElement('td');
+                    let putBtn = document.createElement('button');
+
+                    putBtn.innerHTML = '<i data-feather="file-text"></i>';
+                    putBtn.classList.add('putBtn');
+                    putBtn.setAttribute('key', instruction['drug']);
+                    putBtn.addEventListener('click', function (e) {
+                        drugInstruction(this.getAttribute('key'), instructionTo);
+                    });
+
+                    one.appendChild(putBtn);
+                        
+                    newRow.appendChild(cDrug)
+                    newRow.appendChild(cFrom);
+                    newRow.appendChild(cTo);
+                    newRow.appendChild(one);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+
+    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function drugInstruction(drug, endDate){
+    let prompt = document.getElementById('drugInstructionPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('drugInstructionForm');
+
+
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                let cDrug = document.getElementById('drug');
+                cDrug.innerText = 'Drug: ' + `${drug}`;
+                    
+                let time = document.getElementById('when');
+                time.innerText = 'Time: ' + `${response['when']}`;
+
+                let frequency = document.getElementById('frequency');
+                frequency.innerText  = 'Frequency: ' + `${response['frequency']}`;
+
+                let note = document.getElementById('note');
+                note.innerText  ='Note: ' +  `${response['how']}`;      
+                }
+            }
+        }
+    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/'+ drug + '/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+
+    form.addEventListener('submit', function (e) {  
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        let time = document.getElementById('notifyTime').value;
+        if (time == ""){
+            alert('Error: Insert time!');
+            return;
+        }
+    
+        let postRequest = new XMLHttpRequest();
+    
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                        alert('Notification sucessfuly created');
+                    } else {
+                        alert('Error: Entered notification informations are invalid');
+                    }
+                }
+            };
+            postRequest.open('POST', 'https://localhost:7291/api/drug/notifications');
+            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            postRequest.send(JSON.stringify({ 'drug': drug, 'time': time , 'patient': user.email, 'endDate': endDate}));
+      
+
+     });
 }
 
 var examinationSearchFilter = document.getElementById('examinationSearch');

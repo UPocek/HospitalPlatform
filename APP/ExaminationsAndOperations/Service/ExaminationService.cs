@@ -500,6 +500,10 @@ public class ExaminationService : IExaminationService
 
 
 
+    public bool TrollCheck(Patient patient, String type, int n){
+        
+        return true;
+    }
 
 
 }

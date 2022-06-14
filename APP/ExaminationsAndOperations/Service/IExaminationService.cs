@@ -48,5 +48,5 @@ public interface IExaminationService
 
     public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId);
 
-
+    public bool TrollCheck(Patient patient, String type, int n);
 }

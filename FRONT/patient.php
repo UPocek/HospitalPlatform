@@ -40,6 +40,19 @@
 		</form>
 	</div>
 
+  <div id="drugInstructionPrompt" class="form-container sign-in-container off prompt">
+		<form id="drugInstructionForm" class="colDir myForm">
+			<h1>Drug instruction</p>
+      <p id="drug">&nbsp; </p>
+      <p id="when">&nbsp; </p>
+      <p id="frequency">&nbsp; a day </p> 
+      <p id="note">&nbsp; </p>  
+      <p>Notify </p>
+      <input id="notifyTime" type="time">
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
   <main class="myMain">
  
     <div id="hi">
@@ -141,6 +154,25 @@
         </div>
       </div>
    </div>
+    
+   <div id="drugs">
+    <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Instructions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicalInstructions">
+
+                </tbody>
+                </table>
+            </div>
+    </tbody>
+    </div>
 
    <form id="patientFilters" class="myForm ">
         <div>

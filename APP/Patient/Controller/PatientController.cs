@@ -75,35 +75,6 @@ public class PatientController : ControllerBase
 
     //From here non SOLID
 
-    [HttpGet("doctors")]
-    public IActionResult GetAllDoctors()
-    {
-        var collection = _database.GetCollection<BsonDocument>("Employees");
-        var filter = Builders<BsonDocument>.Filter.Eq("role", "doctor");
-        var results = collection.Find(filter).ToList();
-        var dotNetObjList = results.ConvertAll(BsonTypeMapper.MapToDotNetValue);
-        Response.StatusCode = StatusCodes.Status200OK;
-        return new JsonResult(dotNetObjList);
-    }
-
-    // GET: api/Patient/examinations/id
-    [HttpGet("examinations/{id}")]
-    public async Task<List<Examination>> GetPatientsExaminations(int id)
-    {
-        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
-        List<Examination> patientsExaminations = examinations.Find(e => e.PatinetId == id).ToList();
-        return patientsExaminations;
-    }
-
-    // GET: api/Patient/examination/id
-    [HttpGet("examination/{id}")]
-    public async Task<Examination> GetExamination(int id)
-    {
-        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
-        Examination patientsExaminations = examinations.Find(e => e.Id == id).FirstOrDefault();
-        return patientsExaminations;
-    }
-
     // POST: api/Patient/examinationFilter
     [HttpPost("examinationFilter")]
     public async Task<List<Examination>> GetAvailableExamination([FromBody] ExaminationFilter filter)
