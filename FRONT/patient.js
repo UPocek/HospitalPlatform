@@ -188,7 +188,7 @@ function createExamination(doctorId) {
                 }
             }
         };
-        postRequest.open('POST', url + 'api/patient/examinations');
+        postRequest.open('POST', url + 'api/examination/patient');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -252,7 +252,7 @@ advancedForm.addEventListener('submit', function (e) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/patient/examinationFilter');
+    postRequest.open('POST', url + 'api/examination/filter');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString(), 'timeTo': intervalEnd.toString(), 'priority': priority }));
@@ -332,7 +332,7 @@ function editExamination(editId) {
                 }
             }
         };
-        putRequest.open('PUT', url + 'api/examination/' + userId);
+        putRequest.open('PUT', url + 'api/examination/patient/' + editId);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         putRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -355,7 +355,7 @@ function deleteExamination(key) {
         }
     }
 
-    deleteRequest.open('DELETE', url + 'api/patient/examinations/' + key);
+    deleteRequest.open('DELETE', url + 'api/examination/patient/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }

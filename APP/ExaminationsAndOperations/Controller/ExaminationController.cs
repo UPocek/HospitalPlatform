@@ -42,6 +42,14 @@ public class ExaminationController : ControllerBase
         return await _examinationService.GetAllPatientsExaminations(patientId);
     }
 
+    
+    [HttpPost("filter")]
+    public async Task<List<Examination>> GetAvailableExamination([FromBody] ExaminationFilter filter)
+    {
+        Console.WriteLine("aaa");
+        return await _examinationService.GetAvailableExamination(filter);
+    }
+
     [HttpPost("new")]
     public async Task<IActionResult> CreateExamination(Examination examination)
     {
@@ -54,6 +62,16 @@ public class ExaminationController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("patient")]
+    public async Task<IActionResult> CreatePatientsExamination(Examination examination)
+    {
+
+        await _examinationService.CreateExamination(examination);
+
+        return Ok();
+    }
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateExamination(int id, Examination examination)
@@ -68,12 +86,28 @@ public class ExaminationController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("patient/{id}")]
+    public async Task<IActionResult> UpdatePatientsExamination(string id, Examination examination)
+    {
+        await _examinationService.UpdatePatientsExamination(id, examination);
+
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExamination(int id)
     {
         await _examinationService.DeleteExamination(id);
 
         return Ok();
+    }
+
+    [HttpDelete("patient/{id}")]
+    public async Task<IActionResult>DeletePatientsExamination(int id)
+    {
+        await _examinationService.DeletePatientsExamination(id);
+        return Ok();
+
     }
 
     [HttpPost("reffered/{specialization}/{referralid}")]
