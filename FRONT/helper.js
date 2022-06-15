@@ -96,29 +96,29 @@ function showWindow(section) {
     sectionThree.classList.remove('active');
     sectionFour.classList.remove('active');
 
-    if(user['role'] == 'secretary'){
+    if (user['role'] == 'secretary') {
         let welcomeHeader = document.getElementById("hi");
         switch (section) {
-            case 1: 
-            sectionOne.classList.add('active'); 
-            welcomeHeader.classList.remove('off');
-            break;
-            case 2: 
-            sectionTwo.classList.add('active'); 
-            welcomeHeader.classList.remove('off');
-            break;
-            case 3: 
-            sectionThree.classList.add('active'); 
-            welcomeHeader.classList.remove('off');
-            break;
+            case 1:
+                sectionOne.classList.add('active');
+                welcomeHeader.classList.remove('off');
+                break;
+            case 2:
+                sectionTwo.classList.add('active');
+                welcomeHeader.classList.remove('off');
+                break;
+            case 3:
+                sectionThree.classList.add('active');
+                welcomeHeader.classList.remove('off');
+                break;
             case 4:
-            sectionFour.classList.add('active');
-            welcomeHeader.classList.remove('off');
-            break;
+                sectionFour.classList.add('active');
+                welcomeHeader.classList.remove('off');
+                break;
         }
     }
 
-    else{
+    else {
         switch (section) {
             case 1: sectionOne.classList.add('active'); break;
             case 2: sectionTwo.classList.add('active'); break;
@@ -167,12 +167,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/my/users/' + userId);
+    request.open('GET', `${url}api/user/${userId}`);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 });
 
 // Global variables
+var url = 'https://localhost:7291/'
 var user;
 var main = document.getElementsByTagName('main')[0];
 var userId = getParamValue('id');

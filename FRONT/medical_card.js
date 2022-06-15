@@ -1,9 +1,26 @@
+var url = 'https://localhost:7291/';
 var patient;
 var patientActivity;
 var patientId = getParamValue('patientId');
 var doctorId = getParamValue('doctorId');
 var secretaryId = getParamValue('secretaryId');
+var jwtoken = getParamValue('token');
 var patientsExaminations;
+
+function getParamValue(name) {
+    let location = decodeURI(window.location.toString());
+    let index = location.indexOf('?') + 1;
+    let subs = location.substring(index, location.length);
+    let splitted = subs.split('&');
+
+    for (let item of splitted) {
+        let s = item.split('=');
+        let pName = s[0];
+        let pValue = s[1];
+        if (pName == name)
+            return pValue;
+    }
+}
 
 function setupPatientBasicInfo() {
     let request = new XMLHttpRequest();
@@ -44,7 +61,7 @@ function setupPatientBasicInfo() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + patientId);
+    request.open('GET', url + 'api/medicalcard/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -91,7 +108,7 @@ function setUpPatientExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/patientId/' + patientId);
+    request.open('GET', url + 'api/examination/patient/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -195,7 +212,7 @@ function displayReferrals() {
             }
         }
 
-        request.open('GET', 'https://localhost:7291/api/Secretary/patients/' + patientId);
+        request.open('GET', url + 'api/patient/' + patientId);
         request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         request.send();
 
@@ -234,7 +251,7 @@ function createRefferedExaminationByDoctorId(doctorid, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -273,7 +290,7 @@ function createRefferedExaminationBySpeciality(doctorSpeciality, referralid) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 
@@ -307,7 +324,7 @@ function submitDoctorIdForm(e, doctorid, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/none/' + referralid);
+    postRequest.open('POST', url + 'api/examination/reffered/none/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
@@ -341,7 +358,7 @@ function submitSpecialityForm(e, speciality, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', 'https://localhost:7291/api/secretary/examination/referral/create/' + speciality + '/' + referralid);
+    postRequest.open('POST', url + 'api/examination/reffered/' + speciality + '/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
@@ -382,7 +399,7 @@ function setUpPatientInstructions() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/my/users/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }

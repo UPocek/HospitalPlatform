@@ -16,7 +16,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/examinations/doctorId/' + userId);
+    request.open('GET', url + 'api/examination/doctor/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -58,7 +58,7 @@ function displayExaminations() {
         patientBtn.setAttribute("key", examination["patient"]);
         patientBtn.classList.add('send');
         patientBtn.addEventListener('click', function (e) {
-            window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
+            window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&id=' + userId);
         });
         one.appendChild(patientBtn);
 
@@ -153,7 +153,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getEquipmentRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/room/' + currentExamination['room']);
+        getEquipmentRequest.open('GET', url + 'api/room/' + currentExamination['room']);
         getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getEquipmentRequest.send();
         
@@ -195,7 +195,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + currentExamination['patient']);
+        getMedicalRecordRequest.open('GET', url + 'api/medicalcard/' + currentExamination['patient']);
         getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getMedicalRecordRequest.send();
     } else {
@@ -223,7 +223,7 @@ updateMedicalCardBtn.addEventListener('click', function (e) {
             }
         }
     }
-    request.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+    request.open('PUT', url + 'api/doctor/medicalrecord/' + currentPatientMedicalRecord['id']);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send(JSON.stringify(currentMedicalRecord));
@@ -275,74 +275,73 @@ var scheduleDateButton = document.getElementById("scheduleDateBtn");
 //function for showing doctors examinations based on the date he selects
 function searchSchedule() {
     let inputDate = document.getElementById("scheduleDateOption").value;
-
-    const convertedInputDate = new Date(inputDate);
-    const lastDayInSchedule = new Date(inputDate);
-    lastDayInSchedule.setDate(convertedInputDate.getDate() + 3).set;
-    convertedInputDate.setHours(7, 0, 0);
-    lastDayInSchedule.setHours(23, 0, 0);
-
     let table = document.getElementById("examinationsTableSchedule");
     removeAllChildNodes(table);
 
-    for (let i in doctorsExaminations) {
+    let scheduleRequest = new XMLHttpRequest();
+    scheduleRequest.onreadystatechange = function () {
+        
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                
+                for (let i in response) {
+                    let examination = response[i];
+                    let newRow = document.createElement("tr");
 
-        let examinationDate = new Date(doctorsExaminations[i]['date']);
-        if (examinationDate >= convertedInputDate && examinationDate <= lastDayInSchedule) {
+                    let examinationDate = document.createElement("td");
+                    examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
+                    let examinationDuration = document.createElement("td");
+                    examinationDuration.innerText = examination["duration"];
+                    let examinationDone = document.createElement("td");
+                    examinationDone.innerText = examination["done"];
+                    let examinationRoom = document.createElement("td");
+                    examinationRoom.innerText = examination["room"];
+                    let examinationType = document.createElement("td");
+                    examinationType.innerText = examination["type"];
+                    let isUrgent = document.createElement("td");
+                    isUrgent.innerText = examination["urgent"];
 
-            let examination = doctorsExaminations[i];
-            let newRow = document.createElement("tr");
+                    let one = document.createElement("td");
+                    let patientBtn = document.createElement("button");
+                    patientBtn.innerHTML = '<i data-feather="user"></i>';
+                    patientBtn.setAttribute("key", examination["patient"]);
+                    patientBtn.classList.add('send');
+                    patientBtn.addEventListener('click', function (e) {
+                        window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&id=' + userId);
+                    });
+                    one.appendChild(patientBtn);
 
-            let examinationDate = document.createElement("td");
-            examinationDate.innerText = (new Date(examination["date"])).toLocaleString();
-            let examinationDuration = document.createElement("td");
-            examinationDuration.innerText = examination["duration"];
-            let examinationDone = document.createElement("td");
-            examinationDone.innerText = examination["done"];
-            let examinationRoom = document.createElement("td");
-            examinationRoom.innerText = examination["room"];
-            let examinationType = document.createElement("td");
-            examinationType.innerText = examination["type"];
-            let isUrgent = document.createElement("td");
-            isUrgent.innerText = examination["urgent"];
+                    let two = document.createElement("td");
+                    let reviewBtn = document.createElement("button");
+                    reviewBtn.innerHTML = '<i data-feather="check-square"></i>';
+                    reviewBtn.classList.add("add");
+                    reviewBtn.setAttribute("key", examination["id"]);
+                    reviewBtn.addEventListener('click', function (e) {
+                        reviewExamination(parseInt(reviewBtn.getAttribute('key')));
+                    });
+                    two.appendChild(reviewBtn);
 
-            let one = document.createElement("td");
-            let patientBtn = document.createElement("button");
-            patientBtn.innerHTML = '<i data-feather="user"></i>';
-            patientBtn.setAttribute("key", examination["patient"]);
-            patientBtn.classList.add('send');
-            patientBtn.addEventListener('click', function (e) {
-                window.location.replace("patientMedicalCard.php" + "?patientId=" + patientBtn.getAttribute("key") + '&token=' + jwtoken + '&doctorId=' + userId);
-            });
-            one.appendChild(patientBtn);
-
-            let two = document.createElement("td");
-            let reviewBtn = document.createElement("button");
-            reviewBtn.innerHTML = '<i data-feather="check-square"></i>';
-            reviewBtn.classList.add("add");
-            reviewBtn.setAttribute("key", examination["id"]);
-            reviewBtn.addEventListener('click', function (e) {
-                reviewExamination(parseInt(reviewBtn.getAttribute('key')));
-            });
-            two.appendChild(reviewBtn);
-
-            newRow.appendChild(examinationDate);
-            newRow.appendChild(examinationDuration);
-            newRow.appendChild(examinationDone);
-            newRow.appendChild(examinationRoom);
-            newRow.appendChild(examinationType);
-            newRow.appendChild(isUrgent);
-            newRow.appendChild(one);
-            newRow.appendChild(two);
-            table.appendChild(newRow);
-            feather.replace();
+                    newRow.appendChild(examinationDate);
+                    newRow.appendChild(examinationDuration);
+                    newRow.appendChild(examinationDone);
+                    newRow.appendChild(examinationRoom);
+                    newRow.appendChild(examinationType);
+                    newRow.appendChild(isUrgent);
+                    newRow.appendChild(one);
+                    newRow.appendChild(two);
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
         }
     }
-}
+    scheduleRequest.open('GET', url + 'api/examination/doctorSchedule/' + userId + "&" + inputDate);
+    scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    scheduleRequest.send();
+} 
 
-scheduleDateButton.addEventListener("click", function (e) {
-    searchSchedule();
-});
+scheduleDateButton.addEventListener("click", () => searchSchedule());
 
 //function for deleting examination
 function deleteExamination(id) {
@@ -358,7 +357,7 @@ function deleteExamination(id) {
             }
         }
     }
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/doctor/examinations/' + id);
+    deleteRequest.open('DELETE', url + 'api/examination/' + id);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 };
@@ -455,7 +454,7 @@ function createExamination() {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', url+'api/manager/rooms');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -492,7 +491,7 @@ function submitForm(e) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('POST', 'https://localhost:7291/api/doctor/examinations');
+        postRequest.open('POST', url + 'api/examination/new');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -528,7 +527,6 @@ function addOptions(element, roomOptions) {
     }
 }
 
-//function for setting up pop-up for updating examination
 function updateExamination(id) {
     let getRequest = new XMLHttpRequest();
     getRequest.onreadystatechange = function () {
@@ -573,7 +571,7 @@ function updateExamination(id) {
             }
         }
     }
-    getRequest.open('GET', 'https://localhost:7291/api/manager/rooms');
+    getRequest.open('GET', url + 'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -609,7 +607,7 @@ function submitUpdate(e, updatedExamination, id) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + id);
+        postRequest.open('PUT', url+'api/doctor/examinations/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -790,18 +788,19 @@ endReviewBtn.addEventListener('click', function (e) {
             equipmenForExamination.push(equipmentItem['name']);
         }
         currentExamination['equipmentUsed'] = equipmenForExamination;
-        roomRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/room/' + roomOfExamination['name']);
+        roomRequest.open('PUT', url + 'api/equipmenttransfer/use');
         roomRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         roomRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         roomRequest.send(JSON.stringify({ "id": roomOfExamination["id"], "name": roomOfExamination["name"], "type": roomOfExamination["type"], "inRenovation": roomOfExamination["inRenovation"], "equipment": roomOfExamination["equipment"] }));
-    
+
         for (let examination of doctorsExaminations) {
             if (examination["id"] == currentExamination['id']) {
                 examination["done"] = true;
                 break;
             }
         }
-        reviewExaminationRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/' + currentExamination['id']);
+        
+        reviewExaminationRequest.open('PUT', url + 'api/examination/' + currentExamination['id']);
         reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], "equipmentUsed": currentExamination['equipmentUsed'] }));
@@ -844,7 +843,7 @@ percsriptionBtn.addEventListener('click', function (e) {
         }
     }
 
-    getDrugsRequest.open('GET', 'https://localhost:7291/api/manager/drugs');
+    getDrugsRequest.open('GET', url + 'api/drug');
     getDrugsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDrugsRequest.send();
 })
@@ -881,10 +880,10 @@ addpercsriptionBtn.addEventListener('click', function (e) {
             }
         }
 
-        request.open('PUT', 'https://localhost:7291/api/doctor/examinations/medicalrecord/' + currentPatientMedicalRecord['id']);
+        request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        request.send(JSON.stringify(currentMedicalRecord));
+        request.send(JSON.stringify({}));
     }
 
     let perscriptionPopUp = document.getElementById('perscriptionDiv');
@@ -1017,7 +1016,7 @@ function getDoctors() {
             }
         }
     }
-    getDoctorsRequest.open('GET', 'https://localhost:7291/api/my/users/doctors');
+    getDoctorsRequest.open('GET', url + 'api/user/doctors');
     getDoctorsRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getDoctorsRequest.send();
 }
@@ -1071,17 +1070,18 @@ addReferallBtn.addEventListener('click', function (e) {
     }
     let valueOfReferallType = document.getElementById('referallType').value;
     let referallOption = document.getElementById('referallOption').value;
+    let referralNew;
     if (valueOfReferallType == 'doctor') {
-        currentMedicalRecord['referrals'].push({ "doctorId": referallOption });
+        referralNew = { "doctorId": referallOption };
     }
     else {
-        currentMedicalRecord['referrals'].push({ "speciality": referallOption });
+        referralNew = { "speciality": referallOption };
     }
 
-    addReferallRequest.open('PUT', 'https://localhost:7291/api/doctor/examinations/referral/' + currentPatientMedicalRecord['id']);
+    addReferallRequest.open('PUT', url + 'api/referral/' + currentPatientMedicalRecord['id']);
     addReferallRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     addReferallRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    addReferallRequest.send(JSON.stringify(currentMedicalRecord));
+    addReferallRequest.send(JSON.stringify(referralNew));
 
     let referallDiv = document.getElementById('referallDiv');
     referallDiv.classList.add('off');
@@ -1147,7 +1147,7 @@ function setUpDrugsForReview() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/doctor/drugs');
+    request.open('GET', url + 'api/drug/review');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -1172,7 +1172,7 @@ function sendBackDrug(key) {
             }
         }
         let message = document.getElementById('drugReviewMessage').value;
-        sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/' + key);
+        sendMessageRequest.open('PUT', url + 'api/drug/message/' + key);
         sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         sendMessageRequest.send(JSON.stringify({ "message": message }));
@@ -1195,9 +1195,8 @@ function approveDrug(key) {
             }
         }
     }
-    sendMessageRequest.open('PUT', 'https://localhost:7291/api/doctor/drugs/approve/' + key);
+    sendMessageRequest.open('PUT', url + 'api/drug/approve/' + key);
     sendMessageRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
 }
-

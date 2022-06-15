@@ -1,6 +1,8 @@
 /* GLOBAL */
 * {
     box-sizing: border-box;
+    scroll-behavior: smooth;
+    scroll-padding-top: 10px;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
@@ -1908,7 +1910,7 @@ footer {
     padding: 10px;
 }
 
-.requestExpendedBtn{
+.requestExpendedBtn {
     color: rgb(0, 62, 133);
     border: none;
     background: transparent;
@@ -1992,8 +1994,8 @@ footer {
     cursor: pointer;
 }
 
-#urgentBtn{
-    margin-right:30px;
+#urgentBtn {
+    margin-right: 30px;
 }
 
 tr:nth-child(even) {
@@ -2074,11 +2076,11 @@ input[type="radio" i] {
     margin: auto;
 }
 
-#dynamicEquipmentTransfer{
-    margin-top:100px;
+#dynamicEquipmentTransfer {
+    margin-top: 100px;
 }
 
-#expendedDynamicEquipment{
+#expendedDynamicEquipment {
     max-width: 700px;
     max-height: 300px;
 }

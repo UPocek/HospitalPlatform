@@ -70,7 +70,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/patient/examinations/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -144,7 +144,7 @@ function setUpSearchExaminations(myFilter) {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/patient/examinations/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -188,7 +188,7 @@ function createExamination(doctorId) {
                 }
             }
         };
-        postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
+        postRequest.open('POST', url + 'api/patient/examinations');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -198,22 +198,22 @@ function createExamination(doctorId) {
 
 let advancedForm = document.getElementById('createAdvancedExaminationForm');
 advancedForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        let dueDate = document.getElementById('dueDate').value;      
-        let doctor = document.getElementById('doctorAdvancedCreateExamination').value;
-        let intervalBegin = document.getElementById('timeFrom').value;
-        let intervalEnd = document.getElementById('timeTo').value;
-        let priority = document.querySelector( 'input[name="priority"]:checked').value;   
+    e.preventDefault();
+    let dueDate = document.getElementById('dueDate').value;
+    let doctor = document.getElementById('doctorAdvancedCreateExamination').value;
+    let intervalBegin = document.getElementById('timeFrom').value;
+    let intervalEnd = document.getElementById('timeTo').value;
+    let priority = document.querySelector('input[name="priority"]:checked').value;
 
-        let postRequest = new XMLHttpRequest();
+    let postRequest = new XMLHttpRequest();
 
-        postRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
 
-                if (this.status == 200) {
-                    var response = JSON.parse(this.responseText);
-                    let table = document.getElementById('advancedExaminationTable');
-                    table.innerHTML = '';
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                let table = document.getElementById('advancedExaminationTable');
+                table.innerHTML = '';
                 for (let i in response) {
                     let examination = response[i];
                     let newRow = document.createElement('tr');
@@ -248,15 +248,17 @@ advancedForm.addEventListener('submit', function (e) {
                     newRow.appendChild(one);
                     table.appendChild(newRow);
                     feather.replace();
-                }}}
-        };
-        postRequest.open('POST', 'https://localhost:7291/api/patient/examinationFilter');
-        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        postRequest.send(JSON.stringify({'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString() ,'timeTo': intervalEnd.toString(), 'priority': priority}));
+                }
+            }
+        }
+    };
+    postRequest.open('POST', url + 'api/patient/examinationFilter');
+    postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({ 'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString(), 'timeTo': intervalEnd.toString(), 'priority': priority }));
 });
 
-function createAdvancedExamination(examination){
+function createAdvancedExamination(examination) {
     let postRequest = new XMLHttpRequest();
     postRequest.onreadystatechange = function () {
         if (this.readyState == 4) {
@@ -265,8 +267,8 @@ function createAdvancedExamination(examination){
                 setUpExaminations();
                 setUpSearchExaminations('empty');
 
-                let table = document.getElementById('advancedExaminationTable');    
-                while(table.hasChildNodes()){
+                let table = document.getElementById('advancedExaminationTable');
+                while (table.hasChildNodes()) {
                     table.removeChild(table.firstChild);
                 }
             } else {
@@ -274,12 +276,12 @@ function createAdvancedExamination(examination){
             }
         }
     };
-    postRequest.open('POST', 'https://localhost:7291/api/patient/examinations');
+    postRequest.open('POST', url + 'api/patient/examinations');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-    postRequest.send(JSON.stringify({'done':false, 'date': examination['date'], 'duration': 15 ,'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis':''}));
+    postRequest.send(JSON.stringify({ 'done': false, 'date': examination['date'], 'duration': 15, 'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
 
- };
+};
 
 
 //PUT - Examination    
@@ -304,7 +306,7 @@ function editExamination(editId) {
             }
         }
     }
-    request.open('GET', 'https://localhost:7291/api/patient/examination/' + editId);
+    request.open('GET', url + 'api/patient/examination/' + editId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -330,7 +332,7 @@ function editExamination(editId) {
                 }
             }
         };
-        putRequest.open('PUT', 'https://localhost:7291/api/patient/examinations/' + userId);
+        putRequest.open('PUT', url + 'api/patient/examinations/' + userId);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         putRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -353,7 +355,7 @@ function deleteExamination(key) {
         }
     }
 
-    deleteRequest.open('DELETE', 'https://localhost:7291/api/patient/examinations/' + key);
+    deleteRequest.open('DELETE', url + 'api/patient/examinations/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -378,7 +380,7 @@ function doctorOptions(elementID) {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/doctors');
+    request.open('GET', url + 'api/patient/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -452,7 +454,7 @@ function setUpDoctors(myFilter) {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/doctors');
+    request.open('GET', url + 'api/patient/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -493,7 +495,7 @@ function setUpMedicalRecord() {
             }
         }
     }
-    getMedicalRecordRequest.open('GET', 'https://localhost:7291/api/doctor/examinations/patientMedicalCard/' + userId);
+    getMedicalRecordRequest.open('GET', url + 'api/doctor/examinations/patientMedicalCard/' + userId);
     getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getMedicalRecordRequest.send();
 }
@@ -663,15 +665,15 @@ function sortTable(n, tableName) {
         switching = false;
         rows = table.rows;
         for (i = 1; i < (rows.length - 1); i++) {
-            
+
             shouldSwitch = false;
             x = rows[i].getElementsByTagName('TD')[n];
             y = rows[i + 1].getElementsByTagName('TD')[n];
 
-            if(parseInt(n)==3 && tableName== 'searchExaminations'){
+            if (parseInt(n) == 3 && tableName == 'searchExaminations') {
                 compareA = Date.parse(x.innerHTML);
                 compareB = Date.parse(y.innerHTML);
-            }else{
+            } else {
                 compareA = x.innerHTML.toLowerCase();
                 compareB = y.innerHTML.toLowerCase();
             }
