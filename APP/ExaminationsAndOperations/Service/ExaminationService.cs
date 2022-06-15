@@ -52,9 +52,19 @@ public class ExaminationService : IExaminationService
         return await examinationRepository.GetAllPatientsExaminations(patientId);
     }
 
+    public async Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter){
+        return await examinationRepository.GetAvailableExamination(filter);
+    }
+
+
     public async Task SaveExamination(Examination examination)
     {
         await examinationRepository.InsertExamination(examination);
+    }
+
+    public async Task CreateExamination(Examination examination)
+    {
+        await examinationRepository.CreateExamination(examination);
     }
 
     public async Task<Examination> GetExamination(int id){
@@ -65,10 +75,18 @@ public class ExaminationService : IExaminationService
     {
         await examinationRepository.UpdateExamination(id, examination);
     }
-
+    public async Task UpdatePatientsExamination(string id, Examination examination)
+    {
+        await examinationRepository.UpdatePatientsExamination(id, examination);
+    }
     public async Task DeleteExamination(int id)
     {
         await examinationRepository.DeleteExamination(id);
+    }
+
+    public async Task DeletePatientsExamination(int id)
+    {
+        await examinationRepository.DeletePatientsExamination(id);
     }
 
     public async Task<bool> IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination)
@@ -503,10 +521,5 @@ public class ExaminationService : IExaminationService
             }
         }
     }
-
-
-
-
-
 
 }

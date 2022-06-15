@@ -154,7 +154,8 @@
         </div>
       </div>
    </div>
-    <div id="drugs">
+    
+   <div id="drugs">
     <div class="tbl-content">
                 <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
@@ -170,12 +171,8 @@
                 </tbody>
                 </table>
             </div>
-
     </tbody>
-
     </div>
-
-
 
    <form id="patientFilters" class="myForm ">
         <div>

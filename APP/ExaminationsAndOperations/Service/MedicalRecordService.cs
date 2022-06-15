@@ -39,4 +39,13 @@ public class MedicalRecordService : IMedicalRecordService
         return true;
     }
 
+
+    public async Task<List<MedicalInstruction>> GetPrescriptions(int id)
+    {
+        return await _medicalRecordRepository.GetPrescriptions(id);
+    }
+    public async Task<Prescription> GetPrescription(string drug, int id)
+    {
+        return await _medicalRecordRepository.GetPrescription(drug, id);
+    }
 }

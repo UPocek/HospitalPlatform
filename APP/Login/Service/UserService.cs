@@ -12,9 +12,9 @@ public class UserService : IUserService
         _userRepository = new UserRepository();
     }
 
-    public async Task<List<Employee>> GetAllDoctors()
+    public IActionResult GetAllDoctors()
     {
-        return await _userRepository.GetAllDoctors();
+        return  _userRepository.GetAllDoctors();
     }
 
     public async Task<Employee> GetDoctor(int doctorId)

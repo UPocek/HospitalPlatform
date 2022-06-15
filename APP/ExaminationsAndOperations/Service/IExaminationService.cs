@@ -8,11 +8,20 @@ public interface IExaminationService
 
     public Task<List<Examination>> GetAllPatientsExaminations(int patientId);
 
+    public  Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter);
+
+
     public Task SaveExamination(Examination examination);
+
+    public Task CreateExamination(Examination examination);
 
     public Task UpdateExamination(int id, Examination examination);
 
+    public Task UpdatePatientsExamination(string id, Examination examination);
+
     public Task DeleteExamination(int id);
+
+    public Task DeletePatientsExamination(int id);
 
     public Task<bool> IsNewExaminationValid(Examination examination);
 
@@ -47,6 +56,5 @@ public interface IExaminationService
     public void SendTermNotificationEmailToPatient(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId);
 
     public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId);
-
 
 }

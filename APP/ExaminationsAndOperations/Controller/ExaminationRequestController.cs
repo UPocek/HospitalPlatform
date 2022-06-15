@@ -31,4 +31,11 @@ public class ExaminationRequestController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("")]
+    public async Task<IActionResult> CreateRequest(ExaminationRequest request)
+    {
+        await _examinationRequestService.CreateRequest(request);
+        return Ok();
+    }
+
 }

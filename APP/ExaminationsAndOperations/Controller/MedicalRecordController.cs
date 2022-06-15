@@ -31,5 +31,17 @@ public class MedicalRecordController : ControllerBase
 
         return BadRequest();
     }
+    [HttpGet("prescription/{id}")]
+    public async Task<List<MedicalInstruction>> GetPrescriptions(int id){
+
+        return await _medicalRecordService.GetPrescriptions(id);
+    }
+
+
+    [HttpGet("prescription/{drug}/{id}")]
+    public async Task<Prescription> GetPrescription(string drug, int id){
+
+        return await _medicalRecordService.GetPrescription(drug, id);
+    }
 
 }

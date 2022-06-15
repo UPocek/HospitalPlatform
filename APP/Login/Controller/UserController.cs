@@ -15,9 +15,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("doctors")]
-    public async Task<List<Employee>> GetAllDoctors()
+    public IActionResult GetAllDoctors()
     {
-        return await userService.GetAllDoctors();
+        return userService.GetAllDoctors();
     }
 
     [HttpPost("doctors/specialized/{specialization}")]

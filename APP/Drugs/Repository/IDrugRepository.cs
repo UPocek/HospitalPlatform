@@ -17,4 +17,7 @@ public interface IDrugRepository
     public Task UpdateDrugInformation(string nameOfDrugToUpdate, string name, List<string> ingredients, string status);
 
     public Task DeleteDrug(string name);
+
+    public Task CreateNotification(DrugNotification notification);
+
 }

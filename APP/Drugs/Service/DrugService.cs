@@ -52,4 +52,11 @@ public class DrugService : IDrugService
         return await _drugRepository.GetDrugByName(drug.Name) == null;
     }
 
+    
+    public async Task CreateNotification(DrugNotification notification)
+    {
+        
+        await _drugRepository.CreateNotification(notification);
+    }
+
 }

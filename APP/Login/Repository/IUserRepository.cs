@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IUserRepository
 {
-    public Task<List<Employee>> GetAllDoctors();
+    public IActionResult GetAllDoctors();
 
     public IActionResult GetEmployee(int id);
 

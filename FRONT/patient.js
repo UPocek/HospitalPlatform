@@ -70,7 +70,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/examination/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -144,7 +144,7 @@ function setUpSearchExaminations(myFilter) {
         }
     }
 
-    request.open('GET', url + 'api/patient/examinations/' + userId);
+    request.open('GET', url + 'api/examination/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -188,7 +188,7 @@ function createExamination(doctorId) {
                 }
             }
         };
-        postRequest.open('POST', url + 'api/patient/examinations');
+        postRequest.open('POST', url + 'api/examination/patient');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -252,7 +252,7 @@ advancedForm.addEventListener('submit', function (e) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/patient/examinationFilter');
+    postRequest.open('POST', url + 'api/examination/filter');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString(), 'timeTo': intervalEnd.toString(), 'priority': priority }));
@@ -276,7 +276,7 @@ function createAdvancedExamination(examination) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/patient/examinations');
+    postRequest.open('POST', url + 'api/examination/patient');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': examination['date'], 'duration': 15, 'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -306,7 +306,7 @@ function editExamination(editId) {
             }
         }
     }
-    request.open('GET', url + 'api/patient/examination/' + editId);
+    request.open('GET', url + 'api/examination/' + editId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -332,7 +332,7 @@ function editExamination(editId) {
                 }
             }
         };
-        putRequest.open('PUT', url + 'api/patient/examinations/' + userId);
+        putRequest.open('PUT', url + 'api/examination/patient/' + editId);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         putRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -355,7 +355,7 @@ function deleteExamination(key) {
         }
     }
 
-    deleteRequest.open('DELETE', url + 'api/patient/examinations/' + key);
+    deleteRequest.open('DELETE', url + 'api/examination/patient/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -380,7 +380,7 @@ function doctorOptions(elementID) {
         }
     }
 
-    request.open('GET', url + 'api/patient/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -396,7 +396,6 @@ function setUpDoctors(myFilter) {
                 table.innerHTML = '';
                 for (let i in response) {
                     let doctor = response[i];
-
                     var doc = new User(doctor);
                     doctors.set(doc.id, doc);
 
@@ -454,7 +453,7 @@ function setUpDoctors(myFilter) {
         }
     }
 
-    request.open('GET', url + 'api/patient/doctors');
+    request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -495,7 +494,7 @@ function setUpMedicalRecord() {
             }
         }
     }
-    getMedicalRecordRequest.open('GET', url + 'api/doctor/examinations/patientMedicalCard/' + userId);
+    getMedicalRecordRequest.open('GET', url + 'api/medicalcard/' + userId);
     getMedicalRecordRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getMedicalRecordRequest.send();
 }
@@ -547,7 +546,7 @@ function setUpDrugs() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/patient/drugs/' + userId);
+    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -578,7 +577,7 @@ function drugInstruction(drug, endDate){
                 }
             }
         }
-    request.open('GET', 'https://localhost:7291/api/patient/drugs/'+ drug + '/' + userId);
+    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/'+ drug + '/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -588,8 +587,11 @@ function drugInstruction(drug, endDate){
         e.preventDefault();
         e.stopImmediatePropagation();
         
-        console.log(user.email);
         let time = document.getElementById('notifyTime').value;
+        if (time == ""){
+            alert('Error: Insert time!');
+            return;
+        }
     
         let postRequest = new XMLHttpRequest();
     
@@ -602,7 +604,7 @@ function drugInstruction(drug, endDate){
                     }
                 }
             };
-            postRequest.open('POST', 'https://localhost:7291/api/patient/notifications');
+            postRequest.open('POST', 'https://localhost:7291/api/drug/notifications');
             postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             postRequest.send(JSON.stringify({ 'drug': drug, 'time': time , 'patient': user.email, 'endDate': endDate}));

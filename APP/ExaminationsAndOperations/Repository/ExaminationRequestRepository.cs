@@ -51,4 +51,10 @@ public class ExaminationRequestRepository : IExaminationRequestRepository
         await requests.DeleteOneAsync(e => e._Id == id);
     }
 
+    public async Task CreateRequest(ExaminationRequest request)
+    {
+        var requests = _database.GetCollection<ExaminationRequest>("ExaminationRequests");
+        await requests.InsertOneAsync(request);
+    }
+
 }

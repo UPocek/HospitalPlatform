@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IUserService
 {
-    public Task<List<Employee>> GetAllDoctors();
+    public IActionResult GetAllDoctors();
 
     public Task<Employee> GetDoctor(int doctorId);
 
