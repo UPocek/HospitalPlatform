@@ -2,7 +2,7 @@ var url = 'https://localhost:7291/';
 var patient;
 var patientActivity;
 var patientId = getParamValue('patientId');
-var doctorId = getParamValue('doctorId');
+var doctorId = getParamValue('id');
 var secretaryId = getParamValue('secretaryId');
 var jwtoken = getParamValue('token');
 var patientsExaminations;
@@ -19,6 +19,16 @@ function getParamValue(name) {
         let pValue = s[1];
         if (pName == name)
             return pValue;
+    }
+}
+
+function removeAllChildNodes(parent) {
+    try {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    } catch {
+        ;
     }
 }
 
@@ -413,7 +423,7 @@ function setUpMenu() {
     let menu = document.getElementById('mainMenu');
     menu.innerHTML = `
     <li id='option1' class='navbar__item'>
-        <a href='#' class='navbar__link'><i data-feather='chevron-left'></i><span>Back</span></a>
+        <a class='navbar__link'><i data-feather='chevron-left'></i><span>Back</span></a>
     </li>
     `;
     feather.replace();
