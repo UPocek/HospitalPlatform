@@ -53,9 +53,6 @@ public class PatientRepository : IPatientRepository
         return patient.Active;
     }
 
-
-    // POST: api/Secretary/patients
-    //[HttpPost("patients")]
     public async Task CreatePatient(Patient patient)
     {
         var patients = _database.GetCollection<Patient>("Patients");
@@ -73,8 +70,6 @@ public class PatientRepository : IPatientRepository
         await patients.InsertOneAsync(patient);
     }
 
-    // POST: api/Secretary/patients/901
-    //[HttpPut("patients/{id}")]
     public async Task UpdatePatient(int id, Patient patient)
     {
         var patients = _database.GetCollection<Patient>("Patients");
@@ -91,9 +86,6 @@ public class PatientRepository : IPatientRepository
         await patients.ReplaceOneAsync(p => p.Id == id, updatedPatient);
     }
 
-    // DELETE: api/Secretary/patients/901
-
-    //[HttpDelete("patients/{id}")]
     public async Task DeletePatient(int id)
     {
         var patients = _database.GetCollection<Patient>("Patients");
@@ -105,8 +97,6 @@ public class PatientRepository : IPatientRepository
 
     }
 
-    //[HttpPut("patients/block/{id}/{activityValue}")]
-    // PUT: api/Secretary/patients/901/1
     public async Task UpdatePatientActivity(int id, string activityValue)
     {
         var patients = _database.GetCollection<Patient>("Patients");
@@ -130,6 +120,5 @@ public class PatientRepository : IPatientRepository
             return true;
         }
     }
-
 
 }

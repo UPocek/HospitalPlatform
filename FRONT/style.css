@@ -105,6 +105,13 @@ body {
     margin: 20px 0 30px;
 }
 
+#drugInstructionForm p{
+    font-size: 28px;
+    font-weight: 100;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+}
+
 #first span {
     font-size: 0.9rem;
 }

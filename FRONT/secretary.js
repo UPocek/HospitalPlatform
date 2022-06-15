@@ -1058,7 +1058,6 @@ function transferEquipment(roomName, equipmentName) {
         dynamicEquipmentPrompt.classList.add('off');
         main.classList.remove('hideMain');
         e.preventDefault();
-        e.stopImmediatePropagation();
 
         let transferRoom = document.getElementById('selectRoomTransfer').value;
         let transferQuantity = document.getElementById('transferQuantity').value;
@@ -1069,6 +1068,7 @@ function transferEquipment(roomName, equipmentName) {
                 if (this.status == 200) {
                     alert("Equipment successfuly transfered!");
                     setUpFunctionality();
+                    dynamicEquipmentForm.removeEventListener('submit',e);
                 }
             }
         }

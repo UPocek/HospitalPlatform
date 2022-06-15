@@ -11,5 +11,4 @@ public interface IPatientRepository
     public Task UpdatePatientActivity(int id, string activityValue);
     public Task DeletePatient(int id);
     public Task<bool> PatientExists(int id);
-
 }
