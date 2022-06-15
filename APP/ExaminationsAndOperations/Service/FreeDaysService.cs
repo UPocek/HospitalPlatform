@@ -15,4 +15,8 @@ public class FreeDaysService : IFreeDaysService
     {
         return await _freeDaysRepository.GetAllDoctorsFreeDaysRequests(doctorId);
     }
+    
+    public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests(){
+        return await _freeDaysRepository.GetAllFreeDaysRequests();
+    }
 }

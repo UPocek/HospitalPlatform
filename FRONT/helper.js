@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setUpRooms();
                 }
                 else if (user['role'] == 'secretary') {
-                    setUpMenu('Patient Managment', 'Blocked Patients', 'Examination requests', 'Dynamic Equipment', 'user', 'user-x', 'inbox', 'truck');
+                    setUpMenu('Patient Managment', 'Examination Requests', 'Dynamic Equipment', 'Free Days', 'user', 'inbox', 'truck', 'briefcase');
                     setUpPatients();
                 }
                 else if (user['role'] == 'patient') {

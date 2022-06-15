@@ -11,6 +11,13 @@ public class FreeDaysRepository : IFreeDaysRepository
         _database = client.GetDatabase("USI");
     }
 
+    public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()
+    {
+        var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
+        return await freeDayRequests.Find(request => true).ToListAsync();
+
+    }
+
     public async Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId)
     {
         var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");

@@ -189,10 +189,7 @@
           </table>
         </div>
       </div>
-    </section>
-
-    <section id="two">
-      <div id="patients">
+      <div id="blockedPatients">
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
           <thead>
@@ -215,7 +212,7 @@
       </div>
     </section>
 
-    <section id="three">
+    <section id="two">
       <div id="examinations">
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
@@ -255,12 +252,10 @@
               </tbody>
           </table>
       </div>
-    </div>
-
     </section>
 
-    <section id="four">
-      <div id="expendedDynamicEquipment" class = "off">
+    <section id="three">
+    <div id="expendedDynamicEquipment" class = "off">
         <div class="tbl-content">
           <table  cellpadding="0" cellspacing="0" border="0">
               <thead>
@@ -286,6 +281,30 @@
               </thead>
               <tbody id="dynamicEquipmentTransferTable">
                   <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    </section>
+
+    <section id="four">
+    <div id="freeDays">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+              <thead>
+                <tr>
+                  <th>Doctor</th>
+                  <th>Name</th>
+                  <th>Surname</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="freeDaystTable">
+                  
               </tbody>
           </table>
         </div>
