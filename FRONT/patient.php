@@ -40,12 +40,25 @@
 		</form>
 	</div>
 
-  <main>
+  <div id="drugInstructionPrompt" class="form-container sign-in-container off prompt">
+		<form id="drugInstructionForm" class="colDir myForm">
+			<h1>Drug instruction</p>
+      <p id="drug">&nbsp; </p>
+      <p id="when">&nbsp; </p>
+      <p id="frequency">&nbsp; a day </p> 
+      <p id="note">&nbsp; </p>  
+      <p>Notify </p>
+      <input id="notifyTime" type="time">
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+  <main class="myMain">
  
-<div id="hi">
-  <h1>Welcome back &nbsp; </h1>
-</div>
- <section id="one" class="active">
+    <div id="hi">
+      <h1>Welcome back &nbsp; </h1>
+    </div>
+    <section id="one" class="active">
         <div class="plusDiv">
             <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
@@ -59,7 +72,6 @@
                         <th>Specialization</th>
                         <th>Date</th>
                         <th>Room</th>
-                        <!-- <th>Anamnesis</th> -->
                         <th>Urgent</th>
                         <th>Delete</th>
                         <th>Update</th>
@@ -71,9 +83,53 @@
                 </table>
             </div>
         </div>
-  </section>
+</section>
 
-  <section id="two">
+<section id="two">
+  <div id="createAdvancedExamination" class="form-container sign-in-container">
+		<form id="createAdvancedExaminationForm" class="myForm">
+			<h1>Advanced examination scheduler</h1>
+
+      <p>Please select due date and doctor</p>
+      <input id="dueDate" type="date" placeholder="Due to"/> 
+      <select id="doctorAdvancedCreateExamination" name="doctors"></select>
+
+      <p>Please select begining and end of time interval</p>
+      <input id="timeFrom" type="time"/> 
+      <input id="timeTo" type="time"/> 
+
+      <p>Please select your priority:  </p>
+      <input type="radio" id="priorityDoctor" name="priority" value="doctor">
+      <label for="priorityDoctor" id="labelDoctor">Doctor</label>
+      <input type="radio" id="priorityTime" name="priority" value="time">
+      <label for="priorityTime" id="labelTime">Time interval</label>
+
+      <button class="mainBtn advancedBtn" id="addAdvancedBtn">OK</button>
+		</form>
+	</div>
+
+  <div id="advancedExaminations">
+            <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Date</th>
+                        <th>Choose</th>
+                    </tr>
+                </thead>
+                <tbody id="advancedExaminationTable">
+
+                </tbody>
+                </table>
+            </div>
+    </div>
+
+</section>
+
+<section id="three">
   <div id="patientInfo" >
     <div class="basicInfo">
       <h1>Medical record</h1>
@@ -98,6 +154,28 @@
         </div>
       </div>
    </div>
+    <div id="drugs">
+    <div class="tbl-content">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Instructions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicalInstructions">
+
+                </tbody>
+                </table>
+            </div>
+
+    </tbody>
+
+    </div>
+
+
 
    <form id="patientFilters" class="myForm ">
         <div>
@@ -111,9 +189,9 @@
               <thead>
                   <tr>
                       <th >Type</th>
-                      <th onclick="sortTable(1, 'searchExaminations')">Doctor</th>
-                      <th onclick="sortTable(2, 'searchExaminations')">Specialization</th>
-                      <th onclick="sortTable(3, 'searchExaminations')">Date</th>
+                      <th id="pinkTh" onclick="sortTable(1, 'searchExaminations')">Doctor</th>
+                      <th id="pinkTh" onclick="sortTable(2, 'searchExaminations')">Specialization</th>
+                      <th id="pinkTh" onclick="sortTable(3, 'searchExaminations')">Date</th>
                       <th>Anamnesis</th>
                       <th>Urgent</th>
                     </tr>
@@ -126,7 +204,7 @@
         </div>
 </section>
 
-  <section id="three">
+<section id="four">
     <div>
       <form id="patientFilters" class="myForm">
         <div id="search">
@@ -140,10 +218,10 @@
                 <table id ='searchsDoctors' cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0, 'searchsDoctors')">Name</th>
-                        <th onclick="sortTable(1, 'searchsDoctors')">Specialization</th>
+                        <th id="pinkTh" onclick="sortTable(0, 'searchsDoctors')">Name</th>
+                        <th id="pinkTh" onclick="sortTable(1, 'searchsDoctors')">Specialization</th>
                         <th>email</th>
-                        <th onclick="sortTable(3, 'searchsDoctors')">Score</th>
+                        <th id="pinkTh" onclick="sortTable(3, 'searchsDoctors')">Score</th>
                         <th>Schedule examination</th>
                     </tr>
                 </thead>
@@ -156,31 +234,11 @@
 
     </div>
 </section>
-
-   <section id="four">
-</section>
       
-  </main>
+</main>    
 
- 
-
-  <!-- <?php include 'footer.html';?> -->
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-    integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="patient.js">
-  </script>
-  <script>
-    $(window).on("load resize ", function() {
-    var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-    $('.tbl-header').css({'padding-right':scrollWidth});
-    }).resize();
-  </script>
+  <script src="helper.js"></script>
+  <script src="patient.js"></script>
 </body>
 
 </html>

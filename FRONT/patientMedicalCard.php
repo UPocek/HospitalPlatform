@@ -44,7 +44,7 @@
             </form>
 	    </div>
         
-        <main id='myMain'>
+        <main id='medCardMain' class = 'myMain'>
             <section>
                 <div id="patientInfo" >
                     <div class="basicInfo">
@@ -71,6 +71,7 @@
                     </div>
                 </div>
             </section>
+            
             <section class="addSpaceBottom">
                 <div id="rooms">
                     <div class="tbl-content">
@@ -92,6 +93,7 @@
                     </div>
                 </div>
             </section>
+
             <section class="addSpaceBottom">
                 <div id="rooms" class="instructions">
                     <div class="tbl-content">
@@ -130,24 +132,8 @@
                 </div>
             </section>
                 
-                
         </main>
 
-        <!-- <?php include 'footer.html';?> -->
-
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-            integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-        <script src="medical_card.js">
-        </script>
-        <script>
-            $(window).on("load resize ", function() {
-            var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-            $('.tbl-header').css({'padding-right':scrollWidth});
-            }).resize();
-        </script>
+        <script src="medical_card.js"></script>
     </body>
 </html>

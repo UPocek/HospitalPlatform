@@ -1,6 +1,8 @@
 /* GLOBAL */
 * {
     box-sizing: border-box;
+    scroll-behavior: smooth;
+    scroll-padding-top: 10px;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
@@ -27,7 +29,8 @@ body {
 #one,
 #two,
 #three,
-#four {
+#four,
+#five {
     display: none;
     margin-bottom: 10vh;
     max-width: 100%;
@@ -36,7 +39,7 @@ body {
 .active {
     display: block !important;
     opacity: 0;
-    animation: fadeIn 750ms ease-in-out 250ms forwards;
+    animation: fadeIn 750ms ease-in-out 50ms forwards;
     /* transform: translateY(200px); */
     /* transform: scale(0); */
 }
@@ -50,6 +53,10 @@ body {
 }
 
 /* LOGIN FORM */
+
+.myForm p {
+    width: 100%;
+}
 
 .myForm input,
 .myForm select {
@@ -98,6 +105,13 @@ body {
     margin: 20px 0 30px;
 }
 
+#drugInstructionForm p{
+    font-size: 28px;
+    font-weight: 100;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+}
+
 #first span {
     font-size: 0.9rem;
 }
@@ -132,7 +146,7 @@ body {
 
 .btnAnimation {
     transform: translateY(0);
-    transition: all 500ms;
+    transition: 500ms ease-in-out;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.05),
         0 10px 10px rgba(0, 0, 0, 0.02);
 }
@@ -141,8 +155,6 @@ body {
     transform: translateY(-25%);
     box-shadow: var(--boxShadow);
 }
-
-@keyframes moveUp {}
 
 #first .ghost {
     background: transparent !important;
@@ -1836,12 +1848,30 @@ footer {
 
 /* Secretary */
 
+
 .blockBtn {
     color: Red;
     border: none;
     background: transparent;
     padding: 10px;
 }
+
+#urgentSecretary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+
+#urgentMovingTable {
+    align-items: center;
+}
+
+
+
+
 
 
 .unblockBtn {
@@ -1875,6 +1905,13 @@ footer {
 
 .declineBtn {
     color: Red;
+    border: none;
+    background: transparent;
+    padding: 10px;
+}
+
+.requestExpendedBtn {
+    color: rgb(0, 62, 133);
     border: none;
     background: transparent;
     padding: 10px;
@@ -1957,14 +1994,77 @@ footer {
     cursor: pointer;
 }
 
+#urgentBtn {
+    margin-right: 30px;
+}
+
 tr:nth-child(even) {
     background-color: var(--whiteSmoke);
 }
 
+#createAdvancedExamination {
+    align-items: center;
+    width: 80%;
+    padding: 1rem;
+    margin: 5% 10%;
+    border-radius: 10px;
+    border: 2px solid var(--mainColor);
+}
+
+/* .radio{
+    display: block;
+}
+.radio label{
+    min-width: 80%;
+}
+
+.radio input{
+    max-width: 20%;
+    min-width: 10%;
+} */
+
+.advancedBtn {
+    width: 48%;
+    margin-left: 26%;
+}
+
+
+#timeTo,
+#timeFrom,
+#dueDate,
+#doctorAdvancedCreateExamination {
+    min-width: 48%;
+}
+
+#priorityDoctor,
+#priorityTime {
+    min-width: 5%;
+}
+
+#labelDoctor,
+#labelTime {
+    min-width: 41%;
+    display: inline-flex;
+}
+
+input[type="radio" i] {
+    align-items: center;
+    display: inline-flex;
+    font-family: monospace;
+    padding-inline-start: 1px;
+    cursor: default;
+    overflow: hidden;
+    padding: 0px;
+}
+
 #rooms,
 #examinations,
+#advancedExaminations,
 #doctors,
 #patients,
+#urgentMovingTable,
+#expendedDynamicEquipment,
+#dynamicEquipmentTransfer,
 #equipment,
 #drugs,
 #ingredients,
@@ -1974,6 +2074,15 @@ tr:nth-child(even) {
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#dynamicEquipmentTransfer {
+    margin-top: 100px;
+}
+
+#expendedDynamicEquipment {
+    max-width: 700px;
+    max-height: 300px;
 }
 
 table {
@@ -2002,6 +2111,19 @@ th {
     font-size: 1.2rem;
     text-transform: uppercase;
     vertical-align: middle;
+}
+
+#pinkTh:hover {
+    border-radius: 10px;
+    border: 1px solid var(--accentColor2);
+    background: var(--accentColor1);
+    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    color: var(--backgroundColor);
+    text-align: center;
+    letter-spacing: 1px;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
 }
 
 td {
@@ -2078,7 +2200,29 @@ td button {
 }
 
 .off {
-    display: none;
+    display: none !important;
+}
+
+#urgentBackContainer {
+    margin-top: 10px;
+
+}
+
+.urgentBack {
+    width: 20%;
+}
+
+#urgentContent {
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 1300px;
 }
 
 .hideMain {
@@ -2377,15 +2521,11 @@ td button {
     text-align: left;
 }
 
-.urgentDiv {
-    display: flex;
-    justify-content: flex-start;
-    margin: 10px 10px;
-}
 
 #urgent {
     min-width: 30px;
 }
+
 
 .scheduleDiv {
     display: flex;
@@ -2441,14 +2581,21 @@ td button {
         margin-left: 105px;
     }
 
+
     #rooms,
     #examinations,
+    #advancedExaminations,
+    #createAdvancedExamination,
     #doctors,
     #patients,
     #equipment,
     #drugs,
     #ingredients {
         width: 90%;
+    }
+
+    #createAdvancedExamination {
+        margin: 5% 5%;
     }
 
     .delBtn,
@@ -2555,11 +2702,17 @@ td button {
 
     #rooms,
     #examinations,
+    #advancedExaminations,
+    #createAdvancedExamination,
     #doctors,
     #equipment,
     #drugs,
     #ingredients {
         width: 94%;
+    }
+
+    #createAdvancedExamination {
+        margin: 5% 3%;
     }
 
     .delBtn,
@@ -2815,5 +2968,23 @@ td button {
 
     #polls h1 {
         font-size: 1.4rem;
+    }
+
+    #timeTo,
+    #timeFrom,
+    #dueDate,
+    #doctorAdvancedCreateExamination {
+        min-width: 100%;
+    }
+
+    #labelDoctor,
+    #labelTime {
+        min-width: 92%;
+    }
+
+    .advancedBtn {
+
+        width: 100%;
+        margin-left: 0%;
     }
 }

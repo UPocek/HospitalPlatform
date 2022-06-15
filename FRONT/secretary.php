@@ -46,6 +46,37 @@
       </form>
 	  </div>
 
+    <div id="dynamicPurchasePopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicPurchaseForm" class="colDir myForm">
+          <h1 id="dynamicPurchaseFormId" >Create purchase</h1>
+          <div class="formDiv">
+              <label for="PurchaseQuantity">Quantity:</label>
+              <input id="PurchaseQuantity" type="number" max=300 min=1 placeholder="" />
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
+    <div id="dynamicEquipmentTransferPopUp" class="form-container sign-in-container off prompt patientPrompt">
+      <form id="dynamicEquipmentTransferForm" class="colDir myForm">
+          <h1 id="dynamicEquipmentTransferFormId" >Create transfer</h1>
+          <div class="formDiv">
+              <label for="selectRoomTransfer">Room:</label>
+              <select id="selectRoomTransfer">
+              </select>
+          </div>
+          <div class="formDiv">
+              <label for="roomQuantity">Room Quantity:</label>
+              <input id="roomQuantity" type="number" max=300 min=1 disabled/>
+          </div>
+          <div class="formDiv">
+              <label for="transferQuantity">To Transfer:</label>
+              <input id="transferQuantity" type="number" max=300 min=1/>
+          </div>
+          <button class="mainBtn">OK</button>
+      </form>
+	  </div>
+
     <div id="editPatientPrompt" class="form-container sign-in-container off prompt patientPrompt">
       <form id="editPatientForm" class="colDir myForm patientForm">
         <h1 class="editPatientHeader">Create patient</h1>
@@ -72,6 +103,57 @@
         <button class="mainBtn">OK</button>
       </form>
 	  </div>
+    <div id = "urgentContent" class = 'off'>
+      <div id="urgentMovingTable">
+          <div id = "urgentOverlay" class="tbl-content">
+              <table  cellpadding="0" cellspacing="0" border="0">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>Duration</th>
+                          <th>Done</th>
+                          <th>Examination room</th>
+                          <th>Type</th>
+                          <th>Urgent</th>
+                      </tr>
+                  </thead>
+                  <tbody id="examinationsUrgentTable">
+                      <!-- this is where data from api comes -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      <div id="urgentBackContainer">
+        <button id="urgentBackBtn" class="urgentBack"><i data-feather="x-square"></i></button>
+      </div>
+    </div>
+
+    <div id="urgentSecretary" class = "prompt off">
+      <form id="urgentForm" class="colDir myForm">
+        <h1 id="examinationFormId" >Create urgent examination</h1>
+        <div class="formDiv">
+            <label for="examinationTypeUrgent">Examination type:</label>
+            <select id="examinationTypeUrgent">
+                <option value="visit" selected>Visit</option>
+                <option value="operation">Operation</option>
+            </select>
+        </div>
+        <div class="formDiv">
+            <label for="examinationDurationUrgent">Duration:</label>
+            <input type="number" id="examinationDurationUrgent" min="15">
+        </div>
+        <div class="formDiv">
+            <label for="examinationPatienUrgent">Patient id:</label>
+            <input id="examinationPatienUrgent" type="number"/>
+        </div>
+        <div class="formDiv">
+            <label for="examinationSpecialityUrgent">Specialization</label>
+            <select id="examinationSpecialityUrgent">
+            </select>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
 
     <main class='myMain'>
 
@@ -79,31 +161,34 @@
         <h1>Welcome back &nbsp; </h1>
     </div>
     <section id="one" class="active">
+      <div class = "patientHeader">
         <div class="plusDiv">
-            <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+          <button id="urgentBtn" class="delBtn"><i data-feather="alert-triangle"></i></button>
+          <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
-        <div id="patients">
-            <div class="tbl-content">
-                <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
-                  <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Id</th>
-                        <th class="smallerWidth">Medical Record</th>
-                        <th class="smallerWidth"></th>
-                        <th class="smallerWidth"></th>
-                        <th class="smallerWidth"></th>
-                      </tr>
-                  </thead>
-                  <tbody id="patientTable">
+      </div>
+      <div id="patients">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Id</th>
+                <th class="smallerWidth">Medical Record</th>
+                <th class="smallerWidth"></th>
+                <th class="smallerWidth"></th>
+                <th class="smallerWidth"></th>
+              </tr>
+            </thead>
+            <tbody id="patientTable">
 
-                  </tbody>
-                </table>
-            </div>
+            </tbody>
+          </table>
         </div>
+      </div>
     </section>
 
     <section id="two">
@@ -111,23 +196,23 @@
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
           <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th width = 150>Password</th>
-                <th>Id</th>
-                <th>Medical Record</th>
-                <th>Blocked by</th>
-                <th class="smallerWidth"></th>
-              </tr>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th width = 150>Password</th>
+              <th>Id</th>
+              <th>Medical Record</th>
+              <th>Blocked by</th>
+              <th class="smallerWidth"></th>
+            </tr>
           </thead>
           <tbody id="blockedPatientTable">
 
           </tbody>
           </table>
         </div>
-    </div>
+      </div>
     </section>
 
     <section id="three">
@@ -150,29 +235,68 @@
           </table>
         </div>
       </div>
+      <div id="urgentMovingTable" class = "off">
+      <div class="tbl-content">
+          <h1>Couldn't find a free term in the next 2 hours,please select a term and the system will replace the term with an urgent one and move it"</h1>
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Duration</th>
+                      <th>Done</th>
+                      <th>Examination room</th>
+                      <th>Type</th>
+                      <th>Urgent</th>
+                      <th>Patient</th>
+                  </tr>
+              </thead>
+              <tbody id="examinationsUrgentTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+      </div>
+    </div>
+
+    </section>
+
+    <section id="four">
+      <div id="expendedDynamicEquipment" class = "off">
+        <div class="tbl-content">
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Expended</th>
+                  </tr>
+              </thead>
+              <tbody id="expendedDynamicEquipmentTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="dynamicEquipmentTransfer">
+        <div class="tbl-content">
+          <table  cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                  <tr>
+                      <th>Room Name</th>
+                      <th>Equipment</th>
+                      <th>Quantity</th>
+                  </tr>
+              </thead>
+              <tbody id="dynamicEquipmentTransferTable">
+                  <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
 
-      
   </main>
 
-  <!-- <?php include 'footer.html';?> -->
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
-    integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk=" crossorigin="anonymous"></script>
-
-  <script src="secretary.js">
-  </script>
-  <script>
-    $(window).on("load resize ", function() {
-    var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-    $('.tbl-header').css({'padding-right':scrollWidth});
-    }).resize();
-  </script>
+  <script src="helper.js"></script>
+  <script src="secretary.js"></script>
 </body>
 
 </html>
