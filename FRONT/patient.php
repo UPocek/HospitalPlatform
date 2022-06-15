@@ -231,13 +231,8 @@
 
     </div>
 </section>
-
-   <section id="five">
-</section>
       
-  </main>
-      
-  </main>
+</main>    
 
   <script src="helper.js"></script>
   <script src="patient.js"></script>

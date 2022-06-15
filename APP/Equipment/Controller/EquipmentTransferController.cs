@@ -29,11 +29,17 @@ public class EquipmentTransferController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("use")]
+    public async Task<IActionResult> UseEquipment(Room room)
+    {
+        await _equipmentTransferService.UseEquipment(room);
+        return Ok();
+    }
+
     [HttpPut("dynamicTransfer/{equipmentName}/{fromRoomName}/{toRoomName}/{quantity}")]
     public async Task<IActionResult> TransferDynamicEquipment(string equipmentName, string fromRoomName, string toRoomName, int quantity)
     {
-        await _equipmentTransferService.TransferDynamicEquipment(equipmentName,fromRoomName,toRoomName,quantity);
-
+        await _equipmentTransferService.TransferDynamicEquipment(equipmentName, fromRoomName, toRoomName, quantity);
         return Ok();
     }
 

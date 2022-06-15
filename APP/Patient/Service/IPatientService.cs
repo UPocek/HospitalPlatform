@@ -12,4 +12,5 @@ public interface IPatientService
     public Task UpdatePatientActivity(int id, string activityValue);
     public Task<bool> isNewPatientValid(Patient p);
     public Task<bool> PatientExists(int id);
+
 }

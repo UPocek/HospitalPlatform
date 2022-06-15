@@ -70,8 +70,6 @@ function setUpMenu(text1, text2, text3, text4, icon1, icon2, icon3, icon4) {
     });
 }
 
-
-
 function setUpPage() {
     let hi = document.querySelector('#hi h1');
     hi.innerText += `${user.firstName} ${user.lastName}`;

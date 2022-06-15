@@ -565,7 +565,7 @@ transferForm.addEventListener('submit', function (e) {
 
     let validTransfer = ok && finalRoom1 != finalRoom2 && arr.length != 0 && isDateFormatOk(finalDate) && finalDate >= date.toISOString().split('T')[0];
     if (validTransfer) {
-        transferRequest.open('POST', url + 'api/transfer');
+        transferRequest.open('POST', url + 'api/equipmenttransfer');
         transferRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         transferRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         transferRequest.send(JSON.stringify({ 'room1': finalRoom1, 'room2': finalRoom2, 'date': finalDate, 'done': false, 'equipment': arr }));

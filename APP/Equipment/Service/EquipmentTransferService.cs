@@ -22,7 +22,13 @@ public class EquipmentTransferService : IEquipmentTransferService
         }
     }
 
-    public async Task TransferDynamicEquipment(string equipmentName, string fromRoomName, string toRoomName, int quantity){
+    public async Task UseEquipment(Room room)
+    {
+        await _equipmentTransferRepository.UseEquipment(room);
+    }
+
+    public async Task TransferDynamicEquipment(string equipmentName, string fromRoomName, string toRoomName, int quantity)
+    {
 
         var transferFromRoom = await _roomRepository.GetRoomByName(fromRoomName);
 
@@ -46,5 +52,4 @@ public class EquipmentTransferService : IEquipmentTransferService
             }
         }
     }
-
 }

@@ -4,7 +4,7 @@ public interface IRoomRepository
 
     public Task<Room> GetRoomByName(string roomName);
 
-    public Task UpdateRoomInformation(string nameOfRoomToUpdate, string name, string type);
+    public Task UpdateRoomInformation(string nameOfRoomToUpdate, Room room);
 
     public Task InsertRoom(Room room);
 

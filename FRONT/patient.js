@@ -499,7 +499,6 @@ function setUpMedicalRecord() {
     getMedicalRecordRequest.send();
 }
 
-
 function setUpDrugs() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {

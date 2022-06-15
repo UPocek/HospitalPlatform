@@ -32,7 +32,7 @@ public class ExaminationService : IExaminationService
     public async Task<List<Examination>> GetDoctorsExaminationsSchedule(int doctorId, string dateOfSearch)
     {
         var doctorsExaminations = await examinationRepository.GetAllDoctorsExaminations(doctorId);
-        List<Examination> doctorsExaminationsInDateRange = new List<Examination>(); 
+        List<Examination> doctorsExaminationsInDateRange = new List<Examination>();
         DateTime firstDay = DateTime.Parse(dateOfSearch);
         string threeDaysAfter = firstDay.AddDays(3).ToString();
         foreach (Examination examination in doctorsExaminations)
@@ -161,27 +161,33 @@ public class ExaminationService : IExaminationService
         return false;
     }
 
-    public async Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination)
+    public async Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId)
     {
         var patientsExaminations = await examinationRepository.GetAllPatientsExaminations(id);
 
         foreach (Examination examination in patientsExaminations)
         {
-            var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
-            if (answer) return false;
+            if (examinationId != examination.Id)
+            {
+                var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
+                if (answer) return false;
+            }
         }
 
         return true;
     }
 
-    public async Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination)
+    public async Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId)
     {
         var doctorsExaminations = await examinationRepository.GetAllDoctorsExaminations(id);
 
         foreach (Examination examination in doctorsExaminations)
         {
-            var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
-            if (answer) return false;
+            if (examinationId != examination.Id)
+            {
+                var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
+                if (answer) return false;
+            }
         }
 
         return true;
@@ -220,14 +226,15 @@ public class ExaminationService : IExaminationService
         var isValidPatient = await IsValidPatient(examination.PatinetId);
         var isValidRoom = await IsRoomValid(examination.RoomName);
         var isRoomInRenovation = await IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination);
-        var isPatientFree = await IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
-        var isDoctorFree = await IsDoctorFree(examination.DoctorId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
+        var isPatientFree = await IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int)examination.Id);
+        var isDoctorFree = await IsDoctorFree(examination.DoctorId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int)examination.Id);
 
         return (isValidRoom && isValidPatient && !isRoomInRenovation && isPatientFree && isDoctorFree);
     }
 
     public async Task<bool> IsNewExaminationValid(Examination examination)
     {
+        examination.Id = 0;
         var isExaminationValid = await IsExaminationValid(examination);
         var isOccupiedRoom = await IsRoomOccupied(examination.RoomName, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
 

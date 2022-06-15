@@ -23,33 +23,34 @@ public class RoomRepository : IRoomRepository
         return await rooms.Find(room => room.Name == roomName).FirstOrDefaultAsync();
     }
 
-    public async Task<Room> GetRoomByType(string roomType){
+    public async Task<Room> GetRoomByType(string roomType)
+    {
         var rooms = _database.GetCollection<Room>("Rooms");
         return await rooms.Find(room => room.Type == roomType).FirstOrDefaultAsync();
     }
 
-    public async Task UpdateRoomInformation(string nameOfRoomToUpdate, string name, string type)
+    public async Task UpdateRoomInformation(string nameOfRoomToUpdate, Room room)
     {
         var rooms = _database.GetCollection<Room>("Rooms");
 
         var filter = Builders<Room>.Filter.Eq("name", nameOfRoomToUpdate);
 
-        var updateType = Builders<Room>.Update.Set("type", type);
+        var updateType = Builders<Room>.Update.Set("type", room.Type);
         await rooms.UpdateOneAsync(filter, updateType);
 
-        var updateName = Builders<Room>.Update.Set("name", name);
+        var updateName = Builders<Room>.Update.Set("name", room.Name);
         await rooms.UpdateOneAsync(filter, updateName);
 
         var renovations = _database.GetCollection<Renovation>("Renovations");
-        var updateRenovations = Builders<Renovation>.Update.Set("room", name);
+        var updateRenovations = Builders<Renovation>.Update.Set("room", room.Name);
         await renovations.UpdateManyAsync(item => item.Room == nameOfRoomToUpdate, updateRenovations);
 
         var examinations = _database.GetCollection<Examination>("MedicalExaminations");
-        var updateExaminations = Builders<Examination>.Update.Set("room", name);
+        var updateExaminations = Builders<Examination>.Update.Set("room", room.Name);
         await examinations.UpdateManyAsync(item => item.RoomName == nameOfRoomToUpdate, updateExaminations);
 
         var transfers = _database.GetCollection<Transfer>("RelocationOfEquipment");
-        var updateTransfer = Builders<Transfer>.Update.Set("room1", name);
+        var updateTransfer = Builders<Transfer>.Update.Set("room1", room.Name);
         await transfers.UpdateManyAsync(item => item.Room1 == nameOfRoomToUpdate | item.Room2 == nameOfRoomToUpdate, updateTransfer);
     }
 
@@ -79,7 +80,7 @@ public class RoomRepository : IRoomRepository
     public async Task UpdateRoom(Room room)
     {
         var rooms = _database.GetCollection<Room>("Rooms");
-        await rooms.ReplaceOneAsync(r => r.Id == room.Id,room);
+        await rooms.ReplaceOneAsync(r => r.Id == room.Id, room);
     }
 
 }

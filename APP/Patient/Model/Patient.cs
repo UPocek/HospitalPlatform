@@ -43,5 +43,4 @@ public class Patient
     [BsonElement("examinationHistory")]
     [JsonPropertyName("examinationHistory")]
     public List<ExaminationHistoryEntry>? ExaminationHistory { get; set; } = new List<ExaminationHistoryEntry>();
-
 }

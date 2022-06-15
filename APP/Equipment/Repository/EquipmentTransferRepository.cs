@@ -39,6 +39,9 @@ public class EquipmentTransferRepository : IEquipmentTransferRepository
         }
     }
 
-
-
+    public async Task UseEquipment(Room room)
+    {
+        var rooms = _database.GetCollection<Room>("Rooms");
+        await rooms.FindOneAndReplaceAsync(r => r.Name == room.Name, room);
+    }
 }
