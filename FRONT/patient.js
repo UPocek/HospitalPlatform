@@ -276,7 +276,7 @@ function createAdvancedExamination(examination) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/patient/examinations');
+    postRequest.open('POST', url + 'api/examination/patient');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': examination['date'], 'duration': 15, 'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis': '' }));

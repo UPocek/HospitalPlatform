@@ -45,7 +45,6 @@ public class ExaminationController : ControllerBase
     [HttpPost("filter")]
     public async Task<List<Examination>> GetAvailableExamination([FromBody] ExaminationFilter filter)
     {
-        Console.WriteLine("aaa");
         return await _examinationService.GetAvailableExamination(filter);
     }
 
