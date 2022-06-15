@@ -12,7 +12,7 @@ public class FreeDaysController : ControllerBase
         _freeDaysService = new FreeDaysService();
     }
 
-    [HttpGet("")]
+    [HttpGet("requests")]
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()
     {
         return await _freeDaysService.GetAllFreeDaysRequests();

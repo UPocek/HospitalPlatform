@@ -11,12 +11,15 @@ public class FreeDaysService : IFreeDaysService
         _validateExaminationService = new ValidateExaminationService();
     }
 
+
     public async Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId)
     {
+        await _freeDaysRepository.removeStaleFreeDaysRequests();
         return await _freeDaysRepository.GetAllDoctorsFreeDaysRequests(doctorId);
     }
-    
+
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests(){
+        await _freeDaysRepository.removeStaleFreeDaysRequests();
         return await _freeDaysRepository.GetAllFreeDaysRequests();
     }
 }

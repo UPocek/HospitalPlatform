@@ -11,12 +11,23 @@ public class FreeDaysRepository : IFreeDaysRepository
         _database = client.GetDatabase("USI");
     }
 
+    public async Task removeStaleFreeDaysRequests(){
+        var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
+        foreach (FreeDayRequest fdr in await freeDayRequests.Find(request => request.Status == "waiting").ToListAsync()) {
+            string now = DateTime.Now.ToString("yyyy-MM-dd");
+            if (String.Compare(fdr.StartDay,now) < 0){
+               await freeDayRequests.DeleteOneAsync(request => fdr._Id == request._Id);
+            }
+        } 
+    }
+
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()
     {
         var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
-        return await freeDayRequests.Find(request => true).ToListAsync();
+        return await freeDayRequests.Find(request => request.Status == "waiting").ToListAsync();
 
     }
+
 
     public async Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId)
     {

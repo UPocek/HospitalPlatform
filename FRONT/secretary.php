@@ -155,6 +155,17 @@
       </form>
     </div>
 
+
+    <div id="freeDaysReasonPrompt" class = "prompt off">
+      <form id="freeDaysForm" class="colDir myForm">
+        <h1 id="examinationFormId" >Please enter the reasoning</h1>
+        <div id = "reasonTextArea">
+            <textarea id="freeDaysDeclineReason"> </textarea>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
     <main class='myMain'>
 
     <div id="hi">
@@ -290,20 +301,19 @@
     </section>
 
     <section id="four">
-    <div id="freeDays">
+    <div id="freeDaysRequests">
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
               <thead>
                 <tr>
                   <th>Doctor</th>
-                  <th>Name</th>
-                  <th>Surname</th>
+                  <th>First name</th>
+                  <th>Last name</th>
                   <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Change</th>
+                  <th>Duration</th>
                 </tr>
               </thead>
-              <tbody id="freeDaystTable">
+              <tbody id="freeDaysRequestsTable">
                   
               </tbody>
           </table>

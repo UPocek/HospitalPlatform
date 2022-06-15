@@ -104,6 +104,7 @@ function setUpFunctionality() {
     setupUrgent();
     setupExpendedDynamicEquipment();
     setupDynamicEquipmentTransfers();
+    setupFreeDays();
 }
 
 function setUpBlockedPatients() {
@@ -452,6 +453,100 @@ function setupDynamicEquipmentTransfers() {
     getRequest.send();
 }
 
+function setupFreeDays() {
+    let getRequest = new XMLHttpRequest();
+
+    let freeDaysRequestsTable = document.getElementById('freeDaysRequestsTable');
+
+    freeDaysRequestsTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                for (let i in response) {
+                    let freeDayRequest = response[i];
+
+                    let newRow = document.createElement('tr');
+
+                    let doctorIdContainer = document.createElement('td');
+                    doctorIdContainer.innerText = freeDayRequest['doctorId'];
+
+                    let doctorNameContainer = document.createElement('td');
+                    let doctorSurnameContainer = document.createElement('td');
+
+                    let startDayContainer = document.createElement('td');
+                    startDayContainer.innerText = freeDayRequest['startDay'];
+                    let daysContainer = document.createElement('td');
+                    daysContainer.innerText = freeDayRequest['duration'];
+
+                    let mail;
+
+
+                    let getDoctorRequest = new XMLHttpRequest();
+
+                    getDoctorRequest.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                var doctorResponse = JSON.parse(getDoctorRequest.responseText);
+                                doctorNameContainer.innerHTML = doctorResponse['firstName'];
+                                doctorSurnameContainer.innerHTML = doctorResponse['lastName'];
+                                mail = doctorResponse['email'];
+                            } 
+                        }
+                    }
+
+                    getDoctorRequest.open('GET', url + 'api/user/doctors/' + freeDayRequest['doctorId'] + '/')
+                    getDoctorRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+                    getDoctorRequest.send();
+
+                    let acceptBtnContainer = document.createElement('td');
+                    let acceptBtn = document.createElement('button');
+                    acceptBtn.innerHTML = '<i data-feather="check"></i>';
+                    acceptBtn.classList.add('acceptBtn');
+                    acceptBtn.setAttribute('key', freeDayRequest['_id']);
+                    acceptBtn.addEventListener('click', function (e) {
+                    });
+                    acceptBtnContainer.classList.add('smallerWidth');
+                    acceptBtnContainer.appendChild(acceptBtn);
+
+                    let declineBtnContainer = document.createElement('td');
+                    let declineBtn = document.createElement('button');
+                    declineBtn.innerHTML = '<i data-feather="x"></i>';
+                    declineBtn.classList.add('declineBtn');
+                    declineBtn.setAttribute('key', freeDayRequest['_id']);
+                    declineBtn.setAttribute('mail', freeDayRequest['_id']);
+                    declineBtn.addEventListener('click', function (e) {
+                        deleteFreeDaysRequest(declineBtn.getAttribute('key'),declineBtn.getAttribute('mail'));
+                    });
+                    declineBtnContainer.classList.add('smallerWidth')
+                    declineBtnContainer.appendChild(declineBtn);
+
+                    newRow.appendChild(doctorIdContainer);
+                    newRow.appendChild(doctorNameContainer);
+                    newRow.appendChild(doctorSurnameContainer);
+                    newRow.appendChild(startDayContainer);
+                    newRow.appendChild(daysContainer);
+                    newRow.appendChild(acceptBtnContainer);
+                    newRow.appendChild(declineBtnContainer);
+                    freeDaysRequestsTable.appendChild(newRow);
+                }
+                feather.replace();
+            }
+        }
+    }
+
+    getRequest.open('GET', url + 'api/freeDays/requests');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+}
+
+function deleteFreeDaysRequest(key,mail){
+    let prompt = document.getElementById('freeDaysReasonPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let request = new XMLHttpRequest();
+}
 
 function deletePatient(key) {
     let deleteRequest = new XMLHttpRequest();
