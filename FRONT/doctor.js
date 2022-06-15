@@ -442,6 +442,7 @@ function createExamination() {
 
                 let roomOptions = document.getElementById("examinationRoom");
                 let examinationType = document.getElementById("examinationType");
+                removeAllChildNodes(roomOptions);
                 addOptions(examinationType, roomOptions);
                 examinationType.addEventListener('change', function (e) {
                     removeAllChildNodes(roomOptions);
@@ -552,13 +553,11 @@ function updateExamination(id) {
                 document.getElementById("examinationDuration").value = updatedExamination["duration"];
                 document.getElementById("examinationPatient").value = updatedExamination["patient"];
                 document.getElementById("examinationType").value = updatedExamination["type"];
-                document.getElementById("urgent").checked = false;
-                if (updatedExamination["urgent"]) {
-                    document.getElementById("urgent").checked = true;
-                }
+                document.getElementById("urgent").checked = updatedExamination["urgent"];
 
                 let roomOptions = document.getElementById("examinationRoom");
                 let examinationType = document.getElementById("examinationType");
+                removeAllChildNodes(roomOptions);
                 addOptions(examinationType, roomOptions);
                 examinationType.addEventListener('change', function (e) {
                     removeAllChildNodes(roomOptions);
