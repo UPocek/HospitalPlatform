@@ -1,10 +1,10 @@
 using MongoDB.Driver;
 
-public class ExaminationRepository : IExaminationRepository
+public class ScheduleRepository : IScheduleRepository
 {
     private IMongoDatabase _database;
 
-    public ExaminationRepository()
+    public ScheduleRepository()
     {
         var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
         var client = new MongoClient(settings);
@@ -62,7 +62,8 @@ public class ExaminationRepository : IExaminationRepository
         await examinations.DeleteOneAsync(e => e.Id == id);
     }
 
-    public async Task<List<Examination>> GetExaminationsAfterNow(Examination examination){
+    public async Task<List<Examination>> GetExaminationsAfterNow(Examination examination)
+    {
 
         var dateFilter = Builders<Examination>.Filter.Gt(e => e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
         var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName, examination.RoomName);

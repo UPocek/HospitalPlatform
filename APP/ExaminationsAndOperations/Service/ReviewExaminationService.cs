@@ -1,26 +1,31 @@
-public class MedicalRecordService : IMedicalRecordService
+public class ReviewExaminationService : IReviewExaminationService
 {
-    private IMedicalRecordRepository _medicalRecordRepository;
+    private IReviewExaminationRepository _reviewExaminationRepository;
 
     private IMedicalCardRepository _medicalCardRepository;
 
     private IDrugRepository _drugRepository;
 
-    public MedicalRecordService()
+    public ReviewExaminationService()
     {
-        _medicalRecordRepository = new MedicalRecordRepository();
+        _reviewExaminationRepository = new ReviewExaminationRepository();
         _medicalCardRepository = new MedicalCardRepository();
         _drugRepository = new DrugRepository();
     }
 
-    public async Task UpdateMedicalRecord(int id, MedicalRecord medicalRecord)
+    public async Task AddPerscription(int id, Prescription prescription)
     {
-        await _medicalRecordRepository.UpdateMedicalRecord(id, medicalRecord);
+        await _reviewExaminationRepository.AddPerscription(id, prescription);
+    }
+
+    public async Task AddMedicalInstruction(int id, MedicalInstruction medicalInstruction)
+    {
+        await _reviewExaminationRepository.AddMedicalInstruction(id, medicalInstruction);
     }
 
     public async Task UpdatePatientsPerscriptionList(int id, Prescription prescription)
     {
-        await _medicalRecordRepository.UpdatePatientsPerscriptionList(id, prescription);
+        await _reviewExaminationRepository.UpdatePatientsPerscriptionList(id, prescription);
     }
 
     public async Task<bool> IsPerscriptionValid(int id, Prescription perscription)

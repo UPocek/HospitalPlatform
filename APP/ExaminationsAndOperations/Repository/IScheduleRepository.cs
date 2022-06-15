@@ -1,4 +1,4 @@
-public interface IExaminationRepository
+public interface IScheduleRepository
 {
     public Task<List<Examination>> GetAllExaminations();
 

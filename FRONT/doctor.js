@@ -17,7 +17,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/examination/doctor/' + userId);
+    request.open('GET', url + 'api/schedule/doctor/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -31,7 +31,7 @@ function setUpFunctionality() {
     setUpDrugsForReview();
 }
 
-//function thath dispays examination table of examinations for currently logged doctor
+//function that dispays examination table of examinations for currently logged doctor
 function displayExaminations() {
     let table = document.getElementById('examinationsTable');
     table.innerHTML = "";
@@ -154,7 +154,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getEquipmentRequest.open('GET', url + 'api/room/' + currentExamination['room']);
+        getEquipmentRequest.open('GET', url + 'api/equipmenttransfer/' + currentExamination['room']);
         getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getEquipmentRequest.send();
         
@@ -224,7 +224,7 @@ updateMedicalCardBtn.addEventListener('click', function (e) {
             }
         }
     }
-    request.open('PUT', url + 'api/doctor/medicalrecord/' + currentPatientMedicalRecord['id']);
+    request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send(JSON.stringify(currentMedicalRecord));
@@ -337,7 +337,7 @@ function searchSchedule() {
             }
         }
     }
-    scheduleRequest.open('GET', url + 'api/examination/doctorSchedule/' + userId + "&" + inputDate);
+    scheduleRequest.open('GET', url + 'api/schedule/doctorSchedule/' + userId + "&" + inputDate);
     scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     scheduleRequest.send();
 } 
@@ -358,7 +358,7 @@ function deleteExamination(id) {
             }
         }
     }
-    deleteRequest.open('DELETE', url + 'api/examination/' + id);
+    deleteRequest.open('DELETE', url + 'api/schedule/' + id);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 };
@@ -456,7 +456,7 @@ function createExamination() {
             }
         }
     }
-    getRequest.open('GET', url+'api/manager/rooms');
+    getRequest.open('GET', url+'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -493,7 +493,7 @@ function submitForm(e) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('POST', url + 'api/examination/new');
+        postRequest.open('POST', url + 'api/schedule/new');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -607,7 +607,7 @@ function submitUpdate(e, updatedExamination, id) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('PUT', url+'api/doctor/examinations/' + id);
+        postRequest.open('PUT', url+'api/schedule/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -800,7 +800,7 @@ endReviewBtn.addEventListener('click', function (e) {
             }
         }
         
-        reviewExaminationRequest.open('PUT', url + 'api/examination/' + currentExamination['id']);
+        reviewExaminationRequest.open('PUT', url + 'api/schedule/' + currentExamination['id']);
         reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], "equipmentUsed": currentExamination['equipmentUsed'] }));
@@ -862,28 +862,10 @@ addpercsriptionBtn.addEventListener('click', function (e) {
         alert('Patient is alergic to ingredients of this drug.');
     }
     else {
-        if (answer == "modified") {
-            modifyLastPerscription(pickedDrug);
-            addMedicalInstruction(pickedDrug);
-        }
-        else {
-            addPerscriptionToRecord(pickedDrug);
-            addMedicalInstruction(pickedDrug);
-        }
-
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    alert("Perscription added.")
-                }
-            }
-        }
-
-        request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        request.send(JSON.stringify({}));
+        
+        addPerscriptionToRecord(pickedDrug);
+            
+        addMedicalInstruction(pickedDrug);
     }
 
     let perscriptionPopUp = document.getElementById('perscriptionDiv');
@@ -951,15 +933,6 @@ function checkIfAllergicToIngredients(allergies, ingredients, drugName) {
 }
 
 //heleper function for updating the perscription if patinet has taken the same drug before in past
-function modifyLastPerscription(drugName) {
-    let drugPerscription = getDrugPerscribed(drugName);
-    let time = document.getElementById('perscriptionTime').value;
-    drugPerscription['when'] = time;
-    let frequency = document.getElementById('perscriptionFrequency').value;
-    drugPerscription['frequency'] = frequency;
-    let when = document.getElementById('perscriptionFrequency').value;
-    drugPerscription['how'] = when;
-}
 
 //function for adding perscription to patients medical instructions history
 function addMedicalInstruction(drugName) {
@@ -971,7 +944,19 @@ function addMedicalInstruction(drugName) {
     let convertedStart = start.toISOString().split('T')[0];
     let convertedEnd = end.toISOString().split('T')[0]
     let medicalInstruction = { 'startDate': convertedStart, 'endDate': convertedEnd, 'doctor': userId, 'drug': drugName };
-    currentMedicalRecord['medicalInstructions'].push(medicalInstruction);
+    let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Instruction added.")
+                }
+            }
+        }
+
+        request.open('PUT', url + 'api/reviewexamination/medicalinstruction/' + currentPatientMedicalRecord['id']);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send(JSON.stringify(medicalInstruction));
 }
 
 // helper function for adding new perscription to patients medical record
@@ -981,7 +966,19 @@ function addPerscriptionToRecord(drugName) {
     let how = document.getElementById('howList').value;
 
     let newPerscription = { 'name': drugName, 'when': time, 'how': how, 'frequency': frequency };
-    currentMedicalRecord['drugs'].push(newPerscription);
+    let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Perscription added.")
+                }
+            }
+        }
+
+        request.open('PUT', url + 'api/reviewexamination/perscription/' + currentPatientMedicalRecord['id']);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send(JSON.stringify(newPerscription));
 }
 
 var referallBtn = document.getElementById('createReferall');

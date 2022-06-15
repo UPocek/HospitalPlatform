@@ -780,7 +780,7 @@ function showOldExamination(newExamination, examRow) {
 
         }
     }
-    putRequest.open('GET', url + 'api/examination' + newExamination['id']);
+    putRequest.open('GET', url + 'api/schedule' + newExamination['id']);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -870,7 +870,7 @@ urgentForm.addEventListener('submit', async function (e) {
                     }
                 }
 
-                postRequest.open('POST', url + 'api/examination/urgent/' + selectedSpeciality);
+                postRequest.open('POST', url + 'api/schedule/urgent/' + selectedSpeciality);
                 postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                 postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
                 postRequest.send(urgentExamJSON);
@@ -948,7 +948,7 @@ function createUrgentExaminationWithMovingTerms(selectedExamination, patientid, 
         }
     }
 
-    postRequest.open('POST', url + 'api/examination/urgent/termMoving');
+    postRequest.open('POST', url + 'api/schedule/urgent/termMoving');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': selectedExamination['date'], 'duration': examinationDuration, 'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis': '' }));

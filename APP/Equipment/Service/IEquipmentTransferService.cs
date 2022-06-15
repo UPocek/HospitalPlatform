@@ -1,5 +1,6 @@
 public interface IEquipmentTransferService
 {
+    public Task<List<Equipment>> GetRoomEquipment(String roomName);
     public Task SaveTransfer(Transfer transfer);
 
     public Task StartTransfer(Transfer transfer);
