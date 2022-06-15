@@ -36,4 +36,11 @@ public class EquipmentTransferController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("dynamicTransfer/{equipmentName}/{fromRoomName}/{toRoomName}/{quantity}")]
+    public async Task<IActionResult> TransferDynamicEquipment(string equipmentName, string fromRoomName, string toRoomName, int quantity)
+    {
+        await _equipmentTransferService.TransferDynamicEquipment(equipmentName, fromRoomName, toRoomName, quantity);
+        return Ok();
+    }
+
 }

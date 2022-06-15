@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 [BsonIgnoreExtraElements]
 public class User
@@ -19,6 +20,7 @@ public class User
 
     [BsonElement("email")]
     [JsonPropertyName("email")]
+    [EmailAddress]
     public string Email { get; set; }
 
     [BsonElement("password")]

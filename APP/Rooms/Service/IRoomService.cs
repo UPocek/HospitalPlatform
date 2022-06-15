@@ -11,4 +11,5 @@ public interface IRoomService
     public Task SaveRoom(Room room);
 
     public Task DeleteRoom(string roomName);
+    public Task UpdateRoom(Room room);
 }

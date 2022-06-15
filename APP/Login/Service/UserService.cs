@@ -56,4 +56,14 @@ public class UserService : IUserService
         }
         return new Account();
     }
+
+    public async Task<List<Employee>> GetSpecializedDoctors(string specialization){
+        return await _userRepository.GetSpecializedDoctors(specialization);
+
+    }
+
+    public async Task<List<String>> GetDoctorSpecializations()
+    {
+        return await _userRepository.GetDoctorSpecializations();
+    }
 }

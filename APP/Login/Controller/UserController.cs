@@ -20,6 +20,18 @@ public class UserController : ControllerBase
         return await userService.GetAllDoctors();
     }
 
+    [HttpPost("doctors/specialized/{specialization}")]
+    public async Task<List<Employee>> GetSpecializedDoctors(string specialization){
+        return await userService.GetSpecializedDoctors(specialization);
+
+    }
+
+    [HttpGet("doctors/specializations")]
+    public async Task<List<String>> GetDoctorSpecializations()
+    {
+        return await userService.GetDoctorSpecializations();
+    }
+
     [HttpGet("doctors/{id}")]
     public async Task<Employee> GetDoctor(int doctorId)
     {
@@ -38,4 +50,5 @@ public class UserController : ControllerBase
     {
         return await userService.Authenticate(email, password);
     }
+
 }

@@ -8,5 +8,9 @@ public interface IRoomRepository
 
     public Task InsertRoom(Room room);
 
+    public Task<Room> GetRoomByType(string roomType);
+
+    public Task UpdateRoom(Room room);
+
     public Task DeleteRoom(string name);
 }

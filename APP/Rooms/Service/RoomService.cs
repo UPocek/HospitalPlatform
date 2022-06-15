@@ -32,6 +32,10 @@ public class RoomService : IRoomService
         await _roomRepository.InsertRoom(room);
     }
 
+    public async Task UpdateRoom(Room room){
+        await _roomRepository.UpdateRoom(room);
+    }
+
     public async Task DeleteRoom(string roomName)
     {
         await _roomRepository.DeleteRoom(roomName);

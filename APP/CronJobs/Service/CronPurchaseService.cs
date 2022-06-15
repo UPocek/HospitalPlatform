@@ -1,7 +1,7 @@
 using MongoDB.Driver;
-public class PurchaseService : CronJobService
+public class CronPurchaseService : CronJobService
 {
-    public PurchaseService(IScheduleConfig<TransferService> config)
+    public CronPurchaseService(IScheduleConfig<CronPurchaseService> config)
         : base(config.CronExpression, config.TimeZoneInfo)
     {
     }

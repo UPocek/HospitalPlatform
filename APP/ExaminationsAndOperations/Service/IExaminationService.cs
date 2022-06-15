@@ -29,4 +29,24 @@ public interface IExaminationService
     public Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId);
 
     public Task<bool> ExaminationScheduledAtThatTime(Renovation renovation);
+
+    public bool isDurationValid(Examination newExamination);
+
+    public Task<Examination> GetExamination(int id);
+
+    public Task<bool> doesSpecializedDoctorExist(int doctorId,string specialization);
+
+    public Task<bool> doesRoomExist(string roomName);
+
+    public Task CreateRefferedExamination(Examination newExamination, string specialization, int referralid);
+
+    public Task CreateUrgentExaminationWithTermMoving(Examination examination);
+
+    public Task<List<Examination>> CreateUrgentExamination(Examination examination, string specialization);
+
+    public void SendTermNotificationEmailToPatient(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId);
+
+    public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId);
+
+
 }
