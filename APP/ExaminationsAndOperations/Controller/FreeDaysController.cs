@@ -24,4 +24,14 @@ public class FreeDaysController : ControllerBase
         return await _freeDaysService.GetAllDoctorsFreeDaysRequests(doctorId);
     }
 
+    [HttpPost("request")]
+    public async Task<IActionResult> SendDoctorsRequest(FreeDayRequest freeDayRequest)
+    {
+        if (await _freeDaysService.SendDoctorsRequest(freeDayRequest))
+        {
+            return Ok();
+        }
+        return BadRequest();
+    }
+
 }

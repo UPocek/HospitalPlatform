@@ -13,6 +13,10 @@ public class FreeDayRequest
     [JsonPropertyName("doctorId")]
     public int DoctorId { get; set; }
 
+    [BsonElement("requestDay")]
+    [JsonPropertyName("requestDay")]
+    public string? RequestDay { get; set; }
+
     [BsonElement("startDay")]
     [JsonPropertyName("startDay")]
     public string StartDay { get; set; }
@@ -23,5 +27,13 @@ public class FreeDayRequest
 
     [BsonElement("status")]
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
+
+    [BsonElement("reason")]
+    [JsonPropertyName("reason")]
+    public string Reason { get; set; }
+
+    [BsonElement("urgent")]
+    [JsonPropertyName("urgent")]
+    public bool Urgent { get; set; }
 }
