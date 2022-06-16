@@ -4,6 +4,7 @@ public class ValidateExaminationService : IValidateExaminationService
     private IRoomService _roomService;
     private IPatientService _patientService;
     private IRenovationService _renovationService;
+    private IUserRepository _userRepository;
 
     public ValidateExaminationService()
     {
@@ -11,6 +12,7 @@ public class ValidateExaminationService : IValidateExaminationService
         _roomService = new RoomService();
         _patientService = new PatientService();
         _renovationService = new RenovationService();
+        _userRepository = new UserRepository();
     }
     public async Task<bool> IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination)
     {
@@ -105,6 +107,13 @@ public class ValidateExaminationService : IValidateExaminationService
     {
         var doctorsExaminations = await _scheduleRepository.GetAllDoctorsExaminations(id);
 
+        Employee doctor = await _userRepository.GetDoctor(id);
+
+        foreach(FreeDay fd in doctor.FreeDays){
+            if (fd.Status == ""){
+                return false;
+            }
+        }
         foreach (Examination examination in doctorsExaminations)
         {
             if (examinationId != examination.Id)
