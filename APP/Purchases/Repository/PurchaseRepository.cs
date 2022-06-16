@@ -21,4 +21,17 @@ public class PurchaseRepository : IPurchaseRepository
         await purchases.InsertOneAsync(newPurchase);
     }
 
+    public async Task<List<Purchase>> GetActivePurchases()
+    {
+        var collectionPurchases = _database.GetCollection<Purchase>("Purchases");
+        string dateToday = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+
+        return await collectionPurchases.Find(item => item.Deadline == dateToday & item.Done == false).ToListAsync();
+    }
+
+    public async Task UpdatePurchase(Purchase purchase){
+        var collectionPurchases = _database.GetCollection<Purchase>("Purchases");
+        await collectionPurchases.ReplaceOneAsync(p => p.id == purchase.id, purchase);
+    }
+
 }

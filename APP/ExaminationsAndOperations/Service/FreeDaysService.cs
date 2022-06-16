@@ -1,3 +1,5 @@
+using System.Net.Mail;
+using System.Net;
 public class FreeDaysService : IFreeDaysService
 {
     private IFreeDaysRepository _freeDaysRepository;
@@ -13,14 +15,41 @@ public class FreeDaysService : IFreeDaysService
 
     public async Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId)
     {
-        await _freeDaysRepository.removeStaleFreeDaysRequests();
+        await _freeDaysRepository.DeleteStaleFreeDaysRequests();
         return await _freeDaysRepository.GetAllDoctorsFreeDaysRequests(doctorId);
     }
 
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()
     {
-        await _freeDaysRepository.removeStaleFreeDaysRequests();
+        await _freeDaysRepository.DeleteStaleFreeDaysRequests();
         return await _freeDaysRepository.GetAllFreeDaysRequests();
+    }
+
+    public async Task DeleteFreeDaysRequest(string id){
+        await _freeDaysRepository.DeleteFreeDaysRequest(id);
+    }
+
+    public void SendDeclineNotification(string mail,string why){
+        var smptClient = new SmtpClient("smtp.gmail.com")
+        {
+            Port = 587,
+            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
+            EnableSsl = true,
+        };
+
+        string messageDoctor = "Hello your free days request has been declined, reason:\n" + why + "\n Have a nice day!";
+
+
+        var mailMessageDoctor = new MailMessage
+        {
+            From = new MailAddress(mail),
+            Subject = "TeamNine Medical Team - free days declined",
+            Body = messageDoctor,
+            IsBodyHtml = true,
+        };
+
+        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+        smptClient.Send(mailMessageDoctor);
     }
 
     public async Task SaveRequest(FreeDayRequest freeDayRequest)

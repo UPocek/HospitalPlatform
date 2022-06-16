@@ -11,7 +11,7 @@ public class FreeDaysRepository : IFreeDaysRepository
         _database = client.GetDatabase("USI");
     }
 
-    public async Task removeStaleFreeDaysRequests(){
+    public async Task DeleteStaleFreeDaysRequests(){
         var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
         foreach (FreeDayRequest fdr in await freeDayRequests.Find(request => request.Status == "waiting").ToListAsync()) {
             string now = DateTime.Now.ToString("yyyy-MM-dd");
@@ -19,6 +19,11 @@ public class FreeDaysRepository : IFreeDaysRepository
                await freeDayRequests.DeleteOneAsync(request => fdr._Id == request._Id);
             }
         } 
+    }
+
+    public async Task DeleteFreeDaysRequest(string id){
+        var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
+        await freeDayRequests.DeleteOneAsync(request => request._Id == id);
     }
 
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()

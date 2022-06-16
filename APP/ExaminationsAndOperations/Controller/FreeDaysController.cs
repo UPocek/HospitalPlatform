@@ -18,6 +18,16 @@ public class FreeDaysController : ControllerBase
         return await _freeDaysService.GetAllFreeDaysRequests();
     }
 
+    [HttpDelete("requests/decline/{id}/{mail}/{why}")]
+    public async Task<IActionResult> DeclineFreeDaysRequest(string id,string mail,string why)
+    {
+        await _freeDaysService.DeleteFreeDaysRequest(id);
+        _freeDaysService.SendDeclineNotification(mail,why);
+        
+        return Ok();
+
+    }
+
     [HttpGet("{doctorId}")]
     public async Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId)
     {

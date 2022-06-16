@@ -2,6 +2,9 @@ public interface IFreeDaysService
 {
     public Task<List<FreeDayRequest>> GetAllFreeDaysRequests();
     public Task<List<FreeDayRequest>> GetAllDoctorsFreeDaysRequests(int doctorId);
+    public Task DeleteFreeDaysRequest(string id);
+
+    public void SendDeclineNotification(string mail, string why);
     public Task SaveRequest(FreeDayRequest freeDayRequest);
     public Task<bool> SendDoctorsRequest(FreeDayRequest freeDayRequest);
     public Task<bool> IsRequestValid(FreeDayRequest freeDayRequest);

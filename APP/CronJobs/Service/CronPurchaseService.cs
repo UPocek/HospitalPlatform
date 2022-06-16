@@ -1,9 +1,14 @@
 using MongoDB.Driver;
 public class CronPurchaseService : CronJobService
 {
+    IRoomRepository _roomRepository;
+
+    IPurchaseRepository _purchaseRepository;
     public CronPurchaseService(IScheduleConfig<CronPurchaseService> config)
         : base(config.CronExpression, config.TimeZoneInfo)
     {
+        _roomRepository = new RoomRepository();
+        _purchaseRepository = new PurchaseRepository();
     }
 
     public override Task StartAsync(CancellationToken cancellationToken)
@@ -11,19 +16,11 @@ public class CronPurchaseService : CronJobService
         return base.StartAsync(cancellationToken);
     }
 
-    public override Task DoWork(CancellationToken cancellationToken)
+    public override async Task DoWork(CancellationToken cancellationToken)
     {
-        var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
-        var client = new MongoClient(settings);
-        var database = client.GetDatabase("USI");
+        List<Purchase> purchases = await _purchaseRepository.GetActivePurchases();
 
-        var collectionPurchases = database.GetCollection<Purchase>("Purchases");
-        string dateToday = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-        var purchases = collectionPurchases.Find(item => item.Deadline == dateToday & item.Done == false).ToList();
-
-        var collectionRooms = database.GetCollection<Room>("Rooms");
-
-        var mainWarehouse = collectionRooms.Find(r => r.Name == "Main warehouse").FirstOrDefault();
+        Room mainWarehouse = await _roomRepository.GetRoomByName("Main warehouse");
 
         foreach (var purchase in purchases)
         {
@@ -37,12 +34,11 @@ public class CronPurchaseService : CronJobService
                     }
                 }
             }
-            collectionRooms.ReplaceOne(r => r.Id == mainWarehouse.Id, mainWarehouse);
+            await _roomRepository.UpdateRoom(mainWarehouse);
             purchase.Done = true;
-            collectionPurchases.ReplaceOne(p => p.id == purchase.id, purchase);
+            await _purchaseRepository.UpdatePurchase(purchase);
 
         }
-        return Task.CompletedTask;
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)

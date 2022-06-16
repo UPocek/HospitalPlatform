@@ -58,6 +58,12 @@ builder.Services.AddCronJob<NotificationService>(c =>
     c.CronExpression = @"* * * * *";
 });
 
+builder.Services.AddCronJob<CronFreeDayRequestService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"* * * * *";
+});
+
 // Cors policy
 builder.Services.AddCors(options =>
 {
