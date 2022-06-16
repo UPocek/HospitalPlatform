@@ -2023,6 +2023,8 @@ tr:nth-child(even) {
     min-width: 10%;
 } */
 
+
+
 .advancedBtn {
     width: 48%;
     margin-left: 26%;
@@ -2197,6 +2199,11 @@ td button {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+}
+
+.colDir2 {
+    display: flex;
+    flex-direction: column;
 }
 
 .off {
@@ -2421,6 +2428,71 @@ td button {
 #hPolls {
     margin: 10vh auto;
 }
+
+
+#doctorComment{
+    border: 1px solid var(--accentColor2);
+    border-radius: 10px;
+}
+.radios{
+    position:relative;
+    width:50%;
+    margin:0 auto;
+  }
+  input[type="radio"]{
+    position:absolute;
+    right:1000%;
+  }
+.radios label{
+    float:left;
+    width:15%; padding-bottom:15%;
+    margin:0 2.5%;
+    border: 1px solid var(--accentColor2);
+    background: var(--accentColor1);
+    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    color: var(--backgroundColor);
+    border-radius:50%;
+    cursor:pointer;
+  }
+  #slider1, #slider2{
+    position:absolute;
+    left:0%; top:0;
+    width:10%; padding-bottom:10%;
+    margin:2.5% 0 0 5%;
+    background:#fff;
+    transition:transform 1s;
+    border-radius:50%;
+    animation-timing-function: ease-in-out;
+    animation-duration:.3s;
+    animation-fill-mode: forwards;
+    transition: 0.2s left .05s ease-in-out;
+  }
+  #input1a:checked  ~ #slider1{ animation-name: input1a; left:0; }
+  #input2a:checked  ~ #slider1{ animation-name: input2a; left:20%; }
+  #input3a:checked  ~ #slider1{ animation-name: input3a; left:40%; }
+  #input4a:checked  ~ #slider1{ animation-name: input4a; left:60%; }
+  #input5a:checked  ~ #slider1{ animation-name: input5a; left:80%; }
+
+
+  #input1b:checked  ~ #slider2{ animation-name: input1b; left:0; }
+  #input2b:checked  ~ #slider2{ animation-name: input2b; left:20%; }
+  #input3b:checked  ~ #slider2{ animation-name: input3b; left:40%; }
+  #input4b:checked  ~ #slider2{ animation-name: input4b; left:60%; }
+  #input5b:checked  ~ #slider2{ animation-name: input5b; left:80%; }
+  
+  @keyframes input1a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5a{ 30%, 70% { transform:scale(0.5); } }
+   
+  @keyframes input1b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5b{ 30%, 70% { transform:scale(0.5); } } 
+
 
 /* Doctor */
 
@@ -2789,6 +2861,10 @@ td button {
         display: flex;
         flex-direction: column;
         gap: 1.8rem;
+    }
+    .colDir2 {
+        display: flex;
+        flex-direction: column;
     }
 
     #polls {

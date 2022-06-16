@@ -441,11 +441,22 @@ function setUpDoctors(myFilter) {
                     });
                     one.appendChild(createBtn);
 
+                    let two = document.createElement('td');
+                    let pollBtn = document.createElement('button');
+                    pollBtn.innerHTML = '<i data-feather="file-text"></i>';
+                    pollBtn.classList.add('updateBtn');
+                    pollBtn.setAttribute('key', doctor['id']);
+                    pollBtn.addEventListener('click', function (e) {
+                        openPoll(this.getAttribute('key'));
+                    });
+                    two.appendChild(pollBtn);
+
                     newRow.appendChild(cName)
                     newRow.appendChild(cSpecialization);
                     newRow.appendChild(cMail);
                     newRow.appendChild(cScore);
                     newRow.appendChild(one);
+                    newRow.appendChild(two);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -456,6 +467,39 @@ function setUpDoctors(myFilter) {
     request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+}
+
+
+function openPoll(id){
+    let prompt = document.getElementById('doctorPollPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('doctorPoll');
+
+    form.addEventListener('submit', function (e) {  
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var doctorScore = getRadioCheckedValue('radioDoctor');
+        var recommendationScore = getRadioCheckedValue('radioRecommendation');    
+
+    })
+}
+
+function getRadioCheckedValue(radio_name)
+{
+   var oRadio = document.forms[3].elements[radio_name];
+
+   for(var i = 0; i < oRadio.length; i++)
+   {
+      if(oRadio[i].checked)
+      {
+         return oRadio[i].value;
+      }
+   }
+
+   return '';
 }
 
 function setUpMedicalRecord() {

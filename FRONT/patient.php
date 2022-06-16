@@ -11,6 +11,7 @@
   <link rel="icon" href="logo.jpeg">
 
   <link rel="stylesheet" type="text/css" href="style.css">
+
   <script src="https://kit.fontawesome.com/b4c27ec53d.js" crossorigin="anonymous"></script>
 
   <title>USI Team #9</title>
@@ -42,13 +43,51 @@
 
   <div id="drugInstructionPrompt" class="form-container sign-in-container off prompt">
 		<form id="drugInstructionForm" class="colDir myForm">
-			<h1>Drug instruction</p>
+			<h1>Drug instruction</h1>
       <p id="drug">&nbsp; </p>
       <p id="when">&nbsp; </p>
       <p id="frequency">&nbsp; a day </p> 
       <p id="note">&nbsp; </p>  
       <p>Notify </p>
       <input id="notifyTime" type="time">
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+  <div id="doctorPollPrompt" class="form-container sign-in-container off prompt">
+		<form id="doctorPoll" class="colDir2 myForm">
+			<h1>Doctor poll</h1>
+      <p>How would you evaluate this doctor (1-5)</p>
+      <div class="radios" id="doctorScore">
+        <label for="input1a"></label>
+        <input  id="input1a" name="radioDoctor" type="radio" value=1 />
+        <label for="input2a"></label>
+        <input  id="input2a" name="radioDoctor" type="radio" value=2 />
+        <label for="input3a"></label>
+        <input  id="input3a" name="radioDoctor" type="radio" value=3 />
+        <label for="input4a"></label>
+        <input  id="input4a" name="radioDoctor" type="radio" value=4 />
+        <label for="input5a"></label>
+        <input  id="input5a" name="radioDoctor" type="radio" value=5 />
+        <span id="slider1"></span>
+      </div>
+      <p>Would you recommend this doctor to your friend (1-5)</p>
+      <div class="radios" id="recommendationScore">
+        <label for="input1b"></label>
+        <input  id="input1b" name="radioRecommendation" type="radio" value=1 />
+        <label for="input2b"></label>
+        <input  id="input2b" name="radioRecommendation" type="radio" value=2 />
+        <label for="input3b"></label>
+        <input  id="input3b" name="radioRecommendation" type="radio" value=3 />
+        <label for="input4b"></label>
+        <input  id="input4b" name="radioRecommendation" type="radio" value=4 />
+        <label for="input5b"></label>
+        <input  id="input5b" name="radioRecommendation" type="radio" value=5 />
+        <span id="slider2"></span>
+      </div>
+
+      <p>Comment:</p>
+      <textarea name="comment" id="doctorComment" rows="4"></textarea>
 			<button class="mainBtn">OK</button>
 		</form>
 	</div>
@@ -220,6 +259,7 @@
                         <th>email</th>
                         <th id="pinkTh" onclick="sortTable(3, 'searchsDoctors')">Score</th>
                         <th>Schedule examination</th>
+                        <th>Poll</th>
                     </tr>
                 </thead>
                 <tbody id="doctorsTable">
@@ -233,7 +273,6 @@
 </section>
       
 </main>    
-
   <script src="helper.js"></script>
   <script src="patient.js"></script>
 </body>
