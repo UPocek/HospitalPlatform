@@ -260,7 +260,7 @@ function setupExaminationRequests() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
-                    acceptBtn.setAttribute('key', examinationRequest['_Id']);
+                    acceptBtn.setAttribute('key', examinationRequest['_id']);
                     acceptBtn.addEventListener('click', function (e) {
                         acceptRequest(this.getAttribute('key'));
                     });
@@ -271,7 +271,7 @@ function setupExaminationRequests() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
-                    declineBtn.setAttribute('key', examinationRequest['_Id']);
+                    declineBtn.setAttribute('key', examinationRequest['_id']);
                     declineBtn.addEventListener('click', function (e) {
                         declineRequest(this.getAttribute('key'));
                     });
@@ -959,7 +959,7 @@ function showOldExamination(newExamination, examRow) {
 
         }
     }
-    putRequest.open('GET', url + 'api/schedule' + newExamination['id']);
+    putRequest.open('GET', url + 'api/schedule/' + newExamination['id']);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
