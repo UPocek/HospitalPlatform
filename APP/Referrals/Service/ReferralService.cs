@@ -30,4 +30,9 @@ public class ReferralService : IReferralService
         }
     }
 
+    public async Task DeletePatientReferral(int id, Examination newExamination)
+    {
+        await _referralRepository.DeletePatientReferral(id, newExamination);
+    }
+
 }

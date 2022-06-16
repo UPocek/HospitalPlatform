@@ -32,4 +32,8 @@ public class Employee
     [BsonElement("specialization")]
     [JsonPropertyName("specialization")]
     public string? Specialization { get; set; }
+
+    [BsonElement("freeDays")]
+    [JsonPropertyName("freeDays")]
+    public List<FreeDay>? FreeDays {get; set;}
 }

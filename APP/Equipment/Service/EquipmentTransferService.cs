@@ -9,6 +9,11 @@ public class EquipmentTransferService : IEquipmentTransferService
         _roomRepository = new RoomRepository();
     }
 
+    public async Task<List<Equipment>> GetRoomEquipment(String roomName)
+    {
+        return await _equipmentTransferRepository.GetRoomEquipment(roomName);
+    }
+
     public async Task SaveTransfer(Transfer transfer)
     {
         await _equipmentTransferRepository.InsertTransfer(transfer);

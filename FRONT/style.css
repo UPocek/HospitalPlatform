@@ -1871,6 +1871,20 @@ footer {
 
 
 
+#freeDaysDeclineReason{
+    min-width: 300px;
+    max-width: 350px;
+    min-height: 300px;
+    max-height: 350px;
+}
+
+#freeDaysReason{
+    min-width: 300px;
+    max-width: 350px;
+    min-height: 300px;
+    max-height: 350px;
+}
+
 
 
 
@@ -2062,6 +2076,8 @@ input[type="radio" i] {
 #advancedExaminations,
 #doctors,
 #patients,
+#blockedPatients,
+#freeDaysRequests,
 #urgentMovingTable,
 #expendedDynamicEquipment,
 #dynamicEquipmentTransfer,
@@ -2074,6 +2090,10 @@ input[type="radio" i] {
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#blockedPatients{
+    margin-top : 100px;
 }
 
 #dynamicEquipmentTransfer {
@@ -2187,6 +2207,12 @@ td button {
 .patientPrompt {
     text-align: center;
 }
+
+#freeDaysReasonPrompt,#freeDaysReasonPrompt2{
+    text-align: center;
+}
+
+
 
 .patientForm input,
 .patientForm select {
@@ -2526,6 +2552,10 @@ td button {
     min-width: 30px;
 }
 
+#reasonTestArea{
+    justify-content: center;
+}
+
 
 .scheduleDiv {
     display: flex;
@@ -2588,6 +2618,8 @@ td button {
     #createAdvancedExamination,
     #doctors,
     #patients,
+    #blockedPatients,
+    #freeDaysRequests,
     #equipment,
     #drugs,
     #ingredients {
@@ -2706,6 +2738,7 @@ td button {
     #createAdvancedExamination,
     #doctors,
     #equipment,
+    #freeDaysRequests
     #drugs,
     #ingredients {
         width: 94%;

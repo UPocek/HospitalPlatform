@@ -32,11 +32,24 @@ public class UserRepository : IUserRepository
         return new JsonResult(wantedUser);
     }
 
+    public async Task<List<Employee>> GetDoctors(){
+         var collection = _database.GetCollection<Employee>("Employees");
+
+        return await collection.Find(e => e.Role == "doctor").ToListAsync();
+    }
     public async Task<Employee> GetDoctor(int doctorId)
     {
         var collection = _database.GetCollection<Employee>("Employees");
 
         return await collection.Find(e => e.Role == "doctor" && e.Id == doctorId).FirstOrDefaultAsync();
+    }
+    public async Task UpdateDoctorFreeDays(int doctorId, Employee doctor){
+        var collection = _database.GetCollection<Employee>("Employees");
+
+        Employee doctorInDatabase = await collection.Find(doctor => doctor.Id == doctorId).FirstOrDefaultAsync();
+        doctorInDatabase.FreeDays = doctor.FreeDays;
+
+        await collection.ReplaceOneAsync(doc => doc.Id == doctorInDatabase.Id,doctorInDatabase);
     }
 
     public IActionResult GetPatient(int patientId)

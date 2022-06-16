@@ -15,6 +15,12 @@ public class EquipmentTransferController : ControllerBase
         _dateToday = DateTime.Now.ToString("yyyy-MM-dd");
     }
 
+    [HttpGet("{roomName}")]
+    public async Task<List<Equipment>> GetRoomEquipment(String roomName)
+    {
+        return await _equipmentTransferService.GetRoomEquipment(roomName);
+    }
+
     [HttpPost("")]
     public async Task<IActionResult> CreateTransfer(Transfer transfer)
     {

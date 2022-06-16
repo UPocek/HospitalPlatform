@@ -20,4 +20,11 @@ public class ReferralController : ControllerBase
         return Ok();
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePatientReferral(int id, Examination newExamination)
+    {
+        await _referralService.DeletePatientReferral(id, newExamination);
+        return Ok();
+    }
+
 }

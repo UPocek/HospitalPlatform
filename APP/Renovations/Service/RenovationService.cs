@@ -11,6 +11,11 @@ public class RenovationService : IRenovationService
         _roomService = new RoomService();
     }
 
+    public async Task<List<Renovation>> GetAllRenovations()
+    {
+        return await _renovationRepository.GetAllRenovations();
+    }
+
     public async Task SaveRenovation(Renovation renovation)
     {
         await _renovationRepository.InsertRenovation(renovation);

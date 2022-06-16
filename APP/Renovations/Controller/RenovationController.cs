@@ -7,7 +7,7 @@ public class RenovationController : ControllerBase
 {
     private IRenovationService _renovationService;
 
-    private IExaminationService _examinationService;
+    private IScheduleService _scheduleService;
 
     private string _dateToday;
 
@@ -15,7 +15,7 @@ public class RenovationController : ControllerBase
     {
         _renovationService = new RenovationService();
 
-        _examinationService = new ExaminationService();
+        _scheduleService = new ScheduleService();
 
         _dateToday = DateTime.Now.ToString("yyyy-MM-dd");
     }
@@ -23,7 +23,7 @@ public class RenovationController : ControllerBase
     [HttpPost("simple")]
     public async Task<IActionResult> CreateSimpleRenovation(Renovation renovation)
     {
-        if (await _examinationService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
+        if (await _scheduleService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
         {
             return BadRequest();
         }
@@ -41,7 +41,7 @@ public class RenovationController : ControllerBase
     [HttpPost("devide")]
     public async Task<IActionResult> CreateDevideRenovation(Renovation renovation)
     {
-        if (await _examinationService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
+        if (await _scheduleService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
         {
             return BadRequest();
         }
@@ -61,7 +61,7 @@ public class RenovationController : ControllerBase
     [HttpPost("merge")]
     public async Task<IActionResult> CreateMergeRenovation(Renovation renovation)
     {
-        if (await _examinationService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
+        if (await _scheduleService.ExaminationScheduledAtThatTime(renovation) || await _renovationService.RenovationScheduledAtThatTime(renovation))
         {
             return BadRequest();
         }
@@ -76,6 +76,12 @@ public class RenovationController : ControllerBase
         }
 
         return Ok();
+    }
+
+    [HttpGet("")]
+    public async Task<List<Renovation>> GetAllRenovations()
+    {
+        return await _renovationService.GetAllRenovations();
     }
 
 }

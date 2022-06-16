@@ -32,7 +32,7 @@ public class UserController : ControllerBase
         return await userService.GetDoctorSpecializations();
     }
 
-    [HttpGet("doctors/{id}")]
+    [HttpGet("doctors/{doctorId}")]
     public async Task<Employee> GetDoctor(int doctorId)
     {
         return await userService.GetDoctor(doctorId);

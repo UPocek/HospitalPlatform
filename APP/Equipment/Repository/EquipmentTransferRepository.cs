@@ -10,6 +10,14 @@ public class EquipmentTransferRepository : IEquipmentTransferRepository
         _database = client.GetDatabase("USI");
     }
 
+    public async Task<List<Equipment>> GetRoomEquipment(String roomName)
+    {
+        var rooms = _database.GetCollection<Room>("Rooms");
+        var neededRoom = await rooms.Find(room => room.Name == roomName).FirstOrDefaultAsync();
+        return neededRoom.Equipment;
+
+    }
+
     public async Task InsertTransfer(Transfer transfer)
     {
         var transfers = _database.GetCollection<Transfer>("RelocationOfEquipment");

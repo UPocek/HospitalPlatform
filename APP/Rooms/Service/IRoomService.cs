@@ -4,6 +4,8 @@ public interface IRoomService
 
     public Task<Room> GetRoomByName(string roomName);
 
+    public Task<Room> GetRoomByType(string roomType);
+
     public Task UpdateRoom(string name, Room room);
 
     public Task<bool> IsRoomNameValid(Room room);

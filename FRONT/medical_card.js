@@ -118,7 +118,7 @@ function setUpPatientExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/examination/patient/' + patientId);
+    request.open('GET', url + 'api/schedule/patient/' + patientId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -334,7 +334,7 @@ function submitDoctorIdForm(e, doctorid, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', url + 'api/examination/reffered/none/' + referralid);
+    postRequest.open('POST', url + 'api/schedule/reffered/none/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': doctorid, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));
@@ -368,7 +368,7 @@ function submitSpecialityForm(e, speciality, referralid) {
 
     let selectedRoom = document.getElementById('examinationRefRoom').value;
 
-    postRequest.open('POST', url + 'api/examination/reffered/' + speciality + '/' + referralid);
+    postRequest.open('POST', url + 'api/schedule/reffered/' + speciality + '/' + referralid);
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': "", 'duration': selectedDuration, 'room': selectedRoom, 'patient': patientId, 'doctor': -1, 'urgent': false, 'type': selectedType, 'anamnesis': '' }));

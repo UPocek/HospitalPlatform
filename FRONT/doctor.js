@@ -3,6 +3,7 @@ var currentPatientMedicalRecord;
 var currentExamination;
 var roomOfExamination;
 
+
 //function for setting up doctors view
 function setUpExaminations() {
 
@@ -16,7 +17,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/examination/doctor/' + userId);
+    request.open('GET', url + 'api/schedule/doctor/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -26,11 +27,13 @@ function setUpFunctionality() {
     displayExaminations();
     document.getElementById('scheduleDate').value = (new Date()).toDateString;
     document.getElementById('scheduleDateOption').value = new Date().toISOString().split('T')[0];
+    document.getElementById('scheduleDateRequest').value = (new Date()).toDateString;
     searchSchedule();
     setUpDrugsForReview();
+    displayFreeDays();
 }
 
-//function thath dispays examination table of examinations for currently logged doctor
+//function that dispays examination table of examinations for currently logged doctor
 function displayExaminations() {
     let table = document.getElementById('examinationsTable');
     table.innerHTML = "";
@@ -153,7 +156,7 @@ function reviewExamination(id) {
                 }
             }
         }
-        getEquipmentRequest.open('GET', url + 'api/room/' + currentExamination['room']);
+        getEquipmentRequest.open('GET', url + 'api/equipmenttransfer/' + currentExamination['room']);
         getEquipmentRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         getEquipmentRequest.send();
         
@@ -223,7 +226,7 @@ updateMedicalCardBtn.addEventListener('click', function (e) {
             }
         }
     }
-    request.open('PUT', url + 'api/doctor/medicalrecord/' + currentPatientMedicalRecord['id']);
+    request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send(JSON.stringify(currentMedicalRecord));
@@ -336,7 +339,7 @@ function searchSchedule() {
             }
         }
     }
-    scheduleRequest.open('GET', url + 'api/examination/doctorSchedule/' + userId + "&" + inputDate);
+    scheduleRequest.open('GET', url + 'api/schedule/doctorSchedule/' + userId + "&" + inputDate);
     scheduleRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     scheduleRequest.send();
 } 
@@ -357,7 +360,7 @@ function deleteExamination(id) {
             }
         }
     }
-    deleteRequest.open('DELETE', url + 'api/examination/' + id);
+    deleteRequest.open('DELETE', url + 'api/schedule/' + id);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 };
@@ -455,7 +458,7 @@ function createExamination() {
             }
         }
     }
-    getRequest.open('GET', url+'api/manager/rooms');
+    getRequest.open('GET', url+'api/room');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
 }
@@ -492,7 +495,7 @@ function submitForm(e) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('POST', url + 'api/examination/new');
+        postRequest.open('POST', url + 'api/schedule/new');
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -606,7 +609,7 @@ function submitUpdate(e, updatedExamination, id) {
         let selectedPatient = document.getElementById("examinationPatient").value;
         let isUrgent = document.getElementById("urgent").checked ? true : false;
 
-        postRequest.open('PUT', url+'api/doctor/examinations/' + id);
+        postRequest.open('PUT', url+'api/schedule/' + id);
         postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ "_id": updatedExamination["_id"], "id": updatedExamination["id"], "done": false, "date": selectedDate, "duration": selectedDuration, "room": selectedRoom, "patient": selectedPatient, "doctor": userId, "urgent": isUrgent, "type": selectedType, "anamnesis": "" }));
@@ -799,7 +802,7 @@ endReviewBtn.addEventListener('click', function (e) {
             }
         }
         
-        reviewExaminationRequest.open('PUT', url + 'api/examination/' + currentExamination['id']);
+        reviewExaminationRequest.open('PUT', url + 'api/schedule/' + currentExamination['id']);
         reviewExaminationRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         reviewExaminationRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         reviewExaminationRequest.send(JSON.stringify({ "_id": currentExamination["_id"], "id": currentExamination["id"], "done": true, "date": currentExamination['date'], "duration": currentExamination['duration'], "room": currentExamination['room'], "patient": currentExamination['patient'], "doctor": currentExamination['doctor'], "urgent": currentExamination['urgent'], "type": currentExamination['type'], "anamnesis": currentExamination['anamnesis'], "equipmentUsed": currentExamination['equipmentUsed'] }));
@@ -861,28 +864,10 @@ addpercsriptionBtn.addEventListener('click', function (e) {
         alert('Patient is alergic to ingredients of this drug.');
     }
     else {
-        if (answer == "modified") {
-            modifyLastPerscription(pickedDrug);
-            addMedicalInstruction(pickedDrug);
-        }
-        else {
-            addPerscriptionToRecord(pickedDrug);
-            addMedicalInstruction(pickedDrug);
-        }
-
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    alert("Perscription added.")
-                }
-            }
-        }
-
-        request.open('PUT', url + 'api/medicalrecord/' + currentPatientMedicalRecord['id']);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-        request.send(JSON.stringify({}));
+        
+        addPerscriptionToRecord(pickedDrug);
+            
+        addMedicalInstruction(pickedDrug);
     }
 
     let perscriptionPopUp = document.getElementById('perscriptionDiv');
@@ -950,15 +935,6 @@ function checkIfAllergicToIngredients(allergies, ingredients, drugName) {
 }
 
 //heleper function for updating the perscription if patinet has taken the same drug before in past
-function modifyLastPerscription(drugName) {
-    let drugPerscription = getDrugPerscribed(drugName);
-    let time = document.getElementById('perscriptionTime').value;
-    drugPerscription['when'] = time;
-    let frequency = document.getElementById('perscriptionFrequency').value;
-    drugPerscription['frequency'] = frequency;
-    let when = document.getElementById('perscriptionFrequency').value;
-    drugPerscription['how'] = when;
-}
 
 //function for adding perscription to patients medical instructions history
 function addMedicalInstruction(drugName) {
@@ -970,7 +946,19 @@ function addMedicalInstruction(drugName) {
     let convertedStart = start.toISOString().split('T')[0];
     let convertedEnd = end.toISOString().split('T')[0]
     let medicalInstruction = { 'startDate': convertedStart, 'endDate': convertedEnd, 'doctor': userId, 'drug': drugName };
-    currentMedicalRecord['medicalInstructions'].push(medicalInstruction);
+    let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Instruction added.")
+                }
+            }
+        }
+
+        request.open('PUT', url + 'api/reviewexamination/medicalinstruction/' + currentPatientMedicalRecord['id']);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send(JSON.stringify(medicalInstruction));
 }
 
 // helper function for adding new perscription to patients medical record
@@ -980,7 +968,19 @@ function addPerscriptionToRecord(drugName) {
     let how = document.getElementById('howList').value;
 
     let newPerscription = { 'name': drugName, 'when': time, 'how': how, 'frequency': frequency };
-    currentMedicalRecord['drugs'].push(newPerscription);
+    let request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert("Perscription added.")
+                }
+            }
+        }
+
+        request.open('PUT', url + 'api/reviewexamination/perscription/' + currentPatientMedicalRecord['id']);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        request.send(JSON.stringify(newPerscription));
 }
 
 var referallBtn = document.getElementById('createReferall');
@@ -1199,3 +1199,85 @@ function approveDrug(key) {
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
 }
+//function that dispays freedays table for currently logged doctor
+function displayFreeDays() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let freeDays = JSON.parse(this.responseText);
+                let table = document.getElementById('freeDayTable');
+                table.innerHTML = "";
+                for (let freeDay of freeDays) {
+                    let newRow = document.createElement("tr");
+
+                    //creating row for one freeday
+                    let startDate = document.createElement("td");
+                    startDate.innerText = freeDay["startDay"];
+                    let duration = document.createElement("td");
+                    duration.innerText = freeDay["duration"];
+                    let status = document.createElement("td");
+                    status.innerText = freeDay["status"];
+
+                    newRow.appendChild(startDate);
+                    newRow.appendChild(duration);
+                    newRow.appendChild(status);              
+                   
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+    request.open('GET', url + 'api/freedays/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function addFreeDays() {
+    let popUp = document.getElementById("freeDaysPopUp");
+    popUp.classList.remove("off");
+    main.classList.add("hideMain");
+
+    document.getElementById("reason").value = "";
+    document.getElementById("urgentRequest").checked = false;
+
+    let form = document.getElementById("freeDaysForm");
+
+    form.addEventListener('submit', function (e) {
+        submitRequestForm(e)
+    }); 
+}
+
+function submitRequestForm(e){
+    let popUp = document.getElementById("freeDaysPopUp");
+    popUp.classList.add("off");
+    main.classList.remove("hideMain");
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let selectedDate = document.getElementById("scheduleDateRequest").value.split('T')[0];
+    let selectedDuration = document.getElementById("freeDaysDuration").value;
+    let reason = document.getElementById("reason").value;
+    let isUrgent = document.getElementById("urgentRequest").checked ? true : false;
+    let postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Free days request sucessfuly created");
+                displayFreeDays();
+            } else {
+                alert("Error: Entered request is invalid");
+            }
+        }
+    };
+    document.getElementById("freeDaysDuration").value = ""
+    document.getElementById("reason").value = "";
+    postRequest.open('POST', url + 'api/freedays/request');
+    postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({"startDay": selectedDate, "duration": selectedDuration, "reason": reason, "doctorId": userId, "urgent": isUrgent}));
+}
+var createBtn = document.getElementById("addFreeDaysBtn");
+
+createBtn.addEventListener("click", addFreeDays);

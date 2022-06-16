@@ -104,6 +104,7 @@ function setUpFunctionality() {
     setupUrgent();
     setupExpendedDynamicEquipment();
     setupDynamicEquipmentTransfers();
+    setupFreeDays();
 }
 
 function setUpBlockedPatients() {
@@ -259,7 +260,7 @@ function setupExaminationRequests() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
-                    acceptBtn.setAttribute('key', examinationRequest['_id']);
+                    acceptBtn.setAttribute('key', examinationRequest['_Id']);
                     acceptBtn.addEventListener('click', function (e) {
                         acceptRequest(this.getAttribute('key'));
                     });
@@ -270,7 +271,7 @@ function setupExaminationRequests() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
-                    declineBtn.setAttribute('key', examinationRequest['_id']);
+                    declineBtn.setAttribute('key', examinationRequest['_Id']);
                     declineBtn.addEventListener('click', function (e) {
                         declineRequest(this.getAttribute('key'));
                     });
@@ -450,6 +451,184 @@ function setupDynamicEquipmentTransfers() {
     getRequest.open('GET', url + 'api/dynamicEquipment/low/');
     getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     getRequest.send();
+}
+
+function setupFreeDays() {
+    let getRequest = new XMLHttpRequest();
+
+    let freeDaysRequestsTable = document.getElementById('freeDaysRequestsTable');
+
+    freeDaysRequestsTable.innerHTML = '';
+
+    getRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                var response = JSON.parse(this.responseText);
+                for (let i in response) {
+                    let freeDayRequest = response[i];
+
+                    let newRow = document.createElement('tr');
+
+                    let doctorIdContainer = document.createElement('td');
+                    doctorIdContainer.innerText = freeDayRequest['doctorId'];
+
+                    let doctorNameContainer = document.createElement('td');
+                    let doctorSurnameContainer = document.createElement('td');
+
+                    let startDayContainer = document.createElement('td');
+                    startDayContainer.innerText = freeDayRequest['startDay'];
+                    let daysContainer = document.createElement('td');
+                    daysContainer.innerText = freeDayRequest['duration'];
+
+                    let mail;
+
+
+                    let getDoctorRequest = new XMLHttpRequest();
+
+                    getDoctorRequest.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                var doctorResponse = JSON.parse(getDoctorRequest.responseText);
+                                doctorNameContainer.innerHTML = doctorResponse['firstName'];
+                                doctorSurnameContainer.innerHTML = doctorResponse['lastName'];
+                                mail = doctorResponse['email'];
+                            } 
+                        }
+                    }
+
+                    getDoctorRequest.open('GET', url + 'api/user/doctors/' + freeDayRequest['doctorId'] + '/')
+                    getDoctorRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+                    getDoctorRequest.send();
+                    
+                    let infoBtnContainer = document.createElement('td');
+                    let infoBtn = document.createElement('button');
+                    infoBtn.innerHTML = '<i data-feather="alert-circle"></i>';
+                    infoBtn.classList.add('updateBtn');
+                    infoBtn.addEventListener('click', function (e) {
+                        showInfo(freeDayRequest['reason']);
+                    });
+                    infoBtnContainer.classList.add('smallerWidth');
+                    infoBtnContainer.appendChild(infoBtn);
+
+                    let acceptBtnContainer = document.createElement('td');
+                    let acceptBtn = document.createElement('button');
+                    acceptBtn.innerHTML = '<i data-feather="check"></i>';
+                    acceptBtn.classList.add('acceptBtn');
+                    acceptBtn.setAttribute('key', freeDayRequest['_Id']);
+                    acceptBtn.addEventListener('click', function (e) {
+                        acceptFreeDaysRequest(freeDayRequest['_Id'],freeDayRequest['doctorId'],freeDayRequest['startDay'],freeDayRequest['duration'],freeDayRequest['reason']);
+                    });
+                    acceptBtnContainer.classList.add('smallerWidth');
+                    acceptBtnContainer.appendChild(acceptBtn);
+
+                    let declineBtnContainer = document.createElement('td');
+                    let declineBtn = document.createElement('button');
+                    declineBtn.innerHTML = '<i data-feather="x"></i>';
+                    declineBtn.classList.add('declineBtn');
+                    declineBtn.setAttribute('key', freeDayRequest['_Id']);
+                    declineBtn.setAttribute('mail', mail);
+                    declineBtn.addEventListener('click', function (e) {
+                        declineFreeDaysRequest(freeDayRequest['_Id'],mail);
+                    });
+                    declineBtnContainer.classList.add('smallerWidth')
+                    declineBtnContainer.appendChild(declineBtn);
+
+                    newRow.appendChild(doctorIdContainer);
+                    newRow.appendChild(doctorNameContainer);
+                    newRow.appendChild(doctorSurnameContainer);
+                    newRow.appendChild(startDayContainer);
+                    newRow.appendChild(daysContainer);
+                    newRow.appendChild(infoBtnContainer);
+                    newRow.appendChild(acceptBtnContainer);
+                    newRow.appendChild(declineBtnContainer);
+                    freeDaysRequestsTable.appendChild(newRow);
+                }
+                feather.replace();
+            }
+        }
+    }
+
+    getRequest.open('GET', url + 'api/freeDays/requests');
+    getRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    getRequest.send();
+}
+
+function showInfo(infoValue){
+    let prompt = document.getElementById('freeDaysReasonPrompt2');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whyContainer = document.getElementById('freeDaysReason');
+
+    whyContainer.value = infoValue;
+
+    let form = document.getElementById('freeDaysForm2');
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+
+}
+
+function declineFreeDaysRequest(key,mail){
+    let prompt = document.getElementById('freeDaysReasonPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('freeDaysForm');
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        let whyContainer = document.getElementById('freeDaysDeclineReason');
+        let request = new XMLHttpRequest();
+
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Selected request was successfully declined');
+                    setUpPatients();
+                }
+            }
+        }
+        if (whyContainer.value != ''){
+            request.open('DELETE', url + 'api/freedays/requests/decline/' + key + '/' + mail + '/' + whyContainer.value)
+            request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            request.send();
+        }
+        else{
+            alert("Error: Reasoning cannot be empty!!");
+        }
+        
+
+
+    });
+}
+
+
+function acceptFreeDaysRequest(key,doctorId,startDay,duration,reason){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected request was successfully accepted');
+                setUpPatients();
+            }
+        }
+    }
+    request.open('PUT', url + 'api/freedays/requests/accept/' + key + '/' + doctorId + '/' + duration)
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.send(JSON.stringify(
+        {
+            'status': 'upcoming',
+            'from': startDay,
+            'to': '',
+            'reason': reason
+        }
+        ));
 }
 
 
@@ -780,7 +959,7 @@ function showOldExamination(newExamination, examRow) {
 
         }
     }
-    putRequest.open('GET', url + 'api/examination' + newExamination['id']);
+    putRequest.open('GET', url + 'api/schedule' + newExamination['id']);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }
@@ -870,7 +1049,7 @@ urgentForm.addEventListener('submit', async function (e) {
                     }
                 }
 
-                postRequest.open('POST', url + 'api/examination/urgent/' + selectedSpeciality);
+                postRequest.open('POST', url + 'api/schedule/urgent/' + selectedSpeciality);
                 postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                 postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
                 postRequest.send(urgentExamJSON);
@@ -948,7 +1127,7 @@ function createUrgentExaminationWithMovingTerms(selectedExamination, patientid, 
         }
     }
 
-    postRequest.open('POST', url + 'api/examination/urgent/termMoving');
+    postRequest.open('POST', url + 'api/schedule/urgent/termMoving');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': selectedExamination['date'], 'duration': examinationDuration, 'room': selectedExamination['room'], 'patient': patientid, 'doctor': selectedExamination['doctor'], 'urgent': true, 'type': examinationType, 'anamnesis': '' }));
