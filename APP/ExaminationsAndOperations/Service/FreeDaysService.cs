@@ -30,11 +30,10 @@ public class FreeDaysService : IFreeDaysService
     }
 
     public void SendDeclineNotification(string mail,string why){
-        var smptClient = new SmtpClient("smtp.gmail.com")
+        var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
-            Port = 587,
-            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
-            EnableSsl = true,
+            Credentials = new NetworkCredential("teamNineMedical@outlook.com","teamnine123"),
+            EnableSsl = true
         };
 
         string messageDoctor = "Hello your free days request has been declined, reason:\n" + why + "\n Have a nice day!";
@@ -42,13 +41,13 @@ public class FreeDaysService : IFreeDaysService
 
         var mailMessageDoctor = new MailMessage
         {
-            From = new MailAddress(mail),
+            From = new MailAddress("teamNineMedical@outlook.com"),
             Subject = "TeamNine Medical Team - free days declined",
             Body = messageDoctor,
             IsBodyHtml = true,
         };
 
-        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+        mailMessageDoctor.To.Add("teamNineMedical@outlook.com");
         smptClient.Send(mailMessageDoctor);
     }
 

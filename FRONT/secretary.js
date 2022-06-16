@@ -260,7 +260,7 @@ function setupExaminationRequests() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
-                    acceptBtn.setAttribute('key', examinationRequest['_id']);
+                    acceptBtn.setAttribute('key', examinationRequest['_Id']);
                     acceptBtn.addEventListener('click', function (e) {
                         acceptRequest(this.getAttribute('key'));
                     });
@@ -271,7 +271,7 @@ function setupExaminationRequests() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
-                    declineBtn.setAttribute('key', examinationRequest['_id']);
+                    declineBtn.setAttribute('key', examinationRequest['_Id']);
                     declineBtn.addEventListener('click', function (e) {
                         declineRequest(this.getAttribute('key'));
                     });
@@ -504,7 +504,7 @@ function setupFreeDays() {
                     let acceptBtn = document.createElement('button');
                     acceptBtn.innerHTML = '<i data-feather="check"></i>';
                     acceptBtn.classList.add('acceptBtn');
-                    acceptBtn.setAttribute('key', freeDayRequest['_id']);
+                    acceptBtn.setAttribute('key', freeDayRequest['_Id']);
                     acceptBtn.addEventListener('click', function (e) {
                     });
                     acceptBtnContainer.classList.add('smallerWidth');
@@ -514,10 +514,10 @@ function setupFreeDays() {
                     let declineBtn = document.createElement('button');
                     declineBtn.innerHTML = '<i data-feather="x"></i>';
                     declineBtn.classList.add('declineBtn');
-                    declineBtn.setAttribute('key', freeDayRequest['_id']);
-                    declineBtn.setAttribute('mail', freeDayRequest['_id']);
+                    declineBtn.setAttribute('key', freeDayRequest['_Id']);
+                    declineBtn.setAttribute('mail', mail);
                     declineBtn.addEventListener('click', function (e) {
-                        deleteFreeDaysRequest(declineBtn.getAttribute('key'),declineBtn.getAttribute('mail'));
+                        deleteFreeDaysRequest(freeDayRequest['_Id'],mail);
                     });
                     declineBtnContainer.classList.add('smallerWidth')
                     declineBtnContainer.appendChild(declineBtn);
@@ -549,6 +549,8 @@ function deleteFreeDaysRequest(key,mail){
     form.addEventListener('submit', function (e) {
         prompt.classList.add('off');
         main.classList.remove('hideMain');
+        e.stopImmediatePropagation();
+        e.preventDefault();
 
         let whyContainer = document.getElementById('freeDaysDeclineReason');
         let request = new XMLHttpRequest();
@@ -561,8 +563,8 @@ function deleteFreeDaysRequest(key,mail){
                 }
             }
         }
-        if (whyContainer.innerText != ''){
-            request.open('DELETE', url + 'api/freedays/requests/' + key + '/' + mail + '/' + whyContainer.innerText)
+        if (whyContainer.value != ''){
+            request.open('DELETE', url + 'api/freedays/requests/decline/' + key + '/' + mail + '/' + whyContainer.value)
             request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
             request.send();
         }

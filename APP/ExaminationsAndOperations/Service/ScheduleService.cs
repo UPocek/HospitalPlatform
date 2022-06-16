@@ -192,10 +192,9 @@ public class ScheduleService : IScheduleService
 
     public void SendTermNotificationEmailToPatient(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
     {
-        var smptClient = new SmtpClient("smtp.gmail.com")
+        var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
-            Port = 587,
-            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
+            Credentials = new NetworkCredential("teamNineMedical@outlook.com", "teamnine123"),
             EnableSsl = true,
         };
 
@@ -207,22 +206,21 @@ public class ScheduleService : IScheduleService
 
         var mailMessageDoctor = new MailMessage
         {
-            From = new MailAddress(employee.Email),
+            From = new MailAddress("teamNineMedical@outlook.com"),
             Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
             Body = messageDoctor,
             IsBodyHtml = true,
         };
 
-        mailMessageDoctor.To.Add("teamnineMedical@gmail.com");
+        mailMessageDoctor.To.Add("teamnineMedical@outlook.com");
         smptClient.Send(mailMessageDoctor);
     }
 
     public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
     {
-        var smptClient = new SmtpClient("smtp.gmail.com")
+        var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
-            Port = 587,
-            Credentials = new NetworkCredential("teamnineMedical@gmail.com", "teamnine"),
+            Credentials = new NetworkCredential("teamNineMedical@outlook.com", "teamnine"),
             EnableSsl = true,
         };
 
@@ -234,13 +232,13 @@ public class ScheduleService : IScheduleService
 
         var mailMessagePatient = new MailMessage
         {
-            From = new MailAddress(employee.Email),
+            From = new MailAddress("smtp-mail.outlook.com"),
             Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
             Body = messagePatient,
             IsBodyHtml = true,
         };
 
-        mailMessagePatient.To.Add("teamnineMedical@gmail.com");
+        mailMessagePatient.To.Add("teamnineMedical@outlook.com");
         smptClient.Send(mailMessagePatient);
     }
 
