@@ -40,7 +40,7 @@ public class FreeDaysService : IFreeDaysService
         fd.To = endString;
         doctor.FreeDays.Add(fd);
         
-        await _userRepository.UpdateDoctor(doctorId,doctor);
+        await _userRepository.UpdateDoctorFreeDays(doctorId,doctor);
     }
     public void SendDeclineNotification(string mail,string why){
         var smptClient = new SmtpClient("smtp-mail.outlook.com",587)

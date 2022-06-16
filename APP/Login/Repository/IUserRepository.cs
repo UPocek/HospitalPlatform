@@ -10,7 +10,7 @@ public interface IUserRepository
 
     public Task<List<Employee>> GetDoctors();
 
-    public Task UpdateDoctor(int doctorId, Employee doctor);
+    public Task UpdateDoctorFreeDays(int doctorId, Employee doctor);
 
     public Task<List<Employee>> GetSpecializedDoctors(string specialization);
 

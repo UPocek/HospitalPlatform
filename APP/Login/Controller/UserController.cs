@@ -18,7 +18,6 @@ public class UserController : ControllerBase
     public IActionResult GetAllDoctors()
     {
         return userService.GetAllDoctors();
-        return Ok();
     }
 
     [HttpPost("doctors/specialized/{specialization}")]
