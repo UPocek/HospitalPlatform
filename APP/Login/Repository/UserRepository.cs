@@ -32,6 +32,11 @@ public class UserRepository : IUserRepository
         return new JsonResult(wantedUser);
     }
 
+    public async Task<List<Employee>> GetDoctors(){
+         var collection = _database.GetCollection<Employee>("Employees");
+
+        return await collection.Find(e => e.Role == "doctor").ToListAsync();
+    }
     public async Task<Employee> GetDoctor(int doctorId)
     {
         var collection = _database.GetCollection<Employee>("Employees");
