@@ -23,7 +23,16 @@ public class FreeDaysController : ControllerBase
     {
         await _freeDaysService.DeleteFreeDaysRequest(id);
         _freeDaysService.SendDeclineNotification(mail,why);
-        
+
+        return Ok();
+
+    }
+
+    [HttpPut("requests/accept/{id}/{doctorId}/{duration}")]
+    public async Task<IActionResult> AcceptFreeDaysRequest(string id,int doctorId,int duration,FreeDay fd)
+    {
+        await _freeDaysService.DeleteFreeDaysRequest(id);
+        await _freeDaysService.AddFreeDay(doctorId,duration,fd);
         return Ok();
 
     }

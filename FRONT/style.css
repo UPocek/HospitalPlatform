@@ -1878,6 +1878,13 @@ footer {
     max-height: 350px;
 }
 
+#freeDaysReason{
+    min-width: 300px;
+    max-width: 350px;
+    min-height: 300px;
+    max-height: 350px;
+}
+
 
 
 
@@ -2201,7 +2208,7 @@ td button {
     text-align: center;
 }
 
-#freeDaysReasonPrompt{
+#freeDaysReasonPrompt,#freeDaysReasonPrompt2{
     text-align: center;
 }
 

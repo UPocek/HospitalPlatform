@@ -38,6 +38,11 @@ public class UserRepository : IUserRepository
 
         return await collection.Find(e => e.Role == "doctor" && e.Id == doctorId).FirstOrDefaultAsync();
     }
+    public async Task UpdateDoctor(int doctorId, Employee doctor){
+        var collection = _database.GetCollection<Employee>("Employees");
+
+        await collection.ReplaceOneAsync(doctor => doctor.Id == doctorId, doctor);
+    }
 
     public IActionResult GetPatient(int patientId)
     {

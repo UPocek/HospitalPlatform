@@ -499,6 +499,16 @@ function setupFreeDays() {
                     getDoctorRequest.open('GET', url + 'api/user/doctors/' + freeDayRequest['doctorId'] + '/')
                     getDoctorRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
                     getDoctorRequest.send();
+                    
+                    let infoBtnContainer = document.createElement('td');
+                    let infoBtn = document.createElement('button');
+                    infoBtn.innerHTML = '<i data-feather="alert-circle"></i>';
+                    infoBtn.classList.add('updateBtn');
+                    infoBtn.addEventListener('click', function (e) {
+                        showInfo(freeDayRequest['reason']);
+                    });
+                    infoBtnContainer.classList.add('smallerWidth');
+                    infoBtnContainer.appendChild(infoBtn);
 
                     let acceptBtnContainer = document.createElement('td');
                     let acceptBtn = document.createElement('button');
@@ -506,6 +516,7 @@ function setupFreeDays() {
                     acceptBtn.classList.add('acceptBtn');
                     acceptBtn.setAttribute('key', freeDayRequest['_Id']);
                     acceptBtn.addEventListener('click', function (e) {
+                        acceptFreeDaysRequest(freeDayRequest['_Id'],freeDayRequest['doctorId'],freeDayRequest['startDay'],freeDayRequest['duration'],freeDayRequest['reason']);
                     });
                     acceptBtnContainer.classList.add('smallerWidth');
                     acceptBtnContainer.appendChild(acceptBtn);
@@ -517,7 +528,7 @@ function setupFreeDays() {
                     declineBtn.setAttribute('key', freeDayRequest['_Id']);
                     declineBtn.setAttribute('mail', mail);
                     declineBtn.addEventListener('click', function (e) {
-                        deleteFreeDaysRequest(freeDayRequest['_Id'],mail);
+                        declineFreeDaysRequest(freeDayRequest['_Id'],mail);
                     });
                     declineBtnContainer.classList.add('smallerWidth')
                     declineBtnContainer.appendChild(declineBtn);
@@ -527,6 +538,7 @@ function setupFreeDays() {
                     newRow.appendChild(doctorSurnameContainer);
                     newRow.appendChild(startDayContainer);
                     newRow.appendChild(daysContainer);
+                    newRow.appendChild(infoBtnContainer);
                     newRow.appendChild(acceptBtnContainer);
                     newRow.appendChild(declineBtnContainer);
                     freeDaysRequestsTable.appendChild(newRow);
@@ -541,7 +553,25 @@ function setupFreeDays() {
     getRequest.send();
 }
 
-function deleteFreeDaysRequest(key,mail){
+function showInfo(infoValue){
+    let prompt = document.getElementById('freeDaysReasonPrompt2');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let whyContainer = document.getElementById('freeDaysReason');
+
+    whyContainer.value = infoValue;
+
+    let form = document.getElementById('freeDaysForm2');
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+
+}
+
+function declineFreeDaysRequest(key,mail){
     let prompt = document.getElementById('freeDaysReasonPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
@@ -576,6 +606,31 @@ function deleteFreeDaysRequest(key,mail){
 
     });
 }
+
+
+function acceptFreeDaysRequest(key,doctorId,startDay,duration,reason){
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert('Selected request was successfully accepted');
+                setUpPatients();
+            }
+        }
+    }
+    request.open('PUT', url + 'api/freedays/requests/accept/' + key + '/' + doctorId + '/' + duration)
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.send(JSON.stringify(
+        {
+            'status': 'upcoming',
+            'from': startDay,
+            'to': '',
+            'reason': reason
+        }
+        ));
+}
+
 
 function deletePatient(key) {
     let deleteRequest = new XMLHttpRequest();

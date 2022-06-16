@@ -7,9 +7,12 @@ public class ScheduleController : ControllerBase
     private IScheduleService _scheduleService;
     private IValidateExaminationService _validateExaminationService;
 
+    private IReferralService _referralService;
+
     public ScheduleController()
     {
         _scheduleService = new ScheduleService();
+        _referralService = new ReferralService();
         _validateExaminationService = new ValidateExaminationService();
     }
 

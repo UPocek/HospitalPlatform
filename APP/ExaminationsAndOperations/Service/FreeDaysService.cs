@@ -5,11 +5,13 @@ public class FreeDaysService : IFreeDaysService
     private IFreeDaysRepository _freeDaysRepository;
     private IValidateExaminationService _validateExaminationService;
     private IScheduleService _scheduleService;
+    private IUserRepository _userRepository;
     public FreeDaysService()
     {
         _freeDaysRepository = new FreeDaysRepository();
         _scheduleService = new ScheduleService();
         _validateExaminationService = new ValidateExaminationService();
+        _userRepository = new UserRepository();
     }
 
 
@@ -28,7 +30,18 @@ public class FreeDaysService : IFreeDaysService
     public async Task DeleteFreeDaysRequest(string id){
         await _freeDaysRepository.DeleteFreeDaysRequest(id);
     }
+    
+    public async Task AddFreeDay(int doctorId,int duration,FreeDay fd){
+        Employee doctor = await _userRepository.GetDoctor(doctorId);
 
+        DateTime startDate = DateTime.Parse(fd.From);
+        DateTime endDate = startDate.AddDays(duration);
+        string endString = endDate.ToString("yyyy-MM-dd");
+        fd.To = endString;
+        doctor.FreeDays.Add(fd);
+        
+        await _userRepository.UpdateDoctor(doctorId,doctor);
+    }
     public void SendDeclineNotification(string mail,string why){
         var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
@@ -37,6 +50,28 @@ public class FreeDaysService : IFreeDaysService
         };
 
         string messageDoctor = "Hello your free days request has been declined, reason:\n" + why + "\n Have a nice day!";
+
+
+        var mailMessageDoctor = new MailMessage
+        {
+            From = new MailAddress("teamNineMedical@outlook.com"),
+            Subject = "TeamNine Medical Team - free days declined",
+            Body = messageDoctor,
+            IsBodyHtml = true,
+        };
+
+        mailMessageDoctor.To.Add("teamNineMedical@outlook.com");
+        smptClient.Send(mailMessageDoctor);
+    }
+
+    public void SendAcceptNotification(string mail){
+        var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
+        {
+            Credentials = new NetworkCredential("teamNineMedical@outlook.com","teamnine123"),
+            EnableSsl = true
+        };
+
+        string messageDoctor = "Hello your free days request has been accepted,Have a nice day!";
 
 
         var mailMessageDoctor = new MailMessage

@@ -26,6 +26,11 @@ public class FreeDaysRepository : IFreeDaysRepository
         await freeDayRequests.DeleteOneAsync(request => request._Id == id);
     }
 
+    public async Task<FreeDayRequest> GetFreeDaysRequest(string requestId){
+        var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");
+        return await freeDayRequests.Find(request => request._Id == requestId).FirstOrDefaultAsync();
+    }
+
     public async Task<List<FreeDayRequest>> GetAllFreeDaysRequests()
     {
         var freeDayRequests = _database.GetCollection<FreeDayRequest>("DoctorFreeDayRequests");

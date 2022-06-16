@@ -166,6 +166,17 @@
       </form>
     </div>
 
+
+    <div id="freeDaysReasonPrompt2" class = "prompt off">
+      <form id="freeDaysForm2" class="colDir myForm">
+        <h1 id="examinationFormId" >Doctor reasoning</h1>
+        <div id = "reasonTextArea">
+            <textarea readonly id="freeDaysReason"> </textarea>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
     <main class='myMain'>
 
     <div id="hi">
