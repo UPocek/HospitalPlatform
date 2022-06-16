@@ -109,7 +109,7 @@ body {
     font-size: 28px;
     font-weight: 100;
     letter-spacing: 0.5px;
-    margin: 20px 0 30px;
+    margin: 2px 0 3px;
 }
 
 #first span {
@@ -2094,6 +2094,12 @@ input[type="radio" i] {
     margin: auto;
 }
 
+#pollDiv{
+    text-align: center;
+    width: 80%;
+    margin: auto; 
+}
+
 #blockedPatients{
     margin-top : 100px;
 }
@@ -2481,7 +2487,7 @@ td button {
     border-radius:50%;
     cursor:pointer;
   }
-  #slider1, #slider2{
+  #slider1, #slider2, #slider3, #slider4{
     position:absolute;
     left:0%; top:0;
     width:10%; padding-bottom:10%;
@@ -2500,12 +2506,23 @@ td button {
   #input4a:checked  ~ #slider1{ animation-name: input4a; left:60%; }
   #input5a:checked  ~ #slider1{ animation-name: input5a; left:80%; }
 
-
   #input1b:checked  ~ #slider2{ animation-name: input1b; left:0; }
   #input2b:checked  ~ #slider2{ animation-name: input2b; left:20%; }
   #input3b:checked  ~ #slider2{ animation-name: input3b; left:40%; }
   #input4b:checked  ~ #slider2{ animation-name: input4b; left:60%; }
   #input5b:checked  ~ #slider2{ animation-name: input5b; left:80%; }
+
+  #input1c:checked  ~ #slider3{ animation-name: input1c; left:0; }
+  #input2c:checked  ~ #slider3{ animation-name: input2c; left:20%; }
+  #input3c:checked  ~ #slider3{ animation-name: input3c; left:40%; }
+  #input4c:checked  ~ #slider3{ animation-name: input4c; left:60%; }
+  #input5c:checked  ~ #slider3{ animation-name: input5c; left:80%; }
+
+  #input1d:checked  ~ #slider4{ animation-name: input1d; left:0; }
+  #input2d:checked  ~ #slider4{ animation-name: input2d; left:20%; }
+  #input3d:checked  ~ #slider4{ animation-name: input3d; left:40%; }
+  #input4d:checked  ~ #slider4{ animation-name: input4d; left:60%; }
+  #input5d:checked  ~ #slider4{ animation-name: input5d; left:80%; }
   
   @keyframes input1a{ 30%, 70% { transform:scale(0.5); } }
   @keyframes input2a{ 30%, 70% { transform:scale(0.5); } }
@@ -2518,6 +2535,18 @@ td button {
   @keyframes input3b{ 30%, 70% { transform:scale(0.5); } }
   @keyframes input4b{ 30%, 70% { transform:scale(0.5); } }
   @keyframes input5b{ 30%, 70% { transform:scale(0.5); } } 
+ 
+  @keyframes input1c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5c{ 30%, 70% { transform:scale(0.5); } }
+   
+  @keyframes input1d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5d{ 30%, 70% { transform:scale(0.5); } } 
 
 
 /* Doctor */
@@ -2690,6 +2719,7 @@ td button {
     #createAdvancedExamination,
     #doctors,
     #patients,
+    #pollDiv,
     #blockedPatients,
     #freeDaysRequests,
     #equipment,
@@ -2809,6 +2839,7 @@ td button {
     #advancedExaminations,
     #createAdvancedExamination,
     #doctors,
+    #pollDiv,
     #equipment,
     #freeDaysRequests
     #drugs,

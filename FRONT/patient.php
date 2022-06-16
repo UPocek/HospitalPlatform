@@ -42,7 +42,7 @@
 	</div>
 
   <div id="drugInstructionPrompt" class="form-container sign-in-container off prompt">
-		<form id="drugInstructionForm" class="colDir myForm">
+		<form id="drugInstructionForm" class="colDir2 myForm">
 			<h1>Drug instruction</h1>
       <p id="drug">&nbsp; </p>
       <p id="when">&nbsp; </p>
@@ -74,20 +74,58 @@
       <p>Would you recommend this doctor to your friend (1-5)</p>
       <div class="radios" id="recommendationScore">
         <label for="input1b"></label>
-        <input  id="input1b" name="radioRecommendation" type="radio" value=1 />
+        <input  id="input1b" name="radioRecommendation1" type="radio" value=1 />
         <label for="input2b"></label>
-        <input  id="input2b" name="radioRecommendation" type="radio" value=2 />
+        <input  id="input2b" name="radioRecommendation1" type="radio" value=2 />
         <label for="input3b"></label>
-        <input  id="input3b" name="radioRecommendation" type="radio" value=3 />
+        <input  id="input3b" name="radioRecommendation1" type="radio" value=3 />
         <label for="input4b"></label>
-        <input  id="input4b" name="radioRecommendation" type="radio" value=4 />
+        <input  id="input4b" name="radioRecommendation1" type="radio" value=4 />
         <label for="input5b"></label>
-        <input  id="input5b" name="radioRecommendation" type="radio" value=5 />
+        <input  id="input5b" name="radioRecommendation1" type="radio" value=5 />
         <span id="slider2"></span>
       </div>
 
       <p>Comment:</p>
       <textarea name="comment" id="doctorComment" rows="4"></textarea>
+			<button class="mainBtn">OK</button>
+		</form>
+	</div>
+
+  <div id="mainPollPrompt" class="form-container sign-in-container off prompt">
+		<form id="mainPoll" class="colDir2 myForm">
+			<h1>Hospital poll</h1>
+      <p>How would you evaluate this hospital (1-5)</p>
+      <div class="radios" id="hospitalScore">
+        <label for="input1c"></label>
+        <input  id="input1c" name="radioHospital" type="radio" value=1 />
+        <label for="input2c"></label>
+        <input  id="input2c" name="radioHospital" type="radio" value=2 />
+        <label for="input3c"></label>
+        <input  id="input3c" name="radioHospital" type="radio" value=3 />
+        <label for="input4c"></label>
+        <input  id="input4c" name="radioHospital" type="radio" value=4 />
+        <label for="input5c"></label>
+        <input  id="input5c" name="radioHospital" type="radio" value=5 />
+        <span id="slider3"></span>
+      </div>
+      <p>Would you recommend this hospital to your friend (1-5)</p>
+      <div class="radios" id="recommendationScore">
+        <label for="input1d"></label>
+        <input  id="input1d" name="radioRecommendation2" type="radio" value=1 />
+        <label for="input2d"></label>
+        <input  id="input2d" name="radioRecommendation2" type="radio" value=2 />
+        <label for="input3d"></label>
+        <input  id="input3d" name="radioRecommendation2" type="radio" value=3 />
+        <label for="input4d"></label>
+        <input  id="input4d" name="radioRecommendation2" type="radio" value=4 />
+        <label for="input5d"></label>
+        <input  id="input5d" name="radioRecommendation2" type="radio" value=5 />
+        <span id="slider4"></span>
+      </div>
+
+      <p>Comment:</p>
+      <textarea name="comment" id="hospitalComment" rows="4"></textarea>
 			<button class="mainBtn">OK</button>
 		</form>
 	</div>
@@ -99,7 +137,7 @@
     </div>
     <section id="one" class="active">
         <div class="plusDiv">
-            <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
+          <button id="addBtn" class="add"><i data-feather="plus-circle"></i></button>
         </div>
         <div id="examinations">
             <div class="tbl-content">
@@ -122,6 +160,13 @@
                 </table>
             </div>
         </div>
+        <div id="pollDiv">
+          <button id="pollBtn" class="mainBtn"><i data-feather="file-text">Poll</i></button>
+          <p>Poll</p>
+
+        </div>
+        
+
 </section>
 
 <section id="two">

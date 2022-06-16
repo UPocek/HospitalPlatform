@@ -28,7 +28,7 @@ public class CronFreeDayStatusService : CronJobService
                 else{
                     fd.Status = "finished";
                 }
-                await _userRepository.UpdateDoctor(doctor.Id,doctor);
+                await _userRepository.UpdateDoctorFreeDays(doctor.Id,doctor);
             }
 
         }
