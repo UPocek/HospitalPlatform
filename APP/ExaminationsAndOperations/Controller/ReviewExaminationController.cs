@@ -11,6 +11,20 @@ public class ReviewExaminationController : ControllerBase
         _reviewExaminationService = new ReviewExaminationService();
     }
 
+    [HttpGet("prescription/{id}")]
+    public async Task<List<MedicalInstruction>> GetPrescriptions(int id)
+    {
+
+        return await _reviewExaminationService.GetPrescriptions(id);
+    }
+
+
+    [HttpGet("prescription/{drug}/{id}")]
+    public async Task<Prescription> GetPrescription(string drug, int id)
+    {
+
+        return await _reviewExaminationService.GetPrescription(drug, id);
+    }
     [HttpPut("prescription/{patientId}")]
     public async Task<IActionResult> AddPerscription(int patientId, Prescription prescription)
     {

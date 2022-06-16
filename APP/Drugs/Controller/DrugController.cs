@@ -79,4 +79,12 @@ public class DrugController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("notifications")]
+    public async Task<IActionResult> CreateNotification(DrugNotification notification)
+    {
+        
+        await _drugService.CreateNotification(notification);
+        
+        return Ok(); 
+    }
 }

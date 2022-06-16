@@ -80,4 +80,11 @@ public class DrugRepository : IDrugRepository
         await drugs.UpdateOneAsync(filter, update);
     }
 
+    public async Task CreateNotification(DrugNotification notification)
+    {
+        var notifications = _database.GetCollection<DrugNotification>("Notifications");
+        await notifications.InsertOneAsync(notification);
+
+    }
+
 }

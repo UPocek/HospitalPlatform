@@ -56,9 +56,18 @@ public class ScheduleService : IScheduleService
         return await _scheduleRepository.GetAllPatientsExaminations(patientId);
     }
 
+    public async Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter)
+    {
+        return await _scheduleRepository.GetAvailableExamination(filter);
+    }
+
     public async Task SaveExamination(Examination examination)
     {
         await _scheduleRepository.InsertExamination(examination);
+    }
+    public async Task CreateExamination(Examination examination)
+    {
+        await _scheduleRepository.CreateExamination(examination);
     }
 
     public async Task<Examination> GetExamination(int id)
@@ -71,9 +80,19 @@ public class ScheduleService : IScheduleService
         await _scheduleRepository.UpdateExamination(id, examination);
     }
 
+    public async Task UpdatePatientsExamination(string id, Examination examination)
+    {
+        await _scheduleRepository.UpdatePatientsExamination(id, examination);
+    }
+
     public async Task DeleteExamination(int id)
     {
         await _scheduleRepository.DeleteExamination(id);
+    }
+
+    public async Task DeletePatientsExamination(int id)
+    {
+        await _scheduleRepository.DeletePatientsExamination(id);
     }
 
     public async Task<bool> ExaminationScheduledAtThatTime(Renovation renovation)

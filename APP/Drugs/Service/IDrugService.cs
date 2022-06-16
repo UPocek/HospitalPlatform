@@ -17,4 +17,6 @@ public interface IDrugService
     public Task UpdateDrug(string id, Drug drug);
 
     public Task DeleteDrug(string drugName);
+
+    public Task CreateNotification(DrugNotification notification);
 }

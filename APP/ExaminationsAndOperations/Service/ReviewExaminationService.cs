@@ -44,4 +44,13 @@ public class ReviewExaminationService : IReviewExaminationService
         return true;
     }
 
+
+    public async Task<List<MedicalInstruction>> GetPrescriptions(int id)
+    {
+        return await _reviewExaminationRepository.GetPrescriptions(id);
+    }
+    public async Task<Prescription> GetPrescription(string drug, int id)
+    {
+        return await _reviewExaminationRepository.GetPrescription(drug, id);
+    }
 }

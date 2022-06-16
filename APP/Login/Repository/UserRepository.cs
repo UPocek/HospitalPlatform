@@ -14,11 +14,14 @@ public class UserRepository : IUserRepository
         _database = client.GetDatabase("USI");
     }
 
-    public async Task<List<Employee>> GetAllDoctors()
+    public IActionResult GetAllDoctors()
     {
-        var collection = _database.GetCollection<Employee>("Employees");
-        return await collection.Find(e => e.Role == "doctor").ToListAsync();
-    }
+        var collection = _database.GetCollection<BsonDocument>("Employees");
+        var filter = Builders<BsonDocument>.Filter.Eq("role", "doctor");
+        var result = collection.Find(filter).ToList();
+        var dotNetObjList = result.ConvertAll(BsonTypeMapper.MapToDotNetValue);
+        return new JsonResult(dotNetObjList);
+;   }
 
     public IActionResult GetEmployee(int id)
     {

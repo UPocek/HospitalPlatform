@@ -10,6 +10,48 @@ public class ReviewExaminationRepository : IReviewExaminationRepository
         var client = new MongoClient(settings);
         _database = client.GetDatabase("USI");
     }
+    public async Task<List<MedicalInstruction>> GetPrescriptions(int id)
+    {
+
+        var patients = _database.GetCollection<Patient>("Patients");
+        Patient patient = patients.Find(e => e.Id == id).FirstOrDefault();
+        List<MedicalInstruction> medicalInstructions = new List<MedicalInstruction>();
+
+        foreach (MedicalInstruction instruction in patient.MedicalRecord.MedicalInstructions)
+        {
+            if (checkDate(instruction))
+            {
+                medicalInstructions.Add(instruction);
+            }
+        }
+
+        return medicalInstructions;
+    }
+
+    public bool checkDate(MedicalInstruction instruction)
+    {
+        var startDate = DateTime.Parse(instruction.StartDate);
+        var endDate = DateTime.Parse(instruction.EndtDate);
+        DateTime today = DateTime.Today;
+
+        if (startDate <= today && today <= endDate)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    public async Task<Prescription> GetPrescription(string drug, int id)
+    {
+
+        var patients = _database.GetCollection<Patient>("Patients");
+        Patient patient = patients.Find(e => e.Id == id).FirstOrDefault();
+        var prescriptions = patient.MedicalRecord.Prescriptions;
+
+
+
+        return prescriptions.Find(item => item.DrugName == drug);
+    }
 
     public async Task AddPerscription(int id, Prescription prescription)
     {

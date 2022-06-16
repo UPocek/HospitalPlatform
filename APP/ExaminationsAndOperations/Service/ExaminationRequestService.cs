@@ -23,5 +23,8 @@ public class ExaminationRequestService : IExaminationRequestService
         await examinationRequestRepository.DeclineExaminationRequest(id);
     }
     
+    public async Task CreateRequest(ExaminationRequest request){
+        await examinationRequestRepository.CreateRequest(request);
+    }
 
 }
