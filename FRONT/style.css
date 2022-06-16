@@ -2731,6 +2731,7 @@ td button {
     #createAdvancedExamination,
     #doctors,
     #equipment,
+    #freeDaysRequests
     #drugs,
     #ingredients {
         width: 94%;

@@ -27,8 +27,10 @@ function setUpFunctionality() {
     displayExaminations();
     document.getElementById('scheduleDate').value = (new Date()).toDateString;
     document.getElementById('scheduleDateOption').value = new Date().toISOString().split('T')[0];
+    document.getElementById('scheduleDateRequest').value = (new Date()).toDateString;
     searchSchedule();
     setUpDrugsForReview();
+    displayFreeDays();
 }
 
 //function that dispays examination table of examinations for currently logged doctor
@@ -1197,3 +1199,85 @@ function approveDrug(key) {
     sendMessageRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     sendMessageRequest.send();
 }
+//function that dispays freedays table for currently logged doctor
+function displayFreeDays() {
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                let freeDays = JSON.parse(this.responseText);
+                let table = document.getElementById('freeDayTable');
+                table.innerHTML = "";
+                for (let freeDay of freeDays) {
+                    let newRow = document.createElement("tr");
+
+                    //creating row for one freeday
+                    let startDate = document.createElement("td");
+                    startDate.innerText = freeDay["startDay"];
+                    let duration = document.createElement("td");
+                    duration.innerText = freeDay["duration"];
+                    let status = document.createElement("td");
+                    status.innerText = freeDay["status"];
+
+                    newRow.appendChild(startDate);
+                    newRow.appendChild(duration);
+                    newRow.appendChild(status);              
+                   
+                    table.appendChild(newRow);
+                    feather.replace();
+                }
+            }
+        }
+    }
+    request.open('GET', url + 'api/freedays/' + userId);
+    request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    request.send();
+}
+
+function addFreeDays() {
+    let popUp = document.getElementById("freeDaysPopUp");
+    popUp.classList.remove("off");
+    main.classList.add("hideMain");
+
+    document.getElementById("reason").value = "";
+    document.getElementById("urgentRequest").checked = false;
+
+    let form = document.getElementById("freeDaysForm");
+
+    form.addEventListener('submit', function (e) {
+        submitRequestForm(e)
+    }); 
+}
+
+function submitRequestForm(e){
+    let popUp = document.getElementById("freeDaysPopUp");
+    popUp.classList.add("off");
+    main.classList.remove("hideMain");
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let selectedDate = document.getElementById("scheduleDateRequest").value.split('T')[0];
+    let selectedDuration = document.getElementById("freeDaysDuration").value;
+    let reason = document.getElementById("reason").value;
+    let isUrgent = document.getElementById("urgentRequest").checked ? true : false;
+    let postRequest = new XMLHttpRequest();
+    postRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                alert("Free days request sucessfuly created");
+                displayFreeDays();
+            } else {
+                alert("Error: Entered request is invalid");
+            }
+        }
+    };
+    document.getElementById("freeDaysDuration").value = ""
+    document.getElementById("reason").value = "";
+    postRequest.open('POST', url + 'api/freedays/request');
+    postRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+    postRequest.send(JSON.stringify({"startDay": selectedDate, "duration": selectedDuration, "reason": reason, "doctorId": userId, "urgent": isUrgent}));
+}
+var createBtn = document.getElementById("addFreeDaysBtn");
+
+createBtn.addEventListener("click", addFreeDays);
