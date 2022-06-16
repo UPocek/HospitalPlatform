@@ -912,7 +912,7 @@ function declineRequest(key) {
 
         }
     }
-    putRequest.open('PUT', url + 'api/examinationRequest/accept/' + key);
+    putRequest.open('PUT', url + 'api/examinationRequest/decline/' + key);
     putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     putRequest.send();
 }

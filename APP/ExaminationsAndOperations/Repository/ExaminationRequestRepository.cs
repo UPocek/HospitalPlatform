@@ -30,15 +30,15 @@ public class ExaminationRequestRepository : IExaminationRequestRepository
         var examination = examinationRequest.Examination;
 
 
-        var examinations = _database.GetCollection<Examination>("Examinations");
+        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
 
         if (examinationRequest.Status == 0)
         {
-            examinations.DeleteOne(e => e.Id == examination.Id);
+            await examinations.DeleteOneAsync(e => e.Id == examination.Id);
         }
         else
         {
-            examinations.ReplaceOne(e => e.Id == examination.Id, examination);
+            await examinations.ReplaceOneAsync(e => e.Id == examination.Id, examination);
         }
         await requests.DeleteOneAsync(e => e._Id == id);
     }
