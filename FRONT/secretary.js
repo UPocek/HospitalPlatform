@@ -545,7 +545,34 @@ function deleteFreeDaysRequest(key,mail){
     let prompt = document.getElementById('freeDaysReasonPrompt');
     prompt.classList.remove('off');
     main.classList.add('hideMain');
-    let request = new XMLHttpRequest();
+    let form = document.getElementById('freeDaysForm');
+    form.addEventListener('submit', function (e) {
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+
+        let whyContainer = document.getElementById('freeDaysDeclineReason');
+        let request = new XMLHttpRequest();
+
+        request.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert('Selected request was successfully declined');
+                    setUpPatients();
+                }
+            }
+        }
+        if (whyContainer.innerText != ''){
+            request.open('DELETE', url + 'api/freedays/requests/' + key + '/' + mail + '/' + whyContainer.innerText)
+            request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+            request.send();
+        }
+        else{
+            alert("Error: Reasoning cannot be empty!!");
+        }
+        
+
+
+    });
 }
 
 function deletePatient(key) {

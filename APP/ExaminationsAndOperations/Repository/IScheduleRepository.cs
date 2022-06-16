@@ -10,11 +10,9 @@ public interface IScheduleRepository
 
     public Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter);
 
-
     public Task DeleteExamination(int id);
 
     public Task DeletePatientsExamination(int id);
-
 
     public Task InsertExamination(Examination examination);
 

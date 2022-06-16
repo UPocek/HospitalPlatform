@@ -4,6 +4,7 @@ public class CronFreeDayRequestService : CronJobService
     private IScheduleService _scheduleService;
     private IFreeDaysRepository _freeDaysRepository;
     private IValidateExaminationService _validateExaminationService;
+    
     public CronFreeDayRequestService(IScheduleConfig<CronFreeDayRequestService> config)
         : base(config.CronExpression, config.TimeZoneInfo)
     {
