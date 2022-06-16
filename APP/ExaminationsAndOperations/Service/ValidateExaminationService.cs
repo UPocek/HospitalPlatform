@@ -110,7 +110,7 @@ public class ValidateExaminationService : IValidateExaminationService
         Employee doctor = await _userRepository.GetDoctor(id);
 
         foreach(FreeDay fd in doctor.FreeDays){
-            if (fd.Status == ""){
+            if (fd.Status == "active"){
                 return false;
             }
         }
