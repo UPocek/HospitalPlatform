@@ -190,7 +190,7 @@ public class ScheduleService : IScheduleService
 
     }
 
-    public void SendTermNotificationEmailToPatient(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
+    public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
     {
         var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
@@ -212,15 +212,15 @@ public class ScheduleService : IScheduleService
             IsBodyHtml = true,
         };
 
-        mailMessageDoctor.To.Add("teamnineMedical@outlook.com");
+        mailMessageDoctor.To.Add("teamNineMedical@outlook.com");
         smptClient.Send(mailMessageDoctor);
     }
 
-    public void SendTermNotificationEmailToDoctor(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
+    public void SendTermNotificationEmailToPatient(Patient patient, Employee employee, string oldDateAndTime, string newDateAndTime, int? examId)
     {
         var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
         {
-            Credentials = new NetworkCredential("teamNineMedical@outlook.com", "teamnine"),
+            Credentials = new NetworkCredential("teamNineMedical@outlook.com", "teamnine123"),
             EnableSsl = true,
         };
 
@@ -232,13 +232,13 @@ public class ScheduleService : IScheduleService
 
         var mailMessagePatient = new MailMessage
         {
-            From = new MailAddress("smtp-mail.outlook.com"),
+            From = new MailAddress("teamNineMedical@outlook.com"),
             Subject = "TeamNine Medical Team - IMPORTANT - examination moved",
             Body = messagePatient,
             IsBodyHtml = true,
         };
 
-        mailMessagePatient.To.Add("teamnineMedical@outlook.com");
+        mailMessagePatient.To.Add("teamNineMedical@outlook.com");
         smptClient.Send(mailMessagePatient);
     }
 
@@ -256,7 +256,7 @@ public class ScheduleService : IScheduleService
             roomType = "operation room";
         }
 
-        if (await _validateExaminationService.IsValidPatient(newExamination.PatinetId))
+        if (!await _validateExaminationService.IsValidPatient(newExamination.PatinetId))
         {
             return new List<Examination>();
         }

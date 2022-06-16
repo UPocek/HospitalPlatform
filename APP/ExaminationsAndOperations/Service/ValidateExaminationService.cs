@@ -87,23 +87,20 @@ public class ValidateExaminationService : IValidateExaminationService
         return false;
     }
 
-    public async Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId)
+    public async Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination)
     {
         var patientsExaminations = await _scheduleRepository.GetAllPatientsExaminations(id);
 
         foreach (Examination examination in patientsExaminations)
         {
-            if (examinationId != examination.Id)
-            {
-                var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
-                if (answer) return false;
-            }
+            var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
+            if (answer) return false;
         }
 
         return true;
     }
 
-    public async Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId)
+    public async Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination)
     {
         var doctorsExaminations = await _scheduleRepository.GetAllDoctorsExaminations(id);
 
@@ -116,11 +113,8 @@ public class ValidateExaminationService : IValidateExaminationService
         }
         foreach (Examination examination in doctorsExaminations)
         {
-            if (examinationId != examination.Id)
-            {
-                var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
-                if (answer) return false;
-            }
+            var answer = IsTimeInBetween(dateAndTimeOfExamination, durationOfExamination, examination);
+            if (answer) return false;
         }
 
         return true;
@@ -159,8 +153,8 @@ public class ValidateExaminationService : IValidateExaminationService
         var isValidPatient = await IsValidPatient(examination.PatinetId);
         var isValidRoom = await IsRoomValid(examination.RoomName);
         var isRoomInRenovation = await IsRoomInRenovation(examination.RoomName, examination.DateAndTimeOfExamination);
-        var isPatientFree = await IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int)examination.Id);
-        var isDoctorFree = await IsDoctorFree(examination.DoctorId, examination.DateAndTimeOfExamination, examination.DurationOfExamination, (int)examination.Id);
+        var isPatientFree = await IsPatientFree(examination.PatinetId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
+        var isDoctorFree = await IsDoctorFree(examination.DoctorId, examination.DateAndTimeOfExamination, examination.DurationOfExamination);
 
         return (isValidRoom && isValidPatient && !isRoomInRenovation && isPatientFree && isDoctorFree);
     }
