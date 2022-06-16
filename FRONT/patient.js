@@ -70,7 +70,7 @@ function setUpExaminations() {
         }
     }
 
-    request.open('GET', url + 'api/examination/patient/' + userId);
+    request.open('GET', url + 'api/schedule/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -144,7 +144,7 @@ function setUpSearchExaminations(myFilter) {
         }
     }
 
-    request.open('GET', url + 'api/examination/patient/' + userId);
+    request.open('GET', url + 'api/schedule/patient/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -188,7 +188,7 @@ function createExamination(doctorId) {
                 }
             }
         };
-        postRequest.open('POST', url + 'api/examination/patient');
+        postRequest.open('POST', url + 'api/schedule/patient');
         postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         postRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -252,7 +252,7 @@ advancedForm.addEventListener('submit', function (e) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/examination/filter');
+    postRequest.open('POST', url + 'api/schedule/filter');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'dueDate': dueDate.toLocaleString(), 'doctor': parseInt(doctor), 'patient': parseInt(user.id), 'timeFrom': intervalBegin.toString(), 'timeTo': intervalEnd.toString(), 'priority': priority }));
@@ -276,7 +276,7 @@ function createAdvancedExamination(examination) {
             }
         }
     };
-    postRequest.open('POST', url + 'api/examination/patient');
+    postRequest.open('POST', url + 'api/schedule/patient');
     postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     postRequest.send(JSON.stringify({ 'done': false, 'date': examination['date'], 'duration': 15, 'room': '', 'patient': user.id, 'doctor': examination['doctor'], 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -306,7 +306,7 @@ function editExamination(editId) {
             }
         }
     }
-    request.open('GET', url + 'api/examination/' + editId);
+    request.open('GET', url + 'api/schedule/' + editId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -332,7 +332,7 @@ function editExamination(editId) {
                 }
             }
         };
-        putRequest.open('PUT', url + 'api/examination/patient/' + editId);
+        putRequest.open('PUT', url + 'api/schedule/patient/' + editId);
         putRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
         putRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         putRequest.send(JSON.stringify({ 'done': false, 'date': examinationDate, 'duration': 15, 'room': '', 'patient': userId, 'doctor': doctor, 'urgent': false, 'type': 'visit', 'anamnesis': '' }));
@@ -355,7 +355,7 @@ function deleteExamination(key) {
         }
     }
 
-    deleteRequest.open('DELETE', url + 'api/examination/patient/' + key);
+    deleteRequest.open('DELETE', url + 'api/schedule/patient/' + key);
     deleteRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     deleteRequest.send();
 }
@@ -441,11 +441,22 @@ function setUpDoctors(myFilter) {
                     });
                     one.appendChild(createBtn);
 
+                    let two = document.createElement('td');
+                    let pollBtn = document.createElement('button');
+                    pollBtn.innerHTML = '<i data-feather="file-text"></i>';
+                    pollBtn.classList.add('updateBtn');
+                    pollBtn.setAttribute('key', doctor['id']);
+                    pollBtn.addEventListener('click', function (e) {
+                        openPoll(this.getAttribute('key'));
+                    });
+                    two.appendChild(pollBtn);
+
                     newRow.appendChild(cName)
                     newRow.appendChild(cSpecialization);
                     newRow.appendChild(cMail);
                     newRow.appendChild(cScore);
                     newRow.appendChild(one);
+                    newRow.appendChild(two);
                     table.appendChild(newRow);
                     feather.replace();
                 }
@@ -456,6 +467,94 @@ function setUpDoctors(myFilter) {
     request.open('GET', url + 'api/user/doctors');
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
+}
+
+
+function openPoll(id){
+    let prompt = document.getElementById('doctorPollPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('doctorPoll');
+    
+    form.addEventListener('submit', function (e) {  
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        var doctorScore = getRadioCheckedValue('radioDoctor', 3);
+        var recommendationScore = getRadioCheckedValue('radioRecommendation1', 3);    
+        var comment = document.getElementById('doctorComment').value;
+
+        let postRequest = new XMLHttpRequest();
+    
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                        alert('Poll sucessfuly submited');
+                    } else {
+                        alert('Error: Entered poll informations are invalid');
+                    }
+                }
+        };
+        postRequest.open('POST', 'https://localhost:7291/api/poll');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ 'who': parseInt(id), 'score': parseInt(doctorScore), 'recommendation':parseInt(recommendationScore), 'comment': comment}));
+    })
+}
+
+function openMainPoll(id){
+    let prompt = document.getElementById('mainPollPrompt');
+    prompt.classList.remove('off');
+    main.classList.add('hideMain');
+    let form = document.getElementById('mainPoll');
+
+    form.addEventListener('submit', function (e) {  
+        prompt.classList.add('off');
+        main.classList.remove('hideMain');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var hospitalScore = getRadioCheckedValue('radioHospital', 4);
+        var recommendationScore = getRadioCheckedValue('radioRecommendation2', 4); 
+        var comment = document.getElementById('hospitalComment').value;
+
+        let postRequest = new XMLHttpRequest();
+        postRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                console.log("aaa");
+                if (this.status == 200) {
+                        alert('Poll sucessfuly submited');
+                    } else {
+                        alert('Error: Entered poll informations are invalid');
+                    }
+                }
+        };
+        postRequest.open('POST', 'https://localhost:7291/api/poll');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ 'who': parseInt(id), 'score': parseInt(hospitalScore), 'recommendation': parseInt(recommendationScore), 'comment': comment}));
+    })
+}
+
+var mainPollBtn = document.getElementById('pollBtn');
+mainPollBtn.addEventListener('click', function (e) {
+    openMainPoll(0);
+});
+
+function getRadioCheckedValue(radio_name, n)
+{
+   var oRadio = document.forms[n].elements[radio_name];
+
+   for(var i = 0; i < oRadio.length; i++)
+   {
+      if(oRadio[i].checked)
+      {
+         return oRadio[i].value;
+      }
+   }
+
+   return '';
 }
 
 function setUpMedicalRecord() {
@@ -546,7 +645,7 @@ function setUpDrugs() {
         }
     }
 
-    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/' + userId);
+    request.open('GET', 'https://localhost:7291/api/reviewexamination/prescription/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 }
@@ -577,7 +676,7 @@ function drugInstruction(drug, endDate){
                 }
             }
         }
-    request.open('GET', 'https://localhost:7291/api/medicalrecord/prescription/'+ drug + '/' + userId);
+    request.open('GET', 'https://localhost:7291/api/reviewexamination/prescription/'+ drug + '/' + userId);
     request.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
     request.send();
 
@@ -604,10 +703,10 @@ function drugInstruction(drug, endDate){
                     }
                 }
             };
-            postRequest.open('POST', 'https://localhost:7291/api/drug/notifications');
-            postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-            postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
-            postRequest.send(JSON.stringify({ 'drug': drug, 'time': time , 'patient': user.email, 'endDate': endDate}));
+        postRequest.open('POST', 'https://localhost:7291/api/drug/notifications');
+        postRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        postRequest.setRequestHeader('Authorization', 'Bearer ' + jwtoken);
+        postRequest.send(JSON.stringify({ 'drug': drug, 'time': time , 'patient': user.email, 'endDate': endDate}));
       
 
      });

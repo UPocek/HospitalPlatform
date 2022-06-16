@@ -109,7 +109,7 @@ body {
     font-size: 28px;
     font-weight: 100;
     letter-spacing: 0.5px;
-    margin: 20px 0 30px;
+    margin: 2px 0 3px;
 }
 
 #first span {
@@ -2037,6 +2037,8 @@ tr:nth-child(even) {
     min-width: 10%;
 } */
 
+
+
 .advancedBtn {
     width: 48%;
     margin-left: 26%;
@@ -2090,6 +2092,12 @@ input[type="radio" i] {
     border-radius: 10px;
     width: 80%;
     margin: auto;
+}
+
+#pollDiv{
+    text-align: center;
+    width: 80%;
+    margin: auto; 
 }
 
 #blockedPatients{
@@ -2223,6 +2231,11 @@ td button {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+}
+
+.colDir2 {
+    display: flex;
+    flex-direction: column;
 }
 
 .off {
@@ -2448,6 +2461,94 @@ td button {
     margin: 10vh auto;
 }
 
+
+#doctorComment{
+    border: 1px solid var(--accentColor2);
+    border-radius: 10px;
+}
+.radios{
+    position:relative;
+    width:50%;
+    margin:0 auto;
+  }
+  input[type="radio"]{
+    position:absolute;
+    right:1000%;
+  }
+.radios label{
+    float:left;
+    width:15%; padding-bottom:15%;
+    margin:0 2.5%;
+    border: 1px solid var(--accentColor2);
+    background: var(--accentColor1);
+    background: -webkit-linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    background: linear-gradient(to right, var(--accentColor2), var(--accentColor1));
+    color: var(--backgroundColor);
+    border-radius:50%;
+    cursor:pointer;
+  }
+  #slider1, #slider2, #slider3, #slider4{
+    position:absolute;
+    left:0%; top:0;
+    width:10%; padding-bottom:10%;
+    margin:2.5% 0 0 5%;
+    background:#fff;
+    transition:transform 1s;
+    border-radius:50%;
+    animation-timing-function: ease-in-out;
+    animation-duration:.3s;
+    animation-fill-mode: forwards;
+    transition: 0.2s left .05s ease-in-out;
+  }
+  #input1a:checked  ~ #slider1{ animation-name: input1a; left:0; }
+  #input2a:checked  ~ #slider1{ animation-name: input2a; left:20%; }
+  #input3a:checked  ~ #slider1{ animation-name: input3a; left:40%; }
+  #input4a:checked  ~ #slider1{ animation-name: input4a; left:60%; }
+  #input5a:checked  ~ #slider1{ animation-name: input5a; left:80%; }
+
+  #input1b:checked  ~ #slider2{ animation-name: input1b; left:0; }
+  #input2b:checked  ~ #slider2{ animation-name: input2b; left:20%; }
+  #input3b:checked  ~ #slider2{ animation-name: input3b; left:40%; }
+  #input4b:checked  ~ #slider2{ animation-name: input4b; left:60%; }
+  #input5b:checked  ~ #slider2{ animation-name: input5b; left:80%; }
+
+  #input1c:checked  ~ #slider3{ animation-name: input1c; left:0; }
+  #input2c:checked  ~ #slider3{ animation-name: input2c; left:20%; }
+  #input3c:checked  ~ #slider3{ animation-name: input3c; left:40%; }
+  #input4c:checked  ~ #slider3{ animation-name: input4c; left:60%; }
+  #input5c:checked  ~ #slider3{ animation-name: input5c; left:80%; }
+
+  #input1d:checked  ~ #slider4{ animation-name: input1d; left:0; }
+  #input2d:checked  ~ #slider4{ animation-name: input2d; left:20%; }
+  #input3d:checked  ~ #slider4{ animation-name: input3d; left:40%; }
+  #input4d:checked  ~ #slider4{ animation-name: input4d; left:60%; }
+  #input5d:checked  ~ #slider4{ animation-name: input5d; left:80%; }
+  
+  @keyframes input1a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4a{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5a{ 30%, 70% { transform:scale(0.5); } }
+   
+  @keyframes input1b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4b{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5b{ 30%, 70% { transform:scale(0.5); } } 
+ 
+  @keyframes input1c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4c{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5c{ 30%, 70% { transform:scale(0.5); } }
+   
+  @keyframes input1d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input2d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input3d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input4d{ 30%, 70% { transform:scale(0.5); } }
+  @keyframes input5d{ 30%, 70% { transform:scale(0.5); } } 
+
+
 /* Doctor */
 
 /* All */
@@ -2618,6 +2719,7 @@ td button {
     #createAdvancedExamination,
     #doctors,
     #patients,
+    #pollDiv,
     #blockedPatients,
     #freeDaysRequests,
     #equipment,
@@ -2737,6 +2839,7 @@ td button {
     #advancedExaminations,
     #createAdvancedExamination,
     #doctors,
+    #pollDiv,
     #equipment,
     #freeDaysRequests
     #drugs,
@@ -2822,6 +2925,10 @@ td button {
         display: flex;
         flex-direction: column;
         gap: 1.8rem;
+    }
+    .colDir2 {
+        display: flex;
+        flex-direction: column;
     }
 
     #polls {

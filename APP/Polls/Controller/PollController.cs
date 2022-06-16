@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PollController
+public class PollController : ControllerBase
 {
     private IPollService _pollService;
 
@@ -22,6 +22,13 @@ public class PollController
     public async Task<List<PollForDoctors>> GetDoctorPolls()
     {
         return await _pollService.GetDoctorPolls();
+    }
+
+    [HttpPost("")]
+    public async Task<IActionResult> PostPoll(Poll poll)
+    {
+        await _pollService.PostPoll(poll);
+        return Ok();
     }
 
 }

@@ -50,6 +50,12 @@ public class ScheduleController : ControllerBase
         return await _scheduleService.GetAllPatientsExaminations(patientId);
     }
 
+    [HttpPost("filter")]
+    public async Task<List<Examination>> GetAvailableExamination([FromBody] ExaminationFilter filter)
+    {
+        return await _scheduleService.GetAvailableExamination(filter);
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateExamination(int id, Examination examination)
     {
@@ -59,6 +65,13 @@ public class ScheduleController : ControllerBase
         }
 
         await _scheduleService.UpdateExamination(id, examination);
+
+        return Ok();
+    }
+    [HttpPut("patient/{id}")]
+    public async Task<IActionResult> UpdatePatientsExamination(string id, Examination examination)
+    {
+        await _scheduleService.UpdatePatientsExamination(id, examination);
 
         return Ok();
     }
@@ -108,6 +121,15 @@ public class ScheduleController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("patient")]
+    public async Task<IActionResult> CreatePatientsExamination(Examination examination)
+    {
+
+        await _scheduleService.CreateExamination(examination);
+
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExamination(int id)
     {
@@ -116,4 +138,12 @@ public class ScheduleController : ControllerBase
         return Ok();
     }
 
+    
+    [HttpDelete("patient/{id}")]
+    public async Task<IActionResult>DeletePatientsExamination(int id)
+    {
+        await _scheduleService.DeletePatientsExamination(id);
+        return Ok();
+
+    }
 }
