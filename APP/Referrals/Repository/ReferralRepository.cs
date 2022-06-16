@@ -18,10 +18,10 @@ public class ReferralRepository : IReferralRepository
         await patients.UpdateOneAsync(p => p.Id == id, updatePatients);
     }
 
-    
-    public async void DeletePatientReferral(int referralid, Examination newExamination)
+
+    public async Task DeletePatientReferral(int referralid, Examination newExamination)
     {
-        Patient updatedPatient = await _database.GetCollection<Patient>("Patients").Find( item=>item.Id == newExamination.PatinetId).FirstOrDefaultAsync();
+        Patient updatedPatient = await _database.GetCollection<Patient>("Patients").Find(item => item.Id == newExamination.PatinetId).FirstOrDefaultAsync();
 
         foreach (Referral patientReferral in updatedPatient.MedicalRecord.Referrals)
         {
@@ -35,6 +35,6 @@ public class ReferralRepository : IReferralRepository
         await _database.GetCollection<Patient>("Patients").ReplaceOneAsync(p => p.Id == updatedPatient.Id, updatedPatient);
     }
 
-    
+
 
 }

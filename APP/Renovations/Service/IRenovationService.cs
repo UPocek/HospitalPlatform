@@ -9,4 +9,6 @@ public interface IRenovationService
     public Task StartDevideRenovation(Renovation renovation);
 
     public Task StartMergeRenovation(Renovation renovation);
+
+    public Task<List<Renovation>> GetAllRenovations();
 }

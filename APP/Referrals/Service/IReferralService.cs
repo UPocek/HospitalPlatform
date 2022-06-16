@@ -4,4 +4,6 @@ public interface IReferralService
 
     public Task<int> FindReferralId(int patientId);
 
+    public Task DeletePatientReferral(int id, Examination newExamination);
+
 }

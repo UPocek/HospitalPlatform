@@ -208,6 +208,29 @@
             </form>
         </div>
 
+        <div id="freeDaysPopUp" class="form-container sign-in-container off prompt">
+            <form id="freeDaysForm" class="colDir myForm">
+                <h1 id="freeDaysFormId" >Request free days</h1>
+                <div class="formDiv">
+                    <label for="scheduleDateRequest">Date:</label>
+                    <input type="date" id="scheduleDateRequest">
+                </div>
+                <div class="formDiv">
+                    <label for="freeDaysDuration">Duration:</label>
+                    <input type="number" id="freeDaysDuration" min='1'>
+                </div>
+                <div class="urgentDiv">
+                    <label for="urgentRequest"> Urgent </label>
+                    <input type="checkbox" id="urgentRequest" value="urgent">
+                </div>
+                <div class="formDiv">
+                    <label for="reason"> Reason </label>
+                    <input type='text'  id="reason"></textarea>
+                </div>
+                <button class="mainBtn">Request</button>
+            </form>
+	    </div>
+
         <main class = "myMain">
             <div id="hi">
                 <h1>Welcome back &nbsp; </h1>
@@ -273,24 +296,42 @@
                 <div id="drugs">
                     <div class="tbl-content">
                         <table cellpadding="0" cellspacing="0" border="0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Ingredients</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="drugTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Ingredients</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="drugTable">
 
-                        </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </section>
             
             <section id="four">
+                <div class="plusDiv">
+                            <button id="addFreeDaysBtn" class="add"><i data-feather="plus-circle"></i></button>
+                </div>
+                <div id="freeDaysRequests">
+                        <div class="tbl-content">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Begging</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="freeDayTable">
 
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
             </section>
         </main>
 

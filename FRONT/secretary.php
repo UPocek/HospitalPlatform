@@ -155,6 +155,28 @@
       </form>
     </div>
 
+
+    <div id="freeDaysReasonPrompt" class = "prompt off">
+      <form id="freeDaysForm" class="colDir myForm">
+        <h1 id="examinationFormId" >Please enter the reasoning</h1>
+        <div id = "reasonTextArea">
+            <textarea id="freeDaysDeclineReason"> </textarea>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
+
+    <div id="freeDaysReasonPrompt2" class = "prompt off">
+      <form id="freeDaysForm2" class="colDir myForm">
+        <h1 id="examinationFormId" >Doctor reasoning</h1>
+        <div id = "reasonTextArea">
+            <textarea readonly id="freeDaysReason"> </textarea>
+        </div>
+        <button class="mainBtn">OK</button>
+      </form>
+    </div>
+
     <main class='myMain'>
 
     <div id="hi">
@@ -189,10 +211,7 @@
           </table>
         </div>
       </div>
-    </section>
-
-    <section id="two">
-      <div id="patients">
+      <div id="blockedPatients">
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
           <thead>
@@ -215,7 +234,7 @@
       </div>
     </section>
 
-    <section id="three">
+    <section id="two">
       <div id="examinations">
         <div class="tbl-content">
           <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
@@ -255,12 +274,10 @@
               </tbody>
           </table>
       </div>
-    </div>
-
     </section>
 
-    <section id="four">
-      <div id="expendedDynamicEquipment" class = "off">
+    <section id="three">
+    <div id="expendedDynamicEquipment" class = "off">
         <div class="tbl-content">
           <table  cellpadding="0" cellspacing="0" border="0">
               <thead>
@@ -286,6 +303,29 @@
               </thead>
               <tbody id="dynamicEquipmentTransferTable">
                   <!-- this is where data from api comes -->
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    </section>
+
+    <section id="four">
+    <div id="freeDaysRequests">
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0" class="patientTable">
+              <thead>
+                <tr>
+                  <th>Doctor</th>
+                  <th>First name</th>
+                  <th>Last name</th>
+                  <th>Start Date</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody id="freeDaysRequestsTable">
+                  
               </tbody>
           </table>
         </div>

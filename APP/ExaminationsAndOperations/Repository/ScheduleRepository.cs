@@ -1,10 +1,10 @@
 using MongoDB.Driver;
 
-public class ExaminationRepository : IExaminationRepository
+public class ScheduleRepository : IScheduleRepository
 {
     private IMongoDatabase _database;
 
-    public ExaminationRepository()
+    public ScheduleRepository()
     {
         var settings = MongoClientSettings.FromConnectionString("mongodb+srv://admin:admin@cluster0.ctjt6.mongodb.net/USI?retryWrites=true&w=majority");
         var client = new MongoClient(settings);
@@ -94,7 +94,7 @@ public class ExaminationRepository : IExaminationRepository
         await examinations.FindOneAndReplaceAsync(e => e.Id == id, examination);
     }
 
-    public async Task UpdatePatientsExamination(string id,Examination examination)
+    public async Task UpdatePatientsExamination(string id, Examination examination)
     {
         var examinations = _database.GetCollection<Examination>("MedicalExaminations");
         DateTime examinationBegin = DateTime.Parse(examination.DateAndTimeOfExamination);
@@ -205,33 +205,8 @@ public class ExaminationRepository : IExaminationRepository
         await examinations.DeleteOneAsync(e => e.Id == id);
     }
 
-    public async Task DeletePatientsExamination(int id)
+    public async Task<List<Examination>> GetExaminationsAfterNow(Examination examination)
     {
-        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
-
-        Examination examination = examinations.Find(item => item.Id == id).FirstOrDefault();
-        var patients = _database.GetCollection<Patient>("Patients");
-        Patient patient = patients.Find(p => p.Id == examination.PatinetId).FirstOrDefault();
-
-        var isTroll = TrollCheck(patient, "deleted/updated", 5);
-        if(!isTroll){
-            return;
-        }
-
-        if(isForRequest(examination)){
-            ExaminationRequest request = new ExaminationRequest();
-            request.Examination = examination;
-            request.Status = 0;
-            await CreateRequest(request);
-            return;
-        }
-        await examinations.DeleteOneAsync(e => e.Id == id);
-        UpdateExaminationHistory("deleted", patients, patient.Id);
-        
-    }
-
-    public async Task<List<Examination>> GetExaminationsAfterNow(Examination examination){
-
         var dateFilter = Builders<Examination>.Filter.Gt(e => e.DateAndTimeOfExamination, DateTime.Now.ToString("yyyy-MM-ddTHH:mm"));
         var roomFilter = Builders<Examination>.Filter.Eq(e => e.RoomName, examination.RoomName);
         var doctorFilter = Builders<Examination>.Filter.Eq(e => e.DoctorId, examination.DoctorId);
@@ -242,22 +217,55 @@ public class ExaminationRepository : IExaminationRepository
         return await _database.GetCollection<Examination>("MedicalExaminations").Find(filter).SortBy(e => e.DateAndTimeOfExamination).ToListAsync();
     }
 
-    private bool TrollCheck(Patient patient, String type, int n){
+    public async Task DeletePatientsExamination(int id)
+    {
+        var examinations = _database.GetCollection<Examination>("MedicalExaminations");
+
+        Examination examination = examinations.Find(item => item.Id == id).FirstOrDefault();
+        var patients = _database.GetCollection<Patient>("Patients");
+        Patient patient = patients.Find(p => p.Id == examination.PatinetId).FirstOrDefault();
+
+        var isTroll = TrollCheck(patient, "deleted/updated", 5);
+        if (!isTroll)
+        {
+            return;
+        }
+
+        if (isForRequest(examination))
+        {
+            ExaminationRequest request = new ExaminationRequest();
+            request.Examination = examination;
+            request.Status = 0;
+            await CreateRequest(request);
+            return;
+        }
+        await examinations.DeleteOneAsync(e => e.Id == id);
+        UpdateExaminationHistory("deleted", patients, patient.Id);
+
+    }
+
+
+    private bool TrollCheck(Patient patient, String type, int n)
+    {
         var patients = _database.GetCollection<Patient>("Patients");
         DateTime checkDate = DateTime.Today.AddDays(-30);
         int counter = 0;
-        foreach(var entry in patient.ExaminationHistory){
+        foreach (var entry in patient.ExaminationHistory)
+        {
             DateTime entryDate = DateTime.Parse(entry.Date);
-            if (entryDate > checkDate && type.Contains(entry.Type)){
+            if (entryDate > checkDate && type.Contains(entry.Type))
+            {
                 counter++;
             }
-            if (entryDate < checkDate){
+            if (entryDate < checkDate)
+            {
                 var update = Builders<Patient>.Update.PopFirst("examinationHistory");
                 patients.UpdateOne(p => p.Id == patient.Id, update);
             }
         }
 
-        if (counter>n){
+        if (counter > n)
+        {
             var block = Builders<Patient>.Update.Set("active", "2");
             patients.UpdateOne(p => p.Id == patient.Id, block);
             return false;
@@ -265,7 +273,8 @@ public class ExaminationRepository : IExaminationRepository
         return true;
     }
 
-    private bool isForRequest(Examination oldExaminationData){
+    private bool isForRequest(Examination oldExaminationData)
+    {
         DateTime dt = DateTime.Today;
         DateTime dtOfExamination = DateTime.Parse(oldExaminationData.DateAndTimeOfExamination);
         return dt.AddDays(2) >= dtOfExamination;
@@ -277,7 +286,8 @@ public class ExaminationRepository : IExaminationRepository
         await requests.InsertOneAsync(request);
     }
 
-    private void UpdateExaminationHistory(string type, IMongoCollection<Patient> patients, int id){
+    private void UpdateExaminationHistory(string type, IMongoCollection<Patient> patients, int id)
+    {
         ExaminationHistoryEntry newEntry = new ExaminationHistoryEntry();
         newEntry.Date = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
         newEntry.Type = type;

@@ -17,6 +17,11 @@ public class RoomService : IRoomService
         return await _roomRepository.GetRoomByName(roomName);
     }
 
+    public async Task<Room> GetRoomByType(String type)
+    {
+        return await _roomRepository.GetRoomByType(type);
+    }
+
     public async Task UpdateRoom(string id, Room room)
     {
         await _roomRepository.UpdateRoomInformation(id, room);
@@ -32,7 +37,8 @@ public class RoomService : IRoomService
         await _roomRepository.InsertRoom(room);
     }
 
-    public async Task UpdateRoom(Room room){
+    public async Task UpdateRoom(Room room)
+    {
         await _roomRepository.UpdateRoom(room);
     }
 

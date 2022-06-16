@@ -1,4 +1,4 @@
-public interface IExaminationService
+public interface IScheduleService
 {
     public Task<List<Examination>> GetAllExaminations();
 
@@ -8,7 +8,7 @@ public interface IExaminationService
 
     public Task<List<Examination>> GetAllPatientsExaminations(int patientId);
 
-    public  Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter);
+    public Task<List<Examination>> GetAvailableExamination(ExaminationFilter filter);
 
 
     public Task SaveExamination(Examination examination);
@@ -23,19 +23,6 @@ public interface IExaminationService
 
     public Task DeletePatientsExamination(int id);
 
-    public Task<bool> IsNewExaminationValid(Examination examination);
-
-    public Task<bool> IsUpdatedExaminationValid(Examination examination);
-
-    public Task<bool> IsRoomOccupied(string examinationRoomName, string dateAndTimeOfExamination, int durationOfExamination);
-
-    public Task<bool> IsValidPatient(int id);
-
-    public Task<bool> IsRoomInRenovation(string roomName, string examinationDate);
-
-    public Task<bool> IsPatientFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId);
-
-    public Task<bool> IsDoctorFree(int id, string dateAndTimeOfExamination, int durationOfExamination, int examinationId);
 
     public Task<bool> ExaminationScheduledAtThatTime(Renovation renovation);
 
@@ -43,9 +30,7 @@ public interface IExaminationService
 
     public Task<Examination> GetExamination(int id);
 
-    public Task<bool> doesSpecializedDoctorExist(int doctorId,string specialization);
-
-    public Task<bool> doesRoomExist(string roomName);
+    public Task<bool> doesSpecializedDoctorExist(int doctorId, string specialization);
 
     public Task CreateRefferedExamination(Examination newExamination, string specialization, int referralid);
 
