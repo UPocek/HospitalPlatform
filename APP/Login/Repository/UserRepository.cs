@@ -43,13 +43,12 @@ public class UserRepository : IUserRepository
 
         return await collection.Find(e => e.Role == "doctor" && e.Id == doctorId).FirstOrDefaultAsync();
     }
-    public async Task UpdateDoctorFreeDays(int doctorId, Employee doctor){
+    public async Task UpdateDoctorFreeDays(int doctorId, FreeDay newEntry){
         var collection = _database.GetCollection<Employee>("Employees");
 
-        Employee doctorInDatabase = await collection.Find(doctor => doctor.Id == doctorId).FirstOrDefaultAsync();
-        doctorInDatabase.FreeDays = doctor.FreeDays;
+        var update = Builders<Employee>.Update.AddToSet("freeDays",newEntry);
 
-        await collection.ReplaceOneAsync(doc => doc.Id == doctorInDatabase.Id,doctorInDatabase);
+        await collection.UpdateOneAsync(d => d.Id == doctorId, update);
     }
 
     public IActionResult GetPatient(int patientId)

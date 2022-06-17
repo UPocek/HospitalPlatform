@@ -38,9 +38,8 @@ public class FreeDaysService : IFreeDaysService
         DateTime endDate = startDate.AddDays(duration);
         string endString = endDate.ToString("yyyy-MM-dd");
         fd.To = endString;
-        doctor.FreeDays.Add(fd);
         
-        await _userRepository.UpdateDoctorFreeDays(doctorId,doctor);
+        await _userRepository.UpdateDoctorFreeDays(doctorId,fd);
     }
     public void SendDeclineNotification(string mail,string why){
         var smptClient = new SmtpClient("smtp-mail.outlook.com",587)
